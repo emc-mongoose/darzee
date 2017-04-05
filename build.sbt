@@ -13,7 +13,7 @@ scalaSource in Test := baseDirectory.value / "test"
 resolvers += DefaultMavenRepository
 
 libraryDependencies ++= Seq(
-  "org.webjars" % "webjars-play_2.11" % "2.5.0-4",
+  "org.webjars" %% "webjars-play" % "2.5.0",
   "org.webjars" % "requirejs" % "2.3.3",
-  "org.webjars" % "qooxdoo" % "5.0.1"
+  "org.webjars" % "w2ui" % "1.5.rc1"
 )
