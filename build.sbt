@@ -1,12 +1,12 @@
 name := "console"
 
-version := "1.0.0"
+version := "0.1.0"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-scalaVersion := "2.12.1"
+scalaVersion := "2.11.9"
 
-scalaSource in Compile := baseDirectory.value / "src"
+scalaSource in Compile := baseDirectory.value / "app"
 
 scalaSource in Test := baseDirectory.value / "test"
 
