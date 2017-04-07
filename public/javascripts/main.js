@@ -1,31 +1,32 @@
+var config = {
+    tabs: {
+        name: "tabs-area",
+        active: "dashboard",
+        right: "<button id=\"submit-run\" class=\"w2ui-btn\">Submit Run</button>",
+        tabs: [
+            { id: "logo", caption: "Mongoose Web Console" },
+            { id: "dashboard", caption: "Dashboard" },
+            { id: "configuration", caption: "Configuration" },
+            { id: "scenario", caption: "Scenario" },
+            { id: "hosts", caption: "Hosts" }
+        ],
+        onClick: function (event) {
+            console.log(event.target);
+            if(event.target != "logo" && event.target != "submit") {
+                $("#main .tab-content").hide();
+                $("#main #" + event.target).show();
+            }
+        }
+    }
+}
+
 $(function () {
-
-    var pstyle = "background-color: #F5F6F7; border: 1px solid #dfdfdf; padding: 5px;";
-
-    $("#layout").w2layout({
-        name: "layout",
-        panels: [
-            { type: "left", size: "20%", resizable: true, style: pstyle, content: "left" },
-            { type: "main", style: pstyle, content: "main" }
-        ]
+    $("#tabs-area").w2tabs(config.tabs);
+    $("#dashboard").show();
+    $("#tabs_tabs-area_tab_logo").children("div").attr({
+        "class": "logo",
+        "onmouseover": "",
+        "onmouseout": "",
+        "onclick": ""
     });
-    
-    var d = $("#layout div");
-    console.log(d.);
-    d.css("height", "100%");
-    
-    w2ui["layout"].content("main", $().w2tabs({
-    	name: "tabs",
-    	active: "dashboard",
-    	tabs: [
-    		{ id: "dashboard", caption: "Dashboard" },
-    		{ id: "configuration", caption: "Configuration" },
-    		{ id: "scenario", caption: "Scenario" },
-    		{ id: "hosts", caption: "Hosts" },
-    	],
-    	onClick: function (event) {
-    		$("#tab-content").html("Tab: " + event.target);
-    	}
-    }));
-
 });
