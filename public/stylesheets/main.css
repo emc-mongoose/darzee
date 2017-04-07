@@ -1,13 +1,9 @@
 body {
     margin: 0px;
-    width: 100%;
-    height: 100%;
 }
 
 #main {
     font-family: Verdana, Arial, sans-serif;
-    width: 100%;
-    height: 100%;
 }
 
 h1 {
@@ -46,8 +42,6 @@ h5 {
 }
 
 #tabs-area {
-    width: 100%;
-    height: 32px;
     margin: 4px;
     padding: 0px;
 }
@@ -58,34 +52,61 @@ h5 {
 
 .w2ui-tabs table {
     float: left;
-    height: 100%;
     padding: 0px;
 }
 
 .w2ui-tab {
+    background-image: linear-gradient(rgb(216, 216, 216) 0%, rgb(240, 240, 240) 20%, rgb(255, 255, 255) 100%);
     font-size: 14px;
+    min-width: 160px;
 }
 
-.w2ui-tab.hover {
-    color: blue;
+.w2ui-tab:hover {
+    color: darkblue;
+}
+
+div.w2ui-tab.active {
+    background-image: linear-gradient(rgb(240, 240, 240) 0%, rgb(250, 250, 250) 20%, rgb(255, 255, 255) 100%);
+    border-bottom: none;
 }
 
 .w2ui-btn {
     margin: 0px;
 }
 
-.logo {
+button.submit-run {
+    background-color: white;
+    color: black;
+    font-size: 14px;
+    margin-top: 1px;
+    margin-right: 1px;
+    margin-left: 0px;
+    margin-bottom: -1px;
+    padding-top: 5px;
+    padding-left: 20px;
+    padding-bottom: 5px;
+    padding-right: 20px;
+    min-width: 160px;
+}
+
+button.submit-run:hover {
+    background-image: linear-gradient(rgb(16, 160, 64) 0%, rgb(32, 192, 80) 80%, rgb(64, 240, 128) 100%);
+    border-color: rgb(0, 128, 32);
+    color: white;
+}
+
+div.logo {
     font-size: 18px;
     white-space: nowrap;
     padding-right: 8px;
+    min-width: 250px;
 }
 
 .tab-content {
-    width: 100%;
-    height: 100%;
     border: 1px solid silver;
     border-top: 0px;
     display: none;
-    padding: 10px;
+    padding: 2px;
     overflow: auto;
+    height: 480px;
 }
