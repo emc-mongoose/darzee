@@ -14,5 +14,6 @@ resolvers += DefaultMavenRepository
 
 libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.5.0-4",
-  "org.webjars" % "w2ui" % "1.5.rc1"
+  "org.webjars" % "w2ui" % "1.5.rc1",
+  "org.webjars" % "font-awesome" % "4.7.0"
 )
