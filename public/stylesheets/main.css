@@ -76,13 +76,18 @@ div.w2ui-tab.active {
     margin: 0px;
 }
 
-div.w2ui-panel-title {
+.w2ui-panel-title {
     background-image: linear-gradient(rgb(218, 230, 243), rgb(242, 242, 242));
     border-bottom-style: none;
     border-bottom-width: 0px;
     font-size: 12px;
     height: 24px;
     padding: 4px;
+}
+
+.w2ui-grid-box {
+    height: 100%;
+    width: 100%;
 }
 
 button.submit-run {

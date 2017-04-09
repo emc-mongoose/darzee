@@ -5,7 +5,7 @@ var config = {
         active: "dashboard",
         right: "<button id=\"submit-run\" class=\"w2ui-btn submit-run\"><i class=\"fa fa-play\"/>&nbsp;Submit Run</button>",
         tabs: [
-            { id: "logo", caption: "Mongoose Web Console" },
+            { id: "logo", caption: "<img src=\"/assets/images/favicon.png\" width=\"24px\" height=\"24px\"/>Mongoose Web Console" },
             { id: "dashboard", caption: "<i class=\"fa fa-tachometer\"/>&nbsp;Dashboard" },
             { id: "configuration", caption: "<i class=\"fa fa-pencil-square-o\"/>&nbsp;Configuration" },
             { id: "scenario", caption: "<i class=\"fa fa-file-code-o\"/>&nbsp;Scenario" },
@@ -92,7 +92,7 @@ var config = {
         },
         columns: [
             { field: "scenario-arg-name", caption: "Name", size: "40%", sortable: true, editable: { type: "text" } },
-            { field: "scenario-arg-value", caption: "Value", size: "60%", sortable: true, editable: { type: "text" } }
+            { field: "scenario-arg-value", caption: "Value", size: "50%", sortable: true, editable: { type: "text" } }
         ],
         onAdd: function (event) {
             w2alert("Add scenario arg stub");
@@ -115,21 +115,13 @@ var config = {
             toolbarAdd: true,
             toolbarDelete: true
         },
-         columns: [
-            { field: "scenario-arg-name", caption: "Name", size: "40%", sortable: true, editable: { type: "text" } },
-            { field: "scenario-arg-value", caption: "Value", size: "60%", sortable: true, editable: { type: "text" } }
-             /*{ field: "hosts-name", caption: "Name/Address", size: "15%", sortable: true, editable: { type: "text" } },
-             { field: "hosts-status", caption: "Status", size: "15%", sortable: true },
-             { field: "hosts-controller", caption: "Controller", size: "10%", sortable: true, editable: { type: "checkbox", style: "text-align: center" } },
-             { field: "hosts-driver", caption: "Driver", size: "10%", sortable: true, editable: { type: "checkbox", style: "text-align: center" } },
-             { field: "hosts-info", caption: "Additional Info", size: "50%", sortable: true, editable: { type: "text" } },*/
-         ],
-         onAdd: function (event) {
-             w2alert("Add scenario arg stub");
-         },
-         onDelete: function (event) {
-             w2alert("Delete scenario arg stub");
-         }
+        columns: [
+            { field: "hosts-name", caption: "Name/Address", size: "15%", sortable: true, editable: { type: "text" } },
+            { field: "hosts-status", caption: "Status", size: "15%", sortable: true },
+            { field: "hosts-controller", caption: "Controller", size: "10%", sortable: true, editable: { type: "checkbox", style: "text-align: center" } },
+            { field: "hosts-driver", caption: "Driver", size: "10%", sortable: true, editable: { type: "checkbox", style: "text-align: center" } },
+            { field: "hosts-info", caption: "Additional Info", size: "40%", sortable: true, editable: { type: "text" } }
+        ]
     }
 }
 
@@ -158,6 +150,6 @@ $(function () {
     w2ui["scenario-layout"].content("right", w2ui["scenario-arg-table"]);
 
     $("#hosts").w2layout(config.hostsLayout);
-    $().w2grid(configuration.hostsTable);
+    $().w2grid(config.hostsTable);
     w2ui["hosts-layout"].content("main", w2ui["hosts-table"]);
 });
