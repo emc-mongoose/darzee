@@ -14,7 +14,9 @@ var config = {
         onClick: function (event) {
             if(event.target != "logo" && event.target != "submit") {
                 $("#main .tab-content").hide();
-                $("#main #" + event.target).show();
+                var tgtTabContent = $("#main #" + event.target);
+                tgtTabContent.show();
+                tgtTabContent.height("90%");
             }
         }
     },
@@ -40,7 +42,7 @@ var config = {
     dashboardCurrentRunHeaderLayout: {
         name: "dashboard-current-run-header-layout",
         panels: [
-            { type: "top", size: "20%" },
+            { type: "top", size: "40px" },
             { type: "main", title: "<i class=\"fa fa-info-circle\"/>&nbsp;Basic Info", style: pstyle },
             { type: "right", size: "50%", title: "<i class=\"fa fa-file-text-o\"/>&nbsp;Logs", style: pstyle }
         ]
@@ -119,6 +121,7 @@ $(function () {
     });
 
     $("#dashboard").show();
+    $("#dashboard").height("90%");
     $("#dashboard").w2layout(config.dashboardLayout);
     $().w2sidebar(config.dashboardTestRuns);
     w2ui["dashboard-layout"].content("left", w2ui["dashboard-test-runs"]);

@@ -16,6 +16,10 @@
     padding: 0;
 }
 
+html, body, #main {
+    height: 90%;
+}
+
 h1 {
     font-size: 18px;
     font-weight: normal;
