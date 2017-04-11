@@ -1,4 +1,0 @@
-/**
- * qx.util.placement package
- *
- */

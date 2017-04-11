@@ -1,4 +1,0 @@
-/**
- * qx.event.util package
- *
- */
