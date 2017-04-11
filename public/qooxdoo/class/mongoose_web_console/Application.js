@@ -49,11 +49,14 @@ qx.Class.define("mongoose_web_console.Application",
       -------------------------------------------------------------------------
       */
 
+      //qx.theme.manager.Meta.getInstance().setTheme(qx.theme.Modern);
+
       var scroller = new qx.ui.container.Scroll();
 
       var container = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
-      container.setPadding(20);
-      container.setAllowStretchX(false);
+      container.setPadding(10);
+      container.setAllowGrowX(true);
+      container.setAllowGrowY(true);
 
       scroller.add(container);
 
@@ -66,27 +69,47 @@ qx.Class.define("mongoose_web_console.Application",
 
     getMainTabView: function() {
       var tabView = new qx.ui.tabview.TabView();
-      tabView.setWidth(500);
 
-      var page1 = new qx.ui.tabview.Page("Dashboard", "icon/16/apps/utilities-terminal.png");
+      var page1 = new qx.ui.tabview.Page("Dashboard", "qx/icon/16/apps/utilities-terminal.png");
       page1.setLayout(new qx.ui.layout.VBox());
       page1.add(new qx.ui.basic.Label("Dashboard Content"));
       tabView.add(page1);
 
-      var page2 = new qx.ui.tabview.Page("Configuration", "icon/16/apps/utilities-terminal.png");
+      var page2 = new qx.ui.tabview.Page("Configuration", "/assets/qooxdoo/framework/source/resource/qx/icon/16/apps/utilities-terminal.png");
       page2.setLayout(new qx.ui.layout.VBox());
       page2.add(new qx.ui.basic.Label("Configuration Content"));
       tabView.add(page2);
 
-      var page3 = new qx.ui.tabview.Page("Scenario", "icon/16/apps/utilities-terminal.png");
+      var page3 = new qx.ui.tabview.Page("Scenario", "/assets/qooxdoo/framework/source/resource/qx/icon/16/apps/utilities-terminal.png");
       page3.setLayout(new qx.ui.layout.VBox());
       page3.add(new qx.ui.basic.Label("Scenario Content"));
       tabView.add(page3);
 
-      var page4 = new qx.ui.tabview.Page("Hosts", "icon/16/apps/utilities-terminal.png");
+      var page4 = new qx.ui.tabview.Page("Hosts", "/assets/qooxdoo/framework/source/resource/qx/icon/16/apps/utilities-terminal.png");
       page4.setLayout(new qx.ui.layout.VBox());
       page4.add(new qx.ui.basic.Label("Hosts Content"));
       tabView.add(page4);
+
+      var submitRunButtonTab = new qx.ui.tabview.Page("Submit Run");
+      var submitRunButton = submitRunButtonTab.getButton();
+      submitRunButton.addListener(
+        "execute", function(e) {
+        }
+      );
+      submitRunButton.setDecorator(
+        new qx.ui.decoration.Decorator().set(
+          {
+            backgroundColor: "transparent",
+            backgroundImage: "linear-gradient(180deg, rgb(249, 249, 249) 40%, rgb(227, 227, 227) 70%)",
+            color: "#bbbbbb",
+            radius: 3,
+            style: "solid",
+            width: 1
+          }
+        )
+      );
+      submitRunButtonTab.setEnabled(false);
+      tabView.add(submitRunButtonTab);
 
       return tabView;
     }

@@ -11,15 +11,15 @@ for (var k in envinfo) qx.$$environment[k] = envinfo[k];
 if (!qx.$$libraries) qx.$$libraries = {};
 var libinfo = {
   "__out__": {
-    "sourceUri": "assets/javascripts/qooxdoo/script"
+    "sourceUri": "assets/qooxdoo/script"
   },
   "mongoose_web_console": {
-    "resourceUri": "assets/javascripts/qooxdoo/resource",
-    "sourceUri": "assets/javascripts/qooxdoo/class"
+    "resourceUri": "assets/qooxdoo/resource",
+    "sourceUri": "assets/qooxdoo/class"
   },
   "qx": {
-    "resourceUri": "assets/javascripts/qooxdoo/framework/source/resource",
-    "sourceUri": "assets/javascripts/qooxdoo/framework/source/class",
+    "resourceUri": "assets/qooxdoo/framework/source/resource",
+    "sourceUri": "assets/qooxdoo/framework/source/class",
     "sourceViewUri":"https://github.com/qooxdoo/qooxdoo/blob/%{qxGitBranch}/framework/source/class/%{classFilePath}#L%{lineNumber}"
   }
 };

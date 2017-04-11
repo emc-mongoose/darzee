@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="flare" default="build" basedir=".">
+<project name="flare" default="build" basedir="">
 
   <property name="FLEX_HOME" value="C:/flex/flex_sdk_3/"/>
   <taskdef resource="flexTasks.tasks"
