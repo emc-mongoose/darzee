@@ -1,0 +1,129 @@
+//
+// Box-Layout
+//
+
+.qx-hbox, .qx-vbox {
+  // Subtract padding and border from content width (100%) to prevent
+  // 100% + X situation.
+  @include box-sizing(border-box);
+}
+
+// Devices which supports new flex syntax.
+.qx-flex-ready {
+  .qx-hbox, .qx-vbox {
+    display: -ms-flexbox;      /* TWEENER - IE 10 */
+    display: -webkit-flex;     /* NEW - Chrome */
+    display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
+  }
+
+  .qx-hbox {
+    @include flex-direction(row);
+  }
+
+  .qx-vbox {
+    @include flex-direction(column);
+    width: 100%;
+  }
+
+  .qx-hbox.qx-flex-reverse {
+    @include flex-direction(row-reverse);
+  }
+
+  .qx-vbox.qx-flex-reverse {
+    @include flex-direction(column-reverse);
+  }
+
+  .qx-flex-center {
+    @include flex-align-items(center);
+    @include flex-justify-content(center);
+  }
+
+  .qx-flex-align-start {
+    @include flex-align-items(flex-start);
+  }
+
+  .qx-flex-align-center {
+    @include flex-align-items(center);
+  }
+
+  .qx-flex-align-end {
+    @include flex-align-items(flex-end);
+  }
+
+  .qx-flex-justify-start {
+    @include flex-justify-content(flex-start);
+  }
+
+  .qx-flex-justify-center {
+    @include flex-justify-content(center);
+  }
+
+  .qx-flex-justify-end {
+    @include flex-justify-content(flex-end);
+  }
+
+  @for $i from 0 through 6 {
+    .qx-flex#{$i} {
+      @include flex($i);
+    }
+  }
+}
+
+// Devices which supports old flexbox syntax.
+.mobile:not(.qx-flex-ready),
+.qx-widget:not(.qx-flex-ready) {
+  .qx-hbox, .qx-vbox {
+    display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+    display: box;
+  }
+
+  .qx-hbox {
+    @include box-orient(horizontal);
+  }
+
+  .qx-vbox {
+    @include box-orient(vertical);
+    height: 100%;
+    width:100%;
+  }
+
+  .qx-hbox.qx-flex-reverse, .qx-vbox.qx-flex-reverse {
+    @include box-direction(reverse);
+  }
+
+  .qx-flex-center {
+    @include box-pack(center);
+    @include box-align(center);
+  }
+
+  .qx-flex-align-start {
+    @include box-align(start);
+  }
+
+  .qx-flex-align-center {
+    @include box-align(center);
+  }
+
+  .qx-flex-align-end {
+    @include box-align(end);
+  }
+
+  .qx-flex-justify-start {
+    @include box-pack(start);
+  }
+
+  .qx-flex-justify-center {
+    @include box-pack(center);
+  }
+
+  .qx-flex-justify-end {
+    @include box-pack(end);
+  }
+
+  @for $i from 0 through 6 {
+    .qx-flex#{$i} {
+      @include box-flex($i);
+    }
+  }
+}

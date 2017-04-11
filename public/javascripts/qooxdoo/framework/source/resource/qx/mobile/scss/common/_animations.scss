@@ -1,0 +1,36 @@
+.animationParent {
+  @include perspective(800);
+  @include transform-style(preserve-3d);
+}
+
+.animationChild {
+  position: absolute;
+}
+
+.in {
+  z-index: 10; 
+}
+
+.out {
+  z-index: 0;
+}
+
+//
+// SLIDE UP
+//
+
+.slideup.in {
+  z-index: 10;
+}
+
+.slideup.out {
+  z-index: 0;
+}
+
+.slideup.in.reverse {
+  z-index: 0;
+}
+
+.slideup.out.reverse {
+  z-index: 10;
+}
