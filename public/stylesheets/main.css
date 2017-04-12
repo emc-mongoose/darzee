@@ -12,13 +12,14 @@
 
 * {
     font-family: play;
-    font-size: 12;
+    font-size: 10pt;
     outline: none !important;
 }
 
 html,
 body {
   height: 100%;
+  margin: 5;
   width: 100%;
 }
 
@@ -33,7 +34,7 @@ button {
 	background-repeat: repeat-x;
 	border: 1px solid #769DC0;
 	padding: 2px 8px 4px;
-	font-size:1em;
+	font-size: 1em;
 }
 
 button:hover {
@@ -42,19 +43,25 @@ button:hover {
 }
 
 h1 {
-	font-size: 20;
+	font-size: 16pt;
 }
 
 h2 {
-  font-size: 18;
+  font-size: 14pt;
 }
 
 h3 {
-  font-size: 16;
+  font-size: 12pt;
 }
 
 h4 {
-  font-size: 14;
+  font-size: 10pt;
+}
+
+#appLayout {
+  width: 100%;
+  min-height: 500px;
+  height: 100%;
 }
 
 .break
@@ -64,59 +71,77 @@ h4 {
 }
 
 .tabLabel {
-  font-size: 14;
+  font-size: 12pt;
 }
 
-#appLayout {
-  width: 100%;
-  min-height: 500px;
-  height: 100%;
-}
-
-div.dijitTabContainerTop-tabs div.dijitTab {
+.main-tabs-panel .dijitTabContainerTop-tabs .dijitTab {
   background-color: #ffffff;
-  background-image: linear-gradient(#aaaaaa 0%, #cccccc 20%, #ffffff 100%);
-  background-image: -moz-linear-gradient(#aaaaaa 0%, #cccccc 20%, #ffffff 100%);
-  background-image: -o-linear-gradient(#aaaaaa 0%, #cccccc 20%, #ffffff 100%);
-  background-image: -webkit-linear-gradient(#aaaaaa 0%, #cccccc 20%, #ffffff 100%);
+  background-image: linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
+  background-image: -moz-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
+  background-image: -o-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
+  background-image: -webkit-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
   width: 150px;
+  height: 24px;
 }
 
-div.dijitTabContainerTop-tabs div.dijitTabChecked {
+.main-tabs-panel .dijitTabContainerTop-tabs .dijitTab:hover {
+  background-image: linear-gradient(#ccc 0%, #888 15%, #888 100%);
+  background-image: -moz-linear-gradient(#ccc 0%, #888 15%, #888 100%);
+  background-image: -o-linear-gradient(#ccc 0%, #888 15%, #888 100%);
+  background-image: -webkit-linear-gradient(#ccc 0%, #888 15%, #888 100%);
+  border-color: #777;
+  color: #ffffff;
+}
+
+.main-tabs-panel .dijitTabContainerTop-tabs .dijitTabChecked {
+  color: #000;
   background-color: #ffffff;
   padding-top: 4px !important;
   padding-bottom: 4px !important;
 }
 
+.main-tabs-panel .dijitTabContainerTop-tabs .dijitTabChecked:hover {
+  color: #000;
+  background-image: linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
+  background-image: -moz-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
+  background-image: -o-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
+  background-image: -webkit-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
+}
+
 div.dijitTabContainerTop-tabs div.dijitTabDisabled:first-child {
+  color: #000;
   background-color: transparent;
   background-image: none;
   border: none;
-  font-size: 20;
-  font-weight: bold;
-  width: 240px;
+  width: 250px;
+}
+
+div.dijitTabContainerTop-tabs div.dijitTabDisabled:first-child:hover {
+  color: #000;
+  background-color: transparent;
+  background-image: none;
+  border: none;
 }
 
 div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child {
+  background-image: linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #eee 90%, #ddd 100%);
+  background-image: -moz-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #eee 90%, #ddd 100%);
+  background-image: -o-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #eee 90%, #ddd 100%);
+  background-image: -webkit-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #eee 90%, #ddd 100%);
   border-bottom: 1px solid rgb(181, 188, 199);
   border-radius: 4px;
-  background-image: linear-gradient(#ffffff 0%, #eeeeee 15%, #eeeeee 85%, #ffffff 100%);
-  background-image: -moz-linear-gradient(#ffffff 0%, #eeeeee 15%, #eeeeee 85%, #ffffff 100%);
-  background-image: -o-linear-gradient(#ffffff 0%, #eeeeee 15%, #eeeeee 85%, #ffffff 100%);
-  background-image: -webkit-linear-gradient(#ffffff 0%, #eeeeee 15%, #eeeeee 85%, #ffffff 100%);
   margin-left: 1px;
   padding-top: 3px;
-  padding-bottom: 0;
+  padding-bottom: 1px;
 }
 
 div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child:hover {
-  border-color: #0000aa;
-  border-bottom: 1px solid #0000aa;
-  background-image: none;
-  color: #0000aa;
-  margin-left: 1px;
-  padding-top: 3px;
-  padding-bottom: 0;
+  background-image: linear-gradient(#4f8 0%, #0c3 15%, #0c3 85%, #4f8 100%);
+  background-image: -moz-linear-gradient(#4f8 0%, #0c3 15%, #0c3 85%, #4f8 100%);
+  background-image: -o-linear-gradient(#4f8 0%, #0c3 15%, #0c3 85%, #4f8 100%);
+  background-image: -webkit-linear-gradient(#4f8 0%, #0c3 15%, #0c3 85%, #4f8 100%);
+  border-color: #00aa00;
+  color: #ffffff;
 }
 
 .dijitTabContent {
