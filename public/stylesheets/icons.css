@@ -1,0 +1,10 @@
+.icon-24px {
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 24px;
+  width: 24px;
+}
+
+.icon-logo {
+  background-image: url("/assets/images/logo.png");
+}
