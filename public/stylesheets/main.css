@@ -163,8 +163,9 @@ div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child:hover {
 	width: 100%;
 }
 
-#tab-dashboard .dijitFieldset .dijitFieldsetContentOuter,
-#tab-dashboard .dijitFieldset .dijitFieldsetContentOuter .dijitReset,
-#tab-dashboard .dijitFieldset .dijitFieldsetContentOuter .dijitReset .dijitFieldsetContentInner {
+#dashboard-current-run-pane,
+#dashboard-current-run-pane .dijitFieldsetContentOuter,
+#dashboard-current-run-pane .dijitFieldsetContentOuter .dijitReset,
+#dashboard-current-run-pane .dijitFieldsetContentOuter .dijitReset .dijitFieldsetContentInner {
 	height: 100%;
 }
