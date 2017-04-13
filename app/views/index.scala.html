@@ -1,167 +1,159 @@
 @main("Mongoose Web Console") {
-<div id="main" data-dojo-type="dijit/layout/LayoutContainer" class="layout-container">
-	<div data-dojo-type="dijit/layout/ContentPane">
-		<div class="layout-container main-tabs-panel" region="top"
-			data-dojo-type="dijit/layout/TabContainer">
-			<div title="Mongoose Web Console v0.1.0" disabled="true" iconClass="icon-24px icon-logo"
-				data-dojo-type="dijit/layout/TabController">
-			</div>
-			<div id="tab-dashboard" title="Dashboard" selected="true" iconClass="fa fa-tachometer"
-				class="layoutContainer" data-dojo-type="dijit/layout/LayoutContainer"
-				tabPosition="left-h" nested="true" selected="true">
-				<div data-dojo-type="dijit/Fieldset" region="left" style="width: 250px;"
-					toggleable="false">
-					<legend><h1>Test Runs</h1></legend>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #42
-							<i class="fa fa-hourglass-o" aria-hidden="true"></i>
-							<i>pending</i>
-						</div>
-					</div>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #41
-							<i class="fa fa-hourglass-o" aria-hidden="true"></i>
-							<i>pending</i>
-						</div>
-					</div>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #40
-							<i class="fa fa-cog fa-spin fa-fw"></i>
-							<i>running</i>
-						</div>
-					</div>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #39
-							<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-							<i>finished</i>
-						</div>
-					</div>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #38
-							<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-							<i>finished</i>
-						</div>
-					</div>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #37
-							<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-							<i>finished</i>
-						</div>
-					</div>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #36
-							<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-							<i>finished</i>
-						</div>
-					</div>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #35
-							<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-							<i>finished</i>
-						</div>
-					</div>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #34
-							<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-							<i>finished</i>
-						</div>
-					</div>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #33
-							<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-							<i>finished</i>
-						</div>
-					</div>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #32
-							<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-							<i>finished</i>
-						</div>
-					</div>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #31
-							<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-							<i>finished</i>
-						</div>
-					</div>
-					<div data-dojo-type="dijit/Menu">
-						<div data-dojo-type="dijit/MenuItem">
-							Test run #30
-							<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-							<i>finished</i>
-						</div>
+	<div class="layout-container main-tabs-panel" region="top"
+		data-dojo-type="dijit/layout/TabContainer">
+		<div title="Mongoose Web Console v0.1.0" disabled="true" iconClass="icon-32px icon-logo"
+			data-dojo-type="dijit/layout/TabController">
+		</div>
+		<div id="tab-dashboard" title="Dashboard" selected="true" iconClass="fa fa-lg fa-tachometer"
+			class="layout-container" data-dojo-type="dijit/layout/LayoutContainer"
+			tabPosition="left-h" nested="true" selected="true">
+			<div id="dashboard-test-runs" data-dojo-type="dijit/Fieldset" region="left" style="width: 240px;"
+				toggleable="false">
+				<legend><h1>Test Runs</h1></legend>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #42
+						<i class="fa fa-hourglass-o" aria-hidden="true"></i>
+						<i>pending</i>
 					</div>
 				</div>
-				<div id="dashboard-current-run-pane" data-dojo-type="dijit/Fieldset" region="center"
-					toggleable="false" style="height: 100%;">
-					<legend><h1>Current Run</h1></legend>
-					<div data-dojo-type="dijit/layout/LayoutContainer"
-						class="layoutContainer">
-						<div data-dojo-type="dijit/layout/ContentPane" region="top"
-							style="width: 100%; height: 30px;">
-							<button data-dojo-type="dijit/form/Button" type="button">
-								<i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Stop
-							</button>
-							<button data-dojo-type="dijit/form/Button" type="button">
-								<i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;Resubmit
-							</button>
-							<button data-dojo-type="dijit/form/Button" type="button">
-								<i class="fa fa-times" aria-hidden="true"></i>&nbsp;Delete
-							</button>
-						</div>
-						<div data-dojo-type="dijit/layout/LayoutContainer" region="center"
-							class="layoutContainer">
-							<div data-dojo-type="dijit/layout/LayoutContainer" region="top"
-								class="layoutContainer">
-								<div data-dojo-type="dijit/Fieldset" region="left"
-									toggleable="false" style="width: 45%; height: 95%;">
-									<legend><h2>Basic Info</h2></legend>
-								</div>
-								<div data-dojo-type="dijit/Fieldset" region="center"
-									toggleable="false" style="height: 95%;">
-									<legend><h2>Log Files</h2></legend>
-								</div>
-							</div>
-							<div data-dojo-type="dijit/Fieldset" region="center"
-								toggleable="false" style="width: 100%;;">
-								<legend><h2>Results</h2></legend>
-							</div>
-							<div data-dojo-type="dijit/Fieldset" region="bottom"
-								toggleable="false" style="width: 100%; height: 40%;">
-								<legend><h2>Output</h2></legend>
-							</div>
-						</div>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #41
+						<i class="fa fa-hourglass-o" aria-hidden="true"></i>
+						<i>pending</i>
+					</div>
+				</div>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #40
+						<i class="fa fa-cog fa-spin fa-fw"></i>
+						<i>running</i>
+					</div>
+				</div>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #39
+						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
+						<i>finished</i>
+					</div>
+				</div>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #38
+						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
+						<i>finished</i>
+					</div>
+				</div>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #37
+						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
+						<i>finished</i>
+					</div>
+				</div>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #36
+						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
+						<i>finished</i>
+					</div>
+				</div>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #35
+						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
+						<i>finished</i>
+					</div>
+				</div>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #34
+						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
+						<i>finished</i>
+					</div>
+				</div>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #33
+						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
+						<i>finished</i>
+					</div>
+				</div>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #32
+						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
+						<i>finished</i>
+					</div>
+				</div>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #31
+						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
+						<i>finished</i>
+					</div>
+				</div>
+				<div data-dojo-type="dijit/Menu">
+					<div data-dojo-type="dijit/MenuItem">
+						Test run #30
+						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
+						<i>finished</i>
 					</div>
 				</div>
 			</div>
-			<div id="tab-config" title="Configuration" iconClass="fa fa-cog"
-				data-dojo-type="dijit/layout/ContentPane">
-				<h2>Configuration Page</h2>
-			</div>
-			<div id="tab-scenario" title="Scenario" iconClass="fa fa-file-code-o"
-				data-dojo-type="dijit/layout/ContentPane">
-				<h2>Scenario Page</h2>
-			</div>
-			<div id="tab-hosts" title="Hosts" iconClass="fa fa-server"
-				data-dojo-type="dijit/layout/ContentPane">
-				<h2>Hosts Page</h2>
-			</div>
-			<div title="Submit Run" disabled="true" iconClass="fa fa-play"
-				data-dojo-type="dijit/layout/ContentPane">
+			<div id="dashboard-current-run-pane" data-dojo-type="dijit/Fieldset" region="center"
+				toggleable="false" style="height: 100%;">
+				<legend>
+					<h1>Current Run</h1>
+					<button data-dojo-type="dijit/form/Button" type="button">
+						<i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Stop
+					</button>
+					<button data-dojo-type="dijit/form/Button" type="button">
+						<i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;Resubmit
+					</button>
+					<button data-dojo-type="dijit/form/Button" type="button">
+						<i class="fa fa-times" aria-hidden="true"></i>&nbsp;Delete
+					</button>
+				</legend>
+				<div data-dojo-type="dijit/layout/LayoutContainer"
+					class="layout-container">
+					<div data-dojo-type="dijit/layout/LayoutContainer" region="top"
+						style="width: 100%; height: 30%;">
+						<div data-dojo-type="dijit/Fieldset" region="left"
+							 toggleable="false" style="width: 45%; height: 100%;">
+							<legend><h2>Basic Info</h2></legend>
+						</div>
+						<div data-dojo-type="dijit/Fieldset" region="center"
+							 toggleable="false" style="height: 100%;">
+							<legend><h2>Log Files</h2></legend>
+						</div>
+					</div>
+					<div data-dojo-type="dijit/Fieldset" region="center"
+						toggleable="false" style="width: 100%;">
+						<legend><h2>Results</h2></legend>
+					</div>
+					<div data-dojo-type="dijit/Fieldset" region="bottom"
+						toggleable="false" style="width: 100%; height: 40%;">
+						<legend><h2>Output</h2></legend>
+					</div>
+				</div>
 			</div>
 		</div>
+		<div id="tab-config" title="Configuration" iconClass="fa fa-lg fa-pencil-square-o"
+			data-dojo-type="dijit/layout/ContentPane">
+			<h2>Configuration Page</h2>
+		</div>
+		<div id="tab-scenario" title="Scenario" iconClass="fa fa-lg fa-file-code-o"
+			data-dojo-type="dijit/layout/ContentPane">
+			<h2>Scenario Page</h2>
+		</div>
+		<div id="tab-hosts" title="Hosts" iconClass="fa fa-lg fa-server"
+			data-dojo-type="dijit/layout/ContentPane">
+			<h2>Hosts Page</h2>
+		</div>
+		<div title="Submit Run" disabled="true" iconClass="fa fa-lg fa-play"
+			data-dojo-type="dijit/layout/ContentPane">
+		</div>
 	</div>
-</div>
 }
