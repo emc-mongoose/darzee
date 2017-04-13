@@ -1,13 +1,13 @@
 @font-face {
-    font-family: play;
-    src: url("/assets/fonts/Play-Regular.ttf");
-    font-weight: normal;
+	font-family: play;
+	src: url("/assets/fonts/Play-Regular.ttf");
+	font-weight: normal;
 }
 
 @font-face {
-    font-family: play;
-    src: url("/assets/fonts/Play-Bold.ttf");
-    font-weight: bold;
+	font-family: play;
+	src: url("/assets/fonts/Play-Bold.ttf");
+	font-weight: bold;
 }
 
 @font-face {
