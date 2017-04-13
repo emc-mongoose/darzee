@@ -1,26 +1,20 @@
-@font-face {
-    font-family: play;
-    src: url(/assets/fonts/Play-Regular.ttf);
-    font-weight: normal;
-}
-
-@font-face {
-    font-family: play;
-    src: url(/assets/fonts/Play-Bold.ttf);
-    font-weight: bold;
-}
-
 * {
-    font-family: play;
+    font-family: open-sans;
     font-size: 10pt;
     outline: none !important;
+    margin: 0;
+    padding: 0;
 }
 
 html,
-body {
-  height: 100%;
-  margin: 5;
-  width: 100%;
+body,
+#main {
+	border: 0;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	overflow: hidden;
 }
 
 button {
@@ -43,35 +37,44 @@ button:hover {
 }
 
 h1 {
-	font-size: 16pt;
+	display: inline;
+	font-size: 14pt;
 }
 
 h2 {
-  font-size: 14pt;
+	display: inline;
+	font-size: 12pt;
 }
 
 h3 {
-  font-size: 12pt;
+	display: inline;
+	font-size: 10pt;
 }
 
-h4 {
-  font-size: 10pt;
-}
 
-#appLayout {
-  width: 100%;
-  min-height: 500px;
-  height: 100%;
-}
-
-.break
-{
+.break {
 	float: none;
 	clear: both;
 }
 
+.dijitBorderContainer,
+.dijitContentPane,
+.dijitTabContainer,
+.dijitTabPaneWrapper,
+.dijitTabContainerTopChildWrapper {
+	height: 100%;
+}
+
+.dijitContentPane {
+	padding: 0;
+}
+
 .tabLabel {
-  font-size: 12pt;
+	font-size: 11pt;
+}
+
+.tabStripButton {
+	display: none;
 }
 
 .main-tabs-panel .dijitTabContainerTop-tabs .dijitTab {
@@ -85,10 +88,10 @@ h4 {
 }
 
 .main-tabs-panel .dijitTabContainerTop-tabs .dijitTab:hover {
-  background-image: linear-gradient(#ccc 0%, #888 15%, #888 100%);
-  background-image: -moz-linear-gradient(#ccc 0%, #888 15%, #888 100%);
-  background-image: -o-linear-gradient(#ccc 0%, #888 15%, #888 100%);
-  background-image: -webkit-linear-gradient(#ccc 0%, #888 15%, #888 100%);
+  background-image: linear-gradient(#bbc 0%, #778 15%, #778 100%);
+  background-image: -moz-linear-gradient(#bbc 0%, #778 15%, #778 100%);
+  background-image: -o-linear-gradient(#bbc 0%, #778 15%, #778 100%);
+  background-image: -webkit-linear-gradient(#bbc 0%, #778 15%, #778 100%);
   border-color: #777;
   color: #ffffff;
 }
@@ -109,18 +112,25 @@ h4 {
 }
 
 div.dijitTabContainerTop-tabs div.dijitTabDisabled:first-child {
-  color: #000;
-  background-color: transparent;
-  background-image: none;
-  border: none;
-  width: 250px;
+	background-color: transparent;
+	background-image: none;
+	border: none;
+	box-shadow: none;
+	color: #000;
+	width: 250px;
+}
+
+/* logo */
+#dijit_layout_TabContainer_0_tablist_dijit_layout_TabController_0 {
+	font-family: play;
+	font-weight: bold;
 }
 
 div.dijitTabContainerTop-tabs div.dijitTabDisabled:first-child:hover {
-  color: #000;
-  background-color: transparent;
-  background-image: none;
-  border: none;
+	background-color: transparent;
+	background-image: none;
+	border: none;
+	color: #000;
 }
 
 div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child {
@@ -136,14 +146,25 @@ div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child {
 }
 
 div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child:hover {
-  background-image: linear-gradient(#4f8 0%, #0c3 15%, #0c3 85%, #4f8 100%);
-  background-image: -moz-linear-gradient(#4f8 0%, #0c3 15%, #0c3 85%, #4f8 100%);
-  background-image: -o-linear-gradient(#4f8 0%, #0c3 15%, #0c3 85%, #4f8 100%);
-  background-image: -webkit-linear-gradient(#4f8 0%, #0c3 15%, #0c3 85%, #4f8 100%);
-  border-color: #00aa00;
+  background-image: linear-gradient(#0c8 0%, #0a6 15%, #0a6 85%, #0c8 100%);
+  background-image: -moz-linear-gradient(#0c8 0%, #0a6 15%, #0a6 85%, #0c8 100%);
+  background-image: -o-linear-gradient(#0c8 0%, #0a6 15%, #0a6 85%, #0c8 100%);
+  background-image: -webkit-linear-gradient(#0c8 0%, #0a6 15%, #0a6 85%, #0c8 100%);
+  border-color: #084;
   color: #ffffff;
 }
 
 .dijitTabContent {
   text-align: left !important;
+}
+
+.dijitMenu {
+	margin: 4px;
+	width: 100%;
+}
+
+#tab-dashboard .dijitFieldset .dijitFieldsetContentOuter,
+#tab-dashboard .dijitFieldset .dijitFieldsetContentOuter .dijitReset,
+#tab-dashboard .dijitFieldset .dijitFieldsetContentOuter .dijitReset .dijitFieldsetContentInner {
+	height: 100%;
 }

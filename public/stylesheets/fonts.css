@@ -1,0 +1,23 @@
+@font-face {
+    font-family: play;
+    src: url("/assets/fonts/Play-Regular.ttf");
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: play;
+    src: url("/assets/fonts/Play-Bold.ttf");
+    font-weight: bold;
+}
+
+@font-face {
+	font-family: open-sans;
+	src: url("/assets/fonts/OpenSans-Regular.ttf");
+	font-weight: normal;
+}
+
+@font-face {
+	font-family: open-sans;
+	src: url("/assets/fonts/OpenSans-Bold.ttf");
+	font-weight: bold;
+}
