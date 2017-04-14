@@ -1,15 +1,12 @@
 @main("Mongoose Web Console") {
-	<div class="layout-container main-tabs-panel" region="top"
-		data-dojo-type="dijit/layout/TabContainer">
-		<div title="Mongoose Web Console v0.1.0" disabled="true" iconClass="icon-32px icon-logo"
-			data-dojo-type="dijit/layout/TabController">
-		</div>
+	<div class="layout-container main-tabs-panel" region="top" data-dojo-type="dijit/layout/TabContainer"
+		useMenu="true" useSlider="true">
 		<div id="tab-dashboard" title="Dashboard" selected="true" iconClass="fa fa-lg fa-tachometer"
 			class="layout-container" data-dojo-type="dijit/layout/LayoutContainer"
 			tabPosition="left-h" nested="true" selected="true">
-			<div id="dashboard-test-runs" data-dojo-type="dijit/Fieldset" region="left" style="width: 240px;"
+			<div id="dashboard-test-runs" data-dojo-type="dijit/Fieldset" region="left" style="width: 200px;"
 				toggleable="false">
-				<legend><h1>Test Runs</h1></legend>
+				<legend><h1><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;Test Runs</h1></legend>
 				<div data-dojo-type="dijit/Menu">
 					<div data-dojo-type="dijit/MenuItem">
 						Test run #42
@@ -105,7 +102,7 @@
 			<div id="dashboard-current-run-pane" data-dojo-type="dijit/Fieldset" region="center"
 				toggleable="false" style="height: 100%;">
 				<legend>
-					<h1>Current Run</h1>
+					<h1><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;Current Run</h1>
 					<button data-dojo-type="dijit/form/Button" type="button">
 						<i class="fa fa-stop" aria-hidden="true"></i>&nbsp;Stop
 					</button>
@@ -116,44 +113,120 @@
 						<i class="fa fa-times" aria-hidden="true"></i>&nbsp;Delete
 					</button>
 				</legend>
-				<div data-dojo-type="dijit/layout/LayoutContainer"
-					class="layout-container">
+				<div data-dojo-type="dijit/layout/LayoutContainer" class="layout-container">
 					<div data-dojo-type="dijit/layout/LayoutContainer" region="top"
 						style="width: 100%; height: 30%;">
 						<div data-dojo-type="dijit/Fieldset" region="left"
 							 toggleable="false" style="width: 45%; height: 100%;">
-							<legend><h2>Basic Info</h2></legend>
+							<legend><h2><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;Basic Info</h2></legend>
+							<!--div id="dashboard-current-run-info" class="gridx" data-dojo-type="gridx/Grid"
+								 store="dashboardCurrentRunInfoData" structure="dashboardCurrentRunInfoFields"
+								 cacheClass="gridx/core/model/cache/Sync"
+							></div-->
 						</div>
 						<div data-dojo-type="dijit/Fieldset" region="center"
 							 toggleable="false" style="height: 100%;">
-							<legend><h2>Log Files</h2></legend>
+							<legend>
+								<h2><i class="fa fa-files-o" aria-hidden="true"></i>&nbsp;Log Files</h2>
+							</legend>
 						</div>
 					</div>
-					<div data-dojo-type="dijit/Fieldset" region="center"
-						toggleable="false" style="width: 100%;">
-						<legend><h2>Results</h2></legend>
+					<div data-dojo-type="dijit/Fieldset" region="center" toggleable="false" style="width: 100%;">
+						<legend><h2><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;Results</h2></legend>
 					</div>
 					<div data-dojo-type="dijit/Fieldset" region="bottom"
 						toggleable="false" style="width: 100%; height: 40%;">
-						<legend><h2>Output</h2></legend>
+						<legend><h2><i class="fa fa-television" aria-hidden="true"></i>&nbsp;Output</h2></legend>
 					</div>
 				</div>
 			</div>
 		</div>
+
 		<div id="tab-config" title="Configuration" iconClass="fa fa-lg fa-pencil-square-o"
-			data-dojo-type="dijit/layout/ContentPane">
-			<h2>Configuration Page</h2>
+			data-dojo-type="dijit/layout/LayoutContainer" class="layout-container">
+			<div data-dojo-type="dijit/Fieldset" region="left" toggleable="false" style="width: 200px;">
+				<legend><h1><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Navigation</h1></legend>
+				<div data-dojo-type="dojo/store/Memory" data-dojo-id="configTreeStore">
+					<script type="dojo/method">
+						this.setData(
+							[
+								{ id: "config", name: "config" },
+									{ id: "tree", name: "tree", parent: "config" },
+										{ id: "data", name: "data", parent: "tree" },
+										{ id: "here", name: "here", parent: "tree" }
+							]
+						);
+					</script>
+					<script type="dojo/method" data-dojo-event="getChildren" data-dojo-args="object">
+						return this.query({parent: object.id});
+					</script>
+				</div>
+				<div data-dojo-type="dijit/tree/ObjectStoreModel" data-dojo-id="configTreeModel"
+					store="configTreeStore" query="{id: 'config'}"></div>
+				<div data-dojo-type="dijit/Tree" data-dojo-id="configTree" model="configTreeModel" autoExpand="true">
+				</div>
+			</div>
+			<div data-dojo-type="dijit/Fieldset" region="center" toggleable="false">
+				<legend>
+					<h1><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Editor</h1>
+				</legend>
+				<div data-dojo-type="dijit/Editor" id="config-editor" style="height: 100%"
+					plugins="['save','|','undo','redo','|','cut','copy','paste','findreplace','|','indent','outdent']"
+					extraPlugins="['statusbar']">
+					JSON configuration content here
+				</div>
+			</div>
 		</div>
+
 		<div id="tab-scenario" title="Scenario" iconClass="fa fa-lg fa-file-code-o"
-			data-dojo-type="dijit/layout/ContentPane">
-			<h2>Scenario Page</h2>
+			data-dojo-type="dijit/layout/LayoutContainer" class="layout-container">
+			<div data-dojo-type="dijit/layout/LayoutContainer" class="layout-container"
+				 region="left" style="width: 200px;">
+				<div data-dojo-type="dijit/Fieldset" region="center" toggleable="false">
+					<legend><h1><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Navigation</h1></legend>
+					<div data-dojo-type="dojo/store/Memory" data-dojo-id="scenarioTreeStore">
+						<script type="dojo/method">
+							this.setData(
+								[
+									{ id: "scenario", name: "scenario" },
+										{ id: "tree", name: "tree", parent: "scenario" },
+											{ id: "data", name: "data", parent: "tree" },
+											{ id: "here", name: "here", parent: "tree" }
+								]
+							);
+						</script>
+						<script type="dojo/method" data-dojo-event="getChildren" data-dojo-args="object">
+							return this.query({parent: object.id});
+						</script>
+					</div>
+					<div data-dojo-type="dijit/tree/ObjectStoreModel" data-dojo-id="scenarioTreeModel"
+						store="scenarioTreeStore" query="{id: 'scenario'}"></div>
+					<div data-dojo-type="dijit/Tree" data-dojo-id="scenarioTree" model="scenarioTreeModel"
+						autoExpand="true">
+					</div>
+				</div>
+				<div data-dojo-type="dijit/Fieldset" region="bottom" toggleable="false" style="height: 50%">
+					<legend><h1><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Substitution</h1></legend>
+				</div>
+			</div>
+			<div data-dojo-type="dijit/Fieldset" region="center" toggleable="false">
+				<legend>
+					<h1><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Editor</h1>
+				</legend>
+				<div data-dojo-type="dijit/Editor" id="scenario-editor" style="height: 100%"
+					 plugins="['save','|','undo','redo','|','cut','copy','paste','findreplace','|','indent','outdent']"
+					 extraPlugins="['statusbar']">
+					JSON configuration content here
+				</div>
+			</div>
 		</div>
-		<div id="tab-hosts" title="Hosts" iconClass="fa fa-lg fa-server"
-			data-dojo-type="dijit/layout/ContentPane">
+
+		<div id="tab-hosts" title="Hosts" iconClass="fa fa-lg fa-sitemap" data-dojo-type="dijit/layout/ContentPane">
 			<h2>Hosts Page</h2>
 		</div>
-		<div title="Submit Run" disabled="true" iconClass="fa fa-lg fa-play"
-			data-dojo-type="dijit/layout/ContentPane">
+
+		<div data-dojo-type="dijit/layout/LayoutContainer" disabled="true" class="layout-container" style="width: 100%"
+			title="<button data-dojo-type='dijit/form/Button' type='button'><i class='fa fa-lg fa-play' aria-hidden='true'></i>&nbsp;Submit Run</button><i class='icon-24px icon-logo' aria-hidden='true'></i><h1>Mongoose Web Console v0.1.0</h1>"
 		</div>
 	</div>
 }

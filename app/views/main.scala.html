@@ -13,43 +13,13 @@
 			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
 		@* Here's where we render the page title `String`. *@
 		<title>@title</title>
-		<link rel="stylesheet" media="screen"
-			href="@routes.Assets.versioned("lib/font-awesome/css/font-awesome.min.css")" />
-		<link rel="stylesheet" media="screen"
-			href="@routes.Assets.versioned("lib/dijit/themes/claro/claro.css")" />
-		<link rel="stylesheet" media="screen"
-		      href="@routes.Assets.versioned("stylesheets/fonts.css")" />
-		<link rel="stylesheet" media="screen"
-			href="@routes.Assets.versioned("stylesheets/main.css")" />
-		<link rel="stylesheet" media="screen"
-			href="@routes.Assets.versioned("stylesheets/icons.css")" />
-		<link rel="shortcut icon" type="image/png"
-			href="@routes.Assets.versioned("images/logo.png")" />
-		<script type="text/javascript" src="@routes.Assets.versioned("javascripts/main.js")">
-		</script>
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")" />
 	</head>
 	<body class="claro">
 		@content
 		<script type="text/javascript" src="@routes.Assets.versioned("lib/dojo/dojo.js")"
 			data-dojo-config="async:true, parseOnLoad:false">
 		</script>
-		<script>
-			require(
-				[
-					"dojo/parser",
-					"dijit/layout/ContentPane",
-					"dijit/layout/LayoutContainer",
-					"dijit/layout/TabContainer",
-					"dijit/Fieldset",
-					"dijit/Menu",
-					"dijit/MenuItem",
-					"dijit/form/Button",
-					"dojo/domReady!"
-				],
-				function(parser) {
-					parser.parse();
-				}
-			);
-		</script>
+		<script type="text/javascript" src="@routes.Assets.versioned("javascripts/main.js")"></script>
 	</body>
 </html>
