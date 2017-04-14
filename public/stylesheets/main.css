@@ -113,7 +113,7 @@ div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child {
 	border: none;
 	box-shadow: none;
 	color: #000;
-	min-width: 200px;
+	width: 100%;
 }
 
 div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child:hover {
@@ -123,7 +123,7 @@ div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child:hover {
 	color: #000;
 }
 
-/*div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child {
+div.dijitTabContainerTop-tabs div.dijitTabDisabled:nth-last-child(2) {
 	background-image: linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #eee 90%, #ddd 100%);
 	background-image: -moz-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #eee 90%, #ddd 100%);
 	background-image: -o-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #eee 90%, #ddd 100%);
@@ -135,7 +135,7 @@ div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child:hover {
 	padding-bottom: 1px;
 }
 
-div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child:hover {
+div.dijitTabContainerTop-tabs div.dijitTabDisabled:nth-last-child(2):hover {
 	background-image: linear-gradient(#0c8 0%, #0a6 15%, #0a6 85%, #0c8 100%);
 	background-image: -moz-linear-gradient(#0c8 0%, #0a6 15%, #0a6 85%, #0c8 100%);
 	background-image: -o-linear-gradient(#0c8 0%, #0a6 15%, #0a6 85%, #0c8 100%);
@@ -143,7 +143,7 @@ div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child:hover {
 	border-color: #084;
 	color: #ffffff;
 }
-*/
+
 .dijitTabContent {
 	text-align: left !important;
 }
