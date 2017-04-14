@@ -79,7 +79,7 @@ h3 {
 	background-image: -moz-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
 	background-image: -o-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
 	background-image: -webkit-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
-	width: 120px;
+	/*width: 120px;*/
 	height: 24px;
 }
 
@@ -113,7 +113,6 @@ div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child {
 	border: none;
 	box-shadow: none;
 	color: #000;
-	width: 100%;
 }
 
 div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child:hover {
