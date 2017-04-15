@@ -1,5 +1,5 @@
 @main("Mongoose Web Console") {
-	<div class="layout-container main-tabs-panel" region="top" data-dojo-type="dijit/layout/TabContainer"
+	<div id="root" class="layout-container main-tabs-panel" region="top" data-dojo-type="dijit/layout/TabContainer"
 		useMenu="true" useSlider="true">
 		<div id="tab-dashboard" title="Dashboard" selected="true" iconClass="fa fa-lg fa-tachometer"
 			class="layout-container" data-dojo-type="dijit/layout/LayoutContainer"
@@ -8,94 +8,68 @@
 				toggleable="false">
 				<legend><h1><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;Test Runs</h1></legend>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #42
-						<i class="fa fa-hourglass-o" aria-hidden="true"></i>
-						<i>pending</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-hourglass-o">
+						Test run #42 - <i>pending</i>
 					</div>
 				</div>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #41
-						<i class="fa fa-hourglass-o" aria-hidden="true"></i>
-						<i>pending</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-hourglass-o">
+						Test run #41 - <i>pending</i>
 					</div>
 				</div>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #40
-						<i class="fa fa-cog fa-spin fa-fw"></i>
-						<i>running</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-cog fa-spin fa-fw">
+						Test run #40 - <i>running</i>
 					</div>
 				</div>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #39
-						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-						<i>finished</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-hourglass-end">
+						Test run #39 - <i>finished</i>
 					</div>
 				</div>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #38
-						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-						<i>finished</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-hourglass-end">
+						Test run #38 - <i>finished</i>
 					</div>
 				</div>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #37
-						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-						<i>finished</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-hourglass-end">
+						Test run #37 - <i>finished</i>
 					</div>
 				</div>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #36
-						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-						<i>finished</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-hourglass-end">
+						Test run #36 - <i>finished</i>
 					</div>
 				</div>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #35
-						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-						<i>finished</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-hourglass-end">
+						Test run #35 - <i>finished</i>
 					</div>
 				</div>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #34
-						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-						<i>finished</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-hourglass-end">
+						Test run #34 - <i>finished</i>
 					</div>
 				</div>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #33
-						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-						<i>finished</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-hourglass-end">
+						Test run #33 - <i>finished</i>
 					</div>
 				</div>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #32
-						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-						<i>finished</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-hourglass-end">
+						Test run #32 - <i>finished</i>
 					</div>
 				</div>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #31
-						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-						<i>finished</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-hourglass-end">
+						Test run #31 - <i>finished</i>
 					</div>
 				</div>
 				<div data-dojo-type="dijit/Menu">
-					<div data-dojo-type="dijit/MenuItem">
-						Test run #30
-						<i class="fa fa-hourglass-end" aria-hidden="true"></i>
-						<i>finished</i>
+					<div data-dojo-type="dijit/MenuItem" iconClass="fa fa-hourglass-end">
+						Test run #30 - <i>finished</i>
 					</div>
 				</div>
 			</div>
@@ -110,7 +84,7 @@
 						<i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;Resubmit
 					</button>
 					<button data-dojo-type="dijit/form/Button" type="button">
-						<i class="fa fa-times" aria-hidden="true"></i>&nbsp;Delete
+						<i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Delete
 					</button>
 				</legend>
 				<div data-dojo-type="dijit/layout/LayoutContainer" class="layout-container">

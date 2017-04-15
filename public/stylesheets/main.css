@@ -9,50 +9,65 @@
 @import url("/assets/stylesheets/icons.css");
 
 * {
-    font-family: open-sans;
-    font-size: 10pt;
+    font: 12px open-sans;
 }
 
 html,
 body {
 	height: 100%;
 	width: 100%;
-	margin: 0px;
-	padding: 0px;
-	overflow: hidden;
+	font: 12px open-sans;
 }
 
-/*button {
+#root .dijitButton > .dijitButtonNode {
 	-webkit-transition: background-color 0.2s linear;
 	border-radius: 2px;
 	-moz-border-radius: 2px 2px 2px 2px;
 	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
-	background-color: #f0f4ff;
+	background-color: #f0f2ff;
+	background-image: linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.75) 100%);
+	background-image: -moz-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.75) 100%);
+	background-image: -o-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.75) 100%);
+	background-image: -webkit-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.75) 100%);
 	background-position: center top;
 	background-repeat: repeat-x;
-	border: 1px solid #769dc0;
+	border: 1px solid #89b;
 	padding: 2px 8px 4px;
-	font-size: 1em;
+	font-size: 12px;
 }
 
-button:hover {
-	background-color: #AFD9FF;
-	color: #000000;
-}*/
+#root .dijitButton > .dijitButtonNode:hover {
+	color: #ffffff;
+	background-color: #39c;
+	background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.25) 100%);
+	background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.25) 100%);
+	background-image: -o-linear-gradient(rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.25) 100%);
+	background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.25) 100%);
+	border: 1px solid #166;
+}
 
 h1 {
 	display: inline;
-	font-size: 12pt;
+	font-family: play;
+	font-size: 16px;
 }
 
 h2 {
 	display: inline;
-	font-size: 11pt;
+	font-family: play;
+	font-size: 14px;
 }
 
 h3 {
 	display: inline;
-	font-size: 10pt;
+	font-family: play;
+	font-size: 13px;
+}
+
+h4 {
+	display: inline;
+	font-family: play;
+	font-size: 12px;
 }
 
 .break {
@@ -79,7 +94,6 @@ h3 {
 	background-image: -moz-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
 	background-image: -o-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
 	background-image: -webkit-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
-	/*width: 120px;*/
 	height: 24px;
 }
 
@@ -88,7 +102,6 @@ h3 {
 	background-image: -moz-linear-gradient(#bbc 0%, #778 15%, #778 100%);
 	background-image: -o-linear-gradient(#bbc 0%, #778 15%, #778 100%);
 	background-image: -webkit-linear-gradient(#bbc 0%, #778 15%, #778 100%);
-	border-color: #777;
 	color: #ffffff;
 }
 
@@ -101,55 +114,93 @@ h3 {
 
 .main-tabs-panel .dijitTabContainerTop-tabs .dijitTabChecked:hover {
 	color: #000;
+}
+
+.main-tabs-panel .dijitTabContainerTop-tabs .dijitTabChecked:hover {
 	background-image: linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
 	background-image: -moz-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
 	background-image: -o-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
 	background-image: -webkit-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #ffffff 100%);
 }
 
-div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child {
+.main-tabs-panel div.dijitTabContainerTop-tabs div.dijitTabDisabled:nth-last-child(2) {
+	-webkit-transition: background-color 0.2s linear;
+	border-radius: 2px;
+	-moz-border-radius: 2px 2px 2px 2px;
+	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+	background-color: #f0fff2;
+	background-image: linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.75) 100%);
+	background-image: -moz-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.75) 100%);
+	background-image: -o-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.75) 100%);
+	background-image: -webkit-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.75) 100%);
+	background-position: center top;
+	background-repeat: repeat-x;
+	border: 1px solid #8b9;
+	color: #000;
+	font-size: 12px;
+    margin-left: 2px;
+	padding-top: 3px;
+	padding-bottom: 1px;
+}
+
+.main-tabs-panel div.dijitTabContainerTop-tabs div.dijitTabDisabled:nth-last-child(2):hover {
+	color: #ffffff;
+	background-color: #3a6;
+	background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.25) 100%);
+	background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.25) 100%);
+	background-image: -o-linear-gradient(rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.25) 100%);
+	background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.25) 100%);
+	border: 1px solid #284;
+}
+
+.main-tabs-panel div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child {
 	background-color: transparent;
 	background-image: none;
 	border: none;
 	box-shadow: none;
 	color: #000;
+	text-align: right;
 }
 
-div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child:hover {
+.main-tabs-panel div.dijitTabContainerTop-tabs div.dijitTabDisabled:last-child:hover {
 	background-color: transparent;
 	background-image: none;
 	border: none;
 	color: #000;
 }
 
-div.dijitTabContainerTop-tabs div.dijitTabDisabled:nth-last-child(2) {
-	background-image: linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #eee 90%, #ddd 100%);
-	background-image: -moz-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #eee 90%, #ddd 100%);
-	background-image: -o-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #eee 90%, #ddd 100%);
-	background-image: -webkit-linear-gradient(#ddd 0%, #eee 10%, #fff 50%, #eee 90%, #ddd 100%);
-	border-bottom: 1px solid rgb(181, 188, 199);
-	border-radius: 4px;
-	margin-left: 1px;
-	padding-top: 3px;
-	padding-bottom: 1px;
-}
-
-div.dijitTabContainerTop-tabs div.dijitTabDisabled:nth-last-child(2):hover {
-	background-image: linear-gradient(#0c8 0%, #0a6 15%, #0a6 85%, #0c8 100%);
-	background-image: -moz-linear-gradient(#0c8 0%, #0a6 15%, #0a6 85%, #0c8 100%);
-	background-image: -o-linear-gradient(#0c8 0%, #0a6 15%, #0a6 85%, #0c8 100%);
-	background-image: -webkit-linear-gradient(#0c8 0%, #0a6 15%, #0a6 85%, #0c8 100%);
-	border-color: #084;
-	color: #ffffff;
-}
-
 .dijitTabContent {
-	text-align: left !important;
+	text-align: left;
 }
 
-.dijitMenu {
-	margin: 4px;
-	width: 90%;
+#dashboard-test-runs .dijitMenu {
+	-webkit-transition: background-color 0.2s linear;
+	border-radius: 2px;
+	-moz-border-radius: 2px 2px 2px 2px;
+	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+	background-color: #f0f2ff;
+	background-image: linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.75) 100%);
+	background-image: -moz-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.75) 100%);
+	background-image: -o-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.75) 100%);
+	background-image: -webkit-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.75) 100%);
+	background-position: center top;
+	background-repeat: repeat-x;
+	border: 1px solid #89b;
+	font-size: 12px;
+	height: 30px;
+    margin: 5px;
+    padding-left: 5px;
+    width: 95%;
+}
+
+#dashboard-test-runs .dijitMenuItemSelected {
+	background-color: #39c;
+	background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.25) 100%);
+	background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.25) 100%);
+	background-image: -o-linear-gradient(rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.25) 100%);
+	background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0) 4px, rgba(255, 255, 255, 0.25) 100%);
+	border: 1px solid #166;
+	color: #ffffff;
 }
 
 #dashboard-test-runs {
@@ -169,4 +220,8 @@ div.dijitTabContainerTop-tabs div.dijitTabDisabled:nth-last-child(2):hover {
 .gridx {
 	width: 100%;
 	height: 100%;
+}
+
+.dijitFieldset {
+	border-color: #ddd;
 }
