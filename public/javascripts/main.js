@@ -1,7 +1,6 @@
 require(
 
 	[
-		"dojo/parser",
 		"dojo/store/Memory",
 
 		"dijit/layout/ContentPane",
@@ -25,11 +24,9 @@ require(
 		"dojo/domReady!"
 	],
 
-	function(parser) {
-
-		parser.parse();
-
-		/*var dashboardCurrentRunInfoData = new Memory(
+	function(Memory) {
+	
+		dashboardCurrentRunInfoData = new Memory(
 			{
 				data: [
 					{ id: 1, name: "Mongoose Version", value: "3.4.5" },
@@ -39,9 +36,10 @@ require(
 				]
 			}
 		);
-		var dashboardCurrentRunInfoFields = [
+	
+		dashboardCurrentRunInfoFields = [
 			{ id: "name", field: "name", name: "Name", width: "100px" },
 			{ id: "value", field: "value", name: "Value" }
-		];*/
+		];
 	}
 );

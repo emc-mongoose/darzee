@@ -92,11 +92,20 @@
 						style="width: 100%; height: 30%;">
 						<div data-dojo-type="dijit/Fieldset" region="left"
 							 toggleable="false" style="width: 45%; height: 100%;">
-							<legend><h2><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;Basic Info</h2></legend>
-							<!--div id="dashboard-current-run-info" class="gridx" data-dojo-type="gridx/Grid"
-								 store="dashboardCurrentRunInfoData" structure="dashboardCurrentRunInfoFields"
-								 cacheClass="gridx/core/model/cache/Sync"
-							></div-->
+							<legend>
+								<h2>
+									<i class="fa fa-info-circle" aria-hidden="true"></i>
+									&nbsp;Basic Info
+								</h2>
+							</legend>
+							<div id="dashboard-current-run-info" class="gridx"
+								data-dojo-type="gridx/Grid"
+								data-dojo-props="
+									store: dashboardCurrentRunInfoData,
+									structure: dashboardCurrentRunInfoFields,
+									cacheClass: 'gridx/core/model/cache/Sync'
+								"
+							></div>
 						</div>
 						<div data-dojo-type="dijit/Fieldset" region="center"
 							 toggleable="false" style="height: 100%;">

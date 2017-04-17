@@ -14,12 +14,12 @@
 		@* Here's where we render the page title `String`. *@
 		<title>@title</title>
 		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")" />
+		<script type="text/javascript"
+			src="@routes.Assets.versioned("lib/dojo/dojo.js")" data-dojo-config="async:true, parseOnLoad:true">
+		</script>
+		<script type="text/javascript" src="@routes.Assets.versioned("javascripts/main.js")"></script>
 	</head>
 	<body class="claro">
 		@content
-		<script type="text/javascript" src="@routes.Assets.versioned("lib/dojo/dojo.js")"
-			data-dojo-config="async:true, parseOnLoad:false">
-		</script>
-		<script type="text/javascript" src="@routes.Assets.versioned("javascripts/main.js")"></script>
 	</body>
 </html>
