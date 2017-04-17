@@ -207,6 +207,12 @@ h4 {
 	margin-top: 5px;
 }
 
+#dashboard-test-runs,
+#tab-config > .dijitFieldset:first-child,
+#tab-scenario > div:first-child {
+	width: 20%;
+}
+
 #dashboard-current-run-pane {
 	margin-top: 1px;
 }

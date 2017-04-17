@@ -38,8 +38,35 @@ require(
 		);
 	
 		dashboardCurrentRunInfoFields = [
-			{ id: "name", field: "name", name: "Name", width: "100px" },
+			{ id: "name", field: "name", name: "Name", width: "40%" },
 			{ id: "value", field: "value", name: "Value" }
+		];
+		
+		scenarioSubstitutionData = new Memory(
+			{
+				data: [
+				]
+			}
+		);
+		
+		scenarioSubstitutionFields = [
+			{ id: "name", field: "name", name: "Name", width: "40%" },
+			{ id: "value", field: "value", name: "Value" }
+		]
+		
+		hostsData = new Memory(
+			{
+				data: [
+				]
+			}
+		);
+		
+		hostsFields = [
+			{ id: "addr", field: "addr", name: "Name/Address", width: "15%" },
+			{ id: "status", field: "status", name: "Status", width: "15%" },
+			{ id: "controller", field: "controller", name: "Use as Controller", width: "20%" },
+			{ id: "driver", field: "driver", name: "Use as Driver", width: "20%" },
+			{ id: "reserved", field: "reserved", name: "Additional Info" }
 		];
 	}
 );

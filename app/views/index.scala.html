@@ -4,7 +4,7 @@
 		<div id="tab-dashboard" title="Dashboard" selected="true" iconClass="fa fa-lg fa-tachometer"
 			class="layout-container" data-dojo-type="dijit/layout/LayoutContainer"
 			tabPosition="left-h" nested="true" selected="true">
-			<div id="dashboard-test-runs" data-dojo-type="dijit/Fieldset" region="left" style="width: 200px;"
+			<div id="dashboard-test-runs" data-dojo-type="dijit/Fieldset" region="left"
 				toggleable="false">
 				<legend><h1><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;Test Runs</h1></legend>
 				<div data-dojo-type="dijit/Menu">
@@ -127,7 +127,7 @@
 
 		<div id="tab-config" title="Configuration" iconClass="fa fa-lg fa-pencil-square-o"
 			data-dojo-type="dijit/layout/LayoutContainer" class="layout-container">
-			<div data-dojo-type="dijit/Fieldset" region="left" toggleable="false" style="width: 200px;">
+			<div data-dojo-type="dijit/Fieldset" region="left" toggleable="false">
 				<legend><h1><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Navigation</h1></legend>
 				<div data-dojo-type="dojo/store/Memory" data-dojo-id="configTreeStore">
 					<script type="dojo/method">
@@ -164,7 +164,7 @@
 		<div id="tab-scenario" title="Scenario" iconClass="fa fa-lg fa-file-code-o"
 			data-dojo-type="dijit/layout/LayoutContainer" class="layout-container">
 			<div data-dojo-type="dijit/layout/LayoutContainer" class="layout-container"
-				 region="left" style="width: 200px;">
+				region="left">
 				<div data-dojo-type="dijit/Fieldset" region="center" toggleable="false">
 					<legend><h1><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Navigation</h1></legend>
 					<div data-dojo-type="dojo/store/Memory" data-dojo-id="scenarioTreeStore">
@@ -190,6 +190,13 @@
 				</div>
 				<div data-dojo-type="dijit/Fieldset" region="bottom" toggleable="false" style="height: 50%">
 					<legend><h1><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Substitution</h1></legend>
+					<div id="scenario-substitution-table" class="gridx" data-dojo-type="gridx/Grid"
+						data-dojo-props="
+							store: scenarioSubstitutionData,
+							structure: scenarioSubstitutionFields,
+							cacheClass: 'gridx/core/model/cache/Sync'
+						"
+					></div>
 				</div>
 			</div>
 			<div data-dojo-type="dijit/Fieldset" region="center" toggleable="false">
@@ -204,8 +211,13 @@
 			</div>
 		</div>
 
-		<div id="tab-hosts" title="Hosts" iconClass="fa fa-lg fa-sitemap" data-dojo-type="dijit/layout/ContentPane">
-			<h2>Hosts Page</h2>
+		<div id="tab-hosts" title="Hosts" iconClass="fa fa-lg fa-sitemap" class="gridx"
+			data-dojo-type="gridx/Grid"
+			data-dojo-props="
+				store: hostsData,
+				structure: hostsFields,
+				cacheClass: 'gridx/core/model/cache/Sync'
+			">
 		</div>
 
 		<div title="Submit Run" disabled="true" iconClass="fa fa-lg fa-play" data-dojo-type="dijit/layout/ContentPane">
