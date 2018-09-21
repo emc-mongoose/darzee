@@ -37,3 +37,11 @@ task copyLibs(type: Copy){
 	}
 	into "lib"
 }
+
+task buildApp(){
+	//TO DO: 1.copyLibs 2.buildImage
+}
+//or
+task runApp(){
+	//TO DO: 1.copyLibs 2.build Image 3.run docker-container
+}
