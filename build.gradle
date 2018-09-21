@@ -1,0 +1,39 @@
+apply plugin: 'js'
+apply plugin: 'css'
+apply plugin: 'java'
+
+configurations {
+	runtime
+}
+
+dependencies {
+	runtime(
+		"org.webjars:jquery:[3,)",
+		"org.webjars:bootstrap:[4,)",
+		"org.webjars:popper.js:[1,)",
+		"org.webjars:requirejs:2.1.22",
+		"org.webjars:requirejs-text:[2,)",
+		"org.webjars:pace:1.0.2",
+		"org.webjars:handlebars:4.0.2",
+		"org.webjars:d3js:3.5.3"
+	)
+}
+
+buildscript {
+	repositories {
+		mavenLocal()
+		mavenCentral()
+	}
+
+	dependencies {
+		classpath 'com.eriwen:gradle-css-plugin:[1,)'
+		classpath 'com.eriwen:gradle-js-plugin:[1,)'
+	}
+}
+
+task copyLibs(type: Copy){
+	from configurations.runtime.collect {
+		it.isDirectory() ? it : zipTree(it)
+	}
+	into "lib"
+}

@@ -23,13 +23,13 @@ require(['./requirejs/conf'], function() {
 			function extractScenariosDirContents() {
 				return fullAppJson[templateConstants.tabTypes().SCENARIOS];
 			}
-			
+
 			return {
 				appConfig: extractAppConfig,
 				scenarioDirContents: extractScenariosDirContents
 			}
 		};
-		
+
 		function sortObjByKeys(obj) {
 			const newObj = {};
 			const keys = Object.keys(obj);
@@ -39,7 +39,7 @@ require(['./requirejs/conf'], function() {
 			});
 			return newObj;
 		}
-		
+
 		//  get all properties from runTimeConfig
 		$.get("/main", function(fullAppJson) {
 			//  root element ("config") of defaults.json configuration file
