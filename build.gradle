@@ -42,8 +42,8 @@ task buildApp(dependsOn: 'copyLibs', type: Exec){
 	//TO DO: 1.copyLibs 2.buildImage
 	workingDir '.'
 	commandLine './buildImage.sh'
-    doFirst {
-        println 'type "docker port console" to get the port number'
+    doLast {
+        println '\n type "docker port console" to get the port number \n'
     }
 }
 

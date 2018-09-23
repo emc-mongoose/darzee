@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker run -P --name console console
+docker run -d -P --name console console
