@@ -1,4 +1,4 @@
-FROM nginx
+FROM nginx:alpine
 
 ADD src/main/webapp/. /usr/share/nginx/html
 ADD lib/META-INF/resources/. /usr/share/nginx/html
