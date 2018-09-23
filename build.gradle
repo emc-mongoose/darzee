@@ -38,10 +38,18 @@ task copyLibs(type: Copy){
 	into "lib"
 }
 
-task buildApp(){
+task buildApp(dependsOn: 'copyLibs', type: Exec){
 	//TO DO: 1.copyLibs 2.buildImage
+	workingDir '.'
+	commandLine './buildImage.sh'
+    doFirst {
+        println 'type "docker port console" to get the port number'
+    }
 }
+
 //or
-task runApp(){
+task runApp(dependsOn: 'buildApp', type: Exec){
 	//TO DO: 1.copyLibs 2.build Image 3.run docker-container
+    workingDir '.'
+	commandLine './runApp.sh'
 }
