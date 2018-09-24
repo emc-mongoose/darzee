@@ -13,9 +13,7 @@ To start the server:
 >docker run -p \<network port\>:\<container port\> console
 
 or 
->docker run -P —name \<port name\> nginx-webapp
-
-and
+>docker run -P —name \<port name\> console
 
 >docker port \<port name\>
 
