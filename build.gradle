@@ -83,9 +83,3 @@ task runApp(type: DockerStartContainer, dependsOn: 'buildApp'){
         println('Please, visit http://localhost/')
     }
 }
-
-//task stopApp(type: DockerStopContainer){     //doesn't work yet
-//    targetContainerId { buildApp.getContainerId() }
-//}
-
-

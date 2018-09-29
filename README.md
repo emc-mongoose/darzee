@@ -13,10 +13,4 @@ To start the server:
 >docker run -p \<network port\>:\<container port\> console
 
 or 
->docker run -P --name \<port name\> console
-
-and use
->docker port \<port name\>
-
-to get port number.
-Use -d key to run app in detached mode.
+>./gradlew runApp
