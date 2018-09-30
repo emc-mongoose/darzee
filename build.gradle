@@ -58,7 +58,7 @@ task copyLibs(type: Copy){
 
 task createDockerfile(type: Dockerfile, dependsOn: 'copyLibs'){
     destFile = project.file('docker/Dockerfile')
-    from 'nginx'
+    from 'nginx:alpine'
     addFile('src/main/webapp/.', '/usr/share/nginx/html')
     addFile('lib/META-INF/resources/.', '/usr/share/nginx/html')
     addFile('lib/META-INF/resources/webjars/popper.js/1.14.4/', '/usr/share/nginx/html')
