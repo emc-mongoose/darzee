@@ -49,14 +49,14 @@ dependencies {
     )
 }
 
-task copyLibs(type: Copy){
+task dist(type: Copy){
     from configurations.runtime.collect {
         it.isDirectory() ? it : zipTree(it)
     }
     into "lib"
 }
 
-task createDockerfile(type: Dockerfile, dependsOn: 'copyLibs'){
+task createDockerfile(type: Dockerfile, dependsOn: 'dist'){
     destFile = project.file('docker/Dockerfile')
     from 'nginx:alpine'
     addFile('src/main/webapp/.', '/usr/share/nginx/html')
@@ -76,7 +76,6 @@ task buildApp(type: DockerCreateContainer, dependsOn: 'buildAppImage'){
 
 }
 
-//or
 task runApp(type: DockerStartContainer, dependsOn: 'buildApp'){
     targetContainerId { buildApp.getContainerId() }
     doLast {
