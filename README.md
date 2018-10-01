@@ -2,7 +2,7 @@
 Mongoose Web GUI
 
 ## build
->./gradlew clean copyLibs
+>./gradlew clean dist
 
 ## Deployment with Docker
 As the server on which webapp rises, nginx is used.
