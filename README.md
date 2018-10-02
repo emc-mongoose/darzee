@@ -7,5 +7,7 @@ Mongoose Web GUI
 ## Deployment with Docker
 As the server on which webapp rises, nginx is used.
 
-To start the server:
+To start the server with default port:
 >./gradlew runApp
+To start the server with custom port: 
+>./gradlew -Pport=*port number* runApp
