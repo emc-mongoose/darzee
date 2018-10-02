@@ -11,4 +11,4 @@ To start the server with default port:
 >./gradlew runApp
 
 To start the server with custom port: 
->./gradlew -Pport=*port number* runApp
+>./gradlew -Pport=(port number) runApp
