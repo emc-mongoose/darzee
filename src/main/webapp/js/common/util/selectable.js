@@ -717,7 +717,7 @@ var mouse = $.widget("ui.mouse", {
  */
 
 var selectable = $.widget("ui.selectable", $.ui.mouse, {
-	version: "1.11.4",
+	version: depVersion.uiselectable,
 	options: {
 		appendTo: "body",
 		autoRefresh: true,
