@@ -8,7 +8,8 @@ define([
 	'../../../../common/constants',
 	'./logsController',
 	'./chartsController',
-	'text!../../../../../templates/tab/tests/tab/list.hbs'
+	'text!../../../../../templates/tab/tests/tab/list.hbs',
+	'../../../../common/util/urlUtil'
 ], function ($,
              hbUtil,
              templatesUtil,
@@ -160,17 +161,24 @@ define([
 		$(jqId([runIdForElem(runId), 'stop'])).remove();
 		const listItemElemText = runId + " - " + (listItemElem.attr('mode')) + " - " + (listItemElem.attr('status'));
 		replaceElementText(listItemElem, listItemElemText);
-		$.ajax({
-			type: 'POST',
-			url: '/run',
-			dataType: 'json',
-			contentType: constants.JSON_CONTENT_TYPE,
-			data: JSON.stringify({ runId: runId }),
-			processData: false
-		}).done(function (testsObj) {
-			updateTestsList(testsObj, false);
-			console.log('Mongoose ran');
-		});
+		const stopEventHttpMethod = 'POST';
+		performAjaxRequestForTest(stopEventHttpMethod, onEventStop);
+		// $.ajax({
+		// 	type: 'POST',
+		// 	url: '/run',
+		// 	dataType: 'json',
+		// 	contentType: constants.JSON_CONTENT_TYPE,
+		// 	data: JSON.stringify({ runId: runId }),
+		// 	processData: false
+		// }).done(function (testsObj) {
+		// 	updateTestsList(testsObj, false);
+		// 	console.log('[stopEvent] Mongoose ran');
+		// });
+	}
+
+	function onEventStop(testsObj) { 
+		pdateTestsList(testsObj, false);
+		console.log('[stopEvent] Mongoose event stopped');
 	}
 
 	function createDeleteIcon(runId) {
@@ -219,16 +227,47 @@ define([
 	function deleteEvent(runId) {
 		const listItemElem = $(jqId([runIdForElem(runId)]));
 		listItemElem.remove();
-		$.ajax({
-			type: 'DELETE',
-			url: '/run',
-			dataType: 'json',
-			contentType: constants.JSON_CONTENT_TYPE,
-			data: JSON.stringify({ runId: runId }),
-			processData: false
-		}).done(function () {
-			console.log('The test is removed');
-		});
+		const deleteEventMethod = 'DELETE'
+		performAjaxRequestForTest(deleteEventMethod, onTestRemoved);
+		// $.ajax({
+		// 	type: 'DELETE',
+		// 	url: '/run',
+		// 	dataType: 'json',
+		// 	contentType: constants.JSON_CONTENT_TYPE,
+		// 	data: JSON.stringify({ runId: runId }),
+		// 	processData: false
+		// }).done(function () {
+		// 	console.log('The test is removed');
+		// });
+	}
+
+	function onTestRemoved() { 
+		console.log('Test has been removed');
+	}
+
+	function performAjaxRequestForTest(httpMethod, callback) {
+	    const mangooseTestRunRedirectionUrl = constants.BASE_URL + constants.MANGOOSE_RUNNING_PAGE_URL;
+	    checkIfURLisReachable(mangooseTestRunRedirectionUrl, function(status) {
+	        if (status == 200) {
+	            $.ajax({
+	                type: httpMethod,
+	                url: constants.BASE_URL + constants.MANGOOSE_RUNNING_PAGE_URL,
+	                dataType: 'json',
+	                contentType: constants.JSON_CONTENT_TYPE,
+	                data: SON.stringify({
+	                    runId: runId
+	                }),
+	                processData: false
+	            }).done(callback);
+	        } else if (status == 404) {
+	            const misleadingMsg = 'Page not found: ' + mangooseTestRunRedirectionUrl;
+	            alert(misleadingMsg);
+	        } else {
+	            const misleadingMsg = "An error has occured while trying to acces URL " + mangooseTestRunRedirectionUrl;
+	            alert(misleadingMsg)
+	        }
+	    });
+
 	}
 
 	function createOkIcon(runId) {
