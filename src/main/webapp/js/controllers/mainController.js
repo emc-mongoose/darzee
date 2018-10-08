@@ -27,8 +27,7 @@ define([
              templatesUtil,
              cssUtil,
              tabsUtil,
-             constants,
-             ) {
+             constants) {
 
 	const MODE = templatesUtil.modes();
 	const EXTENDED_MODE = templatesUtil.objPartToArray(MODE, 2);
@@ -282,33 +281,34 @@ define([
 		            'Would you like to continue?');
 		    }
 		    if (isConfirmed) {
-		        const mangooseTestRunRedirectionUrl = constants.BASE_URL + constants.MANGOOSE_RUNNING_PAGE_URL;
-		        getURLreachabilityStatus(mangooseTestRunRedirectionUrl, function(status) {
+		        getURLreachabilityStatus(constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL, function(status) {
 		            if (status == 200) {
-		                requestMangooseTestStartUp()
+		                requestMangooseTestStartUp(startJson)
 		                alert(constants.MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE)
 		            } else if (status == 404) {
-		                const misleadingMessage = constants.URL_PAGE_NOT_FOUND_DEFAULT_MESSAGE + mangooseTestRunRedirectionUrl;
-		                alert(misleadingMessage);
+		            	const testMethodNotification = "Mangoose test run button has been pressed. The error will be displayed: ";
+		                const misleadingMessage = constants.URL_PAGE_NOT_FOUND_DEFAULT_MESSAGE + constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL;
+		                alert(testMethodNotification + misleadingMessage);
 		            } else {
-		                const misleadingMessage = constants.URL_UKNOWN_ERROR_TYPE_DEFAULT_MESSAGE + mangooseTestRunRedirectionUrl;
-		                alert(misleadingMessage)
+		                const misleadingMessage = constants.URL_UKNOWN_ERROR_TYPE_DEFAULT_MESSAGE + constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL;
+		                alert(misleadingMessage);
 		            }
 		        });
 		    }
 		}
 
-		function requestMangooseTestStartUp() {
+		function requestMangooseTestStartUp(startJson) {
 		    $.ajax({
 		        type: 'PUT',
-		        url: constants.MANGOOSE_RUNNING_PAGE_URL,
+		        url: constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL,
 		        dataType: 'json',
 		        contentType: constants.JSON_CONTENT_TYPE,
 		        data: JSON.stringify(startJson),
 		        processData: false,
 		        timeout: 10000,
 		        error: function() {
-		            alert('Failed to start the test')
+		        	// NOTE: In this case, if we'd see the alert we'd be sure the logic is working fine
+		            alert(constants.TESTS_ARE_NOT_SUPPORTED_ALERT);
 		        }
 		    }).done(function(testsObj) {
 		        testsController.updateTestsList(testsObj);
