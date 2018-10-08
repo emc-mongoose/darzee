@@ -40,17 +40,9 @@ require(['./requirejs/conf'], function() {
 			return newObj;
 		}
 
-		//  get all properties from runTimeConfig
-		$.get("/main", function(fullAppJson) {
-			//  root element ("config") of defaults.json configuration file
-			const dataExtractor = dataExtractorFactory(fullAppJson);
-			const configObject = dataExtractor.appConfig();
-			const scenariosArray = dataExtractor.scenarioDirContents();
-			if(configObject && scenariosArray) {
-				mainController.render(scenariosArray, configObject);
-			} else {
-				alert('Failed to load the configuration');
-			}
-		});
+		alert('main.js')
+		var scenariosArray = ""
+		var configObject = ""
+		mainController.render(scenariosArray, configObject);
 	});
 });

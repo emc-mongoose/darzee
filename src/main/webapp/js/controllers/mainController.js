@@ -41,20 +41,23 @@ define([
 	// render html and bind events of basic elements and same for all tabs elements 
 	function render(scenariosArray, configObject) {
 		const renderer = rendererFactory();
-		renderer.navbar(version(configObject));
+		renderer.navbar(version("Unknown"));
 		renderer.base();
 		renderer.buttons();
 		renderer.configurations();
 		scenariosController.render(scenariosArray);
-		defaultsController.render(configObject);
+		defaultsController.render("Unknown");
 		testsController.render();
 		makeModeActive(currentMode);
 		makeTabActive(currentTabType);
 		renderer.start();
+		console.log('finish render')
 	}
 
 	function version(configObject) {
-		var version = configObject.run.version;
+		const unknownVersionTag = "Unknown"
+		//var version = configObject.run.version;
+		var version = unknownVersionTag // NOTE: @param unknownVersionTag is hard-coded to "Unknown" in test purposes
 		if (version) {
 			version = version.charAt(0).toUpperCase() + version.slice(1);
 		} else {
@@ -261,6 +264,8 @@ define([
 		}
 
 		function bindTabButtonsClickEvents(BUTTON_TYPE, CONFIG_TABS) {
+			const TAG = "bindTabButtonsClickEvents"
+			alert(TAG)
 			$.each(CONFIG_TABS, function (index, value) {
 				passClick(value, BUTTON_TYPE);
 				bindSaveAsButtonClickEvent(value, BUTTON_TYPE);
@@ -276,7 +281,47 @@ define([
 					'Would you like to continue?');
 			}
 			if (isConfirmed) {
-				$.ajax({
+				const ALERT_MANGOOSE_STARTED = "Mangoose has been started"
+				alert(ALERT_MANGOOSE_STARTED)
+				performTaskIfUrlExist('/run', function(status) {
+					if (status == 200) { 
+						$.ajax({
+							type: 'PUT',
+							url: '/run',
+							dataType: 'json',
+							contentType: constants.JSON_CONTENT_TYPE,
+							data: JSON.stringify(startJson),
+							processData: false,
+							timeout: 10000,
+							error: function () {
+								alert('Failed to start the test')
+							}
+						}).done(function (testsObj) {
+							testsController.updateTestsList(testsObj);
+							testsController.runCharts();
+							console.log('Mongoose ran');
+							const testTabElem = $(tabJqId([TAB_TYPE.TESTS]));
+							if(!testTabElem.hasClass(blinkClassName)){
+								testTabElem.addClass(blinkClassName);
+							}
+							blink();
+						});
+					} else if (status == 404) { 
+						const misleadingMsg = 'Couldn\'t find any data at URL:' + URL;
+						alert(misleadingMsg);
+					} else { 
+						const misleadingMsg = "An error has occured while trying to acces URL " + url;
+						alert(misleadingMsg)
+					}
+				});
+
+
+			}
+		}
+
+		function performTaskIfUrlExist(URL, task) { 
+			const functionTypeTag = 'function'
+			$.ajax({
 					type: 'PUT',
 					url: '/run',
 					dataType: 'json',
@@ -284,23 +329,17 @@ define([
 					data: JSON.stringify(startJson),
 					processData: false,
 					timeout: 10000,
-					error: function () {
-						alert('Failed to start the test')
+					complete: function(xhr) { 
+						if (typeof task == functionTypeTag) { 
+							task.apply(this, [xhr.status]);
+						}
 					}
-				}).done(function (testsObj) {
-					testsController.updateTestsList(testsObj);
-					testsController.runCharts();
-					console.log('Mongoose ran');
-					const testTabElem = $(tabJqId([TAB_TYPE.TESTS]));
-					if(!testTabElem.hasClass(blinkClassName)){
-						testTabElem.addClass(blinkClassName);
-					}
-					blink();
-				});
-			}
+			})
 		}
 
 		function bindStartButtonEvent() {
+			const TAG = "bindStartButtonEvent"
+			alert(TAG)
 			$(jqId(['start'])).click(function () {
 				const runConfig = defaultsController.getChangedAppConfig();
 				const startJson = {};
