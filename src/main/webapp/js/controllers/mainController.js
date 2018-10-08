@@ -264,8 +264,6 @@ define([
 		}
 
 		function bindTabButtonsClickEvents(BUTTON_TYPE, CONFIG_TABS) {
-			const TAG = "bindTabButtonsClickEvents"
-			console.log(TAG)
 			$.each(CONFIG_TABS, function (index, value) {
 				passClick(value, BUTTON_TYPE);
 				bindSaveAsButtonClickEvent(value, BUTTON_TYPE);
@@ -322,8 +320,6 @@ define([
 		}
 
 		function bindStartButtonEvent() {
-			const TAG = "bindStartButtonEvent"
-			console.log(TAG)
 			$(jqId(['start'])).click(function () {
 				const runConfig = defaultsController.getChangedAppConfig();
 				const startJson = {};
