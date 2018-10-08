@@ -11,7 +11,9 @@ define([
 	'text!../../../../templates/tab/tests/base.hbs',
 	'./tab/listController',
 	'./tab/logsController',
-	'./tab/chartsController'
+	'./tab/chartsController',
+	'../../../common/constants',
+	'../../../common/util/urlUtil'
 ], function ($,
              hbUtil,
              templatesUtil,
@@ -21,7 +23,8 @@ define([
              baseTemplate,
              listController,
              logsController,
-             chartsController) {
+             chartsController,
+             constants) {
 
 	const TAB_TYPE = templatesUtil.tabTypes();
 	const TESTS_TAB_TYPE = templatesUtil.testsTabTypes();
@@ -156,27 +159,42 @@ define([
 	}
 
 	function updateTestsList(testsObj) {
-		listController.updateTestsList(testsObj, true);
+	    listController.updateTestsList(testsObj, true);
+	}
+
+	function isTestsAvaliable() {
+	    var isAvaliable = false;
+	    getURLreachabilityStatus(constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL, function(status) {
+	        if (status == 200) {
+	            isAvaliable = true;
+	        }
+	    });
+	    return isAvaliable;
 	}
 
 	function startPoll() {
-		$.ajax({
-			type: 'GET',
-			url: '/run'
-		}).done(function (testsObj) {
-			listController.updateTestsList(testsObj, true);
-		}).always(pollToUpdateTestList)
+	    if (isTestsAvaliable()) {
+	        console.log("startPoll");
+	        $.ajax({
+	            type: 'GET',
+	            url: constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL
+	        }).done(function(testsObj) {
+	            listController.updateTestsList(testsObj, true);
+	        }).always(pollToUpdateTestList)
+	    }
 	}
 
 	function pollToUpdateTestList() {
-		$.ajax({
-			type: 'GET',
-			url: '/run'
-		}).done(function (testsObj) {
-			listController.updateTestsList(testsObj, false);
-		}).always(function () {
-			setTimeout(pollToUpdateTestList, 5000);
-		});
+	    if (isTestsAvaliable()) {
+	        $.ajax({
+	            type: 'GET',
+	            url: constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL
+	        }).done(function(testsObj) {
+	            listController.updateTestsList(testsObj, false);
+	        }).always(function() {
+	            setTimeout(pollToUpdateTestList, 5000);
+	        });
+	    }
 	}
 
 	function runCharts() {

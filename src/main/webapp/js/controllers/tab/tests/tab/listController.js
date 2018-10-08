@@ -163,17 +163,6 @@ define([
 		replaceElementText(listItemElem, listItemElemText);
 		const stopEventHttpMethod = 'POST';
 		performAjaxRequestForTest(stopEventHttpMethod, onEventStop);
-		// $.ajax({
-		// 	type: 'POST',
-		// 	url: '/run',
-		// 	dataType: 'json',
-		// 	contentType: constants.JSON_CONTENT_TYPE,
-		// 	data: JSON.stringify({ runId: runId }),
-		// 	processData: false
-		// }).done(function (testsObj) {
-		// 	updateTestsList(testsObj, false);
-		// 	console.log('[stopEvent] Mongoose ran');
-		// });
 	}
 
 	function onEventStop(testsObj) { 
@@ -229,16 +218,6 @@ define([
 		listItemElem.remove();
 		const deleteEventMethod = 'DELETE'
 		performAjaxRequestForTest(deleteEventMethod, onTestRemoved);
-		// $.ajax({
-		// 	type: 'DELETE',
-		// 	url: '/run',
-		// 	dataType: 'json',
-		// 	contentType: constants.JSON_CONTENT_TYPE,
-		// 	data: JSON.stringify({ runId: runId }),
-		// 	processData: false
-		// }).done(function () {
-		// 	console.log('The test is removed');
-		// });
 	}
 
 	function onTestRemoved() { 
@@ -246,12 +225,11 @@ define([
 	}
 
 	function performAjaxRequestForTest(httpMethod, callback) {
-	    const mangooseTestRunRedirectionUrl = constants.BASE_URL + constants.MANGOOSE_RUNNING_PAGE_URL;
-	    checkIfURLisReachable(mangooseTestRunRedirectionUrl, function(status) {
+	    getURLreachabilityStatus(mangooseTestRunRedirectionUrl, function(status) {
 	        if (status == 200) {
 	            $.ajax({
 	                type: httpMethod,
-	                url: constants.BASE_URL + constants.MANGOOSE_RUNNING_PAGE_URL,
+	                url: constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL,
 	                dataType: 'json',
 	                contentType: constants.JSON_CONTENT_TYPE,
 	                data: SON.stringify({
@@ -260,14 +238,13 @@ define([
 	                processData: false
 	            }).done(callback);
 	        } else if (status == 404) {
-	            const misleadingMsg = 'Page not found: ' + mangooseTestRunRedirectionUrl;
-	            alert(misleadingMsg);
+	            const misleadingMessage =  constants.URL_IS_NOT_REACHABLE_DEFAULT_ALERT_MESSAGE + constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL;
+	            alert(misleadingMessage);
 	        } else {
-	            const misleadingMsg = "An error has occured while trying to acces URL " + mangooseTestRunRedirectionUrl;
-	            alert(misleadingMsg)
+	            const misleadingMessage = constants.URL_UKNOWN_ERROR_TYPE_DEFAULT_MESSAGE + constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL;
+	            alert(misleadingMessage)
 	        }
 	    });
-
 	}
 
 	function createOkIcon(runId) {

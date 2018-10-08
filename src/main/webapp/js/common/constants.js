@@ -5,12 +5,14 @@ define([
 
 	// NOTE: Alert-related const
 	const MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE = "Mangoose test has been started";
-	const URL_IS_NOT_REACHABLE_DEFAULT_ALERT_MESSAGE = "URL couldn\'t be reached";
+	const URL_IS_NOT_REACHABLE_DEFAULT_ALERT_MESSAGE = "Server doesn\'t respond for: ";
+	const URL_PAGE_NOT_FOUND_DEFAULT_MESSAGE = "Page hasn\'t been found. ";
+	const URL_UKNOWN_ERROR_TYPE_DEFAULT_MESSAGE =  "An error has occured while trying to acces URL ";
 
 	// NOTE: URL-related constants
-	const MANGOOSE_RUNNING_PAGE_URL = "run";
 	const BASE_URL = window.document.location;
-	
+	const MANGOOSE_RUNNING_PAGE_URL = "run";
+	const MANGOOSE_TEST_RUNNING_REDIRECTION_URL = BASE_URL + MANGOOSE_RUNNING_PAGE_URL;
 
 	const LOG_MARKERS = {
 		'messages': 'msg',
@@ -81,8 +83,8 @@ define([
 		// NOTE: Alert-related const
 		MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE: MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE,
 		URL_IS_NOT_REACHABLE_DEFAULT_ALERT_MESSAGE: URL_IS_NOT_REACHABLE_DEFAULT_ALERT_MESSAGE,
-			// NOTE: URL-related constants
-
+		
+		// NOTE: URL-related constants
 		MANGOOSE_RUNNING_PAGE_URL: MANGOOSE_RUNNING_PAGE_URL,
 		BASE_URL: BASE_URL
 	}

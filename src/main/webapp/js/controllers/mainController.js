@@ -283,19 +283,18 @@ define([
 		    }
 		    if (isConfirmed) {
 		        const mangooseTestRunRedirectionUrl = constants.BASE_URL + constants.MANGOOSE_RUNNING_PAGE_URL;
-		        checkIfURLisReachable(mangooseTestRunRedirectionUrl, function(status) {
+		        getURLreachabilityStatus(mangooseTestRunRedirectionUrl, function(status) {
 		            if (status == 200) {
 		                requestMangooseTestStartUp()
-						alert(constants.MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE)
+		                alert(constants.MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE)
 		            } else if (status == 404) {
-		                const misleadingMsg = 'Page not found: ' + mangooseTestRunRedirectionUrl;
-		                alert(misleadingMsg);
+		                const misleadingMessage = constants.URL_PAGE_NOT_FOUND_DEFAULT_MESSAGE + mangooseTestRunRedirectionUrl;
+		                alert(misleadingMessage);
 		            } else {
-		                const misleadingMsg = "An error has occured while trying to acces URL " + mangooseTestRunRedirectionUrl;
-		                alert(misleadingMsg)
+		                const misleadingMessage = constants.URL_UKNOWN_ERROR_TYPE_DEFAULT_MESSAGE + mangooseTestRunRedirectionUrl;
+		                alert(misleadingMessage)
 		            }
 		        });
-
 		    }
 		}
 

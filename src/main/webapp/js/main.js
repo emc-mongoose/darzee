@@ -39,10 +39,9 @@ require(['./requirejs/conf'], function() {
 			});
 			return newObj;
 		}
-
-		alert('main.js')
-		var scenariosArray = ""
-		var configObject = ""
+		const EMPTY_OBJECT_VALUE_FOR_TEST = "";
+		var scenariosArray = EMPTY_OBJECT_VALUE_FOR_TEST;
+		var configObject = EMPTY_OBJECT_VALUE_FOR_TEST;
 		mainController.render(scenariosArray, configObject);
 	});
 });
