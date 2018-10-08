@@ -74,5 +74,6 @@ define([
 
 	const MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE = "Mangoose has been started"
 	const URL_IS_NOT_REACHABLE_DEFAULT_ALERT_MESSAGE = "URL couldn\'t be reached"
+	const MANGOOSE_RUNNING_PAGE_URL = "/run"
 
 });

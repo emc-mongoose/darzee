@@ -283,13 +283,12 @@ define([
 				const ALERT_MANGOOSE_STARTED = "Mangoose has been started"
 				alert(ALERT_MANGOOSE_STARTED)
 				const pathToUtilUrl = '../common/util/urlUtil'
-
 				require([pathToUtilUrl], function(urlUtil) { 
-					urlUtil.checkIfURLisReachable('/run', function(status) {
+					urlUtil.checkIfURLisReachable(constants.MANGOOSE_RUNNING_PAGE_URL, function(status) {
 						if (status == 200) { 
 							$.ajax({
 								type: 'PUT',
-								url: '/run',
+								url: constants.MANGOOSE_RUNNING_PAGE_URL,
 								dataType: 'json',
 								contentType: constants.JSON_CONTENT_TYPE,
 								data: JSON.stringify(startJson),
