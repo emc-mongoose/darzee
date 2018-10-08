@@ -12,7 +12,8 @@ define([
 	'../common/util/templatesUtil',
 	'../common/util/cssUtil',
 	'../common/util/tabsUtil',
-	'../common/constants'
+	'../common/constants',
+	'../common/util/urlUtil'
 ], function ($,
              scenariosController,
              defaultsController,
@@ -41,12 +42,12 @@ define([
 	// render html and bind events of basic elements and same for all tabs elements 
 	function render(scenariosArray, configObject) {
 		const renderer = rendererFactory();
-		renderer.navbar(version(configObject));
+		renderer.navbar(version("Unknown"));
 		renderer.base();
 		renderer.buttons();
 		renderer.configurations();
 		scenariosController.render(scenariosArray);
-		defaultsController.render(configObject);
+		defaultsController.render("Unknown");
 		testsController.render();
 		makeModeActive(currentMode);
 		makeTabActive(currentTabType);
@@ -54,7 +55,8 @@ define([
 	}
 
 	function version(configObject) {
-		var version = configObject.run.version;
+		//var version = configObject.run.version;
+		var version = constants.MANGOOSE_VERSION_FOR_TESTS; // NOTE: @param version is hard-coded to "Unknown" in test purposes
 		if (version) {
 			version = version.charAt(0).toUpperCase() + version.slice(1);
 		} else {
@@ -268,36 +270,52 @@ define([
 		}
 
 		function startButtonClickEvent(startJson) {
-			var isConfirmed = true;
-			if (defaultsController.isChanged() || scenariosController.isChanged()) {
-				isConfirmed = confirm('If properties were changed Mongoose' +
-					' will save it' +
-					' automatically. ' +
-					'Would you like to continue?');
-			}
-			if (isConfirmed) {
-				$.ajax({
-					type: 'PUT',
-					url: '/run',
-					dataType: 'json',
-					contentType: constants.JSON_CONTENT_TYPE,
-					data: JSON.stringify(startJson),
-					processData: false,
-					timeout: 10000,
-					error: function () {
-						alert('Failed to start the test')
-					}
-				}).done(function (testsObj) {
-					testsController.updateTestsList(testsObj);
-					testsController.runCharts();
-					console.log('Mongoose ran');
-					const testTabElem = $(tabJqId([TAB_TYPE.TESTS]));
-					if(!testTabElem.hasClass(blinkClassName)){
-						testTabElem.addClass(blinkClassName);
-					}
-					blink();
-				});
-			}
+		    var isConfirmed = true;
+		    if (defaultsController.isChanged() || scenariosController.isChanged()) {
+		        isConfirmed = confirm('If properties were changed Mongoose' +
+		            ' will save it' +
+		            ' automatically. ' +
+		            'Would you like to continue?');
+		    }
+		    if (isConfirmed) {
+		        getURLreachabilityStatus(constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL, function(status) {
+		            if (status == 200) {
+		                requestMangooseTestStartUp(startJson)
+		                alert(constants.MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE)
+		            } else if (status == 404) {
+		            	const testMethodNotification = "Mangoose test run button has been pressed. The error will be displayed: ";
+		                const misleadingMessage = constants.URL_PAGE_NOT_FOUND_DEFAULT_MESSAGE + constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL;
+		                alert(testMethodNotification + misleadingMessage);
+		            } else {
+		                const misleadingMessage = constants.URL_UKNOWN_ERROR_TYPE_DEFAULT_MESSAGE + constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL;
+		                alert(misleadingMessage);
+		            }
+		        });
+		    }
+		}
+
+		function requestMangooseTestStartUp(startJson) {
+		    $.ajax({
+		        type: 'PUT',
+		        url: constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL,
+		        dataType: 'json',
+		        contentType: constants.JSON_CONTENT_TYPE,
+		        data: JSON.stringify(startJson),
+		        processData: false,
+		        timeout: 10000,
+		        error: function() {
+		        	// NOTE: In this case, if we'd see the alert we'd be sure the logic is working fine
+		            alert(constants.TESTS_ARE_NOT_SUPPORTED_ALERT);
+		        }
+		    }).done(function(testsObj) {
+		        testsController.updateTestsList(testsObj);
+		        testsController.runCharts();
+		        const testTabElem = $(tabJqId([TAB_TYPE.TESTS]));
+		        if (!testTabElem.hasClass(blinkClassName)) {
+		            testTabElem.addClass(blinkClassName);
+		        }
+		        blink();
+		    });
 		}
 
 		function bindStartButtonEvent() {
@@ -312,13 +330,6 @@ define([
 					if (runScenario !== null) {
 						startJson['scenario'] = runScenario;
 					}
-					// else {
-					// 	if (!confirm(
-					// 			'Mongoose will start with the default scenario. ' +
-					// 			'Would you like to continue?')) {
-					// 		return
-					// 	}
-					// }
 				}
 				startButtonClickEvent(startJson);
 			})

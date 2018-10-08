@@ -39,18 +39,9 @@ require(['./requirejs/conf'], function() {
 			});
 			return newObj;
 		}
-
-		//  get all properties from runTimeConfig
-		$.get("/main", function(fullAppJson) {
-			//  root element ("config") of defaults.json configuration file
-			const dataExtractor = dataExtractorFactory(fullAppJson);
-			const configObject = dataExtractor.appConfig();
-			const scenariosArray = dataExtractor.scenarioDirContents();
-			if(configObject && scenariosArray) {
-				mainController.render(scenariosArray, configObject);
-			} else {
-				alert('Failed to load the configuration');
-			}
-		});
+		const EMPTY_OBJECT_VALUE_FOR_TEST = "";
+		var scenariosArray = EMPTY_OBJECT_VALUE_FOR_TEST;
+		var configObject = EMPTY_OBJECT_VALUE_FOR_TEST;
+		mainController.render(scenariosArray, configObject);
 	});
 });

@@ -8,7 +8,8 @@ define([
 	'../../../../common/constants',
 	'./logsController',
 	'./chartsController',
-	'text!../../../../../templates/tab/tests/tab/list.hbs'
+	'text!../../../../../templates/tab/tests/tab/list.hbs',
+	'../../../../common/util/urlUtil'
 ], function ($,
              hbUtil,
              templatesUtil,
@@ -160,17 +161,13 @@ define([
 		$(jqId([runIdForElem(runId), 'stop'])).remove();
 		const listItemElemText = runId + " - " + (listItemElem.attr('mode')) + " - " + (listItemElem.attr('status'));
 		replaceElementText(listItemElem, listItemElemText);
-		$.ajax({
-			type: 'POST',
-			url: '/run',
-			dataType: 'json',
-			contentType: constants.JSON_CONTENT_TYPE,
-			data: JSON.stringify({ runId: runId }),
-			processData: false
-		}).done(function (testsObj) {
-			updateTestsList(testsObj, false);
-			console.log('Mongoose ran');
-		});
+		const stopEventHttpMethod = 'POST';
+		performAjaxRequestForTest(stopEventHttpMethod, onEventStop);
+	}
+
+	function onEventStop(testsObj) { 
+		pdateTestsList(testsObj, false);
+		console.log('[stopEvent] Mongoose event stopped');
 	}
 
 	function createDeleteIcon(runId) {
@@ -219,16 +216,35 @@ define([
 	function deleteEvent(runId) {
 		const listItemElem = $(jqId([runIdForElem(runId)]));
 		listItemElem.remove();
-		$.ajax({
-			type: 'DELETE',
-			url: '/run',
-			dataType: 'json',
-			contentType: constants.JSON_CONTENT_TYPE,
-			data: JSON.stringify({ runId: runId }),
-			processData: false
-		}).done(function () {
-			console.log('The test is removed');
-		});
+		const deleteEventMethod = 'DELETE'
+		performAjaxRequestForTest(deleteEventMethod, onTestRemoved);
+	}
+
+	function onTestRemoved() { 
+		console.log('Test has been removed');
+	}
+
+	function performAjaxRequestForTest(httpMethod, callback) {
+	    getURLreachabilityStatus(mangooseTestRunRedirectionUrl, function(status) {
+	        if (status == 200) {
+	            $.ajax({
+	                type: httpMethod,
+	                url: constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL,
+	                dataType: 'json',
+	                contentType: constants.JSON_CONTENT_TYPE,
+	                data: SON.stringify({
+	                    runId: runId
+	                }),
+	                processData: false
+	            }).done(callback);
+	        } else if (status == 404) {
+	            const misleadingMessage =  constants.URL_IS_NOT_REACHABLE_DEFAULT_ALERT_MESSAGE + constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL;
+	            alert(misleadingMessage);
+	        } else {
+	            const misleadingMessage = constants.URL_UKNOWN_ERROR_TYPE_DEFAULT_MESSAGE + constants.MANGOOSE_TEST_RUNNING_REDIRECTION_URL;
+	            alert(misleadingMessage)
+	        }
+	    });
 	}
 
 	function createOkIcon(runId) {
