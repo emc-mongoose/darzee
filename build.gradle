@@ -72,8 +72,18 @@ task buildAppImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
 
 task buildApp(type: DockerCreateContainer, dependsOn: 'buildAppImage'){
     targetImageId { buildAppImage.getImageId() }
-    portBindings = ['80:80']
-
+    def MAX_PORT_NUMBER = 65535
+    if (!port.isNumber()) { 
+        def misleadingMessage = "ERROR: Incorrect argument has been found for \"port\": " + port + ". It should be an integer."
+        println misleadingMessage
+        ant.fail(misleadingMessage)
+    } else if (port.toInteger() > MAX_PORT_NUMBER) { 
+        def misleadingMessage = "ERROR: Incorrect port has been found: " + port + ". Port number should stay in bounds: 1 ... " + MAX_PORT_NUMBER
+        ant.fail(misleadingMessage)
+    }
+    def PORTS_DELIMITER = ':'
+    def portArgument = port + PORTS_DELIMITER + port
+    portBindings = [portArgument]
 }
 
 task runApp(type: DockerStartContainer, dependsOn: 'buildApp'){
