@@ -70,4 +70,9 @@ define([
 		CHART_METRICS_UNITS_FORMATTER: CHART_METRICS_UNITS_FORMATTER
 	}
 
+	// UI-related constants
+
+	const MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE = "Mangoose has been started"
+	const URL_IS_NOT_REACHABLE_DEFAULT_ALERT_MESSAGE = "URL couldn\'t be reached"
+
 });

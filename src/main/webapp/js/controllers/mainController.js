@@ -12,7 +12,7 @@ define([
 	'../common/util/templatesUtil',
 	'../common/util/cssUtil',
 	'../common/util/tabsUtil',
-	'../common/constants'
+	'../common/constants',
 ], function ($,
              scenariosController,
              defaultsController,
@@ -51,7 +51,6 @@ define([
 		makeModeActive(currentMode);
 		makeTabActive(currentTabType);
 		renderer.start();
-		console.log('finish render')
 	}
 
 	function version(configObject) {
@@ -283,58 +282,43 @@ define([
 			if (isConfirmed) {
 				const ALERT_MANGOOSE_STARTED = "Mangoose has been started"
 				alert(ALERT_MANGOOSE_STARTED)
-				performTaskIfUrlExist('/run', function(status) {
-					if (status == 200) { 
-						$.ajax({
-							type: 'PUT',
-							url: '/run',
-							dataType: 'json',
-							contentType: constants.JSON_CONTENT_TYPE,
-							data: JSON.stringify(startJson),
-							processData: false,
-							timeout: 10000,
-							error: function () {
-								alert('Failed to start the test')
-							}
-						}).done(function (testsObj) {
-							testsController.updateTestsList(testsObj);
-							testsController.runCharts();
-							console.log('Mongoose ran');
-							const testTabElem = $(tabJqId([TAB_TYPE.TESTS]));
-							if(!testTabElem.hasClass(blinkClassName)){
-								testTabElem.addClass(blinkClassName);
-							}
-							blink();
-						});
-					} else if (status == 404) { 
-						const misleadingMsg = 'Couldn\'t find any data at URL:' + URL;
-						alert(misleadingMsg);
-					} else { 
-						const misleadingMsg = "An error has occured while trying to acces URL " + url;
-						alert(misleadingMsg)
-					}
+				const pathToUtilUrl = '../common/util/urlUtil'
+
+				require([pathToUtilUrl], function(urlUtil) { 
+					urlUtil.checkIfURLisReachable('/run', function(status) {
+						if (status == 200) { 
+							$.ajax({
+								type: 'PUT',
+								url: '/run',
+								dataType: 'json',
+								contentType: constants.JSON_CONTENT_TYPE,
+								data: JSON.stringify(startJson),
+								processData: false,
+								timeout: 10000,
+								error: function () {
+									alert('Failed to start the test')
+								}
+							}).done(function (testsObj) {
+								testsController.updateTestsList(testsObj);
+								testsController.runCharts();
+								console.log('Mongoose ran');
+								const testTabElem = $(tabJqId([TAB_TYPE.TESTS]));
+								if(!testTabElem.hasClass(blinkClassName)){
+									testTabElem.addClass(blinkClassName);
+								}
+								blink();
+							});
+						} else if (status == 404) { 
+							const misleadingMsg = 'Couldn\'t find any data at URL:' + URL;
+							alert(misleadingMsg);
+						} else { 
+							const misleadingMsg = "An error has occured while trying to acces URL " + url;
+							alert(misleadingMsg)
+						}
+					});
 				});
 
-
 			}
-		}
-
-		function performTaskIfUrlExist(URL, task) { 
-			const functionTypeTag = 'function'
-			$.ajax({
-					type: 'PUT',
-					url: '/run',
-					dataType: 'json',
-					contentType: constants.JSON_CONTENT_TYPE,
-					data: JSON.stringify(startJson),
-					processData: false,
-					timeout: 10000,
-					complete: function(xhr) { 
-						if (typeof task == functionTypeTag) { 
-							task.apply(this, [xhr.status]);
-						}
-					}
-			})
 		}
 
 		function bindStartButtonEvent() {

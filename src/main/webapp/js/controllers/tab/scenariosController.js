@@ -90,8 +90,8 @@ define([
 	const commonClickEventCreator = eventCreator.newClickEventCreator();
 
 	function render(scenariosArray) {
-		// const rootTreeUlElem = $(jqId([BLOCK.TREE, TAB_TYPE.SCENARIOS]));
-		// elementAppender.treeOfItem(scenariosArray, rootTreeUlElem, '', DELIMITER.PATH, localClickEventCreator.scenarioFile, true);
+		const rootTreeUlElem = $(jqId([BLOCK.TREE, TAB_TYPE.SCENARIOS]));
+		elementAppender.treeOfItem(scenariosArray, rootTreeUlElem, '', DELIMITER.PATH, localClickEventCreator.scenarioFile, true);
 	}
 
 	function updateDetailsTree(scenarioObject) {
