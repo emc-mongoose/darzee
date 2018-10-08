@@ -1,12 +1,7 @@
-function checkIfURLisReachable(URL, callback, requiredData) { 
+function checkIfURLisReachable(URL, callback) { 
 		const functionTypeTag = 'function'
 		$.ajax({
-			type: 'PUT',
-			url: '/run',
-			dataType: 'json',
-			contentType: 'application/json; charset=utf-8',
-			data: requiredData,
-			processData: false,
+			url: URL,
 			timeout: 10000,
 			complete: function(xhr) { 
 				if (typeof callback == functionTypeTag) { 

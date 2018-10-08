@@ -274,53 +274,55 @@ define([
 		}
 
 		function startButtonClickEvent(startJson) {
-			var isConfirmed = true;
-			if (defaultsController.isChanged() || scenariosController.isChanged()) {
-				isConfirmed = confirm('If properties were changed Mongoose' +
-					' will save it' +
-					' automatically. ' +
-					'Would you like to continue?');
-			}
-			if (isConfirmed) {
-				const ALERT_MANGOOSE_STARTED = "Mangoose has been started"
-				alert(ALERT_MANGOOSE_STARTED)
-				checkIfURLisReachable(constants.MANGOOSE_RUNNING_PAGE_URL, function(status) {
-						if (status == 200) { 
-							$.ajax({
-								type: 'PUT',
-								url: constants.MANGOOSE_RUNNING_PAGE_URL,
-								dataType: 'json',
-								contentType: constants.JSON_CONTENT_TYPE,
-								data: JSON.stringify(startJson),
-								processData: false,
-								timeout: 10000,
-								error: function () {
-									alert('Failed to start the test')
-								}
-							}).done(function (testsObj) {
-								testsController.updateTestsList(testsObj);
-								testsController.runCharts();
-								console.log('Mongoose ran');
-								const testTabElem = $(tabJqId([TAB_TYPE.TESTS]));
-								if(!testTabElem.hasClass(blinkClassName)){
-									testTabElem.addClass(blinkClassName);
-								}
-								blink();
-							});
-						} else if (status == 404) { 
-							const misleadingMsg = 'Couldn\'t find any data at URL:' + constants.MANGOOSE_RUNNING_PAGE_URL;
-							alert(misleadingMsg);
-						} else if (status == 405) { 
-							const misleadingMsg = "Mangoose running is not supported";
-							alert(misleadingMsg)
-						} else { 
-							const misleadingMsg = "An error has occured while trying to acces URL " + constants.MANGOOSE_RUNNING_PAGE_URL;
-							alert(misleadingMsg)
-						}
-				}, JSON.stringify(startJson));
-				
+		    var isConfirmed = true;
+		    if (defaultsController.isChanged() || scenariosController.isChanged()) {
+		        isConfirmed = confirm('If properties were changed Mongoose' +
+		            ' will save it' +
+		            ' automatically. ' +
+		            'Would you like to continue?');
+		    }
+		    if (isConfirmed) {
+		        const ALERT_MANGOOSE_STARTED = "Mangoose test has been started"
+		        alert(ALERT_MANGOOSE_STARTED)
+		        checkIfURLisReachable(constants.MANGOOSE_RUNNING_PAGE_URL, function(status) {
+		            if (status == 200) {
+		                requestMangooseTestStartUp()
+		            } else if (status == 404) {
+		                const misleadingMsg = 'Couldn\'t find any data at URL:' + constants.MANGOOSE_RUNNING_PAGE_URL;
+		                alert(misleadingMsg);
+		            } else if (status == 405) {
+		                const misleadingMsg = "Mangoose running is not supported";
+		                alert(misleadingMsg)
+		            } else {
+		                const misleadingMsg = "An error has occured while trying to acces URL " + constants.MANGOOSE_RUNNING_PAGE_URL;
+		                alert(misleadingMsg)
+		            }
+		        });
 
-			}
+		    }
+		}
+
+		function requestMangooseTestStartUp() {
+		    $.ajax({
+		        type: 'PUT',
+		        url: constants.MANGOOSE_RUNNING_PAGE_URL,
+		        dataType: 'json',
+		        contentType: constants.JSON_CONTENT_TYPE,
+		        data: JSON.stringify(startJson),
+		        processData: false,
+		        timeout: 10000,
+		        error: function() {
+		            alert('Failed to start the test')
+		        }
+		    }).done(function(testsObj) {
+		        testsController.updateTestsList(testsObj);
+		        testsController.runCharts();
+		        const testTabElem = $(tabJqId([TAB_TYPE.TESTS]));
+		        if (!testTabElem.hasClass(blinkClassName)) {
+		            testTabElem.addClass(blinkClassName);
+		        }
+		        blink();
+		    });
 		}
 
 		function bindStartButtonEvent() {
@@ -337,13 +339,6 @@ define([
 					if (runScenario !== null) {
 						startJson['scenario'] = runScenario;
 					}
-					// else {
-					// 	if (!confirm(
-					// 			'Mongoose will start with the default scenario. ' +
-					// 			'Would you like to continue?')) {
-					// 		return
-					// 	}
-					// }
 				}
 				startButtonClickEvent(startJson);
 			})
