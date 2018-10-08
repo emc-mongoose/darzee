@@ -55,9 +55,8 @@ define([
 	}
 
 	function version(configObject) {
-		const unknownVersionTag = "Unknown"
 		//var version = configObject.run.version;
-		var version = unknownVersionTag // NOTE: @param unknownVersionTag is hard-coded to "Unknown" in test purposes
+		var version = constants.MANGOOSE_VERSION_FOR_TESTS; // NOTE: @param version is hard-coded to "Unknown" in test purposes
 		if (version) {
 			version = version.charAt(0).toUpperCase() + version.slice(1);
 		} else {
