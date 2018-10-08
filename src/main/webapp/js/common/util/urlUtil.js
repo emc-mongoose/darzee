@@ -1,11 +1,11 @@
-exports.checkIfURLisReachable = function(URL, callback) { 
+function checkIfURLisReachable(URL, callback, requiredData) { 
 		const functionTypeTag = 'function'
 		$.ajax({
 			type: 'PUT',
 			url: '/run',
 			dataType: 'json',
-			contentType: constants.JSON_CONTENT_TYPE,
-			data: JSON.stringify(startJson),
+			contentType: 'application/json; charset=utf-8',
+			data: requiredData,
 			processData: false,
 			timeout: 10000,
 			complete: function(xhr) { 

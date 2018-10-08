@@ -13,6 +13,7 @@ define([
 	'../common/util/cssUtil',
 	'../common/util/tabsUtil',
 	'../common/constants',
+	'../common/util/urlUtil'
 ], function ($,
              scenariosController,
              defaultsController,
@@ -26,7 +27,8 @@ define([
              templatesUtil,
              cssUtil,
              tabsUtil,
-             constants) {
+             constants,
+             ) {
 
 	const MODE = templatesUtil.modes();
 	const EXTENDED_MODE = templatesUtil.objPartToArray(MODE, 2);
@@ -282,9 +284,7 @@ define([
 			if (isConfirmed) {
 				const ALERT_MANGOOSE_STARTED = "Mangoose has been started"
 				alert(ALERT_MANGOOSE_STARTED)
-				const pathToUtilUrl = '../common/util/urlUtil'
-				require([pathToUtilUrl], function(urlUtil) { 
-					urlUtil.checkIfURLisReachable(constants.MANGOOSE_RUNNING_PAGE_URL, function(status) {
+				checkIfURLisReachable(constants.MANGOOSE_RUNNING_PAGE_URL, function(status) {
 						if (status == 200) { 
 							$.ajax({
 								type: 'PUT',
@@ -308,14 +308,17 @@ define([
 								blink();
 							});
 						} else if (status == 404) { 
-							const misleadingMsg = 'Couldn\'t find any data at URL:' + URL;
+							const misleadingMsg = 'Couldn\'t find any data at URL:' + constants.MANGOOSE_RUNNING_PAGE_URL;
 							alert(misleadingMsg);
+						} else if (status == 405) { 
+							const misleadingMsg = "Mangoose running is not supported";
+							alert(misleadingMsg)
 						} else { 
-							const misleadingMsg = "An error has occured while trying to acces URL " + url;
+							const misleadingMsg = "An error has occured while trying to acces URL " + constants.MANGOOSE_RUNNING_PAGE_URL;
 							alert(misleadingMsg)
 						}
-					});
-				});
+				}, JSON.stringify(startJson));
+				
 
 			}
 		}
