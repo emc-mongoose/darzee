@@ -3,6 +3,15 @@ define([
 
 	const JSON_CONTENT_TYPE = 'application/json; charset=utf-8';
 
+	// NOTE: Alert-related const
+	const MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE = "Mangoose test has been started";
+	const URL_IS_NOT_REACHABLE_DEFAULT_ALERT_MESSAGE = "URL couldn\'t be reached";
+
+	// NOTE: URL-related constants
+	const MANGOOSE_RUNNING_PAGE_URL = "run";
+	const BASE_URL = window.document.location;
+	
+
 	const LOG_MARKERS = {
 		'messages': 'msg',
 		'errors': 'err',
@@ -67,13 +76,15 @@ define([
 		LOG_MARKERS_FORMATTER: LOG_MARKERS_FORMATTER,
 		CHART_METRICS: CHART_METRICS,
 		CHART_METRICS_FORMATTER: CHART_METRICS_FORMATTER,
-		CHART_METRICS_UNITS_FORMATTER: CHART_METRICS_UNITS_FORMATTER
+		CHART_METRICS_UNITS_FORMATTER: CHART_METRICS_UNITS_FORMATTER,
+
+		// NOTE: Alert-related const
+		MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE: MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE,
+		URL_IS_NOT_REACHABLE_DEFAULT_ALERT_MESSAGE: URL_IS_NOT_REACHABLE_DEFAULT_ALERT_MESSAGE,
+			// NOTE: URL-related constants
+
+		MANGOOSE_RUNNING_PAGE_URL: MANGOOSE_RUNNING_PAGE_URL,
+		BASE_URL: BASE_URL
 	}
-
-	// UI-related constants
-
-	const MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE = "Mangoose has been started"
-	const URL_IS_NOT_REACHABLE_DEFAULT_ALERT_MESSAGE = "URL couldn\'t be reached"
-	const MANGOOSE_RUNNING_PAGE_URL = "/run"
 
 });

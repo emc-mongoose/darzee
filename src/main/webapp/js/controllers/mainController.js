@@ -266,7 +266,7 @@ define([
 
 		function bindTabButtonsClickEvents(BUTTON_TYPE, CONFIG_TABS) {
 			const TAG = "bindTabButtonsClickEvents"
-			alert(TAG)
+			console.log(TAG)
 			$.each(CONFIG_TABS, function (index, value) {
 				passClick(value, BUTTON_TYPE);
 				bindSaveAsButtonClickEvent(value, BUTTON_TYPE);
@@ -282,19 +282,19 @@ define([
 		            'Would you like to continue?');
 		    }
 		    if (isConfirmed) {
-		        const ALERT_MANGOOSE_STARTED = "Mangoose test has been started"
-		        alert(ALERT_MANGOOSE_STARTED)
-		        checkIfURLisReachable(constants.MANGOOSE_RUNNING_PAGE_URL, function(status) {
+		        const mangooseTestRunRedirectionUrl = constants.BASE_URL + constants.MANGOOSE_RUNNING_PAGE_URL
+		        checkIfURLisReachable(mangooseTestRunRedirectionUrl, function(status) {
 		            if (status == 200) {
 		                requestMangooseTestStartUp()
+						alert(constants.MANGOOSE_STARTED_DEFAULT_ALERT_MESSAGE)
 		            } else if (status == 404) {
-		                const misleadingMsg = 'Couldn\'t find any data at URL:' + constants.MANGOOSE_RUNNING_PAGE_URL;
+		                const misleadingMsg = 'Page not found: ' + mangooseTestRunRedirectionUrl;
 		                alert(misleadingMsg);
 		            } else if (status == 405) {
 		                const misleadingMsg = "Mangoose running is not supported";
 		                alert(misleadingMsg)
 		            } else {
-		                const misleadingMsg = "An error has occured while trying to acces URL " + constants.MANGOOSE_RUNNING_PAGE_URL;
+		                const misleadingMsg = "An error has occured while trying to acces URL " + mangooseTestRunRedirectionUrl;
 		                alert(misleadingMsg)
 		            }
 		        });
@@ -327,7 +327,7 @@ define([
 
 		function bindStartButtonEvent() {
 			const TAG = "bindStartButtonEvent"
-			alert(TAG)
+			console.log(TAG)
 			$(jqId(['start'])).click(function () {
 				const runConfig = defaultsController.getChangedAppConfig();
 				const startJson = {};
