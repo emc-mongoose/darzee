@@ -80,17 +80,19 @@ task createDockerfile(type: Dockerfile, dependsOn: 'dist'){
 task buildAppImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
-    tag = 'console'
+    imageId = 'emcmongoose/mongoose-console'
+    tag = '0.1.0'
 }
 
 task buildApp(type: DockerCreateContainer, dependsOn: 'buildAppImage'){
     targetImageId { buildAppImage.getImageId() }
+//    containerName "mongoose-console"
     def MAX_PORT_NUMBER = 65535
-    if (!port.isNumber()) { 
+    if (!port.isNumber()) {
         def misleadingMessage = "ERROR: Incorrect argument has been found for \"port\": " + port + ". It should be an integer."
         println misleadingMessage
         ant.fail(misleadingMessage)
-    } else if (port.toInteger() > MAX_PORT_NUMBER) { 
+    } else if (port.toInteger() > MAX_PORT_NUMBER) {
         def misleadingMessage = "ERROR: Incorrect port has been found: " + port + ". Port number should stay in bounds: 1 ... " + MAX_PORT_NUMBER
         ant.fail(misleadingMessage)
     }
