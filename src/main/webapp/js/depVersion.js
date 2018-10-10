@@ -1,4 +1,4 @@
-let depVersion = {
+const depVersion = {
     "bootstrap": "4.1.3",
     "d3js": "3.5.3",
     "validatejs": "0.8.0",
