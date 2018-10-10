@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mangoose-console:
-     image: emcmongoose/mongoose
+     image: emcmongoose/mongoose-console:0.1.0
   grafana:
      image: grafana/grafana
   prometheus:
