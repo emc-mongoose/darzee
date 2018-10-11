@@ -84,13 +84,6 @@ task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
     tag = 'emcmongoose/mongoose-console:0.1.0'
 }
 
-docker {
-    registryCredentials {
-        username = 'mandarinka'
-        password = '521600Fkbyf'
-    }
-}
-
 task tagImage(type: DockerTagImage, dependsOn: 'buildImage'){
     targetImageId { buildImage.getImageId() }
     tag 'mongoose-console'
@@ -98,5 +91,5 @@ task tagImage(type: DockerTagImage, dependsOn: 'buildImage'){
 }
 
 task pushImage(type: DockerPushImage, dependsOn: 'tagImage'){
-    imageName 'mandarinka/mongoose-console'
+    imageName 'emcmongoose/mongoose-console'
 }
