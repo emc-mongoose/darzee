@@ -77,31 +77,19 @@ task createDockerfile(type: Dockerfile, dependsOn: 'dist'){
     addFile("lib/META-INF/resources/webjars/popper.js/${depVersion.popper}/", "/usr/share/nginx/html")
 }
 
-task buildAppImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
+task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
-    tag = 'console'
+    imageId = 'emcmongoose/mongoose-console'
+    tag = 'emcmongoose/mongoose-console:0.1.0'
 }
 
-task buildApp(type: DockerCreateContainer, dependsOn: 'buildAppImage'){
-    targetImageId { buildAppImage.getImageId() }
-    def MAX_PORT_NUMBER = 65535
-    if (!port.isNumber()) { 
-        def misleadingMessage = "ERROR: Incorrect argument has been found for \"port\": " + port + ". It should be an integer."
-        println misleadingMessage
-        ant.fail(misleadingMessage)
-    } else if (port.toInteger() > MAX_PORT_NUMBER) { 
-        def misleadingMessage = "ERROR: Incorrect port has been found: " + port + ". Port number should stay in bounds: 1 ... " + MAX_PORT_NUMBER
-        ant.fail(misleadingMessage)
-    }
-    def PORTS_DELIMITER = ':'
-    def portArgument = port + PORTS_DELIMITER + port
-    portBindings = [portArgument]
+task tagImage(type: DockerTagImage, dependsOn: 'buildImage'){
+    targetImageId { buildImage.getImageId() }
+    tag 'mongoose-console'
+    repository 'mongoose-console'
 }
 
-task runApp(type: DockerStartContainer, dependsOn: 'buildApp'){
-    targetContainerId { buildApp.getContainerId() }
-    doLast {
-        println('Please, visit http://localhost/')
-    }
+task pushImage(type: DockerPushImage, dependsOn: 'tagImage'){
+    imageName 'emcmongoose/mongoose-console'
 }
