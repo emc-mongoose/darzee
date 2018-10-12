@@ -12,3 +12,6 @@ To start the server with default port:
 
 To start the server with custom port: 
 >./gradlew -Pport=(port number) runApp
+
+To start the server using docker-compose:
+>docker-compose up 
