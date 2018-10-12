@@ -18,5 +18,5 @@ To push image to Docker hub
 To start the server with custom port: 
 >./gradlew -Pport=(port number) runApp
 
-If you have Docker Compose installed, you could start the server using docker-compose:
+If you have [Docker Compose](https://docs.docker.com/compose/install/) installed, you could start the server using docker-compose:
 >docker-compose up 
