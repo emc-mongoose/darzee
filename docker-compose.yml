@@ -7,3 +7,4 @@ services:
      image: grafana/grafana
   prometheus:
     image: prom/prometheus
+
