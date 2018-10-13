@@ -61,7 +61,7 @@ task createDockerfile(type: Dockerfile, dependsOn: 'dist'){
     from 'nginx:alpine'
     addFile('src/main/webapp/.', '/usr/share/nginx/html')
     addFile('lib/META-INF/resources/.', '/usr/share/nginx/html')
-    addFile('lib/META-INF/resources/webjars/popper.js/1.14.4/', '/usr/share/nginx/html')
+    addFile('lib/META-INF/resources/webjars/popper.js/1.14.3/', '/usr/share/nginx/html')
 }
 
 task buildAppImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
@@ -82,7 +82,7 @@ task buildApp(type: DockerCreateContainer, dependsOn: 'buildAppImage'){
         ant.fail(misleadingMessage)
     }
     def PORTS_DELIMITER = ':'
-    def portArgument = port + PORTS_DELIMITER + port
+    def portArgument = port + PORTS_DELIMITER + default_nginx_port
     portBindings = [portArgument]
 }
 
