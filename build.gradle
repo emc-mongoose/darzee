@@ -89,6 +89,7 @@ task buildApp(type: DockerCreateContainer, dependsOn: 'buildAppImage'){
 task runApp(type: DockerStartContainer, dependsOn: 'buildApp'){
     targetContainerId { buildApp.getContainerId() }
     doLast {
-        println('Please, visit http://localhost/')
+	def PORTS_DELIMITER = ":"
+        println('Please, visit http://localhost' + PORTS_DELIMITER + port)
     }
 }
