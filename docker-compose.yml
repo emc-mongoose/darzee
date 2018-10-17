@@ -4,9 +4,13 @@ services:
   mangoose-console:
      image: emcmongoose/mongoose-console
      ports:
-     - "80"
+     - "${MONGOOSE_PORT}"
   grafana:
      image: grafana/grafana
+     ports:
+     - "${GRAFANA_PORT}"
   prometheus:
     image: prom/prometheus
+    ports:
+    - "${PROMETHEUS_PORT}"
 
