@@ -2,7 +2,9 @@ version: '3'
 
 services:
   mangoose-console:
-     image: emcmongoose/mongoose-console:0.1.0
+     image: emcmongoose/mongoose-console
+     ports:
+     - "80"
   grafana:
      image: grafana/grafana
   prometheus:
