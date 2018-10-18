@@ -2,15 +2,15 @@ version: '3'
 
 services:
   mangoose-console:
-     image: emcmongoose/mongoose-console
+     image: emcmongoose/mongoose-console:${MONGOOSE_VER}
      ports:
-     - "${MONGOOSE_PORT}"
+     - "38888:${MONGOOSE_PORT}"
   grafana:
-     image: grafana/grafana
+     image: grafana/grafana:${GRAFANA_VER}
      ports:
      - "${GRAFANA_PORT}"
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:${PROMETHEUS_VER}
     ports:
     - "${PROMETHEUS_PORT}"
 
