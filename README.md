@@ -17,5 +17,8 @@ To push image to Docker hub
 >./gradlew pushImage
 
 If you have [Docker Compose](https://docs.docker.com/compose/install/) installed, you could start the server using docker-compose:
->docker-compose up 
-Default ports for images are listen in .env file. 
+> docker-compose up
+Then check using the browser that the GUI is available at
+http://localhost:8080
+
+Note that the default ports for the components are listed in .env file.

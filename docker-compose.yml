@@ -4,7 +4,7 @@ services:
   mangoose-console:
      image: emcmongoose/mongoose-console:${MONGOOSE_VER}
      ports:
-     - "38888:${MONGOOSE_PORT}"
+     - "8080:${NGINX_PORT}"
   grafana:
      image: grafana/grafana:${GRAFANA_VER}
      ports:
