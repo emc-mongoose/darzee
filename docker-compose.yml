@@ -7,10 +7,10 @@ services:
     - "8080:${NGINX_PORT}"
   grafana:
     image: grafana/grafana:${GRAFANA_VER}
-    expose:
-    - "${GRAFANA_PORT}"
+    ports:
+    - "${GRAFANA_PORT}:${GRAFANA_PORT}"
   prometheus:
     image: prom/prometheus:${PROMETHEUS_VER}
-    expose:
-    - "${PROMETHEUS_PORT}"
+    ports:
+    - "${PROMETHEUS_PORT}:${PROMETHEUS_PORT}"
 
