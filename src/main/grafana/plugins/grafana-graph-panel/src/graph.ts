@@ -211,40 +211,48 @@ function graphDirective(timeSrv, popoverSrv, contextSrv) {
       }
 
       function buildFlotPairs(data) {
-        for (let i = 0; i < data.length; i++) {
-          let series = data[i];
-		  //series.x = series.x-1;
-          series.data = series.getFlotPairs(series.nullPointMode || panel.nullPointMode);
-			series.data.y=series.data.y - 1;
-          // if hidden remove points and disable stack
-          //if (ctrl.hiddenSeries[series.alias]) {
-			/*if (series.y <= 12) {
+        for (var i = 0; i < data.length; i++) {
+            var series = data[i];
+            //series.x = series.x-1;
+            /*series.data = series.getFlotPairs(series.nullPointMode || panel.nullPointMode);
+            console.log(series.datapoints[720]);*/
+            series.data = series.getFlotPairs(series.nullPointMode || panel.nullPointMode);
+            //series.datapoints[i].pop();
+            //series.data.y=series.data.y - 1;
+            // if hidden remove points and disable stack
+            //if (ctrl.hiddenSeries[series.alias]) {
+            /*if (series.y <= 12) {
             series.data = [];
             series.stack = false;
-			}*/
-          //}
+            }*/
+            //}
         }
-      }
-	  
-	  function weightedTrianglesAlgorithm(data) {
-		//let min = 0.5*Math.abs((data[0].x-data[2].x)*(data[1].y-data[2].y)-(data[1].x-data[2].x)*(data[0].y-data[2].y));
-		
-		for (let i = 0; i < data.length-5; i++) {
-			let pointToDelete = data[i];
-			pointToDelete.data = [];
-			pointToDelete.stack = false;
-		}
-        /*for (let i = 2; i < data.length; i++) {
-          let temp = 0.5*Math.abs((data[i-2].x-data[i].x)*(data[i-1].y-data[i].y)-(data[i-1].x-data[i].x)*(data[i-2].y-data[i].y));
-          let series = data[i];
-		  series.data = series.getFlotPairs(series.nullPointMode || panel.nullPointMode);
-		  if (temp < min)  {
-			min = temp;
-			pointToDelete = series;
-		  } 
-        }*/
-		
-      }
+    }
+    function weightedTrianglesAlgorithm(data) {
+        //var min = 0.5*Math.abs((data[0].datapoints[0][1]-data[0].datapoints[2][1])*(data[0].datapoints[1][0]-data[0].datapoints[2][0])-(data[0].datapoints[1][1]-data[0].datapoints[2][1])*(data[0].datapoints[0][0]-data[0].datapoints[2][0]))
+        //var delIndex = 1;
+        for (var i = 0; i < data.length; i++) {
+          var series = data[i];
+          for (var j = 2; j < series.datapoints.length; j++) {
+            if (series.datapoints[j-2][0] != null && series.datapoints[j-1][0] != null && series.datapoints[j][0] != null) {
+              console.log("J = " + j);
+              var temp = 0.5*Math.abs((series.datapoints[j-2][1]-series.datapoints[j][1])*(series.datapoints[j-1][0]-series.datapoints[j][0])-(series.datapoints[j-1][1]-series.datapoints[j][1])*(series.datapoints[j-2][0]-series.datapoints[j][0]));
+              console.log(temp);
+              /*if (temp < min) {
+                min = temp;
+                delIndex = j-1;
+                console.log(series.datapoints[j-2][0]);
+                console.log(series.datapoints[j-1][0]);
+                console.log(series.datapoints[j][0]);
+              }*/
+              series.datapoints.splice(j-1, 1);
+            }
+          }
+          //series.datapoints.splice(delIndex, 1);
+          series.data = series.getFlotPairs(series.nullPointMode || panel.nullPointMode);
+        }
+        return data;
+    }
 
       function prepareXAxis(options, panel) {
         switch (panel.xaxis.mode) {
