@@ -1,10 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule} from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
+import { HomepageComponent } from './homepage.component';
+
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    BrowserModule,
+    FormsModule
   ],
-  declarations: []
+  declarations: [HomepageComponent]
 })
-export class HomepageModule { }
+export class HomepageModule {
+  constructor() {}
+
+
+}
