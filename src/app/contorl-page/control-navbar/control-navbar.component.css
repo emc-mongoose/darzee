@@ -1,0 +1,43 @@
+
+.mongoose-navbar { 
+    overflow: hidden;
+    background: pink;
+    width: 100%;
+    height: 50px;
+    position: relative;
+    flex-wrap: wrap;
+    align-items: center; /* For vertical alignment */
+    
+}
+
+.navbar-controls { 
+    display: flex;
+    justify-content: center;
+    /* Make sure the controls is at the center */
+    align-items: center; /* For vertical alignment */
+    margin: auto;  
+    position: absolute;
+    left:0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+
+.logo { 
+    height: 100%;
+    padding-left: 2%;
+    /* vertical-align: middle; */
+}
+/* 
+.scenarios-button { 
+    vertical-align: middle;
+}
+
+.defaults-button { 
+    vertical-align: middle;
+}
+
+.tests-button { 
+    vertical-align: middle;
+} */
