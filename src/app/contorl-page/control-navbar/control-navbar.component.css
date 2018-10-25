@@ -1,13 +1,17 @@
 
 .mongoose-navbar { 
     overflow: hidden;
-    background: pink;
+    /* background: pink; */
     width: 100%;
     height: 50px;
     position: relative;
     flex-wrap: wrap;
     align-items: center; /* For vertical alignment */
-    
+    border-bottom: 1px;
+    border-bottom-color: gray;
+    -webkit-box-shadow: 0 1px 5px #888888;
+    -moz-box-shadow: 0 1px 5px #888888;
+    box-shadow: 0 1px 5px #888888;
 }
 
 .navbar-controls { 
@@ -29,15 +33,15 @@
     padding-left: 2%;
     /* vertical-align: middle; */
 }
-/* 
-.scenarios-button { 
-    vertical-align: middle;
+
+.scenarios-button, .defaults-button, .tests-button { 
+    border-radius: 10px;
+    height: 50%;
+    border: none;
+    color: white;
+    background: #BF7200;
 }
 
-.defaults-button { 
-    vertical-align: middle;
+.scenarios-button:hover, .defaults-button:hover, .tests-button:hover { 
+    background: #ed8d00;
 }
-
-.tests-button { 
-    vertical-align: middle;
-} */
