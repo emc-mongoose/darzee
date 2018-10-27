@@ -1,9 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { HomepageComponent } from './homepage/homepage.component';
+import { IpAddressService } from './ip-address.service';
 
 @NgModule({
   declarations: [
@@ -12,9 +14,10 @@ import { HomepageComponent } from './homepage/homepage.component';
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [IpAddressService],
   bootstrap: [AppComponent],
   exports: [AppComponent]
 })

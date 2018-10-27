@@ -1,8 +1,31 @@
+<!-- 
+<header class="w3-container w3-black">
+  Mongoose Home Page
+</header> -->
 
+<!-- <body class="w3-container">
+  <span class="label greeting">
+    Hi! I'm mongoose.
+  </span>
 
+  <span class="label describing">
+    <br/>Mongoose is a powerful storage <br/>
+    performance testing tool.<br/>
+    <br/>To begin, enter the entry node
+    <br/>address to start the mongoose:<br/> -->
+    <select class="ipAddresses">
+      <option *ngFor="let ipAddress of ipAddresses">
+        {{ ipAddress.ip }}
+    </option>
+  </select>
+  <!-- {{ipAddress[1].ip}} -->
+  <!-- </span>
+</body> -->
 
-<div>
-  <label>To begin, enter the entry node address to start the mongoose:
-    <input [(ngModel)]="ipAddress" placeholder="IP address">
-  </label>
-</div>
+<!-- <li  [class.selected]="ipAddress === selectedIp" 
+  (click)="onSelect(ipAddress)">></li> -->
+
+<!--
+  <footer id="rectangle" class="w3-container w3-black">
+  Footer
+</footer> -->

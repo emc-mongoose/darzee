@@ -1,0 +1,50 @@
+.label {
+    font-family: Quicksand;
+}
+
+.greeting {
+    x: 145.5px;
+    y: 337px;
+    width: 176px;
+    height: 39px;
+    color: #000000;
+    font-family: Quicksand;
+    font-size: 15px;
+    font-weight: normal;
+    font-style: normal;
+    text-decoration: none;
+    text-align: center;
+    padding: 5px;
+    line-height: 1px;
+    background: #F5F5F5;
+    border: none;
+    border-radius: 0px;
+}
+
+.describing {
+    x: 363px;
+    y: 184px;
+    width: 229px;
+    height: 106px;
+    color: #333333;
+    font-family: Quicksand;
+    font-size: 14px;
+    text-align: left;
+    line-height: 1px;
+    padding: 5px;
+}
+
+.header {
+    height: 50px;
+    background-color: #424242;
+    border: none;
+    border-radius: 0px;
+}
+
+#rectangle {
+    width: 623px;
+    height: 50px;
+    background: #424242;
+    border: none;
+    border-radius: 0px;
+}

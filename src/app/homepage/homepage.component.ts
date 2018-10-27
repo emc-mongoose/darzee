@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { IpAddressService } from '../ip-address.service';
+
+import { IpAddress } from '../ipAddress';
 
 @Component({
   selector: 'app-homepage',
@@ -7,13 +10,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomepageComponent implements OnInit {
 
-  greetingMsg: 'Hi I am Mongoose!'
-  describeMsg: 'Mongoose is a powerful storage performance testing tool'
-  ipAddress: ''
+  ipAddresses: IpAddress[];
+  selectedIp: IpAddress;
 
-  constructor() { }
+  constructor(private ipAddressService: IpAddressService) { }
 
   ngOnInit() {
+    this.getIpAddresses();
   }
 
+  getIpAddresses(): void {
+    this.ipAddressService.getIpAddresses()
+    .subscribe(ipAddress => this.ipAddresses = ipAddress);
+    // alert(this.ipAddresses[1].ip);
+  }
+
+  onSelect(ip: IpAddress): void {
+    this.selectedIp = ip;
+    alert(ip);
+  }
 }
