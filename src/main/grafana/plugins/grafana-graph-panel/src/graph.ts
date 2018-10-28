@@ -64,9 +64,13 @@ function graphDirective(timeSrv, popoverSrv, contextSrv) {
           return;
         }
         annotations = ctrl.annotations || [];
-		weightedTrianglesAlgorithm(data);
-        buildFlotPairs(/*weightedTrianglesAlgorithm(*/data/*)*/);
-        //updateLegendValues(data, panel);
+        var i = data[0].datapoints.length;
+        while (i--) {
+          if (data[0].datapoints[i][0] == null) {
+            data[0].datapoints.splice(i, 1);
+          } 
+        }
+        weightedTrianglesAlgorithm(data);
 
         ctrl.events.emit('render-legend');
       });
@@ -189,72 +193,45 @@ function graphDirective(timeSrv, popoverSrv, contextSrv) {
       // Function for rendering panel
       function render_panel() {
         panelWidth = elem.width();
-        if (shouldAbortRender()) {
-          return;
-        }
-
-        // give space to alert editing
-        thresholdManager.prepare(elem, data);
-
-        // un-check dashes if lines are unchecked
-        panel.dashes = panel.lines ? panel.dashes : false;
-
-        // Populate element
-        let options: any = buildFlotOptions(panel);
-        prepareXAxis(options, panel);
-        configureYAxisOptions(data, options);
-        thresholdManager.addFlotOptions(options, panel);
-        eventManager.addFlotEvents(annotations, options);
-
-        sortedSeries = sortSeries(data, panel);
-        callPlot(options, true);
+                if (shouldAbortRender()) {
+                    return;
+                }
+                // give space to alert editing
+                thresholdManager.prepare(elem, data);
+                // un-check dashes if lines are unchecked
+                panel.dashes = panel.lines ? panel.dashes : false;
+                // Populate element
+                var options = buildFlotOptions(panel);
+                prepareXAxis(options, panel, data[0].datapoints[0][1]);
+                configureYAxisOptions(data, options);
+                thresholdManager.addFlotOptions(options, panel);
+                eventManager.addFlotEvents(annotations, options);
+                sortedSeries = sortSeries(data, panel);
+                callPlot(options, true);
       }
 
-      function buildFlotPairs(data) {
-        for (var i = 0; i < data.length; i++) {
-            var series = data[i];
-            //series.x = series.x-1;
-            /*series.data = series.getFlotPairs(series.nullPointMode || panel.nullPointMode);
-            console.log(series.datapoints[720]);*/
-            series.data = series.getFlotPairs(series.nullPointMode || panel.nullPointMode);
-            //series.datapoints[i].pop();
-            //series.data.y=series.data.y - 1;
-            // if hidden remove points and disable stack
-            //if (ctrl.hiddenSeries[series.alias]) {
-            /*if (series.y <= 12) {
-            series.data = [];
-            series.stack = false;
-            }*/
-            //}
-        }
-    }
-    function weightedTrianglesAlgorithm(data) {
-        //var min = 0.5*Math.abs((data[0].datapoints[0][1]-data[0].datapoints[2][1])*(data[0].datapoints[1][0]-data[0].datapoints[2][0])-(data[0].datapoints[1][1]-data[0].datapoints[2][1])*(data[0].datapoints[0][0]-data[0].datapoints[2][0]))
-        //var delIndex = 1;
-        for (var i = 0; i < data.length; i++) {
-          var series = data[i];
-          for (var j = 2; j < series.datapoints.length; j++) {
-            if (series.datapoints[j-2][0] != null && series.datapoints[j-1][0] != null && series.datapoints[j][0] != null) {
-              console.log("J = " + j);
-              var temp = 0.5*Math.abs((series.datapoints[j-2][1]-series.datapoints[j][1])*(series.datapoints[j-1][0]-series.datapoints[j][0])-(series.datapoints[j-1][1]-series.datapoints[j][1])*(series.datapoints[j-2][0]-series.datapoints[j][0]));
-              console.log(temp);
-              /*if (temp < min) {
-                min = temp;
-                delIndex = j-1;
-                console.log(series.datapoints[j-2][0]);
-                console.log(series.datapoints[j-1][0]);
-                console.log(series.datapoints[j][0]);
-              }*/
-              series.datapoints.splice(j-1, 1);
+      
+      function weightedTrianglesAlgorithm(data) {
+        for (let i = 0; i < data.length; i++) {
+          let series = data[i];
+          while (series.datapoints.length >= 50) {
+            let min = 0.5*Math.abs((data[0].datapoints[0][1]-data[0].datapoints[2][1])*(data[0].datapoints[1][0]-data[0].datapoints[2][0])-(data[0].datapoints[1][1]-data[0].datapoints[2][1])*(data[0].datapoints[0][0]-data[0].datapoints[2][0]));
+            let delIndex = 1;
+            for (let j = 2; j < series.datapoints.length; j++) {
+                let temp = 0.5*Math.abs((series.datapoints[j-2][1]-series.datapoints[j][1])*(series.datapoints[j-1][0]-series.datapoints[j][0])-(series.datapoints[j-1][1]-series.datapoints[j][1])*(series.datapoints[j-2][0]-series.datapoints[j][0]));
+                if (temp < min) {
+                  min = temp;
+                  delIndex = j-1;
+                }
             }
+            series.datapoints.splice(delIndex, 1);
           }
-          //series.datapoints.splice(delIndex, 1);
           series.data = series.getFlotPairs(series.nullPointMode || panel.nullPointMode);
         }
         return data;
     }
 
-      function prepareXAxis(options, panel) {
+      function prepareXAxis(options, panel, first_value) {
         switch (panel.xaxis.mode) {
           case 'series': {
             options.series.bars.barWidth = 0.7;
@@ -295,7 +272,7 @@ function graphDirective(timeSrv, popoverSrv, contextSrv) {
           }
           default: {
             options.series.bars.barWidth = getMinTimeStepOfSeries(data) / 1.5;
-            addTimeAxis(options);
+            addTimeAxis(options, first_value);
             break;
           }
         }
@@ -422,9 +399,10 @@ function graphDirective(timeSrv, popoverSrv, contextSrv) {
         }
       }
 
-      function addTimeAxis(options) {
+      function addTimeAxis(options, first_value) {
         var ticks = panelWidth / 100;
-        var min = _.isUndefined(ctrl.range.from) ? null : ctrl.range.from.valueOf();
+        //var min = _.isUndefined(ctrl.range.from) ? null : ctrl.range.from.valueOf();
+        var min = first_value;
         var max = _.isUndefined(ctrl.range.to) ? null : ctrl.range.to.valueOf();
 
         options.xaxis = {
