@@ -3,7 +3,7 @@
   Mongoose Home Page
 </header> -->
 
-<!-- <body class="w3-container">
+<body class="w3-container">
   <span class="label greeting">
     Hi! I'm mongoose.
   </span>
@@ -12,15 +12,16 @@
     <br/>Mongoose is a powerful storage <br/>
     performance testing tool.<br/>
     <br/>To begin, enter the entry node
-    <br/>address to start the mongoose:<br/> -->
-    <select class="ipAddresses">
-      <option *ngFor="let ipAddress of ipAddresses">
-        {{ ipAddress.ip }}
-    </option>
-  </select>
-  <!-- {{ipAddress[1].ip}} -->
-  <!-- </span>
-</body> -->
+    <br/>address to start the mongoose:<br/>
+      <select [(ngModel)]="ipAddress" (ngModelChange)="onChange(ipAddress)">
+        <!-- <option [ngValue]="" disabled selected>Choose Node...</option> -->
+        <option *ngFor="let ipAddress of ipAddresses" [ngValue]="ipAddress">
+          {{ ipAddress.ip }}
+        </option>
+      </select>
+  
+  </span>
+</body>
 
 <!-- <li  [class.selected]="ipAddress === selectedIp" 
   (click)="onSelect(ipAddress)">></li> -->

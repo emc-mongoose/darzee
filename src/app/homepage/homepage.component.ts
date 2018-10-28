@@ -25,8 +25,8 @@ export class HomepageComponent implements OnInit {
     // alert(this.ipAddresses[1].ip);
   }
 
-  onSelect(ip: IpAddress): void {
+  onChange(ip: IpAddress): void {
     this.selectedIp = ip;
-    alert(ip);
+    alert(ip.ip);
   }
 }
