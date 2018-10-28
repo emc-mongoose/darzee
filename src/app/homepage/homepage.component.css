@@ -1,7 +1,29 @@
-#rectangle {
-    width: 623px;
-    height: 50px;
-    background: #424242;
-    border: none;
-    border-radius: 0px;
+body {
+    background: #FFFFFF;
+    box-shadow: 0px 0px 40px 0px
+    rgba(0,0,0,0.1);
+    margin: 15%;
+    padding: 3%;   
 }
+
+.w3-container {
+    display: flex;
+}
+
+.element {
+    margin: auto;
+}
+/* 
+img {
+    display: block;
+
+} */
+
+/* .mongooseLabel {
+    vertical-align: top;
+    display: inline-block;
+}
+
+.labelGreeting {
+    display: block;
+} */
