@@ -21,6 +21,7 @@
 .scenarios-open-btn { 
     float: left;
     margin-left: 40px;
+    background: "src/assets/icons/folder-open-icon.svg"
     
 }
 
