@@ -17,7 +17,7 @@
     border: none; 
     text-align: center; 
     font-style: normal; 
-    font-size: 10px; 
+    font-size: 14px; 
     outline: none;
 }
 .scenarios-open-btn, .scenarios-save-btn { 
@@ -45,8 +45,8 @@
 .scenarios-start-btn { 
     float: left;
     margin-left:70% ;
-    height: 80%;
-    width: 5%;
+    width: 8%;
+    height: 30px;
    
     color: #FFFFFF; 
     font-family: Quicksand; 
@@ -63,7 +63,7 @@
     display: flex;
     position: relative;
     margin: 0 auto;
-    top:20px;
+    top: 20px;
     overflow-y: scroll ! important;
     resize: none;
     background: blue;

@@ -32,5 +32,8 @@ export class ScenariosComponent implements OnInit {
     fileReader.readAsText(file);
   }
   
+  onStartBtnClick() { 
+    alert("Mangoose started.");
+  }
 
 }
