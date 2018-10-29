@@ -23,8 +23,6 @@ export class ScenariosComponent implements OnInit {
       return
    }
    this.processingFile = event.target.files[0];
-     console.log("Contet: ", this.processingFile.name)
-
      let fileReader = new FileReader();
      fileReader.onload = () => {
       console.log(fileReader.result);
@@ -43,8 +41,6 @@ export class ScenariosComponent implements OnInit {
     } else { 
       alert("Nothing to be saved.");
     }
-  }
-
-  
+  }  
 
 }
