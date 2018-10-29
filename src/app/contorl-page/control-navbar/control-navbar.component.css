@@ -45,7 +45,6 @@
 .defaults-button, .tests-button { 
     /* Adding margin to every element except the first one to keep it center-alligned */
     margin-left: 7px;
-
 }
 
 .scenarios-button:hover, .defaults-button:hover, .tests-button:hover { 
