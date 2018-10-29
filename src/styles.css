@@ -1,6 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css';
 
 * {
   color: #333333;
   font-family: Quicksand;
-}
+} 

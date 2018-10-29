@@ -10,8 +10,8 @@ import { IpAddress } from '../ipAddress';
 })
 export class HomepageComponent implements OnInit {
 
-  ipAddresses: IpAddress[];
-  selectedIp: IpAddress;
+  ipAddresses: IpAddress[] = null;
+  selectedIp: IpAddress = null;
 
   constructor(private ipAddressService: IpAddressService) { }
 
