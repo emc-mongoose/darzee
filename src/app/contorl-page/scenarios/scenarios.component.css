@@ -1,0 +1,45 @@
+.scenarios-buttons { 
+    position: relative;
+    top: 10px;
+    height: 5%;
+    background: yellow;
+}
+
+.scenarios-open-btn, .scenarios-save-btn { 
+    color: #212121; 
+    font-family: Arimo; 
+    font-size: 14px; 
+    font-weight: normal; 
+    font-style: normal; 
+    text-decoration: none; 
+    text-align: center; 
+    background: #FFFFFF; 
+    border: none; 
+    border-radius: 10px; 
+}
+
+.scenarios-open-btn { 
+    float: left;
+    margin-left: 40px;
+    
+}
+
+.scenarios-save-btn { 
+    float: left;
+    margin-left: 40px;
+}
+
+.scenarios-start-btn { 
+    float: right;
+    margin-right: 40px;
+    color: #FFFFFF; 
+    font-family: Quicksand; 
+    font-size: 10px; 
+    font-weight: bold; 
+    font-style: normal; 
+    text-decoration: none; 
+    text-align: center; 
+    background: #5CB85C; 
+    border: none; 
+    border-radius: 10px; 
+}
