@@ -1,7 +1,9 @@
 <div class="scenarios-buttons">
-  <button class="scenarios-open-btn">
+  <input type="file" style="display:none" accept="text/*" (change)="processFile($event)" #file>
+  <button class="scenarios-open-btn" (click)="file.click()">
   <img src="src/assets/icons/folder-open-icon.svg">
   </button>
+
   <button class="scenarios-save-btn">
       <img src="src/assets/icons/save-icon.svg">
   </button>
