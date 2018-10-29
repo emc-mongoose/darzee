@@ -7,7 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ScenariosComponent implements OnInit {
 
-  constructor() { }
+  private fileContent: string | ArrayBuffer;
+
+  constructor() { 
+    this.fileContent = ""
+  }
 
   ngOnInit() {
   }
@@ -23,11 +27,9 @@ export class ScenariosComponent implements OnInit {
      let fileReader = new FileReader();
      fileReader.onload = () => {
       console.log(fileReader.result);
+      this.fileContent = fileReader.result;
     };
     fileReader.readAsText(file);
-
-
-     // after here 'file' can be accessed and used for further process
   }
   
 

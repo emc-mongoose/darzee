@@ -9,6 +9,10 @@
   </button>
   <button class="scenarios-start-btn"> Start</button>
 </div>
+<div class="file-content-wrapper">
+    <input class="uploaded-file-content" type="text" [(value)]="fileContent" onblur="if(this.value == '') { this.value='Select JavaScript file...'}" onfocus="if (this.value == 'Select JavaScript file...') {this.value=''}">
+</div>
+
 
 <!-- NOTE: Meterial Icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
