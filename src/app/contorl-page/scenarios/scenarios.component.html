@@ -5,10 +5,10 @@
         <img src="src/assets/icons/folder-open-icon.svg">
         </button>
       
-        <button class="scenarios-save-btn">
+        <button class="scenarios-save-btn" (click)="onSaveBtnClicked()">
             <img src="src/assets/icons/save-icon.svg">
         </button>
-        <button class="scenarios-start-btn" (click)="onStartBtnClick()">START</button>
+        <button class="scenarios-start-btn" (click)="onStartBtnClicked()">START</button>
       </div>
       
       <textarea class="uploaded-file-content" rows="40" cols="60" type="text" [(value)]="fileContent" onblur="if(this.value == '') { this.value='Select JavaScript file...'}" onfocus="if (this.value == 'Select JavaScript file...') {this.value=''}">

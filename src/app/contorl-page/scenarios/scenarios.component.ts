@@ -8,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 export class ScenariosComponent implements OnInit {
 
   private fileContent: string | ArrayBuffer;
-
+  private processingFile: File;
   constructor() { 
     this.fileContent = ""
+    this.processFile = null;
   }
 
   ngOnInit() {
@@ -21,19 +22,29 @@ export class ScenariosComponent implements OnInit {
       console.log("File hasn't been selected.");
       return
    }
-     let file: File = event.target.files[0];
-     console.log("Contet: ", file.name)
+   this.processingFile = event.target.files[0];
+     console.log("Contet: ", this.processingFile.name)
 
      let fileReader = new FileReader();
      fileReader.onload = () => {
       console.log(fileReader.result);
       this.fileContent = fileReader.result;
     };
-    fileReader.readAsText(file);
+    fileReader.readAsText(this.processingFile);
   }
   
-  onStartBtnClick() { 
+  onStartBtnClicked() { 
     alert("Mangoose started.");
   }
+  
+  onSaveBtnClicked() {
+    if ((this.processingFile != null) && (this.fileContent.toString() != "")) { 
+      alert("File has been saved.");
+    } else { 
+      alert("Nothing to be saved.");
+    }
+  }
+
+  
 
 }
