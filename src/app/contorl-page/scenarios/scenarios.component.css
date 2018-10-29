@@ -3,6 +3,8 @@
     top: 10px;
     height: 5%;
     background: yellow;
+    align-items: center; /* For vertical alignment */
+    display: flex;
 }
 
 .scenarios-open-btn, .scenarios-save-btn { 
@@ -31,8 +33,11 @@
 }
 
 .scenarios-start-btn { 
-    float: right;
-    margin-right: 40px;
+    float: left;
+    margin-left:70% ;
+    height: 80%;
+    width: 5%;
+   
     color: #FFFFFF; 
     font-family: Quicksand; 
     font-size: 10px; 
