@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { NodesComponent } from './nodes/nodes.component';
 import { IpAddressService } from './ip-address.service';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { IpAddressService } from './ip-address.service';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    AppRoutingModule
     // [NgbModule.forRoot()]
   ],
   providers: [IpAddressService],
