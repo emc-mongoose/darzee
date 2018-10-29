@@ -11,7 +11,7 @@ export class ScenariosComponent implements OnInit {
   private processingFile: File;
   constructor() { 
     this.fileContent = ""
-    this.processFile = null;
+    this.processingFile = null;
   }
 
   ngOnInit() {
