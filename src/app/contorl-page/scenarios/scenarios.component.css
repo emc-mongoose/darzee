@@ -62,11 +62,13 @@
 .uploaded-file-content { 
     display: flex;
     position: relative;
-    display: table;
-  margin: 0 auto;
+    margin: 0 auto;
     top:20px;
-    overflow-y: scroll;
-    word-wrap: break-word;
+    overflow-y: scroll ! important;
+
     background: blue;
     outline: none;
+    max-height: 60vh;
+    width: 90%;
+    font-size: 18px;
 }
