@@ -65,7 +65,7 @@
     margin: 0 auto;
     top:20px;
     overflow-y: scroll ! important;
-
+    resize: none;
     background: blue;
     outline: none;
     max-height: 60vh;
