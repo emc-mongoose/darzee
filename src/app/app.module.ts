@@ -5,13 +5,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
-import { HomepageComponent } from './homepage/homepage.component';
+import { NodesComponent } from './nodes/nodes.component';
 import { IpAddressService } from './ip-address.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomepageComponent
+    NodesComponent
   ],
   imports: [
     BrowserModule,

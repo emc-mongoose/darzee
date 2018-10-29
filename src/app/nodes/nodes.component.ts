@@ -4,11 +4,11 @@ import { IpAddressService } from '../ip-address.service';
 import { IpAddress } from '../ipAddress';
 
 @Component({
-  selector: 'app-homepage',
-  templateUrl: './homepage.component.html',
-  styleUrls: ['./homepage.component.css']
+  selector: 'app-nodes',
+  templateUrl: './nodes.component.html',
+  styleUrls: ['./nodes.component.css']
 })
-export class HomepageComponent implements OnInit {
+export class NodesComponent implements OnInit {
 
   ipAddresses: IpAddress[] = null;
   selectedIp: IpAddress = null;
@@ -29,4 +29,5 @@ export class HomepageComponent implements OnInit {
     this.selectedIp = ip;
     alert(ip.ip);
   }
+
 }

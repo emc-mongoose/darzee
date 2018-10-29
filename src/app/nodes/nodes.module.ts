@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NodesComponent } from './nodes.component';
 import { FormsModule} from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { HomepageComponent } from './homepage.component';
-
 
 @NgModule({
   imports: [
@@ -11,10 +10,8 @@ import { HomepageComponent } from './homepage.component';
     BrowserModule,
     FormsModule
   ],
-  declarations: [HomepageComponent]
+  declarations: [NodesComponent]
 })
-export class HomepageModule {
+export class NodesModule {
   constructor() {}
-
-
 }
