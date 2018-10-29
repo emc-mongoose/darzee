@@ -4,6 +4,10 @@ body {
     rgba(0,0,0,0.1);
     margin: 15%;
     padding: 3%;   
+    font-family: 'Source Sans Pro';
+    font-weight: normal;
+    font-style: normal;
+    text-decoration: none;
 }
 
 .w3-container {
