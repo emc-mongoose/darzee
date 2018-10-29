@@ -40,6 +40,7 @@
     border: none;
     color: white;
     background: #BF7200;
+    outline: none;
 }
 
 .scenarios-button:hover, .defaults-button:hover, .tests-button:hover { 
