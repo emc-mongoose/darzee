@@ -21,7 +21,7 @@ import { ContorlPageModule } from './contorl-page/contorl-page.module';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
     BrowserAnimationsModule,
 
     // NOTE: Custom modules
