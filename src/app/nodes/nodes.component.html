@@ -1,0 +1,49 @@
+
+<body class="w3-container">
+  <div class="mongooseLabel">
+  <img src="assets/images/mongoose.png">
+  <p>
+    Hi! I'm mongoose.
+  </p>
+</div>
+
+<!-- <div class="container">
+<div ngbDropdown class="d-inline-block">
+  <button class="btn btn-outline-primary nav-link dropdown-toggle"  id="ip" ngbDropdownToggle>Select Node...</button>
+  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="ip" ngbDropdownMenu>
+    <button class="dropdown-item" *ngFor="let ipAddress of ipAddresses" (click)="onChange(ipAddress)">{{ ipAddress.ip }}</button>
+  </div>
+</div>
+</div> -->
+  <span class="label describing">
+    <br/>Mongoose is a powerful storage <br/>
+    performance testing tool.<br/>
+    <br/>To begin, enter the entry node
+    <br/>address to start the mongoose:<br/>
+
+    <!-- -------USING ANGULAR-------------- -->
+    <select [(ngModel)]="ipAddress" (ngModelChange)="onChange(ipAddress)">
+      <!-- <option selected disabled [ngValue]="null"  >Choose Node...</option> -->
+      <option *ngFor="let ipAddress of ipAddresses" [ngValue]="ipAddress">
+        {{ ipAddress.ip }}
+      </option>
+    </select>
+    
+
+    <!-- -----------USING BOOTSTRAP----------- -->
+    <!-- <div class="container">
+      <div class="ui-menu-item dropdown">
+        <div ngbDropdown class="d-inline-block">
+          <button class="btn btn-outline-primary dropdown-toggle" 
+            data-toggle="ngbDropdown"  
+            id="ip" ngbDropdownToggle>Select Node...</button>
+          <div class="dropdown-menu" aria-labelledby="ip" ngbDropdownMenu>
+            <a class="dropdown-item" *ngFor="let ipAddress of ipAddresses" 
+            (click)="onChange(ipAddress)">{{ ipAddress.ip }}</a>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+  </span>
+</body>
