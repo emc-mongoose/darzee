@@ -1,0 +1,74 @@
+.scenarios-wrapper { 
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* NOTE: Configuring buttons */
+.scenarios-buttons { 
+    position: relative;
+    top: 10px;
+    height: 5%;
+    background: white;
+    align-items: center; /* For vertical alignment */
+    display: flex; 
+}
+.scenarios-open-btn, .scenarios-save-btn, .scenarios-start-btn { 
+    border-radius: 10px; 
+    border: none; 
+    text-align: center; 
+    font-style: normal; 
+    font-size: 14px; 
+    outline: none;
+}
+.scenarios-open-btn, .scenarios-save-btn { 
+    color: #212121; 
+    font-family: Arimo; 
+    font-weight: normal; 
+    background: #FFFFFF; 
+}
+
+.scenarios-open-btn:hover, .scenarios-save-btn:hover { 
+    background: #f5f5f5;
+} 
+
+.scenarios-open-btn { 
+    float: left;
+    margin-left: 40px;
+    background: "src/assets/icons/folder-open-icon.svg";
+}
+
+.scenarios-save-btn { 
+    float: left;
+    margin-left: 40px;
+}
+
+.scenarios-start-btn { 
+    float: left;
+    margin-left:70% ;
+    width: 8%;
+    height: 30px;
+   
+    color: #FFFFFF; 
+    font-family: Quicksand; 
+    font-weight: bold; 
+    background: #5CB85C;    
+}
+
+.scenarios-start-btn:hover { 
+    background: rgb(100, 201, 100);    
+}
+
+/* NOTE: Configuring content textview */
+.uploaded-file-content { 
+    display: flex;
+    position: relative;
+    margin: 0 auto;
+    top: 20px;
+    overflow-y: scroll ! important;
+    resize: none;
+    background: #f5f5f5;
+    outline: none;
+    max-height: 60vh;
+    width: 90%;
+    font-size: 18px;
+}
