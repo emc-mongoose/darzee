@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import { NodesComponent } from './nodes/nodes.component';
 import { IpAddressService } from './ip-address.service';
 import { AppRoutingModule } from './app-routing.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ContorlPageModule } from './contorl-page/contorl-page.module';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,10 @@ import { AppRoutingModule } from './app-routing.module';
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule
-    // [NgbModule.forRoot()]
+    BrowserAnimationsModule,
+
+    // NOTE: Custom modules
+    ContorlPageModule
   ],
   providers: [IpAddressService],
   bootstrap: [AppComponent],
