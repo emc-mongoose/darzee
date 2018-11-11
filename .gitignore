@@ -10,3 +10,8 @@ target
 *.ipr
 *.iws
 out
+.gitconfig
+.gitmessage
+build/
+.vscode/
+dist/
