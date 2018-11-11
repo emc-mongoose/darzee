@@ -1,0 +1,1 @@
+http://localhost:3000/api/datasources/proxy/1/api/v1/query_range?query=topk(5%2C%20max(scrape_duration_seconds)%20by%20(job))&start=1541954970&end=1541958600&step=30
