@@ -19,7 +19,7 @@ To push image to Docker hub
 
 ` ./gradlew pushImage`
 
-#### Docker Compose
+#### Docker Compose (recommended)
 
 If you have [Docker Compose](https://docs.docker.com/compose/install/) installed, you could start the server using docker-compose:
 
