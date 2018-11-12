@@ -1,3 +1,0 @@
-<div class="clock-panel" ng-style="{height: ctrl.height}">
-<div>{{ctrl.svg}}</div>
-</div>

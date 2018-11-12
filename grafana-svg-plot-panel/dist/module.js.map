@@ -1,1 +1,0 @@
-{"version":3,"sources":["../src/module.js"],"names":["SVGCtrl"],"mappings":";;;;;;;;AAAQA,a,aAAAA,O;;;2BAGNA,O","file":"module.js","sourcesContent":["import {SVGCtrl} from './svg_ctrl';\n\nexport {\n  SVGCtrl as PanelCtrl\n};\n"]}
