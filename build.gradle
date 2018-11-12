@@ -81,7 +81,7 @@ task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
     imageId = 'emcmongoose/mongoose-console'
-    tag = 'emcmongoose/mongoose-console:0.1.0'
+    tags = ['emcmongoose/mongoose-console:0.1.0', 'emcmongoose/mongoose-console:latest']
 }
 
 task tagImage(type: DockerTagImage, dependsOn: 'buildImage'){
