@@ -23,8 +23,8 @@
     <div class="column right">
       <ul class="ipAddresses" style="list-style-type: none">
         <li *ngFor="let ipAddress of ipAddresses">
-          <span>{{ ipAddress.ip }}</span>
-          <button class="deleteIp" title="delete IP address" (click)="deleteIp(ipAddress)"> &#10006; </button>
+          <span class="ipAddr">{{ ipAddress.ip }}</span>
+          <button class="buttonDel" title="delete IP address" (click)="deleteIp(ipAddress)">&#10005;</button>
         </li>
       </ul>
     </div>
