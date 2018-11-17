@@ -22,7 +22,6 @@ export class NodesComponent implements OnInit {
 
   addIp(ip: string): void {
    
-    // console.log('Added IP is: ' + ip);
     if (!ip) {
       console.log('ip null');
     }
@@ -30,7 +29,6 @@ export class NodesComponent implements OnInit {
   }
 
   deleteIp(ipAddr: IpAddress): void {
-    // console.log('ip for delete:' + ipAddr.ip);
     this.ipAddressService.deleteIp(ipAddr.ip);
   }
 

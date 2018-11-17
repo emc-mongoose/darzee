@@ -19,9 +19,7 @@ body {
 
 .column {
     float: left;
-    /* padding: 1px; */
     position: relative;
-    /* justify-content: center; */
 }
 
 .left, .middle {
@@ -29,7 +27,6 @@ body {
     top: 50%;
     transform: translateY(-50%);
     width: 30%;
-    /* background-color: aquamarine; */
 }
 
 .right {
@@ -37,7 +34,6 @@ body {
     top: 50%;
     transform: translateY(-50%);
     width:40%;
-    /* background-color: yellow; */
 }
 
 img {
@@ -71,7 +67,6 @@ input {
 }
  
 li, .ipAssresses {
-    /* width: 100%; */
     margin: 2px 2px;
     padding: 8px;
     color: #212121;
@@ -85,10 +80,6 @@ li, .ipAssresses {
 .w3-container {
     display: flex;
 }
-
-/* .element {
-    margin: auto;
-}   */
 
 @media screen and (max-width: 500px) {
     .column {
