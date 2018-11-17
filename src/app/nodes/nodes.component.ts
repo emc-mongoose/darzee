@@ -22,7 +22,7 @@ export class NodesComponent implements OnInit {
 
   addIp(ip: string): void {
    
-    console.log('Added IP is: ' + ip);
+    // console.log('Added IP is: ' + ip);
     if (!ip) {
       console.log('ip null');
     }

@@ -34,8 +34,8 @@ export class IpAddressService {
     // console.log('ip in service:' + ip);
     this.ipAddresses.forEach(element => {
       if (ip == element.ip){
-        // console.log('IN LOOP!');
-        this.ipAddresses.splice(element.id, 1);
+        console.log('ID FOR DEL  ' + this.ipAddresses.indexOf(element));
+        this.ipAddresses.splice(this.ipAddresses.indexOf(element), 1);  //  create reindex function
       }
     });
   }

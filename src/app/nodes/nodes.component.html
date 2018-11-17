@@ -10,9 +10,10 @@
         <br />address to start the mongoose:<br />
 
         <div class="addIp">
-          <input #ip name="ip" (ngModel)="ip" placeholder="IP address"/>
+          <p #ipAd hidden="true">{{ ip }}</p>
+          <input [(ngModel)]="ip" placeholder="enter IP here..."/>
           <button class="buttonAdd" title="add IP address"
-            (click)="addIp(ip.value); ip.value=''">
+            (click)="addIp(ipAd.textContent)">
             Add
           </button>
         </div>
@@ -23,7 +24,7 @@
       <ul class="ipAddresses" style="list-style-type: none">
         <li *ngFor="let ipAddress of ipAddresses">
           <span>{{ ipAddress.ip }}</span>
-          <button class="deleteIp" title="delete IP address" (click)="deleteIp(ipAddress)">--</button>
+          <button class="deleteIp" title="delete IP address" (click)="deleteIp(ipAddress)"> &#10006; </button>
         </li>
       </ul>
     </div>

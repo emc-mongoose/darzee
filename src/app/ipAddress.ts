@@ -5,13 +5,14 @@ export class IpAddress {
     ip: string;
 
     private static identifier = 0;
-    static getUniqueIdentifier(): number { 
-        IpAddress.identifier++;
-        return IpAddress.identifier
+
+    static getUniqueIdentifier(): number {        
+        return IpAddress.identifier;
     }
 
-    constructor(ip: string) { 
-        this.ip = ip; 
-        this.id = IpAddress.getUniqueIdentifier()
+    constructor(ip: string) {
+        this.ip = ip;
+        this.id = IpAddress.getUniqueIdentifier();
+        IpAddress.identifier++;
     }
 }
