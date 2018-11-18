@@ -16,7 +16,7 @@ export class ScenariosComponent implements OnInit {
 
   readonly scenarioEditorOptions = {
     lineNumbers: true,
-    theme: 'material',
+    theme: 'default',
     mode: { name: 'javascript', typescript: true },
   };
 
