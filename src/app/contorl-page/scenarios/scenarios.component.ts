@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { IpAddressService } from 'src/app/ip-address.service';
 
 @Component({
   selector: 'app-scenarios',
@@ -9,7 +10,7 @@ export class ScenariosComponent implements OnInit {
 
   private fileContent: string | ArrayBuffer;
   private processingFile: File;
-  constructor() { 
+  constructor(private service: IpAddressService) { 
     this.fileContent = ""
     this.processingFile = null;
   }
@@ -27,6 +28,7 @@ export class ScenariosComponent implements OnInit {
      fileReader.onload = () => {
       console.log(fileReader.result);
       this.fileContent = fileReader.result;
+      this.service.fileContent = fileReader.result;
     };
     fileReader.readAsText(this.processingFile);
   }

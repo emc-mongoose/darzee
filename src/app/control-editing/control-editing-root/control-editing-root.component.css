@@ -1,0 +1,69 @@
+
+.editing-elements { 
+    background: #F5F5F5;
+    width: 80%;
+    position: absolute;;
+    left: 120px;
+}
+.editing-root-wrapper { 
+    background: white;
+    position: static;
+    margin-left: 5%;
+    margin-top: 5%;
+    margin-bottom: 100px;
+    max-width: 90%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+.app-new-values-handling { 
+    float: right;
+}
+
+.app-editing-scenarios { 
+    float: left;
+}
+
+.previous-button  { 
+    position: absolute;
+    bottom: 20px;
+
+    background-color: white;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+
+.start-button { 
+    position: absolute;
+    bottom: 20px;
+    border: none;
+    right: 20px;
+    height: 40px;
+    width: 60px;
+    border-radius: 10px; 
+    text-align: center; 
+    font-style: normal; 
+    font-size: 14px; 
+    outline: none;
+
+    color: #FFFFFF; 
+    font-family: Quicksand; 
+    font-weight: bold; 
+    background: #5CB85C;    
+}
+
+.start-button:hover { 
+    background: rgb(100, 201, 100);    
+
+}
+
+.previous-button { 
+    left: 20px;
+}

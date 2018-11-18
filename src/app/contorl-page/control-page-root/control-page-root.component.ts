@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-control-page-root',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ControlPageRootComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
 
+  onNavigateNextClicked() { 
+    this.router.navigate(["/editing-scenarios"])
+  }
+
+  onNavigatePreviousClicked() { 
+    this.router.navigate(["/nodes"])
+  }
 }
