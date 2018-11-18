@@ -59,7 +59,7 @@
 }
 
 /* NOTE: Configuring content textview */
-.uploaded-file-content { 
+.ngx-codemirror { 
     display: flex;
     position: relative;
     margin: 0 auto;

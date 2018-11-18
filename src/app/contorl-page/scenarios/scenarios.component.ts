@@ -62,6 +62,7 @@ export class ScenariosComponent implements OnInit {
      fileReader.onload = () => {
       console.log(fileReader.result);
       this.fileContent = fileReader.result;
+      this.setValueForEditor(this.fileContent.toString());
       this.service.fileContent = fileReader.result;
     };
     fileReader.readAsText(this.processingFile);
