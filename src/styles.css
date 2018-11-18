@@ -1,1 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* NOTE: CodeMirror's styles for displaying a code properly */
+
+@import "~codemirror/lib/codemirror.css";
+@import "~codemirror/theme/material.css";

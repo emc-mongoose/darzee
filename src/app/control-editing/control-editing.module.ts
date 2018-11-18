@@ -4,10 +4,13 @@ import { ControlEditingRootComponent } from './control-editing-root/control-edit
 import { EditingScenariosComponent } from './editing-scenarios/editing-scenarios.component';
 import { NewValuesHandlingComponent } from './new-values-handling/new-values-handling.component';
 
+
+
 @NgModule({
   imports: [
     CommonModule
   ],
+
   declarations: [ControlEditingRootComponent, EditingScenariosComponent, NewValuesHandlingComponent]
 })
 export class ControlEditingModule { }
