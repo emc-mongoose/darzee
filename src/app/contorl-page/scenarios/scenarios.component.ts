@@ -14,6 +14,12 @@ export class ScenariosComponent implements OnInit {
 
   @ViewChild('scenarioCodeEditor') codeEditor: CodemirrorComponent;
 
+  readonly scenarioEditorOptions = {
+    lineNumbers: true,
+    theme: 'material',
+    mode: { name: 'javascript', typescript: true },
+  };
+
   private fileContent: string | ArrayBuffer;
   private processingFile: File;
 
