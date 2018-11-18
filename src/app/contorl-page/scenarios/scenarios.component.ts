@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { IpAddressService } from 'src/app/ip-address.service';
+import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
+import { Doc } from 'codemirror';
+
+
 
 @Component({
   selector: 'app-scenarios',
@@ -8,14 +12,44 @@ import { IpAddressService } from 'src/app/ip-address.service';
 })
 export class ScenariosComponent implements OnInit {
 
+  @ViewChild('scenarioCodeEditor') codeEditor: CodemirrorComponent;
+
   private fileContent: string | ArrayBuffer;
   private processingFile: File;
+
   constructor(private service: IpAddressService) { 
     this.fileContent = ""
     this.processingFile = null;
   }
 
+
+  // MARK: - Component lifecycle
+
   ngOnInit() {
+  }
+
+  ngAfterViewInit() { 
+    this.setValueForEditor("Select Javascript file..");
+  }
+
+  private setValueForEditor(newValue: string) { 
+    const { doc } = this;
+    if (doc) { 
+      doc.setValue(newValue);
+    }
+  }
+
+  private getValueFromEditor(): string | undefined { 
+    const { doc } = this;
+    if (!doc) { 
+      return null;
+    }
+    return doc.getValue(); 
+  }
+
+  get doc() {
+    // NOTE: The "core" of CodeMirror editor is Doc. 
+    return (this.codeEditor.codeMirror as any) as Doc;
   }
 
   processFile(event) { 
@@ -45,4 +79,7 @@ export class ScenariosComponent implements OnInit {
     }
   }  
 
+  onScenarioEditorFocusChange() { 
+    console.log("focus has changed");
+  }
 }
