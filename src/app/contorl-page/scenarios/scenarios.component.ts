@@ -98,7 +98,27 @@ export class ScenariosComponent implements OnInit {
     return ((doc) && (textFromCodeEditor != "") && (textFromCodeEditor!= this.CODE_EDITOR_PLACEHOLDER));
   }
 
+  private changeTextFieldPlaceholder() { 
+    const { doc } = this;
+    if (!doc) {
+      console.log("Couldn't connect to code editor."); 
+      return; 
+    }
+    const codeEditorText = doc.getValue(); 
+    const emptyString = "";
+    switch (codeEditorText) { 
+      case this.CODE_EDITOR_PLACEHOLDER: {
+        doc.setValue(emptyString);
+        break; 
+      }
+      case emptyString: {
+        doc.setValue(this.CODE_EDITOR_PLACEHOLDER);
+        break;
+      }
+    }
+  }
+
   onScenarioEditorFocusChange() { 
-    console.log("focus has changed");
+    this.changeTextFieldPlaceholder();
   }
 }
