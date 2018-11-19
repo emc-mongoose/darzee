@@ -13,7 +13,7 @@
     align-items: center; /* For vertical alignment */
     display: flex; 
 }
-.scenarios-open-btn, .scenarios-save-btn, .scenarios-start-btn { 
+.scenarios-open-btn, .scenarios-save-btn { 
     border-radius: 10px; 
     border: none; 
     text-align: center; 
@@ -43,21 +43,6 @@
     margin-left: 40px;
 }
 
-.scenarios-start-btn { 
-    float: left;
-    margin-left:60%;
-    width: 8%;
-    height: 30px;
-   
-    color: #FFFFFF; 
-    font-family: Quicksand; 
-    font-weight: bold; 
-    background: #5CB85C;    
-}
-
-.scenarios-start-btn:hover { 
-    background: rgb(100, 201, 100);    
-}
 
 /* NOTE: Configuring content textview
 .ngx-codemirror { 

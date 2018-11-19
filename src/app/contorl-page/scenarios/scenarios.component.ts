@@ -74,9 +74,6 @@ export class ScenariosComponent implements OnInit {
     fileReader.readAsText(this.processingFile);
   }
   
-  onStartBtnClicked() { 
-    alert("Mangoose started.");
-  }
   
   onSaveBtnClicked() {
     if ((this.processingFile != null) && (this.fileContent.toString() != "")) { 
