@@ -24,6 +24,8 @@ export class ScenariosComponent implements OnInit {
   private fileContent: string | ArrayBuffer;
   private processingFile: File;
 
+  readonly CODE_EDITOR_PLACEHOLDER = "Select Javascript file..";
+
   constructor(private service: IpAddressService) { 
     this.fileContent = ""
     this.processingFile = null;
@@ -36,7 +38,7 @@ export class ScenariosComponent implements OnInit {
   }
 
   ngAfterViewInit() { 
-    this.setValueForEditor("Select Javascript file..");
+    this.setValueForEditor(this.CODE_EDITOR_PLACEHOLDER);
   }
 
   private setValueForEditor(newValue: string) { 
@@ -78,17 +80,23 @@ export class ScenariosComponent implements OnInit {
   
   onSaveBtnClicked() {
     const { doc } = this;
-    if ((doc) && (this.getValueFromEditor().toString() != "")) { 
-      alert("File has been saved.");
+    if (this.isSavingAvaliable()) { 
       const parts: string[] = this.getValueFromEditor().split(';');
       const filename = "Mongoose_Scenario";
       var blob = new Blob(parts, {type: "text/plain;charset=utf-8"});
       saveAs(blob, filename);
+      alert("File has been saved.");
     } else { 
-      alert("Nothing to be saved.");
+      alert("File couldn't be saved because it hasn't been edited.");
     }
     
   }  
+
+  private isSavingAvaliable(): boolean { 
+    const { doc } = this;
+    const textFromCodeEditor = this.getValueFromEditor().toString();
+    return ((doc) && (textFromCodeEditor != "") && (textFromCodeEditor!= this.CODE_EDITOR_PLACEHOLDER));
+  }
 
   onScenarioEditorFocusChange() { 
     console.log("focus has changed");
