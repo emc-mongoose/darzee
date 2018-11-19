@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { IpAddressService } from 'src/app/ip-address.service';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { Doc } from 'codemirror';
+import { saveAs } from 'file-saver';
 
 
 
@@ -76,11 +77,17 @@ export class ScenariosComponent implements OnInit {
   
   
   onSaveBtnClicked() {
-    if ((this.processingFile != null) && (this.fileContent.toString() != "")) { 
+    const { doc } = this;
+    if ((doc) && (this.getValueFromEditor().toString() != "")) { 
       alert("File has been saved.");
+      const parts: string[] = this.getValueFromEditor().split(';');
+      const filename = "Mongoose_Scenario";
+      var blob = new Blob(parts, {type: "text/plain;charset=utf-8"});
+      saveAs(blob, filename);
     } else { 
       alert("Nothing to be saved.");
     }
+    
   }  
 
   onScenarioEditorFocusChange() { 
