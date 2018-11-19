@@ -1,6 +1,7 @@
 .scenarios-wrapper { 
     flex-wrap: wrap;
     align-items: center;
+    
 }
 
 /* NOTE: Configuring buttons */
@@ -44,7 +45,7 @@
 
 .scenarios-start-btn { 
     float: left;
-    margin-left:70% ;
+    margin-left:60%;
     width: 8%;
     height: 30px;
    
@@ -58,7 +59,7 @@
     background: rgb(100, 201, 100);    
 }
 
-/* NOTE: Configuring content textview */
+/* NOTE: Configuring content textview
 .ngx-codemirror { 
     display: flex;
     position: relative;
@@ -71,4 +72,18 @@
     max-height: 60vh;
     width: 90%;
     font-size: 18px;
+} */
+
+.code-editor-wrapper { 
+    border: 1px black solid;
+    display: block;
+    top: 20px;
+    margin-top: 50px;
+    background: green;
+}
+
+.scenarios-page-wrapper { 
+    height: 600px;
+    background: white;
+    
 }
