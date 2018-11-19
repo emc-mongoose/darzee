@@ -12,4 +12,8 @@ export class NewValuesHandlingComponent implements OnInit {
   ngOnInit() {
   }
 
+  onApplyButtonClicked() { 
+    alert("New value has been applied.");
+  }
+
 }
