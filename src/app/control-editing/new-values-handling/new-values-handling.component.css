@@ -16,6 +16,7 @@
 .apply-new-value-button { 
     background: #BDBDBD;
     border: none;
+    outline: none;
 }
 
 .apply-new-value-button:hover { 
