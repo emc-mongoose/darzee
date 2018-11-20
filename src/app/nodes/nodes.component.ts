@@ -21,15 +21,26 @@ export class NodesComponent implements OnInit {
   }
 
   addIp(ip: string): void {
-   
+    
+    const regExpr = new 
+      RegExp('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$');
+    ip = ip.trim();
+    
     if (!ip) {
       console.log('ip null');
     }
-    this.ipAddressService.saveIpAddress(ip);
+
+    if (regExpr.test(ip)) {
+      this.ipAddressService.saveIpAddress(ip);
+    } else {
+      alert('Invalid IP!  ' + ip);
+    }
   }
 
   deleteIp(ipAddr: IpAddress): void {
     this.ipAddressService.deleteIp(ipAddr.ip);
   }
+
+
 
 }
