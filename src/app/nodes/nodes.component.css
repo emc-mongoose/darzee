@@ -107,6 +107,13 @@ input {
     outline-offset: 0; 
 }
 
+ul {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+}
+
 @media screen and (max-width: 500px) {
     .column {
         width: 100%;
