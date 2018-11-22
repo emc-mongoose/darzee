@@ -1,0 +1,24 @@
+.apply-new-value-button p { 
+    float: left;
+    font-size: 10px;
+}
+
+.apply-new-value-button img { 
+    float: right;
+}
+
+.apply-button-content-wrppaer { 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+}
+.apply-new-value-button { 
+    background: #BDBDBD;
+    border: none;
+    outline: none;
+}
+
+.apply-new-value-button:hover { 
+    background: rgb(156, 156, 156);
+}

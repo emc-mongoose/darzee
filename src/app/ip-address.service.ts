@@ -15,6 +15,8 @@ export class IpAddressService {
 
   ipAddresses: IpAddress[] = [];
 
+  public fileContent: string | ArrayBuffer = "";
+
   constructor(private http: HttpClient) {}
 
   getIpAddresses(): IpAddress[] {    
