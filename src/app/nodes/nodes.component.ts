@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IpAddressService } from '../ip-address.service';
 
 import { IpAddress } from '../ipAddress';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nodes',
@@ -13,7 +14,7 @@ export class NodesComponent implements OnInit {
   ipAddresses: IpAddress[] = null;
   selectedIp: IpAddress = null;
 
-  constructor(private ipAddressService: IpAddressService) { }
+  constructor(private ipAddressService: IpAddressService, private router: Router) { }
 
   ngOnInit() {
     this.getIpAddresses();
@@ -28,6 +29,10 @@ export class NodesComponent implements OnInit {
   onChange(ip: IpAddress): void {
     this.selectedIp = ip;
     alert(ip.ip);
+  }
+
+  onNavigateNextClicked() { 
+    this.router.navigate(["/control"]);
   }
 
 }

@@ -10,6 +10,7 @@ import { IpAddressService } from './ip-address.service';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ContorlPageModule } from './contorl-page/contorl-page.module';
+import { ControlEditingModule } from './control-editing/control-editing.module';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { ContorlPageModule } from './contorl-page/contorl-page.module';
     BrowserAnimationsModule,
 
     // NOTE: Custom modules
-    ContorlPageModule
+    ContorlPageModule,
+    ControlEditingModule
   ],
   providers: [IpAddressService],
   bootstrap: [AppComponent],
