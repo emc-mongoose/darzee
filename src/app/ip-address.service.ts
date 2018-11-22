@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 import { IpAddress } from './ipAddress';
 import { Config } from './config';
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json'})
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
 @Injectable({
@@ -15,18 +16,27 @@ const httpOptions = {
 export class IpAddressService {
 
   ipAddresses: IpAddress[] = [];
-  config : any = null;
+  // config : any = null;
+  config: Config[] = [];
 
   public fileContent: string | ArrayBuffer = "";
 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getConfig(): Observable<any> {
-    return this.http.get('http://localhost:9999/config');
+  getConfig(ip: string): Observable<any> {
+    return this.http.get('http://' + ip + '/config')
+    // return this.http.get('http://localhost:9999/config')
+      .pipe(
+        map(data => {
+          console.log('ip is :' + ip);
+          this.config.push(new Config(ip, data));
+          // console.log(data);
+        })
+      );
   }
 
-  getIpAddresses(): IpAddress[] {    
+  getIpAddresses(): IpAddress[] {
     return this.ipAddresses;
   }
 
@@ -37,7 +47,7 @@ export class IpAddressService {
 
   deleteIp(ip: string): void {
     this.ipAddresses.forEach(element => {
-      if (ip == element.ip){
+      if (ip == element.ip) {
         console.log('ID FOR DEL  ' + this.ipAddresses.indexOf(element));  //for debug
         this.ipAddresses.splice(this.ipAddresses.indexOf(element), 1);
       }
@@ -45,7 +55,7 @@ export class IpAddressService {
   }
 
   // for http requests
-  private handleError<T> (operation = 'operation', result?: T) {
+  private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(error);
       return of(result as T);

@@ -30,6 +30,7 @@ export class NodesComponent implements OnInit {
       console.log('ip null');
     }
     this.ipAddressService.saveIpAddress(ip);
+    console.log(ip);
   }
 
   deleteIp(ipAddr: IpAddress): void {
@@ -37,15 +38,26 @@ export class NodesComponent implements OnInit {
   }
 
   onNavigateNextClicked() { 
-    
-    this.ipAddressService.getConfig()
+    console.log(this.ipAddresses[0].ip);
+    this.ipAddresses.forEach(element => {
+      console.log(element.ip);
+      this.ipAddressService.getConfig(element.ip)
       .pipe(
-        // map(data => data.json()))
         map(data => console.log(data)))
-      .subscribe(data => { 
-        this.config = data;
-        console.log(data);
-      });
+      .subscribe(
+        // data => { 
+        // this.config = data;
+        // console.log(data);
+      // }
+      );
+    });
+    // this.ipAddressService.getConfig()
+    //   .pipe(
+    //     map(data => console.log(data)))
+    //   .subscribe(data => { 
+    //     this.config = data;
+    //     console.log(data);
+    //   });
 
     // this.router.navigate(["/control"]);
   }
