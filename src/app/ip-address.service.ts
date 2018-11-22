@@ -3,6 +3,7 @@ import { Observable, of, observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { IpAddress } from './ipAddress';
+import { Config } from './config';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json'})
@@ -14,10 +15,16 @@ const httpOptions = {
 export class IpAddressService {
 
   ipAddresses: IpAddress[] = [];
+  config : any = null;
 
   public fileContent: string | ArrayBuffer = "";
 
   constructor(private http: HttpClient) {}
+
+  getConfig(): Observable<any> {
+    const configTargetURL = '/config';
+    return this.http.get(configTargetURL);
+  }
 
   getIpAddresses(): IpAddress[] {    
     return this.ipAddresses;

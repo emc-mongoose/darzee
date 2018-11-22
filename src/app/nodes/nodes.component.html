@@ -11,9 +11,8 @@
 
         <div class="addIp">
           <p #ipAd hidden="true">{{ ip }}</p>
-          <input [(ngModel)]="ip" placeholder="enter IP here..."/>
-          <button class="buttonAdd" title="add IP address"
-            (click)="addIp(ipAd.textContent)">
+          <input [(ngModel)]="ip" placeholder="enter IP here..." />
+          <button class="buttonAdd" title="add IP address" (click)="addIp(ipAd.textContent)">
             Add
           </button>
         </div>
@@ -27,12 +26,11 @@
           <button class="buttonDel" title="delete IP address" (click)="deleteIp(ipAddress)">&#10005;</button>
         </li>
       </ul>
-    </div>
-    
-  </div>
+    </div> 
 
+  </div>
 </body>
 
 <button class="next-button" (click)="onNavigateNextClicked()">
-  <img src="src/assets/icons/icon-navigate-next.svg">
-</button>
+   <img src="assets/icons/icon-navigate-next.svg">
+ </button>

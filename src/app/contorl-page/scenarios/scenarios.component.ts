@@ -74,7 +74,7 @@ export class ScenariosComponent implements OnInit {
       this.service.fileContent = fileReader.result;
     };
     fileReader.readAsText(this.processingFile);
-  }  
+  }
   
   onSaveBtnClicked() {
     const { doc } = this;
@@ -89,7 +89,8 @@ export class ScenariosComponent implements OnInit {
     }
     
   }  
-  onStartBtnClicked() {
+
+    onStartBtnClicked() {
     alert('Mongoose started.');
   }
 
@@ -98,7 +99,7 @@ export class ScenariosComponent implements OnInit {
     const textFromCodeEditor = this.getValueFromEditor().toString();
     return ((doc) && (textFromCodeEditor != "") && (textFromCodeEditor!= this.CODE_EDITOR_PLACEHOLDER));
   }
-
+  
   private changeTextFieldPlaceholder() { 
     const { doc } = this;
     if (!doc) {
