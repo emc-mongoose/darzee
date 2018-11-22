@@ -31,7 +31,6 @@ export class ScenariosComponent implements OnInit {
     this.processingFile = null;
   }
 
-
   // MARK: - Component lifecycle
 
   ngOnInit() {
@@ -64,10 +63,10 @@ export class ScenariosComponent implements OnInit {
   processFile(event) { 
     if (event.target.files.length == 0) {
       console.log("File hasn't been selected.");
-      return
+      return;
    }
    this.processingFile = event.target.files[0];
-     let fileReader = new FileReader();
+     const fileReader = new FileReader();
      fileReader.onload = () => {
       console.log(fileReader.result);
       this.fileContent = fileReader.result;
@@ -75,8 +74,7 @@ export class ScenariosComponent implements OnInit {
       this.service.fileContent = fileReader.result;
     };
     fileReader.readAsText(this.processingFile);
-  }
-  
+  }  
   
   onSaveBtnClicked() {
     const { doc } = this;
@@ -91,6 +89,9 @@ export class ScenariosComponent implements OnInit {
     }
     
   }  
+  onStartBtnClicked() {
+    alert('Mongoose started.');
+  }
 
   private isSavingAvaliable(): boolean { 
     const { doc } = this;
