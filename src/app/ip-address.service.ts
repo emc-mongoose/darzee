@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { Observable, of, observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { IpAddress } from './ipAddress';
-import { IPADDRESSES } from './mock-ipAddresses';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json'})
@@ -15,21 +13,31 @@ const httpOptions = {
 })
 export class IpAddressService {
 
+  ipAddresses: IpAddress[] = [];
+
   public fileContent: string | ArrayBuffer = "";
 
-  constructor(
-    private http: HttpClient,
-    ) { }
+  constructor(private http: HttpClient) {}
 
-  getIpAddresses(): Observable<IpAddress[]> {
-
-    return of(IPADDRESSES);
+  getIpAddresses(): IpAddress[] {    
+    return this.ipAddresses;
   }
 
-  connectNode(): void {
-    // this.http.
+  saveIpAddress(ip: string) {
+    const address = new IpAddress(ip);
+    this.ipAddresses.push(address);
   }
 
+  deleteIp(ip: string): void {
+    this.ipAddresses.forEach(element => {
+      if (ip == element.ip){
+        console.log('ID FOR DEL  ' + this.ipAddresses.indexOf(element));  //for debug
+        this.ipAddresses.splice(this.ipAddresses.indexOf(element), 1);
+      }
+    });
+  }
+
+  // for http requests
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(error);
