@@ -20,6 +20,8 @@ export class IpAddressService {
   public fileContent: string | ArrayBuffer = "";
 
 
+  public fileContent: string | ArrayBuffer = "";
+
   constructor(private http: HttpClient) {}
 
   getConfig(): Observable<any> {

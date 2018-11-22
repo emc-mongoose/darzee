@@ -15,7 +15,6 @@ export class NodesComponent implements OnInit {
 
   ipAddresses: IpAddress[] = null;
   ip: string = "";
-
   config : any = null;
 
   constructor(private ipAddressService: IpAddressService, private router: Router) { }
@@ -37,8 +36,7 @@ export class NodesComponent implements OnInit {
   }
 
   onNavigateNextClicked() { 
-    
-    this.ipAddressService.getConfig()
+        this.ipAddressService.getConfig()
       .pipe(
         // map(data => data.json()))
         map(data => console.log(data)))
@@ -46,8 +44,6 @@ export class NodesComponent implements OnInit {
         this.config = data;
         console.log(data);
       });
-
     // this.router.navigate(["/control"]);
   }
-
 }
