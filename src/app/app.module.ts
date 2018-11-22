@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { NodesComponent } from './nodes/nodes.component';
+// import { NodesComponent } from './nodes/nodes.component';
 import { IpAddressService } from './ip-address.service';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -14,7 +14,7 @@ import { ControlEditingModule } from './control-editing/control-editing.module';
 @NgModule({
   declarations: [
     AppComponent,
-    NodesComponent
+    // NodesComponent
   ],
   imports: [
     BrowserModule,
