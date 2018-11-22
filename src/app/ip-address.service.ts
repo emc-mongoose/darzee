@@ -23,7 +23,8 @@ export class IpAddressService {
   constructor(private http: HttpClient) {}
 
   getConfig(): Observable<any> {
-    return this.http.get('http://localhost:9999/config');
+    const configTargetURL = '/config';
+    return this.http.get(configTargetURL);
   }
 
   getIpAddresses(): IpAddress[] {    
