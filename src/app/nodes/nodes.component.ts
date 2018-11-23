@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IpAddressService } from '../ip-address.service';
 import { map } from 'rxjs/operators';
 
+import { Config } from '../config';
 import { IpAddress } from '../ipAddress';
 import { Router } from '@angular/router';
 
@@ -42,24 +43,21 @@ export class NodesComponent implements OnInit {
     this.ipAddresses.forEach(element => {
       console.log(element.ip);
       this.ipAddressService.getConfig(element.ip)
-      .pipe(
-        map(data => console.log(data)))
-      .subscribe(
-        // data => { 
-        // this.config = data;
-        // console.log(data);
-      // }
-      );
-    });
-    // this.ipAddressService.getConfig()
-    //   .pipe(
-    //     map(data => console.log(data)))
-    //   .subscribe(data => { 
-    //     this.config = data;
-    //     console.log(data);
-    //   });
+        .pipe(
+          map(data => { 
+            this.ipAddressService.config.push(new Config(element.ip, data));
+            console.log('pushed'); })
+         );
+          
+          // this.ipAddressService.config.push(new Config(element.ip, data)))
+      });
 
-    // this.router.navigate(["/control"]);
+    if (this.ipAddressService.config.length == 0) {
+      alert('Can not get config!');
+    } else {
+      this.router.navigate(["/control"]);
+    }
+
   }
 
 }
