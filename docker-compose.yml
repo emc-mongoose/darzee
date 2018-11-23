@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mangoose-console:
-    image: emcmongoose/mongoose-console:${MONGOOSE_VER}
+    image: emcmongoose/mongoose-console:${CONSOLE_VER}
     ports:
     - "8080:${NGINX_PORT}"
   grafana:
