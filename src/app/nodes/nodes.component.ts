@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IpAddressService } from '../ip-address.service';
-import { map } from 'rxjs/operators';
+import { map, subscribeOn } from 'rxjs/operators';
 
 import { Config } from '../config';
 import { IpAddress } from '../ipAddress';
@@ -17,7 +17,7 @@ export class NodesComponent implements OnInit {
   ipAddresses: IpAddress[] = null;
   ip: string = "";
 
-  config : any = null;
+  config: any = null;
 
   constructor(private ipAddressService: IpAddressService, private router: Router) { }
 
@@ -26,7 +26,7 @@ export class NodesComponent implements OnInit {
   }
 
   addIp(ip: string): void {
-   
+
     if (!ip) {
       console.log('ip null');
     }
@@ -38,24 +38,25 @@ export class NodesComponent implements OnInit {
     this.ipAddressService.deleteIp(ipAddr.ip);
   }
 
-  onNavigateNextClicked() { 
+  onNavigateNextClicked() {
+    if (this.ipAddressService.ipAddresses.length == 0) {
+      alert('no IP entered!');
+      return;
+    }
     console.log(this.ipAddresses[0].ip);
+
     this.ipAddresses.forEach(element => {
-      console.log(element.ip);
-      this.ipAddressService.getConfig(element.ip)
-        .pipe(
-          map(data => { 
-            this.ipAddressService.config.push(new Config(element.ip, data));
-            console.log('pushed'); })
-         );
-          
-          // this.ipAddressService.config.push(new Config(element.ip, data)))
-      });
+      this.config = this.ipAddressService.getConfig(element.ip)
+        .subscribe(data => console.log(data)); 
+      this.ipAddressService.config.push(new Config(element.ip, this.config));
+    });
 
     if (this.ipAddressService.config.length == 0) {
       alert('Can not get config!');
     } else {
-      this.router.navigate(["/control"]);
+
+      console.log(this.ipAddressService.config[0].configuration);
+      // this.router.navigate(["/control"]);
     }
 
   }

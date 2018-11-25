@@ -26,14 +26,12 @@ export class IpAddressService {
 
   getConfig(ip: string): Observable<any> {
     // return this.http.get('http://' + ip + '/config')
-    return this.http.get('http://localhost:9999/config');
-      // .pipe(
-      //   map(data => {
-      //     console.log('ip is :' + ip);
-      //     this.config.push(new Config(ip, data));
-      //     console.log('dats is :' + data);
-      //   })
-      // );
+    return this.http.get('http://localhost:9999/config')
+      .pipe(
+        map(data => 
+          console.log('data is :' + data)
+        )
+      );
   }
 
   getIpAddresses(): IpAddress[] {
