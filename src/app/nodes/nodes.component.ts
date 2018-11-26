@@ -44,13 +44,15 @@ export class NodesComponent implements OnInit {
       return;
     }
     console.log(this.ipAddresses[0].ip);
+    this.ipAddressService.entryNode = this.ipAddressService.ipAddresses[0].ip;
+    
+    this.ipAddressService.getConfig(this.ipAddressService.ipAddresses[0].ip)
+      .subscribe(data => {
+        console.log(data);
+        this.config = data
+      });
 
-      this.ipAddressService.getConfig(this.ipAddressService.ipAddresses[0].ip)
-        .subscribe(data => {
-          console.log(data);
-          this.config = data });
-
-      this.ipAddressService.config.push(new Config(this.ipAddressService.ipAddresses[0].ip, this.config));
+    this.ipAddressService.config.push(new Config(this.ipAddressService.ipAddresses[0].ip, this.config));
 
     if (this.ipAddressService.config.length == 0) {
       alert('Can not get config!');
