@@ -17,6 +17,7 @@ export class IpAddressService {
 
   ipAddresses: IpAddress[] = [];
   config: Config[] = [];
+  entryNode: String = '';
 
   public fileContent: string | ArrayBuffer = "";
 
@@ -26,7 +27,7 @@ export class IpAddressService {
     // return this.http.get('http://' + ip + '/config')
     return this.http.get('http://localhost:9999/config');
   }
-                                                                                                            
+
   getIpAddresses(): IpAddress[] {
     return this.ipAddresses;
   }
