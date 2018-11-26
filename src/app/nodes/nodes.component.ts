@@ -33,7 +33,7 @@ export class NodesComponent implements OnInit {
     if (regExpr.test(ip)) {
       this.ipAddressService.saveIpAddress(ip);
     } else {
-      alert('Invalid IP!  ' + ip);
+      alert('Invalid IP: ' + ip + '\nPlease enter valid IP.');
     }
   }
 
