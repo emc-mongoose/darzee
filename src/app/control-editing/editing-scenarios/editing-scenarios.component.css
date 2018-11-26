@@ -7,13 +7,21 @@
     margin-top: 50px;
     margin-left: 40px;
 }
+.scenarios-json-wrapper { 
+    position: static;
+    width: 40vh; 
+    height: 60vh; 
+    resize: none;
+    overflow-y: scroll ! important;
+    align-content: center;
+    justify-content: center;
+    
+    border: 1px black solid; 
+    border-radius: 10px; 
+}
 
 .scenarios-file-content { 
-    display: flex;
     position: static;
-    margin-top: 10px;
-    margin-left: 40px;
-    overflow-y: scroll ! important;
     resize: none;
     background: #f5f5f5;
     outline: none;
