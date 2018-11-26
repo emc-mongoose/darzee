@@ -6,9 +6,9 @@ import { map } from 'rxjs/operators';
 import { IpAddress } from './ipAddress';
 import { Config } from './config';
 
-// const httpOptions = {
-//   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-// };
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ import { Config } from './config';
 export class IpAddressService {
 
   ipAddresses: IpAddress[] = [];
-  config: Config[] = [];
+  config: Config = null;
   entryNode: String = '';
 
   public fileContent: string | ArrayBuffer = "";
@@ -24,8 +24,8 @@ export class IpAddressService {
   constructor(private http: HttpClient) { }
 
   getConfig(ip: string): any {
-    // return this.http.get('http://' + ip + '/config')
-    return this.http.get('http://localhost:9999/config');
+    return this.http.get('http://' + ip + '/config', httpOptions);
+    // return this.http.get('http://localhost:9999/config', httpOptions);  // for easy debug
   }
 
   getIpAddresses(): IpAddress[] {

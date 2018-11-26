@@ -45,23 +45,24 @@ export class NodesComponent implements OnInit {
     }
     console.log(this.ipAddresses[0].ip);
     this.ipAddressService.entryNode = this.ipAddressService.ipAddresses[0].ip;
-    
+
     this.ipAddressService.getConfig(this.ipAddressService.ipAddresses[0].ip)
       .subscribe(data => {
         console.log(data);
-        this.config = data
+        this.updateConfiguration(data);
       });
+  }
 
-    this.ipAddressService.config.push(new Config(this.ipAddressService.ipAddresses[0].ip, this.config));
-
-    if (this.ipAddressService.config.length == 0) {
-      alert('Can not get config!');
+  private updateConfiguration(data: any) {
+    console.log(data);
+    this.config = data;
+    this.ipAddressService.config = new Config(this.ipAddressService.ipAddresses[0].ip, this.config);
+    if (this.config == null) {
+      alert('Can not get config! Remove first IP and if neccessary add another one.');
     } else {
-      console.log('this.config is: ' + this.config);
-      console.log('result config: ' + this.ipAddressService.config[0].configuration);
-      // this.router.navigate(["/control"]);
+      console.log('OK');
+      this.router.navigate(["/control"]);
     }
-
   }
 
 }
