@@ -36,14 +36,14 @@ export class NodesComponent implements OnInit {
   }
 
   onNavigateNextClicked() { 
-        this.ipAddressService.getConfig()
-      .pipe(
-        // map(data => data.json()))
-        map(data => console.log(data)))
-      .subscribe(data => { 
-        this.config = data;
-        console.log(data);
-      });
-    // this.router.navigate(["/control"]);
+      //   this.ipAddressService.getConfig()
+      // .pipe(
+      //   // map(data => data.json()))
+      //   map(data => console.log(data)))
+      // .subscribe(data => { 
+      //   this.config = data;
+      //   console.log(data);
+      // });
+    this.router.navigate(["/control"]);
   }
 }

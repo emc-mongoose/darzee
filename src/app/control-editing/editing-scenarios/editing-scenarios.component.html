@@ -1,3 +1,2 @@
 <div class="scenarios-file-content-header">Defaults:</div>
-<textarea class="scenarios-file-content" rows="40" cols="60" type="text" [(value)]="fileContent" onblur="if(this.value == '') { this.value='Select JavaScript file...'}" onfocus="if (this.value == 'Select JavaScript file...') {this.value=''}">
-  </textarea>
+<ngx-json-viewer class="scenarios-file-content" [json]="data"></ngx-json-viewer>
