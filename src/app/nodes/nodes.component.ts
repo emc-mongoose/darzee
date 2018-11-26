@@ -48,7 +48,8 @@ export class NodesComponent implements OnInit {
       this.ipAddressService.getConfig(this.ipAddressService.ipAddresses[0].ip)
         .subscribe(data => {
           console.log(data);
-          this.config = data });
+          this.updateConfiguration(data);
+         });
 
       this.ipAddressService.config.push(new Config(this.ipAddressService.ipAddresses[0].ip, this.config));
 
@@ -60,6 +61,10 @@ export class NodesComponent implements OnInit {
       // this.router.navigate(["/control"]);
     }
 
+  }
+  private updateConfiguration(data: any) {
+    // Perform updating options here 
+    this.config = data
   }
 
 }
