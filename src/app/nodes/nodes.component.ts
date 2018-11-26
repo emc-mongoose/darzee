@@ -5,6 +5,7 @@ import { map, subscribeOn } from 'rxjs/operators';
 import { Config } from '../config';
 import { IpAddress } from '../ipAddress';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-nodes',
@@ -18,6 +19,7 @@ export class NodesComponent implements OnInit {
   ip: string = "";
 
   config: any = null;
+  error: HttpErrorResponse = null;
 
   constructor(private ipAddressService: IpAddressService, private router: Router) { }
 
@@ -47,14 +49,16 @@ export class NodesComponent implements OnInit {
     this.ipAddressService.entryNode = this.ipAddressService.ipAddresses[0].ip;
 
     this.ipAddressService.getConfig(this.ipAddressService.ipAddresses[0].ip)
-      .subscribe(data => {
-        console.log(data);
-        this.updateConfiguration(data);
-      });
+      .subscribe(
+        data => {
+          console.log(data);
+          this.updateConfiguration(data) },
+        error => this.error = error
+      );
   }
 
   private updateConfiguration(data: any) {
-    console.log(data);
+    console.log(data.output);
     this.config = data;
     this.ipAddressService.config = new Config(this.ipAddressService.ipAddresses[0].ip, this.config);
     if (this.config == null) {

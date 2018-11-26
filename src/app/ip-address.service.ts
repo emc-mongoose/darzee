@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { Observable, of, observable, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { map, catchError } from 'rxjs/operators';
 
 import { IpAddress } from './ipAddress';
 import { Config } from './config';
@@ -24,7 +24,8 @@ export class IpAddressService {
   constructor(private http: HttpClient) { }
 
   getConfig(ip: string): any {
-    return this.http.get('http://' + ip + '/config', httpOptions);
+    return this.http.get('http://' + ip + '/config', httpOptions)
+      .pipe(catchError(this.handleError));
     // return this.http.get('http://localhost:9999/config', httpOptions);  // for easy debug
   }
 
@@ -46,12 +47,24 @@ export class IpAddressService {
     });
   }
 
-  // for http requests
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(error);
-      return of(result as T);
-    };
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      console.error('An error occured:', error.error.message);
+    } else {
+      console.error(
+        `Returned code ${error.status}, ` +
+        `body: ${error.error}`);
+    }
+    alert('Something went wrong!');
+    return throwError('Something went wrong.');
   }
+
+  // for http requests
+  // private handleError<T>(operation = 'operation', result?: T) {
+  //   return (error: any): Observable<T> => {
+  //     console.error(error);
+  //     return of(result as T);
+  //   };
+  // }
 
 }
