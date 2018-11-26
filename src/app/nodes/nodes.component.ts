@@ -45,17 +45,18 @@ export class NodesComponent implements OnInit {
     }
     console.log(this.ipAddresses[0].ip);
 
-    this.ipAddresses.forEach(element => {
-      this.config = this.ipAddressService.getConfig(element.ip)
-        .subscribe(data => console.log(data)); 
-      this.ipAddressService.config.push(new Config(element.ip, this.config));
-    });
+      this.ipAddressService.getConfig(this.ipAddressService.ipAddresses[0].ip)
+        .subscribe(data => {
+          console.log(data);
+          this.config = data });
+
+      this.ipAddressService.config.push(new Config(this.ipAddressService.ipAddresses[0].ip, this.config));
 
     if (this.ipAddressService.config.length == 0) {
       alert('Can not get config!');
     } else {
-
-      console.log(this.ipAddressService.config[0].configuration);
+      console.log('this.config is: ' + this.config);
+      console.log('result config: ' + this.ipAddressService.config[0].configuration);
       // this.router.navigate(["/control"]);
     }
 

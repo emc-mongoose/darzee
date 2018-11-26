@@ -24,14 +24,14 @@ export class IpAddressService {
 
   constructor(private http: HttpClient) { }
 
-  getConfig(ip: string): Observable<any> {
+  getConfig(ip: string): any {
     // return this.http.get('http://' + ip + '/config')
-    return this.http.get('http://localhost:9999/config')
-      .pipe(
-        map(data => 
-          console.log('data is :' + data)
-        )
-      );
+    return this.http.get('http://localhost:9999/config', httpOptions);
+      // .pipe(
+      //   map(data => 
+      //     console.log('data is :' + data)
+      //   )
+      // );
   }
 
   getIpAddresses(): IpAddress[] {
