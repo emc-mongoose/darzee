@@ -47,10 +47,12 @@ export class NodesComponent implements OnInit {
 
       this.ipAddressService.getConfig(this.ipAddressService.ipAddresses[0].ip)
         .subscribe(data => {
+          // This will excecute ones the HTTP response would be catched (Most likely after the next one)
           console.log(data);
           this.updateConfiguration(data);
          });
 
+         // This block will excecute immidately- it won't be waiting for the response 
       this.ipAddressService.config.push(new Config(this.ipAddressService.ipAddresses[0].ip, this.config));
 
     if (this.ipAddressService.config.length == 0) {
