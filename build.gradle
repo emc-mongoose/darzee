@@ -1,14 +1,12 @@
-import com.bmuschko.gradle.docker.tasks.container.*
-import com.bmuschko.gradle.docker.tasks.image.*
 
-apply plugin: 'com.bmuschko.docker-remote-api'
-apply plugin: 'com.bmuschko.docker-java-application'
 
 plugins {
   id "com.moowork.node" version "0.12"
 }
+
  
 version '0.0.1'
+
  
 node {
   version = '6.8.0'
@@ -24,22 +22,3 @@ task build(type: NpmTask) {
  
 build.dependsOn(npm_install)
 
-task createDockerfile(type: Dockerfile, dependsOn: 'dist'){
-    destFile = project.file('docker/Dockerfile')
-    from 'nginx:alpine'
-    addFile("nginx.conf", "/etc/nginx/nginx.conf")
-    addFile("dist/mongoose-console", "/usr/share/nginx/html")
-}
-
-task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
-    inputDir = project.file(".")
-    dockerFile = createDockerfile.destFile
-    imageId = 'emcmongoose/mongoose-console'
-    tags = ['emcmongoose/mongoose-console:0.1.1']
-}
-
-task tagImage(type: DockerTagImage, dependsOn: 'buildImage'){
-    targetImageId { buildImage.getImageId() }
-    tag 'mongoose-console'
-    repository 'mongoose-console'
-}
