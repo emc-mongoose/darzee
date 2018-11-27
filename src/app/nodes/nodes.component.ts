@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { IpAddressService } from '../ip-address.service';
+import { map } from 'rxjs/operators';
 
 import { IpAddress } from '../ipAddress';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nodes',
@@ -13,8 +15,9 @@ export class NodesComponent implements OnInit {
 
   ipAddresses: IpAddress[] = null;
   ip: string = "";
+  config : any = null;
 
-  constructor(private ipAddressService: IpAddressService) { }
+  constructor(private ipAddressService: IpAddressService, private router: Router) { }
 
   ngOnInit() {
     this.ipAddresses = this.ipAddressService.getIpAddresses();
@@ -41,6 +44,15 @@ export class NodesComponent implements OnInit {
     this.ipAddressService.deleteIp(ipAddr.ip);
   }
 
-
+  onNavigateNextClicked() { 
+        this.ipAddressService.getConfig()
+      .pipe(
+        map(data => console.log(data)))
+      .subscribe(data => { 
+        this.config = data;
+        console.log(data);
+      });
+    // this.router.navigate(["/control"]);
+  }
 
 }

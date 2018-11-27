@@ -119,3 +119,19 @@ ul {
         width: 100%;
     }
 }
+
+.next-button { 
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+
+    background-color: white;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+   border: 1px solid black;
+    border-radius: 50%;
+}
