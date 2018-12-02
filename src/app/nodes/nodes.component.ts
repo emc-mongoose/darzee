@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IpAddressService } from '../ip-address.service';
 import { map, subscribeOn } from 'rxjs/operators';
 
-import { Config } from '../config';
+import { NodeConfig } from '../nodeConfig';
 import { IpAddress } from '../ipAddress';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -18,7 +18,7 @@ export class NodesComponent implements OnInit {
   ipAddresses: IpAddress[] = null;
   ip: string = "";
 
-  config: any = null;
+  nodeConfig: any = null;
   error: HttpErrorResponse = null;
 
   constructor(private ipAddressService: IpAddressService, private router: Router) { }
@@ -59,9 +59,9 @@ export class NodesComponent implements OnInit {
 
   private updateConfiguration(data: any) {
     console.log(data.output);
-    this.config = data;
-    this.ipAddressService.config = new Config(this.ipAddressService.ipAddresses[0].ip, this.config);
-    if (this.config == null) {
+    this.nodeConfig = data;
+    this.ipAddressService.nodeConfig = new NodeConfig(this.ipAddressService.ipAddresses[0].ip, this.nodeConfig);
+    if (this.nodeConfig == null) {
       alert('Can not get config! Remove first IP and if neccessary add another one.');
     } else {
       console.log('OK');

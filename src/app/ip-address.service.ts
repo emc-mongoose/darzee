@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { map, catchError } from 'rxjs/operators';
 
 import { IpAddress } from './ipAddress';
-import { Config } from './config';
+import { NodeConfig } from './nodeConfig';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -16,7 +16,7 @@ const httpOptions = {
 export class IpAddressService {
 
   ipAddresses: IpAddress[] = [];
-  config: Config = null;
+  nodeConfig: NodeConfig = null;
   entryNode: String = '';
 
   public fileContent: string | ArrayBuffer = "";
@@ -58,13 +58,5 @@ export class IpAddressService {
     alert('Something went wrong!');
     return throwError('Something went wrong.');
   }
-
-  // for http requests
-  // private handleError<T>(operation = 'operation', result?: T) {
-  //   return (error: any): Observable<T> => {
-  //     console.error(error);
-  //     return of(result as T);
-  //   };
-  // }
 
 }

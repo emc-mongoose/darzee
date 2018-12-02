@@ -1,4 +1,4 @@
-export class Config {
+export class NodeConfig {
     url: string;
     configuration: any;
 
