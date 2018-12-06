@@ -27,8 +27,10 @@ yarn-error.log*
 # Git files
 .gitmessage.txt
 
-.gradle
+.gradle/
 /build/
+dist/
+build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
