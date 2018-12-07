@@ -24,11 +24,20 @@ export class NodesComponent implements OnInit {
   }
 
   addIp(ip: string): void {
-   
+    
+    const regExpr = new 
+      RegExp('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$');
+    ip = ip.trim();
+    
     if (!ip) {
       console.log('ip null');
     }
-    this.ipAddressService.saveIpAddress(ip);
+
+    if (regExpr.test(ip)) {
+      this.ipAddressService.saveIpAddress(ip);
+    } else {
+      alert('Invalid IP: ' + ip + '\nPlease enter valid IP.');
+    }
   }
 
   deleteIp(ipAddr: IpAddress): void {
@@ -38,7 +47,6 @@ export class NodesComponent implements OnInit {
   onNavigateNextClicked() { 
         this.ipAddressService.getConfig()
       .pipe(
-        // map(data => data.json()))
         map(data => console.log(data)))
       .subscribe(data => { 
         this.config = data;
@@ -46,4 +54,5 @@ export class NodesComponent implements OnInit {
       });
     // this.router.navigate(["/control"]);
   }
+
 }
