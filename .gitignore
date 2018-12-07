@@ -3,11 +3,18 @@ bazel-*
 test-project-host-*
 dist-schema/
 out-tsc/
+logs
+target
 
 # IDEs
 .idea/
 jsconfig.json
 .vscode/
+/.idea
+/.idea_modules
+/.classpath
+/.project
+/.settings
 
 # Typings file.
 typings/
@@ -26,3 +33,13 @@ yarn-error.log*
 
 # Git files
 .gitmessage.txt
+.gitconfig
+.gitmessage
+
+/RUNNING_PID
+*.iml
+*.ipr
+*.iws
+out
+build/
+dist/
