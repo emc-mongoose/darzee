@@ -1,5 +1,4 @@
-# console
-Mongoose Web GUI
+# Mongoose Console
 
 ## build
 ` ./gradlew clean dist`
@@ -31,4 +30,5 @@ To launch the GUI, you will need to pre-install the [Docker Compose](https://doc
 
 Then check using the browser that the GUI is available at http://localhost:8080
 
-Note that the default ports for the components are listed in .env file.
+## To run in development mode, use:
+> ng serve 

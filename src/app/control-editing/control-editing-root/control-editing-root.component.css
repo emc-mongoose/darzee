@@ -1,0 +1,73 @@
+.editing-root-background { 
+    background: #f5f5f5;
+}
+.editing-root-wrapper { 
+    background: white;
+    position: relative;
+    height: 650px;
+    align-items: center;
+    justify-content: center;
+    display: flex; 
+    margin: 0px 15%;
+}
+
+
+.app-new-values-handling { 
+    float: right;
+}
+
+.app-editing-scenarios { 
+    float: left;
+}
+
+.previous-button  { 
+    position: absolute;
+    bottom: 20px;
+
+    background-color: white;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+
+.start-button { 
+
+    /* Configuring "Start" button position */
+
+    bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+    float: right;
+
+
+    /* Configuring "Start" button appearence */
+    bottom: 20px;
+    border: none;
+    right: 20px;
+    height: 40px;
+    width: 60px;
+    border-radius: 10px; 
+    text-align: center; 
+    font-style: normal; 
+    font-size: 14px; 
+    outline: none;
+
+    color: #FFFFFF; 
+    font-family: Quicksand; 
+    font-weight: bold; 
+    background: #5CB85C;    
+}
+
+.start-button:hover { 
+    background: rgb(100, 201, 100);    
+
+}
+
+.previous-button { 
+    left: 20px;
+}
