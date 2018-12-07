@@ -1,4 +1,4 @@
-body {
+.w3-container {
     background: #FFFFFF;
     box-shadow: 0px 0px 40px 0px
     rgba(0,0,0,0.1);
@@ -108,7 +108,8 @@ input {
 }
 
 ul {
-    max-height: 300px;
+    /* max-height: 300px; */
+    max-height: 40ch;
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 4px;
@@ -132,6 +133,6 @@ ul {
     text-decoration: none;
     display: inline-block;
     font-size: 10px;
-   border: 1px solid black;
+    border: 1px solid black;
     border-radius: 50%;
 }
