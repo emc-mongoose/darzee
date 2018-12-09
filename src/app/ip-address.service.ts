@@ -38,14 +38,17 @@ export class IpAddressService {
     this.ipAddresses.push(address);
   }
 
-  deleteIp(ip: string): void {
-    for (let i = 0, len = this.ipAddresses.length; i < len; i++) {
-      if (ip === this.ipAddresses[i].ip) {
-        // console.log('ID FOR DEL  ' + this.ipAddresses.indexOf(element));  // for debug
-        this.ipAddresses.splice(i, 1);
-        return;
-      }
+  deleteIp(id: number): void {
+    // console.log('ID FOR DEL  ' + id + ' length: ' + this.ipAddresses.length);  // for debug
+    this.ipAddresses.splice(id, 1);
+
+    let countId = 0;
+    for (let i = 0; i < this.ipAddresses.length; ++i) {
+      this.ipAddresses[i].id = countId;
+      countId++;
     }
+    IpAddress.identifier = this.ipAddresses.length;
+
   }
 
   private handleError(error: HttpErrorResponse) {

@@ -43,8 +43,8 @@ export class NodesComponent implements OnInit {
     }
   }
 
-  deleteIp(ipAddr: IpAddress): void {
-    this.ipAddressService.deleteIp(ipAddr.ip);
+  deleteIp(id: number): void {
+    this.ipAddressService.deleteIp(id);
   }
 
   onNavigateNextClicked() {
