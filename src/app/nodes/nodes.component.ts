@@ -16,7 +16,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class NodesComponent implements OnInit {
 
   ipAddresses: IpAddress[] = null;
-  ip: string = "";
+  ip = '';
 
   nodeConfig: any = null;
   error: HttpErrorResponse = null;
@@ -27,11 +27,11 @@ export class NodesComponent implements OnInit {
     this.ipAddresses = this.ipAddressService.getIpAddresses();
   }
 
-  addIp(ip: string): void {    
-    const regExpr = new 
-      RegExp('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$');
+  addIp(ip: string): void {
+    const regExpr = new
+      RegExp('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\:([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$');
     ip = ip.trim();
-    
+
     if (!ip) {
       console.log('ip null');
     }
@@ -48,7 +48,7 @@ export class NodesComponent implements OnInit {
   }
 
   onNavigateNextClicked() {
-    if (this.ipAddressService.ipAddresses.length == 0) {
+    if (this.ipAddressService.ipAddresses.length === 0) {
       alert('no IP entered!');
       return;
     }
@@ -59,7 +59,7 @@ export class NodesComponent implements OnInit {
       .subscribe(
         data => {
           console.log(data);
-          this.updateConfiguration(data) },
+          this.updateConfiguration(data); },
         error => this.error = error
       );
   }
@@ -72,7 +72,7 @@ export class NodesComponent implements OnInit {
       alert('Can not get config! Remove first IP and if neccessary add another one.');
     } else {
       console.log('OK');
-      this.router.navigate(["/control"]);
+      this.router.navigate(['/control']);
     }
   }
 
