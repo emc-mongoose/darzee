@@ -19,7 +19,7 @@ export class IpAddressService {
   nodeConfig: NodeConfig = null;
   entryNode: String = '';
 
-  public fileContent: string | ArrayBuffer = "";
+  public fileContent: string | ArrayBuffer = '';
 
   constructor(private http: HttpClient) { }
 
@@ -39,12 +39,13 @@ export class IpAddressService {
   }
 
   deleteIp(ip: string): void {
-    this.ipAddresses.forEach(element => {
-      if (ip == element.ip) {
-        console.log('ID FOR DEL  ' + this.ipAddresses.indexOf(element));  //for debug
-        this.ipAddresses.splice(this.ipAddresses.indexOf(element), 1);
+    for (let i = 0, len = this.ipAddresses.length; i < len; i++) {
+      if (ip === this.ipAddresses[i].ip) {
+        // console.log('ID FOR DEL  ' + this.ipAddresses.indexOf(element));  // for debug
+        this.ipAddresses.splice(i, 1);
+        return;
       }
-    });
+    }
   }
 
   private handleError(error: HttpErrorResponse) {
