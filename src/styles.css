@@ -4,3 +4,6 @@
 
 @import "~codemirror/lib/codemirror.css";
 @import "~codemirror/theme/material.css";
+
+/* NOTE: JsonEditor style for displaying json as tree  */
+@import "~jsoneditor/dist/jsoneditor.min.css";
