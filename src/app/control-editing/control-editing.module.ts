@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlEditingRootComponent } from './control-editing-root/control-editing-root.component';
 import { EditingScenariosComponent } from './editing-scenarios/editing-scenarios.component';
 import { NewValuesHandlingComponent } from './new-values-handling/new-values-handling.component';
-import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import {NgJsonEditorModule} from 'ang-jsoneditor'
 
 
 @NgModule({
@@ -11,7 +11,8 @@ import { NgxJsonViewerModule } from 'ngx-json-viewer';
     CommonModule,
 
     // Dependencies
-    NgxJsonViewerModule
+    
+    NgJsonEditorModule
   ],
 
   declarations: [ControlEditingRootComponent, EditingScenariosComponent, NewValuesHandlingComponent]

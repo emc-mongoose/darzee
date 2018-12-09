@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IpAddressService } from 'src/app/ip-address.service';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
+
 
 @Component({
   selector: 'app-editing-scenarios',
@@ -7,31 +9,26 @@ import { IpAddressService } from 'src/app/ip-address.service';
   styleUrls: ['./editing-scenarios.component.css']
 })
 export class EditingScenariosComponent implements OnInit {
+  public editorOptions: JsonEditorOptions;
+  public data: any;
 
   public fileContent: string | ArrayBuffer;
   constructor(private service: IpAddressService) { 
+
     this.fileContent = service.fileContent;
+    
+    this.configureJsonEditor();
   }
 
-  data = {
-    'best_student': 'Andrey Koltsov',
-    'self_esteem, %': 99999,
-    'best_in': ['coding', 3333, 'managing'],
-    'purpose in life': undefined,
-    'bad_sides': null,
-    'positive sides': {
-      'smart': 'level nine plus',
-      'GPA': 1234567,
-      'companies wants to hire him': ['Google', 22222, 'Tesla'],
-      'companies he wants to work in': {
-        'company1': 'DELL',
-        'company2': 'EMC',
-        'company3': 'MONGOOSE'
-      }
-    }
-  };
 
   ngOnInit() {
+  }
+
+  // NOTE: Private methods
+  private configureJsonEditor() {
+    this.editorOptions = new JsonEditorOptions()
+    this.editorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
+    this.data = {"products":[{"name":"car","product":[{"name":"honda","model":[{"id":"civic","name":"civic"},{"id":"accord","name":"accord"},{"id":"crv","name":"crv"},{"id":"pilot","name":"pilot"},{"id":"odyssey","name":"odyssey"}]}]}]}
   }
 
 }
