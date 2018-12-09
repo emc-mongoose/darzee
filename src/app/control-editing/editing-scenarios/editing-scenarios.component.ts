@@ -13,7 +13,13 @@ export class EditingScenariosComponent implements OnInit {
   // JSON Editor properties
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   public jsonEditorOptions: JsonEditorOptions;
-  public jsonConfiguration: any;
+  public jsonEditorData: any;
+  // currentJsonEditorData is using to compare edited and current values of JSON 
+  public currentJsonEditorData: any; 
+  
+  // Component properties 
+
+  private hasJsonEdited: Boolean = false
 
   public fileContent: string | ArrayBuffer;
 
@@ -35,7 +41,7 @@ export class EditingScenariosComponent implements OnInit {
     // ... ... avaliable modes are: code', 'text', 'tree', 'view'
     // ... this.editorOptions.schema = schema; - it'd customize the displaying of JSON editor 
     this.jsonEditorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
-    this.jsonConfiguration = {
+    this.jsonEditorData = {
       products: [{
         name: 'car',
         product: [{
@@ -50,7 +56,8 @@ export class EditingScenariosComponent implements OnInit {
         }]
       }]
     };
-  
+
+    this.currentJsonEditorData = this.jsonEditorData;
    
     // NOTE: You could also configure JSON Editor's nav bar tools using the view child's fields.
     // ... example:
@@ -64,10 +71,13 @@ export class EditingScenariosComponent implements OnInit {
   private onJsonUpdated(editedJson) { 
     console.log("JSON has been edited:")
     console.log(editedJson)
+    this.hasJsonEdited = true;
   }
+
 
   onApplyButtonClicked() { 
     alert("New value has been applied.");
+    this.hasJsonEdited = false;
   }
 
 
