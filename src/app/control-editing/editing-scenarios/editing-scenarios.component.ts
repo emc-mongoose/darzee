@@ -52,11 +52,16 @@ export class EditingScenariosComponent implements OnInit {
     };
   
    
-    this.jsonEditorOptions.statusBar = false;
+    // NOTE: You could also configure JSON Editor's nav bar tools using the view child's fields.
+    // ... example:
+    // ... this.jsonEditorOptions.statusBar = false;
+    // ... this.jsonEditorOptions.navigationBar = false;
+    // ... this.jsonEditorOptions.search = false;
 
   }
 
-  private getJSONdata(editedJson) { 
+  // NOTE: Callback which is observing whether the JSON value has been updated from editor
+  private onJsonUpdated(editedJson) { 
     console.log("JSON has been edited:")
     console.log(editedJson)
   }
