@@ -11,6 +11,9 @@ import { ContorlPageModule } from './contorl-page/contorl-page.module';
 import { ControlEditingModule } from './control-editing/control-editing.module';
 import { NodesModule } from './nodes/nodes.module';
 
+// NOTE: NPM dependencies
+import {NgJsonEditorModule} from 'ang-jsoneditor'
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +31,8 @@ import { NodesModule } from './nodes/nodes.module';
     ControlEditingModule, 
 
     // NOTE: Dependencies
-    NodesModule
+    NodesModule,
+    NgJsonEditorModule
   ],
   providers: [IpAddressService],
   bootstrap: [AppComponent],
