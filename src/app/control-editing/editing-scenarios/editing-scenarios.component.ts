@@ -66,4 +66,9 @@ export class EditingScenariosComponent implements OnInit {
     console.log(editedJson)
   }
 
+  onApplyButtonClicked() { 
+    alert("New value has been applied.");
+  }
+
+
 }
