@@ -9,10 +9,11 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
   styleUrls: ['./editing-scenarios.component.css']
 })
 export class EditingScenariosComponent implements OnInit {
-  @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
 
-  public editorOptions: JsonEditorOptions;
-  public data: any;
+  // JSON Editor properties
+  @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
+  public jsonEditorOptions: JsonEditorOptions;
+  public jsonConfiguration: any;
 
   public fileContent: string | ArrayBuffer;
 
@@ -27,14 +28,14 @@ export class EditingScenariosComponent implements OnInit {
 
   // NOTE: Private methods
   private configureJsonEditor() {
-    this.editorOptions = new JsonEditorOptions()
+    this.jsonEditorOptions = new JsonEditorOptions()
 
     // NOTE: JSON Editor could be customized using the following fields: 
     // ... this.editorOptions.mode = 'code'; - it'd customize the displaying of actual JSON; ...
     // ... ... avaliable modes are: code', 'text', 'tree', 'view'
     // ... this.editorOptions.schema = schema; - it'd customize the displaying of JSON editor 
-    this.editorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
-    this.data = {
+    this.jsonEditorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
+    this.jsonConfiguration = {
       products: [{
         name: 'car',
         product: [{
@@ -51,11 +52,13 @@ export class EditingScenariosComponent implements OnInit {
     };
   
    
-    this.editorOptions.statusBar = false;
-    this.editorOptions.onChange = () =>  {
-      console.log("Data has been changed:");
-      console.log(this.editor.get()); 
-    }
+    this.jsonEditorOptions.statusBar = false;
+
+  }
+
+  private getJSONdata(editedJson) { 
+    console.log("JSON has been edited:")
+    console.log(editedJson)
   }
 
 }

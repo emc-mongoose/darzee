@@ -1,7 +1,5 @@
 <div class="scenarios-file-content-header">Defaults:</div>
 <div class="scenarios-json-wrapper">
-    <json-editor [options]="editorOptions" [data]="data" (change)="getData($event)"></json-editor>
-
-  <!-- <ngx-json-viewer class="scenarios-file-content" [json]="data"></ngx-json-viewer> -->
+    <json-editor [options]="jsonEditorOptions" [data]="jsonConfiguration" (change)="getJSONdata($event)"></json-editor>
 </div>
 
