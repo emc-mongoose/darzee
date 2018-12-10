@@ -31,4 +31,4 @@ To launch the GUI, you will need to pre-install the [Docker Compose](https://doc
 Then check using the browser that the GUI is available at http://localhost:8080
 
 ## To run in development mode, use:
-> ng serve 
+`ng serve` 
