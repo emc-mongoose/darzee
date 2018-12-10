@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren, ElementRef } from '@angular/core';
 import { IpAddressService } from 'src/app/ip-address.service';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
+import { Button } from 'protractor';
 
 
 @Component({
@@ -12,6 +13,7 @@ export class EditingScenariosComponent implements OnInit {
 
   // JSON Editor properties
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
+  @ViewChild("apply-button-content-wrppaer") applyNewValueBtn: ElementRef;
   public jsonEditorOptions: JsonEditorOptions;
   public jsonEditorData: any;
   // currentJsonEditorData is using to compare edited and current values of JSON 
@@ -57,7 +59,21 @@ export class EditingScenariosComponent implements OnInit {
       }]
     };
 
-    this.currentJsonEditorData = this.jsonEditorData;
+    this.currentJsonEditorData ={
+      products: [{
+        name: 'car',
+        product: [{
+          name: 'honda',
+          model: [
+            { id: 'civic', name: 'civic' },
+            { id: 'accord', name: 'accord' },
+            { id: 'crv', name: 'crv' },
+            { id: 'pilot', name: 'pilot' },
+            { id: 'odyssey', name: 'odyssey' }
+          ]
+        }]
+      }]
+    };
    
     // NOTE: You could also configure JSON Editor's nav bar tools using the view child's fields.
     // ... example:
@@ -71,7 +87,8 @@ export class EditingScenariosComponent implements OnInit {
   private onJsonUpdated(editedJson) { 
     console.log("JSON has been edited:")
     console.log(editedJson)
-    this.hasJsonEdited = true;
+    this.hasJsonEdited = !(editedJson === this.currentJsonEditorData);
+    this.applyNewValueBtn.nativeElement.focus();
   }
 
 
@@ -80,5 +97,5 @@ export class EditingScenariosComponent implements OnInit {
     this.hasJsonEdited = false;
   }
 
-
+  
 }

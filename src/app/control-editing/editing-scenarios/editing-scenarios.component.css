@@ -49,7 +49,15 @@
     background: #BDBDBD;
     border: none;
     outline: none;
+    transition: 0.2s;
+
 }
+
+.apply-button-content-wrppaer:focus {
+    background-color: green;
+    transition: 0.2s;
+}
+
 
 .apply-new-value-button:hover { 
     background: rgb(156, 156, 156);
