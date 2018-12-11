@@ -47,7 +47,7 @@ node {
 }
  
 task dist(type: NpmTask) {
-  args = ['run', 'build']
+  args = ['run', 'build', '--prod']
 }
  
 dist.dependsOn(npm_install)
