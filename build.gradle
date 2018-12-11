@@ -56,9 +56,10 @@ task createDockerfile(type: Dockerfile, dependsOn: 'dist'){
     destFile = project.file('docker/Dockerfile')
    
     from 'nginx:alpine'
-    copyFile("nginx.conf", "/etc/nginx/nginx.conf")
+    copyFile("nginx/nginx.conf.template", "/etc/nginx/nginx.conf.template")
     workingDir("/usr/share/nginx/html")
     addFile("dist/mongoose-console", ".")
+    instruction "CMD /bin/sh -c \"envsubst '\$MONGOOSE_IP' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf.template && exec nginx -g 'daemon off;'\""
 }
 
 task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
