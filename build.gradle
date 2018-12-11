@@ -80,10 +80,10 @@ task pushImage(type: DockerPushImage, dependsOn: 'tagImage'){
 }
 
 task clean(dependsOn: 'buildImage') { 
- delete 'dist'
+ delete 'dist', 'docker'
 }
 
 task clearProductionFiles() { 
- delete 'dist'
+ delete 'dist', 'docker'
 }
 
