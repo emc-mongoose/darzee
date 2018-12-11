@@ -77,3 +77,11 @@ task tagImage(type: DockerTagImage, dependsOn: 'buildImage'){
 task pushImage(type: DockerPushImage, dependsOn: 'tagImage'){
     imageName 'emcmongoose/mongoose-console'
 }
+
+task clean(dependsOn: 'buildImage') { 
+ delete 'dist'
+}
+
+task clearProductionFiles() { 
+ delete 'dist'
+}
