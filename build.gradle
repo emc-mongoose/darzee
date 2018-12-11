@@ -67,6 +67,9 @@ task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
     dockerFile = createDockerfile.destFile
     imageId = 'emcmongoose/mongoose-console'
     tags = ['emcmongoose/mongoose-console:0.1.0', 'emcmongoose/mongoose-console:latest']
+    doLast { 
+        clearProductionFiles()
+    }
 }
 
 task tagImage(type: DockerTagImage, dependsOn: 'buildImage'){
@@ -79,11 +82,11 @@ task pushImage(type: DockerPushImage, dependsOn: 'tagImage'){
     imageName 'emcmongoose/mongoose-console'
 }
 
-task clean(dependsOn: 'buildImage') { 
- delete 'dist', 'docker'
+task clear() {
+    clearProductionFiles()
 }
 
-task clearProductionFiles() { 
- delete 'dist', 'docker'
+def clearProductionFiles() { 
+ delete 'dist', 'docker', 'build'
 }
 
