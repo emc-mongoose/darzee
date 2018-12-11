@@ -86,3 +86,4 @@ task clean(dependsOn: 'buildImage') {
 task clearProductionFiles() { 
  delete 'dist'
 }
+

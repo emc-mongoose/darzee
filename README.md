@@ -1,8 +1,5 @@
 # Mongoose Console
 
-## build
-` ./gradlew clean dist`
-
 ## Deployment with Docker
 
 #### Build & Push docker image
@@ -19,6 +16,12 @@ Before pushing image, please, login to your docker account
 To push image to Docker hub
 
 ` ./gradlew pushImage`
+
+
+## Clear production files 
+
+` ./gradlew clearProductionFiles`
+
 
 #### Run with docker Compose
 
