@@ -26,6 +26,7 @@ buildscript {
 apply plugin: 'com.bmuschko.docker-remote-api'
 apply plugin: 'com.bmuschko.docker-java-application'
 apply plugin: 'com.moowork.node'
+apply plugin: 'base'
 // plugins {
 //   id "com.moowork.node" version "1.2.0"
 // }
