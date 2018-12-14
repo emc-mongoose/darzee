@@ -35,6 +35,13 @@ export class IpAddressService {
 
   saveIpAddress(ip: string) {
     const address = new IpAddress(ip);
+    for (let i = 0; i < this.ipAddresses.length; ++i) {
+      if (this.ipAddresses[i].ip === ip) {
+        console.log('Ip already in list!');
+        alert('This IP already in list!');
+        return;
+      }
+    }
     this.ipAddresses.push(address);
   }
 
