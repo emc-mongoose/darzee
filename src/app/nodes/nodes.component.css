@@ -8,8 +8,8 @@
     font-style: normal;
     text-decoration: none;
     position: absolute;
-    height: 35%;
-    width: 50%;
+    height: 80%;
+    width: 90%;
     margin: auto;
     top: 0;
     bottom: 0;
@@ -20,6 +20,11 @@
 .column {
     float: left;
     position: relative;
+}
+
+.row {
+    margin-left: 15%;
+    margin-right: 15%;
 }
 
 .left, .middle {
@@ -123,16 +128,16 @@ ul {
 
 .next-button { 
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    bottom: 20%;
+    right: 20%;
 
-    background-color: white;
-    color: white;
-    padding: 10px;
-    text-align: center;
+    width: 50px;
+    margin: 2px 2px;
+    padding: 8px;
+    color: #212121;
     text-decoration: none;
-    display: inline-block;
-    font-size: 10px;
-    border: 1px solid black;
-    border-radius: 50%;
+    text-align: center;
+    background: rgba(255, 255, 255, 0);
+    border: 2px solid rgb(109, 109, 109);
+    border-radius: 10px;
 }
