@@ -1,0 +1,79 @@
+import com.bmuschko.gradle.docker.tasks.container.*
+import com.bmuschko.gradle.docker.tasks.image.*
+
+
+buildscript {
+  ext {
+    depVersion = [
+      gradle_docker_plugin: "3.6.1",
+      gradle_node_plugin: "1.2.0"
+    ]
+  }
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    maven {
+      url "https://plugins.gradle.org/m2"
+    }
+  }
+  dependencies {
+    classpath "com.bmuschko:gradle-docker-plugin:${depVersion.gradle_docker_plugin}"
+    classpath "com.moowork.gradle:gradle-node-plugin:${depVersion.gradle_node_plugin}"
+  }
+}
+
+apply plugin: 'com.bmuschko.docker-remote-api'
+apply plugin: 'com.bmuschko.docker-java-application'
+apply plugin: 'com.moowork.node'
+// plugins {
+//   id "com.moowork.node" version "1.2.0"
+// }
+
+version '0.0.1'
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  jcenter()
+}
+
+node {
+  version = '8.12.0'
+  npmVersion = '6.4.1'
+  download = true
+  workDir = file("${project.buildDir}/node")
+  nodeModulesDir = file("${project.projectDir}")
+}
+ 
+task dist(type: NpmTask) {
+  args = ['run', 'build']
+}
+ 
+dist.dependsOn(npm_install)
+
+task createDockerfile(type: Dockerfile, dependsOn: 'dist'){
+    destFile = project.file('docker/Dockerfile')
+   
+    from 'nginx:alpine'
+    copyFile("nginx.conf", "/etc/nginx/nginx.conf")
+    workingDir("/usr/share/nginx/html")
+    addFile("dist/mongoose-console", ".")
+}
+
+task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
+    inputDir = project.file(".")
+    dockerFile = createDockerfile.destFile
+    imageId = 'emcmongoose/mongoose-console'
+    tags = ['emcmongoose/mongoose-console:0.1.0', 'emcmongoose/mongoose-console:latest']
+}
+
+task tagImage(type: DockerTagImage, dependsOn: 'buildImage'){
+    targetImageId { buildImage.getImageId() }
+    tag 'mongoose-console'
+    repository 'mongoose-console'
+}
+
+task pushImage(type: DockerPushImage, dependsOn: 'tagImage'){
+    imageName 'emcmongoose/mongoose-console'
+}
