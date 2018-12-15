@@ -47,7 +47,7 @@ http {
         }
 
         location /config {
-            proxy_pass ${MONGOOSE_IP};
+            proxy_pass ${MONGOOSE_HOST};
             rewrite /config/(.*) /$1  break;
             proxy_redirect     off;
             proxy_set_header   Host $host;
