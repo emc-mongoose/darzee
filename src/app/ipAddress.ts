@@ -1,10 +1,10 @@
 export class IpAddress {
+
     id: number;
     ip: string;
+    public static identifier = 0;
 
-    private static identifier = 0;
-
-    static getUniqueIdentifier(): number {        
+    static getUniqueIdentifier(): number {
         return IpAddress.identifier;
     }
 

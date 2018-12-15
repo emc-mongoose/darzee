@@ -6,9 +6,8 @@
 
     <div class="column middle">
       <span class="label describing">
-        <br />To begin, enter the entry node
-        <br />address to start mongoose:<br />
-
+        <br />Mongoose node address:<br />
+      </span>
         <div class="addIp">
           <p #ipAd hidden="true">{{ ip }}</p>
           <input [(ngModel)]="ip" placeholder="enter IP here..." />
@@ -16,23 +15,22 @@
             Add
           </button>
         </div>
-      </span>
+      <!-- </span> -->
     </div>
 
     <div class="column right">
       <ul class="ipAddresses" style="list-style-type: none">
         <li *ngFor="let ipAddress of ipAddresses">
           <span class="ipAddr">{{ ipAddress.ip }}</span>
-          <button class="buttonDel" title="delete IP address" (click)="deleteIp(ipAddress)">&#10005;</button>
+          <button class="buttonDel" title="delete IP address" (click)="deleteIp(ipAddress.id)">&#10005;</button>
         </li>
       </ul>
     </div> 
 
   </div>
-</body>
-
 </div>
 
+
 <button class="next-button" (click)="onNavigateNextClicked()">
-  <img src="src/assets/icons/icon-navigate-next.svg">
+  Next
 </button>

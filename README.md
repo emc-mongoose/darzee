@@ -1,5 +1,18 @@
 # Mongoose Console
 
+## Mock Up
+
+Views:
+1. [Start](http://framebox.org/AhASg-vSSdFJ)
+2. [Node Selection](http://framebox.org/AhAtx-jAZPRL)
+3. [Defaults](http://framebox.org/AhATg-tbsaYz)
+4. [Scenario](http://framebox.org/AhAvq-mJfTrb)
+5. [Logs](http://framebox.org/AhAVi-MafEVE)
+6. [Charts](http://framebox.org/AhAwq-XveMZm)
+
+## Build
+` ./gradlew clean dist`
+
 ## Deployment with Docker
 
 #### Build & Push docker image
