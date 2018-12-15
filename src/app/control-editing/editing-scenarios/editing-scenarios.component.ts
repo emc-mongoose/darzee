@@ -21,7 +21,7 @@ export class EditingScenariosComponent implements OnInit {
   
   // Component properties 
 
-  private hasJsonEdited: Boolean = false
+  public hasJsonEdited: Boolean = false
 
   public fileContent: string | ArrayBuffer;
 
@@ -84,7 +84,7 @@ export class EditingScenariosComponent implements OnInit {
   }
 
   // NOTE: Callback which is observing whether the JSON value has been updated from editor
-  private onJsonUpdated(editedJson) { 
+  public onJsonUpdated(editedJson) { 
     console.log("JSON has been edited:")
     console.log(editedJson)
     this.hasJsonEdited = !(editedJson === this.currentJsonEditorData);
