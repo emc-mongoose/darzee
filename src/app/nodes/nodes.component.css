@@ -55,7 +55,7 @@ img {
     text-decoration: none;
     text-align: center;
     /* background: rgba(255, 255, 255, 0); */
-    background: rgba(178, 121, 37, 0.5);
+    background: rgba(230, 121, 20, 0.85);
     /* border: 1px solid #BDBDBD; */
     border: 1px solid rgba(119, 76, 43, 0.966);
     border-radius: 10px;
@@ -139,11 +139,12 @@ ul {
     width: 50px;
     margin: 2px 2px;
     padding: 8px;
-    color: #212121;
+    color: rgb(59, 31, 12);
     text-decoration: none;
     text-align: center;
-    /* background: rgba(255, 255, 255, 0); */
-    background: rgba(178, 121, 37, 0.5);
-    border: 2px solid rgb(109, 109, 109);
+    background: rgba(255, 255, 255, 0);
+    /* background: rgba(178, 121, 37, 0.5); */
+    /* border: 2px solid rgb(175, 76, 10); */
+    border: 2px solid rgba(230, 121, 20, 0.85);
     border-radius: 10px;
 }
