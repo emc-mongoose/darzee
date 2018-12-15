@@ -23,17 +23,15 @@
       <ul class="ipAddresses" style="list-style-type: none">
         <li *ngFor="let ipAddress of ipAddresses">
           <span class="ipAddr">{{ ipAddress.ip }}</span>
-          <button class="buttonDel" title="delete IP address" (click)="deleteIp(ipAddress)">&#10005;</button>
+          <button class="buttonDel" title="delete IP address" (click)="deleteIp(ipAddress.id)">&#10005;</button>
         </li>
       </ul>
     </div> 
 
   </div>
-
-
 </div>
 
+
 <button class="next-button" (click)="onNavigateNextClicked()">
-  <!-- <img src="src/assets/icons/icon-navigate-next.svg"> -->
   Next
 </button>
