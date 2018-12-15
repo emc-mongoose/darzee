@@ -1,3 +1,86 @@
-<p>
-  runs works!
-</p>
+<div class="runs-page">
+  <div class="runs-navbar">
+    <img class="logo" src="https://s3.amazonaws.com/assets.mockflow.com/app/wireframepro/company/Cd68c7bce15414737932b3c3448535486/projects/Mf4006ee01b7b9403b2d5404400302aa11539675893056/images/M5ff1f7f9cfb63f891336f85fdc50d6ea1539799956613" alt="Mongoose">
+    <label class="console-version" (ngModel)="version">
+      Mongoose Web Console v {{version}}
+    </label>
+  </div>
+
+  <div class="titles">
+    <div class="row">
+      <div class="column checkbox-column">
+
+      </div>
+      <div class="column time-column">
+        Start Time
+      </div>
+      <div class="column status-column">
+        Status
+      </div>
+      <div class="column duration-column">
+        Duration
+      </div>
+      <div class="column nodes-column">
+        Nodes
+      </div>
+      <div class="column logs-column">
+
+      </div>
+      <div class="column charts-column">
+        
+      </div>
+      <div class="column comment-column">
+        Comment
+      </div>
+    </div>
+  </div>
+
+  <hr/>
+
+  <div class="info">
+    <div class="row">
+      <div class="column checkbox-column">
+
+      </div>
+      <div class="column time-column">
+        
+      </div>
+      <div class="column status-column">
+        
+      </div>
+      <div class="column duration-column">
+        
+      </div>
+      <div class="column nodes-column">
+        
+      </div>
+      <div class="column logs-column">
+
+      </div>
+      <div class="column charts-column">
+        
+      </div>
+      <div class="column comment-column">
+        
+      </div>
+    </div>
+  </div>
+
+  <hr/>
+
+  <div class="buttons">
+    <div class="row">
+      <div class="column del-button-column">
+        <button class="del-button" title="Delete Selected" (click)="deleteSelected()">
+          Delete Selected
+        </button>
+      </div>
+      <div class="column new-button-column">
+        <button class="new-button" title="New Run" (click)="newRun()">
+          New Run...
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

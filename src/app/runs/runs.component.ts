@@ -7,9 +7,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RunsComponent implements OnInit {
 
+  version = '';
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  deleteSelected() {
+    // TODO
+  }
+
+  newRun() {
+    // TODO
   }
 
 }

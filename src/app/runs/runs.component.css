@@ -1,0 +1,80 @@
+.runs-navbar { 
+    overflow: hidden;
+    width: 100%;
+    height: 50px;
+    position: relative;
+    background: white;
+    flex-wrap: wrap;
+    align-items: center; /* For vertical alignment */
+    border-bottom: 1px;
+    border-bottom-color: gray;
+    -webkit-box-shadow: 0 1px 5px #888888;
+    -moz-box-shadow: 0 1px 5px #888888;
+    box-shadow: 0 1px 5px #888888;
+}
+
+.logo { 
+    height: 100%;
+    padding-left: 2%;
+}
+
+.console-version {
+    display: flex;
+    justify-content: center;
+    /* Make sure the controls is at the center */
+    align-items: center; /* For vertical alignment */
+    margin: auto;  
+    position: absolute;
+    left:0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    font-size: 3ch;
+}
+
+.column {
+    float: left;
+    position: relative;
+}
+
+.row {
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 4%;
+}
+
+.checkbox-column {
+
+}
+
+.time-column {
+
+}
+
+.status-column {
+
+}
+
+.duration-column {
+
+}
+
+.nodes-column, .logs-column, .charts-column {
+
+}
+
+.comment-column {
+
+}
+
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid rgb(71, 71, 71);
+    margin: 1em 0;
+    padding: 0;
+}
+

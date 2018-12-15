@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ContorlPageModule } from './contorl-page/contorl-page.module';
 import { ControlEditingModule } from './control-editing/control-editing.module';
 import { NodesModule } from './nodes/nodes.module';
+import { RunsModule } from './runs/runs.module';
 
 @NgModule({
   declarations: [
@@ -25,10 +26,11 @@ import { NodesModule } from './nodes/nodes.module';
 
     // NOTE: Custom modules
     ContorlPageModule,
-    ControlEditingModule, 
+    ControlEditingModule,
 
     // NOTE: Dependencies
-    NodesModule
+    NodesModule,
+    RunsModule
   ],
   providers: [IpAddressService],
   bootstrap: [AppComponent],

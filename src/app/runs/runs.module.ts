@@ -8,4 +8,6 @@ import { RunsComponent } from './runs.component';
   ],
   declarations: [RunsComponent]
 })
-export class RunsModule { }
+export class RunsModule {
+  constructor() {}
+}
