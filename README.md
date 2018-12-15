@@ -20,7 +20,7 @@ To push image to Docker hub
 
 ## Clear production files 
 
-` ./gradlew clearProductionFiles`
+` ./gradlew clean`
 
 
 #### Run with docker Compose
