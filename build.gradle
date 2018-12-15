@@ -26,6 +26,7 @@ buildscript {
 apply plugin: 'com.bmuschko.docker-remote-api'
 apply plugin: 'com.bmuschko.docker-java-application'
 apply plugin: 'com.moowork.node'
+apply plugin: 'base'
 // plugins {
 //   id "com.moowork.node" version "1.2.0"
 // }
@@ -82,9 +83,13 @@ task pushImage(type: DockerPushImage, dependsOn: 'tagImage'){
     imageName 'emcmongoose/mongoose-console'
 }
 
+// Leaving "clear" task so it could be configured lately. Remaining clearProductionFiles() as a function in order ...
+// ... to call it within other independent tasks. 
 task clear() {
     clearProductionFiles()
 }
+
+clean.dependsOn clear
 
 def clearProductionFiles() { 
  delete 'dist', 'docker', 'build'
