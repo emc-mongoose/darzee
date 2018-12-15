@@ -54,20 +54,25 @@ img {
     color: #212121;
     text-decoration: none;
     text-align: center;
-    background: rgba(255, 255, 255, 0);
-    border: 1px solid #BDBDBD;
+    /* background: rgba(255, 255, 255, 0); */
+    background: rgba(178, 121, 37, 0.5);
+    /* border: 1px solid #BDBDBD; */
+    border: 1px solid rgba(119, 76, 43, 0.966);
     border-radius: 10px;
 }
 
 input {
     width: 91%;
     margin: 2px 2px;
+    margin-top: 10px;
     padding: 8px;
     color: #212121;
     text-decoration: none;
     text-align: center;
-    background: rgba(178, 121, 37, 0.5);
-    border: none;
+    /* background: rgba(178, 121, 37, 0.5); */
+    background: rgba(255, 255, 255, 0);
+    /* border: none; */
+    border: 1px solid #BDBDBD;
     border-radius: 10px;
 }
  
@@ -137,7 +142,8 @@ ul {
     color: #212121;
     text-decoration: none;
     text-align: center;
-    background: rgba(255, 255, 255, 0);
+    /* background: rgba(255, 255, 255, 0); */
+    background: rgba(178, 121, 37, 0.5);
     border: 2px solid rgb(109, 109, 109);
     border-radius: 10px;
 }
