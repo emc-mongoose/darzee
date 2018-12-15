@@ -27,9 +27,7 @@ apply plugin: 'com.bmuschko.docker-remote-api'
 apply plugin: 'com.bmuschko.docker-java-application'
 apply plugin: 'com.moowork.node'
 apply plugin: 'base'
-// plugins {
-//   id "com.moowork.node" version "1.2.0"
-// }
+
 
 version '0.0.1'
 
@@ -60,7 +58,7 @@ task createDockerfile(type: Dockerfile, dependsOn: 'dist'){
     copyFile("nginx/nginx.conf.template", "/etc/nginx/nginx.conf.template")
     workingDir("/usr/share/nginx/html")
     addFile("dist/mongoose-console", ".")
-    instruction "CMD /bin/sh -c \"envsubst '\$MONGOOSE_IP' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf.template && exec nginx -g 'daemon off;'\""
+    instruction "CMD /bin/sh -c \"envsubst '\$MONGOOSE_HOST' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf.template && exec nginx -g 'daemon off;'\""
 }
 
 task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
