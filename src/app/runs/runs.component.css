@@ -36,42 +36,52 @@
 .column {
     float: left;
     position: relative;
+    margin-left: 3px;
+    margin-right: 3px;
 }
 
 .row {
     margin-left: 5%;
     margin-right: 5%;
     margin-top: 4%;
+    margin-bottom: 4%;
 }
 
 .checkbox-column {
-
+    position: relative;
+    width: 5%;
 }
 
 .time-column {
-
+    position: relative;
+    width: 20%;
 }
 
 .status-column {
-
+    position: relative;
+    width: 9%;
 }
 
 .duration-column {
-
+    position: relative;
+    width: 16%;
 }
 
 .nodes-column, .logs-column, .charts-column {
-
+    position: relative;
+    width: 10%;
 }
 
 .comment-column {
-
+    position: relative;
+    width: 15%;
 }
 
 
 hr {
     display: block;
     height: 1px;
+    width: 100%;
     border: 0;
     border-top: 1px solid rgb(71, 71, 71);
     margin: 1em 0;
