@@ -35,3 +35,8 @@ Then check using the browser that the GUI is available at http://localhost:8080
 
 ## To run in development mode, use:
 `ng serve` 
+
+## Configuring container images parameters
+
+Versions and hosts are stored within the environment variables. You're able to change them via .env file inside the root directory. 
+If you rename some of them, make sure you rename it in other files: build.gradle, nginx.conf.template 
