@@ -2,8 +2,9 @@ import { Component, OnInit, ViewChild, ViewChildren, ElementRef } from '@angular
 import { IpAddressService } from 'src/app/ip-address.service';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { Button } from 'protractor';
-import { FileOperations } from 'src/app/common/FileOperations';
-import { FileFormat } from 'src/app/common/FileFormat';
+import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
+import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
+import { Constants } from 'src/app/common/constants';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { FileFormat } from 'src/app/common/FileFormat';
 })
 export class EditingScenariosComponent implements OnInit {
 
-  readonly CONFIGURATION_FILENAME = "aggregated_defaults.json"
+  readonly CONFIGURATION_FILENAME = Constants.CUSTOM_CONFIGURATION_FILENAME;
 
   // JSON Editor properties
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;

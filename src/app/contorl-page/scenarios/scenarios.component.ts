@@ -2,8 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { IpAddressService } from 'src/app/ip-address.service';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { Doc } from 'codemirror';
-import { FileOperations } from 'src/app/common/FileOperations';
-import { FileFormat } from 'src/app/common/FileFormat';
+import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
+import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
+import { Constants } from 'src/app/common/constants';
 
 
 
@@ -81,7 +82,7 @@ export class ScenariosComponent implements OnInit {
     const { doc } = this;
     if (this.isSavingAvaliable()) { 
       let fileSaver: FileOperations = new FileOperations();
-      const filename = "Mongoose_Scenario";
+      const filename = Constants.SCENARIO_FILE_NAME;
       let fileFormat = FileFormat.JSON;
       let savingData = this.getValueFromEditor();
       let codeLinesDelimiter = ";";
