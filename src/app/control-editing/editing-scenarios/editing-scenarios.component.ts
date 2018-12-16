@@ -14,7 +14,7 @@ import { Constants } from 'src/app/common/constants';
 })
 export class EditingScenariosComponent implements OnInit {
 
-  readonly CONFIGURATION_FILENAME = Constants.CUSTOM_CONFIGURATION_FILENAME;
+  readonly CONFIGURATION_FILENAME = Constants.FileNames.CUSTOM_CONFIGURATION_FILENAME;
 
   // JSON Editor properties
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
