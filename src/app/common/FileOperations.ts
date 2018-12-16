@@ -1,6 +1,7 @@
 
 import { saveAs } from 'file-saver';
 import { FileFormat } from './FileFormat';
+import { stringify } from '@angular/core/src/render3/util';
 
 
 export class FileOperations { 
@@ -17,10 +18,7 @@ export class FileOperations {
 
     public saveFile(fileName: String, fileType: FileFormat, data: String, lineDelimiter: string = this.NON_SET_DELIMITER) {
         data = data.toString();
-        var textFromFileInLines = data; 
-        if (lineDelimiter != this.NON_SET_DELIMITER) { 
-            textFromFileInLines = data.split(lineDelimiter);
-        } 
+        var textFromFileInLines: string[] = data.split(lineDelimiter);
         let fileTypeTag: string = this.getFileTypeTag(fileType);
         let binaryFileData = new Blob(textFromFileInLines, { type: fileTypeTag});
         saveAs(binaryFileData, fileName);
