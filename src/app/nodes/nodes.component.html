@@ -1,0 +1,36 @@
+<div class="w3-container">
+  <div class="row">
+    <div class="column left">
+      <img src="assets/images/mongoose.png">
+    </div>
+
+    <div class="column middle">
+      <span class="label describing">
+        <br />Mongoose node address:<br />
+      </span>
+        <div class="addIp">
+          <p #ipAd hidden="true">{{ ip }}</p>
+          <input [(ngModel)]="ip" placeholder="enter IP here..." />
+          <button class="buttonAdd" title="add IP address" (click)="addIp(ipAd.textContent)">
+            Add
+          </button>
+        </div>
+      <!-- </span> -->
+    </div>
+
+    <div class="column right">
+      <ul class="ipAddresses" style="list-style-type: none">
+        <li *ngFor="let ipAddress of ipAddresses">
+          <span class="ipAddr">{{ ipAddress.ip }}</span>
+          <button class="buttonDel" title="delete IP address" (click)="deleteIp(ipAddress.id)">&#10005;</button>
+        </li>
+      </ul>
+    </div> 
+
+  </div>
+</div>
+
+
+<button class="next-button" (click)="onNavigateNextClicked()">
+  Next
+</button>
