@@ -2,7 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { IpAddressService } from 'src/app/ip-address.service';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { Doc } from 'codemirror';
-import { saveAs } from 'file-saver';
+import { FileOperations } from 'src/app/common/FileOperations';
+import { FileFormat } from 'src/app/common/FileFormat';
 
 
 
@@ -79,10 +80,12 @@ export class ScenariosComponent implements OnInit {
   onSaveBtnClicked() {
     const { doc } = this;
     if (this.isSavingAvaliable()) { 
-      const parts: string[] = this.getValueFromEditor().split(';');
+      let fileSaver: FileOperations = new FileOperations();
       const filename = "Mongoose_Scenario";
-      var blob = new Blob(parts, {type: "text/plain;charset=utf-8"});
-      saveAs(blob, filename);
+      let fileFormat = FileFormat.JSON;
+      let savingData = this.getValueFromEditor();
+      let codeLinesDelimiter = ";";
+      fileSaver.saveFile(filename, fileFormat, savingData, codeLinesDelimiter);
       alert("File has been saved.");
     } else { 
       alert("File couldn't be saved because it hasn't been edited.");
