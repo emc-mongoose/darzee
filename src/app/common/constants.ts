@@ -13,4 +13,8 @@ export namespace Constants {
     export class Placeholders { 
         static readonly CODE_EDITOR_PLACEHOLDER = "Select Javascript file.."; 
     }
+
+    export class Configuration { 
+        static readonly MONGOOSE_PROXY_PASS = "localhost:9999" // PROD: '/config', DEBUG: 'localhost:9999'
+    }
 }

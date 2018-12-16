@@ -47,7 +47,7 @@ export class EditingScenariosComponent implements OnInit {
   // NOTE: Private methods
 
   private fetchConfigurationFromMongoose() { 
-    this.service.getConfig("localhost:9999") // TODO: Replace *localhost* with a valid paramteter
+    this.service.getConfig(Constants.Configuration.MONGOOSE_PROXY_PASS) // TODO: Replace *localhost* with a valid paramteter
     .subscribe(
       data => { 
         console.log(data);
