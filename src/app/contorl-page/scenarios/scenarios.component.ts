@@ -26,7 +26,7 @@ export class ScenariosComponent implements OnInit {
   private fileContent: string | ArrayBuffer;
   private processingFile: File;
 
-  readonly CODE_EDITOR_PLACEHOLDER = "Select Javascript file..";
+  readonly CODE_EDITOR_PLACEHOLDER = Constants.Placeholders.CODE_EDITOR_PLACEHOLDER;
 
   constructor(private service: IpAddressService) { 
     this.fileContent = ""
@@ -82,7 +82,7 @@ export class ScenariosComponent implements OnInit {
     const { doc } = this;
     if (this.isSavingAvaliable()) { 
       let fileSaver: FileOperations = new FileOperations();
-      const filename = Constants.SCENARIO_FILE_NAME;
+      const filename = Constants.FileNames.SCENARIO_FILE_NAME;
       let fileFormat = FileFormat.JSON;
       let savingData = this.getValueFromEditor();
       let codeLinesDelimiter = ";";
