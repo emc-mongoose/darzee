@@ -19,7 +19,7 @@ export class IpAddressService {
   nodeConfig: NodeConfig = null;
   entryNode: String = '';
 
-  public fileContent: string | ArrayBuffer = "";
+  public fileContent: string | ArrayBuffer = '';
 
   constructor(private http: HttpClient) { }
 
@@ -35,16 +35,27 @@ export class IpAddressService {
 
   saveIpAddress(ip: string) {
     const address = new IpAddress(ip);
+    for (let i = 0; i < this.ipAddresses.length; ++i) {
+      if (this.ipAddresses[i].ip === ip) {
+        console.log('Ip already in list!');
+        alert('This IP already in list!');
+        return;
+      }
+    }
     this.ipAddresses.push(address);
   }
 
-  deleteIp(ip: string): void {
-    this.ipAddresses.forEach(element => {
-      if (ip == element.ip) {
-        console.log('ID FOR DEL  ' + this.ipAddresses.indexOf(element));  //for debug
-        this.ipAddresses.splice(this.ipAddresses.indexOf(element), 1);
-      }
-    });
+  deleteIp(id: number): void {
+    // console.log('ID FOR DEL  ' + id + ' length: ' + this.ipAddresses.length);  // for debug
+    this.ipAddresses.splice(id, 1);
+
+    let countId = 0;
+    for (let i = 0; i < this.ipAddresses.length; ++i) {
+      this.ipAddresses[i].id = countId;
+      countId++;
+    }
+    IpAddress.identifier = this.ipAddresses.length;
+
   }
 
   private handleError(error: HttpErrorResponse) {

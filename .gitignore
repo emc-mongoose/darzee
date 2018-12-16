@@ -1,4 +1,5 @@
 # Outputs
+/dist/
 bazel-*
 test-project-host-*
 dist-schema/

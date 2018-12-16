@@ -1,6 +1,16 @@
 # Mongoose Console
 
-## build
+## Mock Up
+
+Views:
+1. [Start](http://framebox.org/AhASg-vSSdFJ)
+2. [Node Selection](http://framebox.org/AhAtx-jAZPRL)
+3. [Defaults](http://framebox.org/AhATg-tbsaYz)
+4. [Scenario](http://framebox.org/AhAvq-mJfTrb)
+5. [Logs](http://framebox.org/AhAVi-MafEVE)
+6. [Charts](http://framebox.org/AhAwq-XveMZm)
+
+## Build
 ` ./gradlew clean dist`
 
 ## Deployment with Docker
@@ -20,6 +30,12 @@ To push image to Docker hub
 
 ` ./gradlew pushImage`
 
+
+## Clear production files 
+
+` ./gradlew clean`
+
+
 #### Run with docker Compose
 
 To launch the GUI, you will need to pre-install the [Docker Compose](https://docs.docker.com/compose/install/). To start the server using docker-compose:
@@ -32,3 +48,8 @@ Then check using the browser that the GUI is available at http://localhost:8080
 
 ## To run in development mode, use:
 `ng serve` 
+
+## Configuring container images parameters
+
+Versions and hosts are stored within the environment variables. You're able to change them via .env file inside the root directory. 
+If you rename some of them, make sure you rename it in other files: build.gradle, nginx.conf.template 
