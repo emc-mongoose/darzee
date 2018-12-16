@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  mangoose-console:
+  mongoose-console:
     image: emcmongoose/mongoose-console:${CONSOLE_VER}
     ports:
     - "8080:${NGINX_PORT}"
@@ -9,6 +9,8 @@ services:
     image: grafana/grafana:${GRAFANA_VER}
     ports:
     - "${GRAFANA_PORT}:${GRAFANA_PORT}"
+    volumes:
+    - ./grafana_plugins:/grafana-graph-panel
   prometheus:
     image: prom/prometheus:${PROMETHEUS_VER}
     ports:
