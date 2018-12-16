@@ -15,8 +15,10 @@ export class EditingScenariosComponent implements OnInit {
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   @ViewChild("apply-button-content-wrppaer") applyNewValueBtn: ElementRef;
   public jsonEditorOptions: JsonEditorOptions;
+  // @PARAM jsonEditorData is the data which was originally in JSON 
   public jsonEditorData: any;
-  // currentJsonEditorData is using to compare edited and current values of JSON 
+  // currentJsonEditorData is data which was modified from the UI. It's ...
+  // ... sing to compare edited and current values of JSON 
   public currentJsonEditorData: any; 
   
   // Component properties 
@@ -27,12 +29,18 @@ export class EditingScenariosComponent implements OnInit {
 
   constructor(private service: IpAddressService) { 
     this.fileContent = service.fileContent;
+    this.service.getConfig("localhost:9999")
+      .subscribe(
+        data => { console.log(data); this.jsonEditorData = data; },
+        error => {console.log("an error has occured while fetching configuration from mongoose")}
+      );
     this.configureJsonEditor();
   }
 
 
   ngOnInit() {
   }
+
 
   // NOTE: Private methods
   private configureJsonEditor() {
