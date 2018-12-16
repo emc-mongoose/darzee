@@ -87,14 +87,17 @@ export class ScenariosComponent implements OnInit {
       let savingData = this.getValueFromEditor();
       let codeLinesDelimiter = ";";
       fileSaver.saveFile(filename, fileFormat, savingData, codeLinesDelimiter);
-      alert("File has been saved.");
+      let misleadingMsg = Constants.Alerts.FILE_SAVED;
+      alert(misleadingMsg);
     } else { 
-      alert("File couldn't be saved because it hasn't been edited.");
+      let misleadingMsg = Constants.Alerts.FILE_NOT_EDITED;
+      alert(misleadingMsg);
     }
   }  
 
     onStartBtnClicked() {
-    alert('Mongoose started.');
+      let misleadingMsg = Constants.Alerts.MONGOOSE_HAS_STARTED;
+      alert(misleadingMsg);
   }
 
   private isSavingAvaliable(): boolean { 

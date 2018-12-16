@@ -54,7 +54,7 @@ export class EditingScenariosComponent implements OnInit {
          this.jsonEditorData = data; 
       },
       error => {
-        const misleadingMsg = "Unable to fetch configuration from the server.";
+        const misleadingMsg = Constants.Alerts.SERVER_DATA_NOT_AVALIABLE;
         alert(misleadingMsg);
       }
     );
@@ -120,7 +120,8 @@ export class EditingScenariosComponent implements OnInit {
   onApplyButtonClicked() { 
     let savingFileFormat = FileFormat.JSON;
     this.fileOperations.saveFile(this.CONFIGURATION_FILENAME, savingFileFormat, this.currentJsonEditorData);
-    alert("New configuration has been applied.");
+    let misleadingMsg = Constants.Alerts.NEW_CONFIG_APPLIED;
+    alert(misleadingMsg);
     this.hasJsonEdited = false;
   }
 }

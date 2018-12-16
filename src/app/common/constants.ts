@@ -7,14 +7,23 @@ export namespace Constants {
     }
     
     export class Alerts { 
-        static readonly MONG
+        // Common 
+        static readonly SERVER_DATA_NOT_AVALIABLE = "Unable to fetch configuration from the server.";
+        static readonly FILE_SAVED = "File has been saved.";
+        static readonly FILE_NOT_EDITED = "File couldn't be saved because it hasn't been edited.";
+        static readonly MONGOOSE_HAS_STARTED = "Mongoose has started.";
+        // Configuration editing 
+        static readonly NEW_CONFIG_APPLIED = "New configuration has been applied.";
+
     }
 
     export class Placeholders { 
+        // Scenarious editing 
         static readonly CODE_EDITOR_PLACEHOLDER = "Select Javascript file.."; 
     }
 
     export class Configuration { 
+        // Proxy
         static readonly MONGOOSE_PROXY_PASS = "localhost:9999" // PROD: '/config', DEBUG: 'localhost:9999'
     }
 }
