@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild, ViewChildren, ElementRef } from '@angular
 import { IpAddressService } from 'src/app/ip-address.service';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { Button } from 'protractor';
+import { FileOperations } from 'src/app/common/FileOperations';
+import { FileFormat } from 'src/app/common/FileFormat';
 
 
 @Component({
@@ -10,6 +12,8 @@ import { Button } from 'protractor';
   styleUrls: ['./editing-scenarios.component.css']
 })
 export class EditingScenariosComponent implements OnInit {
+
+  readonly CONFIGURATION_FILENAME = "aggregated_defaults.json"
 
   // JSON Editor properties
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
@@ -20,21 +24,18 @@ export class EditingScenariosComponent implements OnInit {
   // currentJsonEditorData is data which was modified from the UI. It's ...
   // ... sing to compare edited and current values of JSON 
   public currentJsonEditorData: any; 
+
+  private fileOperations: FileOperations;
   
   // Component properties 
 
   public hasJsonEdited: Boolean = false
 
-  public fileContent: string | ArrayBuffer;
 
   constructor(private service: IpAddressService) { 
-    this.fileContent = service.fileContent;
-    this.service.getConfig("localhost:9999")
-      .subscribe(
-        data => { console.log(data); this.jsonEditorData = data; },
-        error => {console.log("an error has occured while fetching configuration from mongoose")}
-      );
+    this.fetchConfigurationFromMongoose();
     this.configureJsonEditor();
+    this.fileOperations = new FileOperations();
   }
 
 
@@ -43,6 +44,21 @@ export class EditingScenariosComponent implements OnInit {
 
 
   // NOTE: Private methods
+
+  private fetchConfigurationFromMongoose() { 
+    this.service.getConfig("localhost:9999") // TODO: Replace *localhost* with a valid paramteter
+    .subscribe(
+      data => { 
+        console.log(data);
+         this.jsonEditorData = data; 
+      },
+      error => {
+        const misleadingMsg = "Unable to fetch configuration from the server.";
+        alert(misleadingMsg);
+      }
+    );
+  }
+  
   private configureJsonEditor() {
     this.jsonEditorOptions = new JsonEditorOptions()
 
@@ -101,9 +117,9 @@ export class EditingScenariosComponent implements OnInit {
 
 
   onApplyButtonClicked() { 
-    alert("New value has been applied.");
+    let savingFileFormat = FileFormat.JSON;
+    this.fileOperations.saveFile(this.CONFIGURATION_FILENAME, savingFileFormat, this.currentJsonEditorData);
+    alert("New configuration has been applied.");
     this.hasJsonEdited = false;
   }
-
-  
 }

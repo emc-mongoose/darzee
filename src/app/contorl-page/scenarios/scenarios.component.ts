@@ -87,7 +87,6 @@ export class ScenariosComponent implements OnInit {
     } else { 
       alert("File couldn't be saved because it hasn't been edited.");
     }
-    
   }  
 
     onStartBtnClicked() {
