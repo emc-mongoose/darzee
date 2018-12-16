@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IpAddressService } from 'src/app/ip-address.service';
+import { IpAddressService } from 'src/app/services/ip-addresses/ip-address.service';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { Doc } from 'codemirror';
 import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
