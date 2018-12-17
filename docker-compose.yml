@@ -9,8 +9,6 @@ services:
     image: grafana/grafana:${GRAFANA_VER}
     ports:
     - "${GRAFANA_PORT}:${GRAFANA_PORT}"
-    volumes:
-    - ./grafana_plugins:/grafana-graph-panel
   prometheus:
     image: prom/prometheus:${PROMETHEUS_VER}
     ports:
