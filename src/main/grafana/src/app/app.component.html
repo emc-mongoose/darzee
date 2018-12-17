@@ -1,5 +1,17 @@
-<div id='svgdiv'>
 
-</div>
-<button (click)="getSVG()"> test
+<iframe [src]="trustedGetPlotUrl"  width="450" height="200" frameborder="0"></iframe>
+
+<button (click)="getSVG()"> Get SVG
 </button>
+
+<input (keyup)="onKeyStartSeconds($event)">
+<input (keyup)="onKeyStartMinutes($event)">
+<input (keyup)="onKeyStartHours($event)">
+
+<input (keyup)="onKeyEndSeconds($event)">
+<input (keyup)="onKeyEndMinutes($event)">
+<input (keyup)="onKeyEndHours($event)">
+
+<p id='svgdiv'>
+</p> 
+

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser'
 
 import { AppService } from './app.service';
 
@@ -12,7 +13,39 @@ import { AppService } from './app.service';
 
 export class AppComponent implements OnInit {
 
-  constructor(private appService : AppService) {}
+  getPlotURL = "";
+  constructor(private appService : AppService, private sanitizer: DomSanitizer) {}
+
+  ngOnInit() {
+    var currentTime = Date.now();
+    this.getPlotUrl = "http://localhost:3000/d-solo/94g2pZAiz/prometheus-2-0-stats?refresh=1m&panelId=14&orgId=1&from=" + (currentTime - 900000).toString() + "&to=" + currentTime.toString();
+    this.trustedGetPlotUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.getPlotUrl);
+    //alert(this.trustedGetPlotUrl);
+  }
+
+  onKeyStartSeconds(event: any) {
+    this.appService.startSeconds = event.target.value;
+  }
+
+  onKeyStartMinutes(event: any) {
+    this.appService.startMinutes = event.target.value;
+  }
+
+  onKeyStartHours(event: any) {
+    this.appService.startHours = event.target.value;
+  }
+
+  onKeyEndSeconds(event: any) {
+    this.appService.endSeconds = event.target.value;
+  }
+
+  onKeyEndMinutes(event: any) {
+    this.appService.endMinutes = event.target.value;
+  }
+
+  onKeyEndHours(event: any) {
+    this.appService.endHours = event.target.value;
+  }
 
   doForMetrics(metrics) : string {
     var values = metrics['values'];
@@ -27,13 +60,14 @@ export class AppComponent implements OnInit {
     }
 
     values.forEach(doForEachValuePair);
-
-    var polyline = "<svg height=1000 width=2000><polyline ";
+    var svgHeight = 500;
+    var svgWidth = 2000;
+    var polyline = "<svg height=" + svgHeight.toString() +  " width=" + svgWidth.toString() + "><polyline ";
 
     var pts = "";
     for (var i = 0; i < x.length; ++i) {
         pts += x[i].toString() + ",";
-        pts += Math.floor(y[i]*10000).toString() + " ";
+        pts += (svgHeight - Math.floor(y[i]*10000)).toString() + " ";
     }
 
     polyline += "points='" + pts + "'";
@@ -52,7 +86,7 @@ export class AppComponent implements OnInit {
       alert(jsonContent['status']);
 
       var svgdiv = document.getElementById('svgdiv');
-      svgdiv.innerHTML = this.doForEachMetrics(jsonContent['data']['result'][0]);;
+      svgdiv.innerHTML = this.doForMetrics(jsonContent['data']['result'][0]);;
     });
   }
   
