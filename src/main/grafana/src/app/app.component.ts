@@ -13,14 +13,17 @@ import { AppService } from './app.service';
 
 export class AppComponent implements OnInit {
 
-  getPlotURL = "";
   constructor(private appService : AppService, private sanitizer: DomSanitizer) {}
+
+  svgHeight = 150;
+  svgWidth = 200;
 
   ngOnInit() {
     var currentTime = Date.now();
-    this.getPlotUrl = "http://localhost:3000/d-solo/94g2pZAiz/prometheus-2-0-stats?refresh=1m&panelId=14&orgId=1&from=" + (currentTime - 900000).toString() + "&to=" + currentTime.toString();
-    this.trustedGetPlotUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.getPlotUrl);
-    //alert(this.trustedGetPlotUrl);
+    // Here should be grafana server URL for a panel
+    var getPlotUrl = "http://localhost:3000/d-solo/94g2pZAiz/prometheus-2-0-stats?refresh=1m&panelId=14&orgId=1&from=" + (currentTime - 900000).toString() + "&to=" + currentTime.toString();
+    // Getting safe resource URL to avoid blocking of the GET request
+    this.trustedGetPlotUrl = this.sanitizer.bypassSecurityTrustResourceUrl(getPlotUrl);
   }
 
   onKeyStartSeconds(event: any) {
@@ -47,6 +50,48 @@ export class AppComponent implements OnInit {
     this.appService.endHours = event.target.value;
   }
 
+  normalizePointArray(x) {
+    var maxX = Math.max.apply(null, x);
+    maxX = maxX * 1.1; // Adding a little margin for values
+    for (var i = 0; i < x.length; i++) {
+       x[i] = x[i] / maxX;
+    }
+  }
+
+  makePointsArrayString(x, y) {
+    var points = "";
+    for (var i = 0; i < x.length; ++i) {
+        points += Math.floor(x[i]*this.svgWidth).toString() + ",";
+        points += (this.svgHeight - Math.floor(y[i]*this.svgHeight)).toString() + " ";
+    }
+    return points;
+  }
+
+  makeSvgFromData(x, y) {
+    
+    this.normalizePointArray(x);
+    this.normalizePointArray(y);
+
+    var svgHtmlTag = "<svg height='" + this.svgHeight.toString() +  "' width='" + this.svgWidth.toString() + "'>";
+    var polylineSvgTag = "<polyline ";
+
+    polylineSvgTag += "points='" + this.makePointsArrayString(x, y) + "'";
+    polylineSvgTag += " style='fill:none; stroke:black; stroke-width:3'/>");
+
+    svgHtmlTag += polylineSvgTag;
+    svgHtmlTag += '</svg>';
+
+    return svgHtmlTag;
+  }
+
+  makeSvgDownloadLink(svgContent) {
+    var encodedSvg = encodeURIComponent(svgContent);
+    var filename = "plot.svg";
+    var downloadLink = '<p><a href="data:text/plain;charset=utf-8,' + encodedSvg + '" download=' + filename + '>Download SVG</a></p>';
+    return downloadLink;
+  }
+
+  // Processing points from JSON
   doForMetrics(metrics) : string {
     var values = metrics['values'];
     var startTime = values[0][0];
@@ -60,20 +105,10 @@ export class AppComponent implements OnInit {
     }
 
     values.forEach(doForEachValuePair);
-    var svgHeight = 500;
-    var svgWidth = 2000;
-    var polyline = "<svg height=" + svgHeight.toString() +  " width=" + svgWidth.toString() + "><polyline ";
 
-    var pts = "";
-    for (var i = 0; i < x.length; ++i) {
-        pts += x[i].toString() + ",";
-        pts += (svgHeight - Math.floor(y[i]*10000)).toString() + " ";
-    }
-
-    polyline += "points='" + pts + "'";
-    polyline += "style='fill:none;stroke:black;stroke-width:3'/></svg>");
-
-    return polyline;
+    var svgContent = this.makeSvgFromData(x, y);
+    var downloadLink = this.makeSvgDownloadLink(svgContent);
+    return svgContent + downloadLink;
   }
 
 
@@ -81,9 +116,7 @@ export class AppComponent implements OnInit {
   getSVG(): void {
     this.appService.getSvg().subscribe(data => {
       this.data = data;
-
       var jsonContent = this.data;
-      alert(jsonContent['status']);
 
       var svgdiv = document.getElementById('svgdiv');
       svgdiv.innerHTML = this.doForMetrics(jsonContent['data']['result'][0]);;

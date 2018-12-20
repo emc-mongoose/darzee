@@ -1,16 +1,39 @@
 
 <iframe [src]="trustedGetPlotUrl"  width="450" height="200" frameborder="0"></iframe>
 
+<br>
+<br>
 <button (click)="getSVG()"> Get SVG
 </button>
+<br>
+<br>
 
-<input (keyup)="onKeyStartSeconds($event)">
-<input (keyup)="onKeyStartMinutes($event)">
-<input (keyup)="onKeyStartHours($event)">
+<table>
 
-<input (keyup)="onKeyEndSeconds($event)">
-<input (keyup)="onKeyEndMinutes($event)">
-<input (keyup)="onKeyEndHours($event)">
+  <tr>
+    <td><b>Value</b>
+    <td><b>Start</b>
+    <td><b>End</b>
+  </tr>
+
+  <tr>
+    <td><p>Hours</p>
+    <td><input (keyup)="onKeyStartHours($event)">
+    <td><input (keyup)="onKeyEndHours($event)">
+  </tr>
+
+  <tr>
+    <td><p>Minutes</p>
+    <td><input (keyup)="onKeyStartMinutes($event)">
+    <td><input (keyup)="onKeyEndMinutes($event)">
+  </tr>
+
+  <tr>
+    <td><p>Seconds</p>
+    <td><input (keyup)="onKeyStartSeconds($event)">
+    <td><input (keyup)="onKeyEndSeconds($event)">
+  </tr>
+</table>
 
 <p id='svgdiv'>
 </p> 
