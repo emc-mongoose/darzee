@@ -14,19 +14,27 @@ Views:
 
 ### Runs page
 
-![](screenshots/runs.png)
+
+![](screenshots/runs.PNG)
+
 
 ### Nodes page
 
-![](screenshots/nodes.png)
+
+![](screenshots/nodes.PNG)
+
 
 ### Editing scenarios page
 
-![](screenshots/control-page.png)
+
+![](screenshots/control-page.PNG)
+
 
 ### Editing configurations page
 
-![](screenshots/control-editing.png)
+
+![](screenshots/control-editing.PNG)
+
 
 ## Build
 ` ./gradlew clean dist`
