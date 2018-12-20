@@ -35,6 +35,9 @@ Views:
 
 ![](screenshots/control-editing.PNG)
 
+### Downloading SVG page
+
+![](screenshots/svg_page.png)
 
 ## Build
 ` ./gradlew clean dist`
