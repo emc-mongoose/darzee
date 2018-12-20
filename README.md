@@ -10,6 +10,24 @@ Views:
 5. [Logs](http://framebox.org/AhAVi-MafEVE)
 6. [Charts](http://framebox.org/AhAwq-XveMZm)
 
+## Screenshots
+
+### Runs page
+
+![](screenshots/runs.png)
+
+### Nodes page
+
+![](screenshots/nodes.png)
+
+### Editing scenarios page
+
+![](screenshots/control-page.png)
+
+### Editing configurations page
+
+![](screenshots/control-editing.png)
+
 ## Build
 ` ./gradlew clean dist`
 
