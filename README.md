@@ -39,6 +39,10 @@ Views:
 
 ![](screenshots/svg_page.png)
 
+### Weighted triangles algorithm in Grafana
+
+![](screenshots/WTA.jpg)
+
 ## Build
 ` ./gradlew clean dist`
 
