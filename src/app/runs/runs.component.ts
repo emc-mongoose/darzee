@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-runs',
@@ -9,7 +10,7 @@ export class RunsComponent implements OnInit {
 
   version = '';
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
@@ -18,8 +19,8 @@ export class RunsComponent implements OnInit {
     // TODO
   }
 
-  newRun() {
-    // TODO
+  onNavigateNewRun() {
+    this.router.navigate(['/nodes']);
   }
 
 }
