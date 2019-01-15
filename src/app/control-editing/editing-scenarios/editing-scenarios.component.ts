@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewChildren, ElementRef } from '@angular/core';
-import { IpAddressService } from 'src/app/ip-address.service';
+import { IpAddressService } from 'src/app/services/ip-addresses/ip-address.service';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { Button } from 'protractor';
 import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
@@ -54,7 +54,7 @@ export class EditingScenariosComponent implements OnInit {
          this.jsonEditorData = data; 
       },
       error => {
-        const misleadingMsg = "Unable to fetch configuration from the server.";
+        const misleadingMsg = Constants.Alerts.SERVER_DATA_NOT_AVALIABLE;
         alert(misleadingMsg);
       }
     );
