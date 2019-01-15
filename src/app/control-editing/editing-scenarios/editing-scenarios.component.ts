@@ -5,6 +5,7 @@ import { Button } from 'protractor';
 import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { Constants } from 'src/app/common/constants';
+import { ControlApiService } from 'src/app/services/control-api/control-api.service';
 
 
 @Component({
@@ -33,21 +34,20 @@ export class EditingScenariosComponent implements OnInit {
   public hasJsonEdited: Boolean = false
 
 
-  constructor(private service: IpAddressService) { 
+  constructor(private ipService: IpAddressService, private controlApiService: ControlApiService) { 
     this.fetchConfigurationFromMongoose();
     this.configureJsonEditor();
     this.fileOperations = new FileOperations();
   }
 
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
 
   // NOTE: Private methods
 
   private fetchConfigurationFromMongoose() { 
-    this.service.getConfig(Constants.Configuration.MONGOOSE_PROXY_PASS) // TODO: Replace *localhost* with a valid paramteter
+    this.ipService.getConfig(Constants.Configuration.MONGOOSE_PROXY_PASS) // TODO: Replace *localhost* with a valid paramteter
     .subscribe(
       data => { 
         console.log(data);
@@ -113,7 +113,7 @@ export class EditingScenariosComponent implements OnInit {
     console.log("JSON has been edited:")
     console.log(editedJson)
     this.hasJsonEdited = !(editedJson === this.currentJsonEditorData);
-    this.hasJsonEdited ? this.currentJsonEditorData = editedJson : console.log("Nothing to be applied");
+    this.hasJsonEdited ? this.currentJsonEditorData = editedJson : console.log("Nothing to be applied.");
     // this.applyNewValueBtn.nativeElement.focus();
   }
 
@@ -122,7 +122,7 @@ export class EditingScenariosComponent implements OnInit {
     let savingFileFormat = FileFormat.JSON;
     // this.fileOperations.saveFile(this.CONFIGURATION_FILENAME, savingFileFormat, this.currentJsonEditorData);
     // console.log("Sending new configuration: " + JSON.stringify(this.currentJsonEditorData));
-    this.service.postNewConfiguration(JSON.stringify(this.currentJsonEditorData));
+    this.controlApiService.postNewConfiguration(JSON.stringify(this.currentJsonEditorData));
     alert("New configuration has been applied.");
     this.hasJsonEdited = false;
   }

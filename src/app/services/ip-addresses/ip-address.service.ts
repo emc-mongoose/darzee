@@ -38,32 +38,6 @@ export class IpAddressService {
   }
 
 
-  public postNewConfiguration(jsonConfiguration: string): any {
-    let formData = new FormData(); 
-    formData.append('defaults', jsonConfiguration);
-    this.http.post('http://' + Constants.Configuration.MONGOOSE_PROXY_PASS + '/run?defaults=' + formData, this.getHttpHeadersForRun()).subscribe(
-      error => alert("Unable to run Mongoose with current configuration. Reason: " + error)
-    );
-  }
-
-
-  private getHttpHeadersForRun(): HttpHeaders { 
-    const httpHeadersForMongooseRun = new HttpHeaders();
-    httpHeadersForMongooseRun.append('Accept', 'application/json');
-    const eTag = this.getEtagForRun();
-    httpHeadersForMongooseRun.append('If-Match', eTag);
-    return httpHeadersForMongooseRun;
-  }
-
-
-  // NOTE: ETAG is HEX representation of configuration start time in milliseconds 
-  private getEtagForRun(): string { 
-    const currentDateTime = Date.now();
-    const hexNumericSystemBase = 16; 
-    return currentDateTime.toString(hexNumericSystemBase);
-  }
-
-
   saveIpAddress(ip: string) {
     const address = new IpAddress(ip);
     for (let i = 0; i < this.ipAddresses.length; ++i) {
