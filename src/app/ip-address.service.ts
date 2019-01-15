@@ -41,15 +41,19 @@ export class IpAddressService {
     // TODO: Add HTTP error handling 
     console.log("Trying to apply new confgiuration: " + jsonConfiguration);
     const newConfigurationHeaders = new HttpHeaders();
-    newConfigurationHeaders.append('Content-Type', 'application/json');
+    newConfigurationHeaders.append('Accept', 'application/json');
 
     let currentDateTime = Date.now();
         // NOTE: ETAG is HEX representation of configuration start time in milliseconds 
-
+    let formData = new FormData(); 
+    formData.append('defaults', jsonConfiguration);
     let eTag = currentDateTime.toString(16);
     console.log("Configuration's ETAG: " + eTag);
     newConfigurationHeaders.append('If-Match', eTag);
-    this.http.post('http://' + Constants.Configuration.MONGOOSE_PROXY_PASS + '/run?defaults=' + jsonConfiguration, newConfigurationHeaders);
+    this.http.post('http://' + Constants.Configuration.MONGOOSE_PROXY_PASS + '/run?defaults=' + formData, newConfigurationHeaders).subscribe(
+      error => console.log("An error has occured while trying to set new configuration for Mongoose: " + error)
+      
+    );
 
   }
 
