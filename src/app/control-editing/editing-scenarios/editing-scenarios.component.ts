@@ -54,7 +54,7 @@ export class EditingScenariosComponent implements OnInit {
          this.jsonEditorData = data; 
       },
       error => {
-        const misleadingMsg = "Unable to fetch configuration from the server.";
+        const misleadingMsg = Constants.Alerts.SERVER_DATA_NOT_AVALIABLE;
         alert(misleadingMsg);
       }
     );
