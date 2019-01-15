@@ -37,28 +37,30 @@ export class IpAddressService {
   }
 
 
-  postNewConfiguration(jsonConfiguration: string): any {
-    // TODO: Add HTTP error handling 
-    console.log("Trying to apply new confgiuration: " + jsonConfiguration);
-    const newConfigurationHeaders = new HttpHeaders();
-    newConfigurationHeaders.append('Accept', 'application/json');
-
-    let currentDateTime = Date.now();
-        // NOTE: ETAG is HEX representation of configuration start time in milliseconds 
+  public postNewConfiguration(jsonConfiguration: string): any {
     let formData = new FormData(); 
     formData.append('defaults', jsonConfiguration);
-    let eTag = currentDateTime.toString(16);
-    console.log("Configuration's ETAG: " + eTag);
-    newConfigurationHeaders.append('If-Match', eTag);
-    this.http.post('http://' + Constants.Configuration.MONGOOSE_PROXY_PASS + '/run?defaults=' + formData, newConfigurationHeaders).subscribe(
-      error => console.log("An error has occured while trying to set new configuration for Mongoose: " + error)
-      
+    this.http.post('http://' + Constants.Configuration.MONGOOSE_PROXY_PASS + '/run?defaults=' + formData, this.getHttpHeadersForRun()).subscribe(
+      error => alert("Unable to run Mongoose with current configuration. Reason: " + error)
     );
-
   }
 
-  
 
+  private getHttpHeadersForRun(): HttpHeaders { 
+    const httpHeadersForMongooseRun = new HttpHeaders();
+    httpHeadersForMongooseRun.append('Accept', 'application/json');
+    const eTag = this.getEtagForRun();
+    httpHeadersForMongooseRun.append('If-Match', eTag);
+    return httpHeadersForMongooseRun;
+  }
+
+
+  // NOTE: ETAG is HEX representation of configuration start time in milliseconds 
+  private getEtagForRun(): string { 
+    const currentDateTime = Date.now();
+    const hexNumericSystemBase = 16; 
+    return currentDateTime.toString(hexNumericSystemBase);
+  }
 
 
   saveIpAddress(ip: string) {
