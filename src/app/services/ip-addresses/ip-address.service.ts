@@ -5,7 +5,8 @@ import { map, catchError } from 'rxjs/operators';
 
 import { IpAddress } from './ipAddress';
 import { NodeConfig } from './nodeConfig';
-import { Constants } from './common/constants';
+import { Constants } from 'src/app/common/constants';
+
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
