@@ -15,6 +15,6 @@ export namespace Constants {
     }
 
     export class Configuration { 
-        static readonly MONGOOSE_PROXY_PASS = "localhost:9999" // PROD: '/config', DEBUG: 'localhost:9999'
+        static readonly MONGOOSE_PROXY_PASS = "localhost:4033" // PROD: '/config', DEBUG: 'localhost:9999'
     }
 }

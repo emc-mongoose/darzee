@@ -5,6 +5,7 @@ import { map, catchError } from 'rxjs/operators';
 
 import { IpAddress } from './ipAddress';
 import { NodeConfig } from './nodeConfig';
+import { Constants } from './common/constants';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -14,6 +15,8 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class IpAddressService {
+
+
 
   ipAddresses: IpAddress[] = [];
   nodeConfig: NodeConfig = null;
@@ -32,6 +35,27 @@ export class IpAddressService {
   getIpAddresses(): IpAddress[] {
     return this.ipAddresses;
   }
+
+
+  postNewConfiguration(jsonConfiguration: string): any {
+    // TODO: Add HTTP error handling 
+    console.log("Trying to apply new confgiuration: " + jsonConfiguration);
+    const newConfigurationHeaders = new HttpHeaders();
+    newConfigurationHeaders.append('Content-Type', 'application/json');
+
+    let currentDateTime = Date.now();
+        // NOTE: ETAG is HEX representation of configuration start time in milliseconds 
+
+    let eTag = currentDateTime.toString(16);
+    console.log("Configuration's ETAG: " + eTag);
+    newConfigurationHeaders.append('If-Match', eTag);
+    this.http.post('http://' + Constants.Configuration.MONGOOSE_PROXY_PASS + '/run?defaults=' + jsonConfiguration, newConfigurationHeaders);
+
+  }
+
+  
+
+
 
   saveIpAddress(ip: string) {
     const address = new IpAddress(ip);
@@ -57,6 +81,7 @@ export class IpAddressService {
     IpAddress.identifier = this.ipAddresses.length;
 
   }
+
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

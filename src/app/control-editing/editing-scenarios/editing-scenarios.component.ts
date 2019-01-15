@@ -113,13 +113,16 @@ export class EditingScenariosComponent implements OnInit {
     console.log("JSON has been edited:")
     console.log(editedJson)
     this.hasJsonEdited = !(editedJson === this.currentJsonEditorData);
-    this.applyNewValueBtn.nativeElement.focus();
+    this.hasJsonEdited ? this.currentJsonEditorData = editedJson : console.log("Nothing to be applied");
+    // this.applyNewValueBtn.nativeElement.focus();
   }
 
 
   onApplyButtonClicked() { 
     let savingFileFormat = FileFormat.JSON;
-    this.fileOperations.saveFile(this.CONFIGURATION_FILENAME, savingFileFormat, this.currentJsonEditorData);
+    // this.fileOperations.saveFile(this.CONFIGURATION_FILENAME, savingFileFormat, this.currentJsonEditorData);
+    // console.log("Sending new configuration: " + JSON.stringify(this.currentJsonEditorData));
+    this.service.postNewConfiguration(JSON.stringify(this.currentJsonEditorData));
     alert("New configuration has been applied.");
     this.hasJsonEdited = false;
   }
