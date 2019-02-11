@@ -13,7 +13,8 @@ export class ControlApiService {
 
   constructor(private http: HttpClient) { }
 
-  public postNewConfiguration(jsonConfiguration: string): any {
+  postNewConfiguration(jsonConfiguration: string): any {
+    console.log("Trying to apply new configuration: " + jsonConfiguration);
     let formData = new FormData(); 
     formData.append('defaults', jsonConfiguration);
     this.http.post('http://' + Constants.Configuration.MONGOOSE_PROXY_PASS + '/run?defaults=' + formData, this.getHttpHeadersForRun()).subscribe(

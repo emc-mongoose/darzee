@@ -119,10 +119,7 @@ export class EditingScenariosComponent implements OnInit {
 
 
   onApplyButtonClicked() { 
-    let savingFileFormat = FileFormat.JSON;
-    // this.fileOperations.saveFile(this.CONFIGURATION_FILENAME, savingFileFormat, this.currentJsonEditorData);
-    // console.log("Sending new configuration: " + JSON.stringify(this.currentJsonEditorData));
-    this.controlApiService.postNewConfiguration(JSON.stringify(this.currentJsonEditorData));
+    this.controlApiService.postNewConfiguration(JSON.stringify(this.currentJsonEditorData))
     alert("New configuration has been applied.");
     this.hasJsonEdited = false;
   }
