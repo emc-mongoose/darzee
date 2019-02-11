@@ -5,6 +5,8 @@ import { map, catchError } from 'rxjs/operators';
 
 import { IpAddress } from './ipAddress';
 import { NodeConfig } from './nodeConfig';
+import { Constants } from 'src/app/common/constants';
+
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -14,6 +16,8 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class IpAddressService {
+
+
 
   ipAddresses: IpAddress[] = [];
   nodeConfig: NodeConfig = null;
@@ -32,6 +36,7 @@ export class IpAddressService {
   getIpAddresses(): IpAddress[] {
     return this.ipAddresses;
   }
+
 
   saveIpAddress(ip: string) {
     const address = new IpAddress(ip);
@@ -57,6 +62,7 @@ export class IpAddressService {
     IpAddress.identifier = this.ipAddresses.length;
 
   }
+
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

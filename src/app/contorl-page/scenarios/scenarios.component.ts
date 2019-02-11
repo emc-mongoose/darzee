@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IpAddressService } from 'src/app/ip-address.service';
+import { IpAddressService } from 'src/app/services/ip-addresses/ip-address.service';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { Doc } from 'codemirror';
-import { saveAs } from 'file-saver';
+import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
+import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
+import { Constants } from 'src/app/common/constants';
 
 
 
@@ -24,7 +26,7 @@ export class ScenariosComponent implements OnInit {
   private fileContent: string | ArrayBuffer;
   private processingFile: File;
 
-  readonly CODE_EDITOR_PLACEHOLDER = "Select Javascript file..";
+  readonly CODE_EDITOR_PLACEHOLDER = Constants.Placeholders.CODE_EDITOR_PLACEHOLDER;
 
   constructor(private service: IpAddressService) { 
     this.fileContent = ""
@@ -79,19 +81,23 @@ export class ScenariosComponent implements OnInit {
   onSaveBtnClicked() {
     const { doc } = this;
     if (this.isSavingAvaliable()) { 
-      const parts: string[] = this.getValueFromEditor().split(';');
-      const filename = "Mongoose_Scenario";
-      var blob = new Blob(parts, {type: "text/plain;charset=utf-8"});
-      saveAs(blob, filename);
-      alert("File has been saved.");
+      let fileSaver: FileOperations = new FileOperations();
+      const filename = Constants.FileNames.SCENARIO_FILE_NAME;
+      let fileFormat = FileFormat.JSON;
+      let savingData = this.getValueFromEditor();
+      let codeLinesDelimiter = ";";
+      fileSaver.saveFile(filename, fileFormat, savingData, codeLinesDelimiter);
+      let misleadingMsg = Constants.Alerts.FILE_SAVED;
+      alert(misleadingMsg);
     } else { 
-      alert("File couldn't be saved because it hasn't been edited.");
+      let misleadingMsg = Constants.Alerts.FILE_NOT_EDITED;
+      alert(misleadingMsg);
     }
-    
   }  
 
     onStartBtnClicked() {
-    alert('Mongoose started.');
+      let misleadingMsg = Constants.Alerts.MONGOOSE_HAS_STARTED;
+      alert(misleadingMsg);
   }
 
   private isSavingAvaliable(): boolean { 

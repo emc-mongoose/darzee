@@ -1,3 +1,13 @@
-<div class="scenarios-file-content-header">Defaults:</div>
-<textarea class="scenarios-file-content" rows="40" cols="60" type="text" [(value)]="fileContent" onblur="if(this.value == '') { this.value='Select JavaScript file...'}" onfocus="if (this.value == 'Select JavaScript file...') {this.value=''}">
-  </textarea>
+<div class="scenarios-file-content-header">Current configuration:</div>
+<div class="scenarios-json-wrapper">
+    <json-editor [options]="jsonEditorOptions" [data]="jsonEditorData" (change)="onJsonUpdated($event)"></json-editor>
+</div>
+
+<div *ngIf="hasJsonEdited">
+    <button class="apply-new-value-button" (click)="onApplyButtonClicked()">
+        <div class="apply-button-content-wrppaer">
+            <p class="apply-new-value-title">Apply  </p>
+            <img src="assets/icons/icon-refresh.svg">
+        </div>
+      </button>
+</div>

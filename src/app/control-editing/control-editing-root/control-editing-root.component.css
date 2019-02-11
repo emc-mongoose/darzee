@@ -3,11 +3,9 @@
 }
 .editing-root-wrapper { 
     background: white;
-    position: relative;
     height: 650px;
     align-items: center;
     justify-content: center;
-    display: flex; 
     margin: 0px 15%;
 }
 

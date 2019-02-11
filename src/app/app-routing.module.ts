@@ -7,7 +7,6 @@ import { ControlEditingRootComponent } from './control-editing/control-editing-r
 const routes: Routes = [
   { path: 'nodes', component: NodesComponent },
   { path: 'control', component: ControlPageRootComponent},
-  { path: "**", redirectTo: '/nodes'},
   { path: "", redirectTo: '/nodes', pathMatch: 'full'},
   { path: "editing-scenarios", component: ControlEditingRootComponent}
 ];
