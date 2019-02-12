@@ -44,7 +44,7 @@ Views:
 ![](screenshots/WTA.jpg)
 
 ## Build
-` ./gradlew clean dist`
+` ./gradlew clean buildImage`
 
 ## Deployment with Docker
 
@@ -85,4 +85,4 @@ Then check using the browser that the GUI is available at http://localhost:8080
 ## Configuring container images parameters
 
 Versions and hosts are stored within the environment variables. You're able to change them via .env file inside the root directory. 
-If you rename some of them, make sure you rename it in other files: build.gradle, nginx.conf.template 
+If you rename some of them, make sure you rename it in other files: build.gradle
