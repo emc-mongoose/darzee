@@ -4,9 +4,10 @@ import com.bmuschko.gradle.docker.tasks.image.*
 
 buildscript {
   ext {
+    CONSOLE_PORT = '${CONSOLE_PORT}'
     depVersion = [
       gradle_docker_plugin: "3.6.1",
-      gradle_node_plugin: "1.2.0"
+      gradle_node_plugin: "1.2.0",
     ]
   }
   repositories {
@@ -74,24 +75,26 @@ task createDockerfile(type: Dockerfile){
     instruction "RUN npm install"
     
     instruction 'CMD ["ng", "build", "--prod" ]'
-    instruction 'EXPOSE 8080'
+    instruction 'EXPOSE ${CONSOLE_PORT}'
 
     // NOTE: Deploying into node's http-server
     instruction 'CMD ["cd", "/usr/src/app/dist"] '
-    instruction '"CMD [ "http-server", "-p", "8080"]'
+    instruction 'CMD [ "http-server", "-p", "${CONSOLE_PORT}"]'
 }
 
-task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
+task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
     imageId = 'emcmongoose/mongoose-console'
-    tags = ['emcmongoose/mongoose-console:$CONSOLE_VER', 'emcmongoose/mongoose-console:latest']
+    // TODO: Fix hard-coded "0.1.0" image tag. It's implicitly set because gradle didn't recognize ...
+    // ... the environment variable.
+    tags = ['emcmongoose/mongoose-console:0.1.0', 'emcmongoose/mongoose-console:latest']
     doLast { 
         clearProductionFiles()
     }
 }
 
-task tagImage(type: DockerTagImage, dependsOn: 'buildImage'){
+task tagImage(type: DockerTagImage, dependsOn: 'buildImage') {
     targetImageId { buildImage.getImageId() }
     tag 'mongoose-console'
     repository 'mongoose-console'
