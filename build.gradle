@@ -45,14 +45,8 @@ node {
   workDir = file("${project.buildDir}/node")
   nodeModulesDir = file("${project.projectDir}")
 }
- 
-task dist(type: NpmTask) {
-  // args = ['run', 'build', '--prod']
-}
- 
-// dist.dependsOn(npm_install)
 
-task createDockerfile(type: Dockerfile){
+task createDockerfile(type: Dockerfile) {
     destFile = project.file('docker/Dockerfile')
    
     from 'node:alpine'
