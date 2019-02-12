@@ -46,19 +46,39 @@ node {
 }
  
 task dist(type: NpmTask) {
-  args = ['run', 'build', '--prod']
+  // args = ['run', 'build', '--prod']
 }
  
-dist.dependsOn(npm_install)
+// dist.dependsOn(npm_install)
 
-task createDockerfile(type: Dockerfile, dependsOn: 'dist'){
+task createDockerfile(type: Dockerfile){
     destFile = project.file('docker/Dockerfile')
    
-    from 'nginx:alpine'
-    copyFile("nginx/nginx.conf.template", "/etc/nginx/nginx.conf.template")
-    workingDir("/usr/share/nginx/html")
-    addFile("dist/mongoose-console", ".")
-    instruction "CMD /bin/sh -c \"envsubst '\$MONGOOSE_HOST' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf.template && exec nginx -g 'daemon off;'\""
+    from 'node:alpine'
+
+    // NOTE: Creating a directory for the app 
+    instruction "RUN mkdir -p /usr/src/app"
+    workingDir("/usr/src/app")
+
+    // NOTE: Installing node.js http-server for deploying 
+    instruction "RUN npm install -g http-server"
+
+    // NOTE: Bundle the app source 
+    instruction "COPY . /usr/src/app"
+
+    // NOTE: Install Angular CLI 
+    instruction "RUN npm install -g @angular/cli"
+
+    // NOTE: Installing dependencies 
+    copyFile("package.json", "/usr/src/app/package.json")
+    instruction "RUN npm install"
+    
+    instruction 'CMD ["ng", "build", "--prod" ]'
+    instruction 'EXPOSE 8080'
+
+    // NOTE: Deploying into node's http-server
+    instruction 'CMD ["cd", "/usr/src/app/dist"] '
+    instruction '"CMD [ "http-server", "-p", "8080"]'
 }
 
 task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
@@ -90,6 +110,6 @@ task clear() {
 clean.dependsOn clear
 
 def clearProductionFiles() { 
- delete 'dist', 'docker', 'build'
+ delete 'docker'
 }
 
