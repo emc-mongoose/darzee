@@ -4,7 +4,9 @@ services:
   mongoose-console:
     image: emcmongoose/mongoose-console:${CONSOLE_VER}
     ports:
-    - "${NGINX_PORT}:80"
+    - "${CONSOLE_PORT}:${CONSOLE_PORT}"
+    env_file:
+    - .env
   grafana:
     image: grafana/grafana:${GRAFANA_VER}
     ports:
