@@ -1,3 +1,22 @@
-<p>
-  runs-table works!
-</p>
+<table class="table">
+
+     <!-- MARK: - Column headers -->
+     
+    <thead class="thead-light">
+      <tr>
+        <th scope="col" *ngFor="let header of columnHeaders"> {{ header }} </th>
+      </tr>
+    </thead>
+
+   <!-- MARK: - Column content -->
+
+    <tbody>
+      <tr>
+        <th scope="row">Status</th>
+        <td>Start time</td>
+        <td>Nodes</td>
+        <td>Duration</td>
+        <td>Comment</td>
+      </tr>
+    </tbody>
+  </table>

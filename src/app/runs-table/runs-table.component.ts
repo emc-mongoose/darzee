@@ -7,6 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RunsTableComponent implements OnInit {
 
+  readonly columnHeaders = [
+    "Status",
+    "Start time",
+    "Nodes",
+    "Duration",
+    "Comment"
+  ];
+
   constructor() { }
 
   ngOnInit() {

@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  buttonRoutes = [
+  readonly buttonRoutes = [
     // TODO: Add actual links to the pages once they'd be created
     {linkName: 'Runs', url: '/'},
     {linkName: 'New run', url: '/'},
