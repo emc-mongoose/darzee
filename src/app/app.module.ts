@@ -14,11 +14,13 @@ import { NodesModule } from './nodes/nodes.module';
 // NOTE: NPM dependencies
 import {NgJsonEditorModule} from 'ang-jsoneditor'
 import { HeaderComponent } from './header/header.component';
+import { RunsTableComponent } from './runs-table/runs-table.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent
+    HeaderComponent,
+    RunsTableComponent
   ],
   imports: [
     BrowserModule,
