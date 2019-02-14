@@ -1,0 +1,7 @@
+.buttons-container { 
+    float: right;
+}
+
+.buttons-container button { 
+    margin-left: 20px;
+}
