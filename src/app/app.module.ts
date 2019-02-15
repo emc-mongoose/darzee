@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { IpAddressService } from './services/ip-addresses/ip-address.service';
+import { IpAddressService } from './core/services/ip-addresses/ip-address.service';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ContorlPageModule } from './contorl-page/contorl-page.module';

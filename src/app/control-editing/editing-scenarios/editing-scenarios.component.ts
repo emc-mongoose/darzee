@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild, ViewChildren, ElementRef } from '@angular/core';
-import { IpAddressService } from 'src/app/services/ip-addresses/ip-address.service';
+import { IpAddressService } from 'src/app/core/services/ip-addresses/ip-address.service';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { Button } from 'protractor';
 import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { Constants } from 'src/app/common/constants';
-import { ControlApiService } from 'src/app/services/control-api/control-api.service';
+import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 
 
 @Component({
