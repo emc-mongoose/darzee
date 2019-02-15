@@ -12,7 +12,7 @@
 
     <tbody>
       <tr *ngFor="let runRecord of mongooseRunRecords">
-        <th scope="row"> {{ runRecord.status }} </th>
+        <th scope="row"> {{ runRecord.getStatus() }} </th>
         <td> {{ runRecord.startTime }} </td>
         <td> 
           <a *ngFor="let node of runRecord.nodes">
