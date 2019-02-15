@@ -30,7 +30,7 @@ apply plugin: 'com.moowork.node'
 apply plugin: 'base'
 
 
-version '0.1.0'
+version getMongooseConsoleVersion()
 
 repositories {
   mavenLocal()
@@ -72,7 +72,6 @@ task createDockerfile(type: Dockerfile) {
 }
 
 task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
-
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
     imageId = 'emcmongoose/mongoose-console'
@@ -80,10 +79,6 @@ task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
     doLast { 
         clearProductionFiles()
     }
-}
-
-task buildImage.doFirst { 
-  println "Building the image."
 }
 
 task tagImage(type: DockerTagImage, dependsOn: 'buildImage') {
