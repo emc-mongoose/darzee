@@ -1,14 +1,12 @@
-import { Time } from "@angular/common";
-
+// TODO: Configure the class with respect to Mongoose API's part responsible for ...
+// ... providing the duration of the run. As for now, the types are set to string. 
+    
 export class RunDuration { 
-    startTime: Time;
-    endTime: Time;
+    startTime: string;
+    endTime: string;
 
-    constructor(startTime: Time, endTime: Time) { 
+    constructor(startTime: string, endTime: string) { 
         this.startTime = startTime;
         this.endTime = endTime; 
-        let date = new Date(String(endTime));
-        console.log("Date.valueOf:" + date.valueOf())
-
     }
 }
