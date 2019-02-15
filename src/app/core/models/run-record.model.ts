@@ -3,6 +3,6 @@ import { MongooseRunStatus } from '../mongoose-run-status';
 
 export class MongooseRunRecord { 
 
-    constructor(status: MongooseRunStatus,  startTime: String, Nodes: String[],  duration: RunDuration, comment: String) { }
+    constructor(status: MongooseRunStatus,  startTime: String, nodes: String[],  duration: RunDuration, comment: String) { }
 
 }

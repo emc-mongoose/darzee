@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
+import { MongooseRunRecord } from '../core/models/run-record.model';
 
 @Component({
   selector: 'app-runs-table',
@@ -15,9 +17,12 @@ export class RunsTableComponent implements OnInit {
     "Comment"
   ];
 
-  constructor() { }
+  mongooseRunRecords: MongooseRunRecord[];
+
+  constructor(private monitoringApiService: MonitoringApiService) { }
 
   ngOnInit() {
+    this.mongooseRunRecords = this.monitoringApiService.getMongooseRunRecords();
   }
 
 }
