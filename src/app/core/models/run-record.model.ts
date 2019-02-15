@@ -1,7 +1,8 @@
-import { RunDuration } from './run-duration';
+import { RunDuration } from '../run-duration';
+import { MongooseRunStatus } from '../mongoose-run-status';
 
-export interface RunRecord { 
-    status: String; 
+export interface MongooseRunRecord { 
+    status: MongooseRunStatus; 
     startTime: String;
     Nodes: String[]; 
     Duration: RunDuration; 
