@@ -6,8 +6,10 @@ export class MongooseRunRecord {
     public status: MongooseRunStatus;
     public startTime: String;
     public nodes: String[];
-    public duration: RunDuration;
     public comment: String;
+
+    private duration: RunDuration;
+
 
     constructor(status: MongooseRunStatus,  startTime: String, nodes: String[],  duration: RunDuration, comment: String) { 
         this.status = status;
@@ -15,6 +17,11 @@ export class MongooseRunRecord {
         this.nodes = nodes;
         this.duration = duration;
         this.comment = comment;
+    }
+
+    // MARK: - Public
+    getDuration(): string { 
+        return this.duration.getDuration();
     }
 
 }

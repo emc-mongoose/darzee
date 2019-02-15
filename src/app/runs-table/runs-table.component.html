@@ -18,9 +18,8 @@
           <a *ngFor="let node of runRecord.nodes">
             {{ node }}
           </a>
-          
         </td>
-        <td> {{ runRecord.duration }} </td>
+        <td> {{ runRecord.getDuration() }} </td>
         <td> {{ runRecord.comment }} </td>
       </tr>
     </tbody>
