@@ -72,15 +72,18 @@ task createDockerfile(type: Dockerfile) {
 }
 
 task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
+
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
     imageId = 'emcmongoose/mongoose-console'
-    // TODO: Fix hard-coded "0.1.0" image tag. It's implicitly set because gradle didn't recognize ...
-    // ... the environment variable.
-    tags = ['emcmongoose/mongoose-console:0.1.0', 'emcmongoose/mongoose-console:latest']
+    tags = ['emcmongoose/mongoose-console:' + getMongooseConsoleVersion(), 'emcmongoose/mongoose-console:latest']
     doLast { 
         clearProductionFiles()
     }
+}
+
+task buildImage.doFirst { 
+  println "Building the image."
 }
 
 task tagImage(type: DockerTagImage, dependsOn: 'buildImage') {
@@ -105,3 +108,24 @@ def clearProductionFiles() {
  delete 'docker'
 }
 
+def getMongooseConsoleVersion() { 
+
+  // We're storing environment variables within .env file. The image tag ...
+  // ... (version of Mongoose Console) is defined inside of it. 
+  // The function retrives image tag from the environment variable named CONSOLE_VERSION_ENV_VARIABLE_NAME.
+ 
+  final ENVIRONMENT_VARIABLES_FILENAME = ".env";
+  final CONSOLE_VERSION_ENV_VARIABLE_NAME = "CONSOLE_VER";
+  final ENVIRONMENT_VARIABLES_DELIMITER = "\n";
+  final DELIMITER_OF_VARIABLES_AND_VALUE = "=";
+
+  def environmentVariables = file(ENVIRONMENT_VARIABLES_FILENAME).text.split(ENVIRONMENT_VARIABLES_DELIMITER);
+  def mongooseConsoleImageVersion = ""; 
+  environmentVariables.each { environmentVariable ->
+   if (environmentVariable.contains(CONSOLE_VERSION_ENV_VARIABLE_NAME)) { 
+     final versionPositionInStringArray = 1;
+     mongooseConsoleImageVersion = environmentVariable.split(DELIMITER_OF_VARIABLES_AND_VALUE)[versionPositionInStringArray];
+   }
+  }
+  return mongooseConsoleImageVersion;
+}
