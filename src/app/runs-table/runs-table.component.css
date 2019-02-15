@@ -1,0 +1,9 @@
+:host { 
+    display: block;
+    margin: calc(1%) calc(5%);
+}
+
+/* NOTE: Styling of Runs Table headers  */
+.thead-light { 
+    text-align: center;
+}
