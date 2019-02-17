@@ -1,11 +1,11 @@
-#status-btn span {
+#status-btn #resultsTag {
   cursor: pointer;
   display: inline-block;
   position: relative;
   transition: 0.5s;
 }
 
-#status-btn span:after {
+#status-btn #resultsTag:after {
   content: "Show results";
   font-size: inherit;
   position: absolute;
@@ -16,11 +16,11 @@
   transition: 0.5s;
 }
 
-#status-btn:hover span {
+#status-btn:hover #resultsTag {
   padding-bottom: calc(70%);
 }
 
-#status-btn:hover span:after {
+#status-btn:hover #resultsTag:after {
   opacity: 1;
   right: 0;
 }
