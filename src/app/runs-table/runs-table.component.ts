@@ -23,7 +23,6 @@ export class RunsTableComponent implements OnInit {
 
   ngOnInit() {
     this.mongooseRunRecords = this.monitoringApiService.getMongooseRunRecords();
-    console.log("Mongoose run records: ", this.mongooseRunRecords);
   }
 
 }

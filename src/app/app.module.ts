@@ -22,7 +22,7 @@ import { MongooseRunStatusIconComponent } from './mongoose-run-status-icon/mongo
     AppComponent,
     HeaderComponent,
     RunsTableComponent,
-    MongooseRunStatusIconComponent
+    MongooseRunStatusIconComponent,
   ],
   imports: [
     BrowserModule,

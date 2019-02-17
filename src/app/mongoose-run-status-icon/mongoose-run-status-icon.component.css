@@ -1,3 +1,6 @@
+/* NOTE: - ELEMENT "resultsTag" is a style specified for Mongoose Run Status Icon which applies to ...
+... the finished run tag and makes the "Show results" tag appear on hover.  */
+
 #status-btn #resultsTag {
   cursor: pointer;
   display: inline-block;
