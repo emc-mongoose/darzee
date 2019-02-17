@@ -1,11 +1,11 @@
-#button span {
+#status-btn span {
   cursor: pointer;
   display: inline-block;
   position: relative;
   transition: 0.5s;
 }
 
-#button span:after {
+#status-btn span:after {
   content: "Show results";
   font-size: inherit;
   position: absolute;
@@ -16,15 +16,11 @@
   transition: 0.5s;
 }
 
-#button:hover span {
+#status-btn:hover span {
   padding-bottom: calc(70%);
 }
 
-#button:hover span:after {
+#status-btn:hover span:after {
   opacity: 1;
   right: 0;
-}
-
-#button:hover .child { 
-    display: none;
 }
