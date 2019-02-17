@@ -3,11 +3,11 @@ import { MongooseRunStatus } from '../mongoose-run-status';
 
 export class MongooseRunRecord { 
 
+    public status: MongooseRunStatus;
     public startTime: String;
     public nodes: String[];
     public comment: String;
 
-    private status: MongooseRunStatus;
     private duration: RunDuration;
 
 
@@ -23,16 +23,4 @@ export class MongooseRunRecord {
     getDuration(): string { 
         return this.duration.getDuration();
     }
-
-    getStatus(): string { 
-        switch (this.status) { 
-            case MongooseRunStatus.Finished: { 
-                return "Finished";
-            }
-            case MongooseRunStatus.Running: { 
-                return "Running";
-            }
-        }
-    }
-
 }

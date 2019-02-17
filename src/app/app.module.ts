@@ -15,12 +15,14 @@ import { NodesModule } from './nodes/nodes.module';
 import {NgJsonEditorModule} from 'ang-jsoneditor'
 import { HeaderComponent } from './header/header.component';
 import { RunsTableComponent } from './runs-table/runs-table.component';
+import { MongooseRunStatusIconComponent } from './mongoose-run-status-icon/mongoose-run-status-icon.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    RunsTableComponent
+    RunsTableComponent,
+    MongooseRunStatusIconComponent
   ],
   imports: [
     BrowserModule,
