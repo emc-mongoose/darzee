@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
 import { MongooseRunRecord } from '../core/models/run-record.model';
 
@@ -9,6 +9,9 @@ import { MongooseRunRecord } from '../core/models/run-record.model';
 })
 export class RunsTableComponent implements OnInit {
 
+  @Input() mongooseRunRecords: MongooseRunRecord[];  
+
+
   readonly columnHeaders = [
     "Status",
     "Start time",
@@ -17,12 +20,12 @@ export class RunsTableComponent implements OnInit {
     "Comment"
   ];
 
-  mongooseRunRecords: MongooseRunRecord[];
+  // mongooseRunRecords: MongooseRunRecord[];
 
   constructor(private monitoringApiService: MonitoringApiService) { }
 
   ngOnInit() {
-    this.mongooseRunRecords = this.monitoringApiService.getMongooseRunRecords();
+    // this.mongooseRunRecords = this.monitoringApiService.getMongooseRunRecords();
   }
 
 }

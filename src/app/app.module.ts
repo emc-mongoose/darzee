@@ -16,6 +16,7 @@ import {NgJsonEditorModule} from 'ang-jsoneditor'
 import { HeaderComponent } from './header/header.component';
 import { RunsTableComponent } from './runs-table/runs-table.component';
 import { MongooseRunStatusIconComponent } from './mongoose-run-status-icon/mongoose-run-status-icon.component';
+import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { MongooseRunStatusIconComponent } from './mongoose-run-status-icon/mongo
     HeaderComponent,
     RunsTableComponent,
     MongooseRunStatusIconComponent,
+    RunsTableTabsComponent,
   ],
   imports: [
     BrowserModule,
