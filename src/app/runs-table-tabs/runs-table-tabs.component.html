@@ -1,16 +1,12 @@
 <!-- MARK: - Runs table tabs -->
 
-<ul class="nav nav-pills nav-fill" style="width: calc(30%); margin-bottom: calc(2%);">
-    <li class="nav-item">
-      <a class="nav-link active" href="#">All</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link"  (click)="filterRunsByStatus('Running')">Running</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" (click)="filterRunsByStatus('Finished')">Finished</a>
-    </li>
-  </ul>
+  <nav class="navbar navbar-light bg-light">
+      <form class="form-inline">
+        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="filterRunsByStatus('')">All</button>
+        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="filterRunsByStatus('Running')">Running</button>
+        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="filterRunsByStatus('Finished')">Finished</button>
+      </form>
+    </nav>
 
   <!-- NOTE: Table of Mongoose Run Records with actual information. -->
   <app-runs-table [mongooseRunRecords]="this.displayingRunRecords"></app-runs-table>

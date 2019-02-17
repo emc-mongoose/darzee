@@ -10,6 +10,7 @@ import { MongooseRunStatus } from '../core/mongoose-run-status';
 })
 export class RunsTableTabsComponent implements OnInit {
 
+  readonly ALL_MONGOOSE_RUNS_TAG = "";
   displayingRunRecords: MongooseRunRecord[]; 
 
   constructor(private monitoringApiService: MonitoringApiService) { }
@@ -20,6 +21,10 @@ export class RunsTableTabsComponent implements OnInit {
   }
 
   filterRunsByStatus(status: MongooseRunStatus) { 
+    if (status.toString() == this.ALL_MONGOOSE_RUNS_TAG) { 
+      this.displayingRunRecords = this.monitoringApiService.getMongooseRunRecords();
+      return;
+    }
     // NOTE: Erasing the displaying records, filling it up with filtred records afterwards.
     this.displayingRunRecords = []; 
     for (var runRecord of this.monitoringApiService.getMongooseRunRecords()) { 

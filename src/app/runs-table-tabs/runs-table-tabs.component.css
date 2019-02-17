@@ -1,0 +1,9 @@
+:host { 
+    margin-top: 50px;
+    top: calc(15%);
+}
+
+.btn { 
+    margin-left: 10px;
+    border-radius: 20px;
+}
