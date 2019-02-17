@@ -13,7 +13,8 @@ export class MongooseRunStatusIconComponent implements OnInit {
 
   ngOnInit() {
     console.log("Run status: " + this.runStatus);
-    }
+    console.log("")  
+  }
 
     // MARK: - Public
 
