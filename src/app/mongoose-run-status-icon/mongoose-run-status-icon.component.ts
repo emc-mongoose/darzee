@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { MongooseRunStatus } from '../core/mongoose-run-status';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-mongoose-run-status-icon',
@@ -7,18 +8,21 @@ import { MongooseRunStatus } from '../core/mongoose-run-status';
   styleUrls: ['./mongoose-run-status-icon.component.css']
 })
 export class MongooseRunStatusIconComponent implements OnInit {
-  @Input() runStatus: MongooseRunStatus = MongooseRunStatus.Running;
 
+  @Input() runStatus: MongooseRunStatus = MongooseRunStatus.Running;
+  @ViewChild('resultsTag') resultsTag: ElementRef;
+  
   constructor() { }
 
-  ngOnInit() {
-    console.log("Run status: " + this.runStatus);
-    console.log("")  
-  }
+  ngOnInit() {  }
 
     // MARK: - Public
 
     updateStatus(newStatus) { 
       this.runStatus = newStatus;
+    }
+
+    isRunningCompleted(): boolean { 
+      return (this.runStatus == MongooseRunStatus.Finished);
     }
 }

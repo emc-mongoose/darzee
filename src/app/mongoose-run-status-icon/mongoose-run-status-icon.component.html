@@ -1,5 +1,5 @@
-<button type="button" class="btn btn-outline-primary" id="status-btn">    
-    <span>
+<button type="button" class="btn" [ngClass]="this.isRunningCompleted() ? 'btn-success' : 'btn-warning'" id="status-btn">    
+    <span #resultsTag id="resultsTag">
         <ng-content></ng-content> 
     </span>
 </button>
