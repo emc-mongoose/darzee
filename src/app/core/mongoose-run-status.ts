@@ -1,4 +1,4 @@
 export enum MongooseRunStatus { 
-    Finished, 
-    Running
+    Finished = "Finished", 
+    Running = "Running"
 }

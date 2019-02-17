@@ -18,4 +18,5 @@ export class RunDuration {
         const testDuration = "00d 00h 00m 00s";
         return testDuration;
     }
+
 }
