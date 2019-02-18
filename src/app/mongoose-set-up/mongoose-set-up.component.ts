@@ -11,9 +11,9 @@ export class MongooseSetUpComponent implements OnInit {
   readonly BASE_URL = "/setup";
 
   readonly setUpSteps = [
-    {stepName: 'Nodes', url: 'runs'},
-    {stepName: 'Configuration', url: 'nodes'},
-    {stepName: 'Scenario', url: 'control'}
+    {title: 'Nodes', isCompleted: false, percentage: 0, url: 'nodes'},
+    {title: 'Configuration', isCompleted: false, percentage: 0, url: 'editing-scenarios'},
+    {title: 'Scenario', isCompleted: false, percentage: 0, url: 'control'}
   ]
 
   currentStepNumber: number = 0;
@@ -29,17 +29,25 @@ export class MongooseSetUpComponent implements OnInit {
   // MARK: - Public 
 
   getComplitionPercentage(): number { 
+    return this.setUpSteps[this.currentStepNumber].percentage;
     // NOTE: 'rawPercentage' is percents represented in decimal values (e.g.: 0.3, etc.).
-    let rawPercentage = ((this.currentStepNumber + 1) / this.setUpSteps.length);
-    return rawPercentage * 100;
+    // let rawPercentage = ((this.currentStepNumber + 1) / this.setUpSteps.length);
+    // return rawPercentage * 100;
   }
 
   getCurrentStepName(): string { 
-    // '1' is subbsracted in order to match array's number system which starts from zero.
-    return this.setUpSteps[this.currentStepNumber].stepName;
+    return this.setUpSteps[this.currentStepNumber].title;
+  }
+
+  getPercentagePerStep(): number { 
+    let rawPercentage = (100 / this.setUpSteps.length);
+    // console.log("Percentage per step: ", rawPercentage);
+    return rawPercentage;
   }
 
   onNextStepClicked() { 
+    this.setUpSteps[this.currentStepNumber].isCompleted = true; 
+    this.setUpSteps[this.currentStepNumber].percentage = 100;
     this.currentStepNumber++; 
     this.router.navigate([this.BASE_URL, this.setUpSteps[this.currentStepNumber].url]);
   }

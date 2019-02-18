@@ -1,0 +1,23 @@
+
+.progress { 
+    /* margin-left: calc(1%); */
+    /* margin-right: calc(1%); */
+    /* margin: calc(1%) calc(1%); */
+    width: calc(100%);
+    display: inline-block;
+}
+
+.progress-bar-uncompleted { 
+    background-color: lightgray;
+    background: lightcoral;
+    color: transparent;
+}
+
+.progress-bar-displaying { 
+    color: black; 
+}
+
+
+.transpatent-element { 
+    display: none;
+}
