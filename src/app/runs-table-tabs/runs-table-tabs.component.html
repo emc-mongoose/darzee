@@ -4,7 +4,8 @@
       <form class="form-inline">
         <button *ngFor="let tab of runTabs"
         class="btn btn-sm btn-outline-secondary"
-         type="button" (click)="filterRunsByStatus(tab)">
+         type="button" (click)="filterRunsByStatus(tab)"
+         [id]="tab.isSelected ? 'selected-tab' : ''">
          {{ tab.getTabTag() }}
         </button>
       </form>

@@ -11,7 +11,6 @@ export class RunsTableComponent implements OnInit {
 
   @Input() mongooseRunRecords: MongooseRunRecord[];  
 
-
   readonly columnHeaders = [
     "Status",
     "Start time",
@@ -20,12 +19,10 @@ export class RunsTableComponent implements OnInit {
     "Comment"
   ];
 
-  // mongooseRunRecords: MongooseRunRecord[];
+  constructor() { }
 
-  constructor(private monitoringApiService: MonitoringApiService) { }
+  // MARK: - Lifecycle 
 
-  ngOnInit() {
-    // this.mongooseRunRecords = this.monitoringApiService.getMongooseRunRecords();
-  }
+  ngOnInit() {  }
 
 }

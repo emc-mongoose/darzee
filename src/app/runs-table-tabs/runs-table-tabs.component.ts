@@ -11,9 +11,9 @@ import { MongooseRunTab } from './model/monoose-run-tab.model';
 })
 export class RunsTableTabsComponent implements OnInit {
 
-  displayingRunRecords: MongooseRunRecord[]; 
-
+  // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
   runTabs: MongooseRunTab[] = [];
+  displayingRunRecords: MongooseRunRecord[]; 
 
   constructor(private monitoringApiService: MonitoringApiService) { }
 
@@ -28,8 +28,18 @@ export class RunsTableTabsComponent implements OnInit {
   }
 
   // MARK: - Public 
-  
+
   filterRunsByStatus(requiredTab: MongooseRunTab) { 
+    // NOTE: I haven't found a better way to set custom background color for bootstrap selected button. 
+    // ... so I put a selector "isSelected" and if it's set to 'true', the tab button is highlighted.
+   this.runTabs.forEach(tab => {
+     if (tab == requiredTab) { 
+       tab.isSelected = true; 
+       return;
+     }
+     tab.isSelected = false;
+   })
+
     this.displayingRunRecords = requiredTab.records;
   }
 

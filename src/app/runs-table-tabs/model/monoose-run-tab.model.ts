@@ -6,6 +6,7 @@ export class MongooseRunTab {
 
     public tabTitle: string;
     public records: MongooseRunRecord[];
+    public isSelected: boolean = false; 
 
     constructor(private monitoringApiService: MonitoringApiService, status: string) { 
         this.records = this.filterRunRecordsByStatus(status);
