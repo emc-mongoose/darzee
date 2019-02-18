@@ -5,7 +5,7 @@
         <button *ngFor="let tab of runTabs"
         class="btn btn-sm btn-outline-secondary"
          type="button" (click)="filterRunsByStatus(tab)">
-         {{ tab.tabTitle }}
+         {{ tab.getTabTag() }}
         </button>
       </form>
     </nav>

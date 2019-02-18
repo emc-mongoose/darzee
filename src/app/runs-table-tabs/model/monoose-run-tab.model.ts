@@ -12,6 +12,15 @@ export class MongooseRunTab {
         this.tabTitle = status;
     }
 
+    // MARK: - Public
+
+    // NOTE: Tab Tag format is: " *tab title* (*amount of matching tabs*) "
+    getTabTag(): string { 
+        let elementsAmountTag = "(" + this.records.length + ")";
+        let delimiter = " ";
+        return (this.tabTitle + delimiter + elementsAmountTag); 
+    }
+
     // MARK: - Private 
 
     private filterRunRecordsByStatus(requiredStatus: string): MongooseRunRecord[] {
