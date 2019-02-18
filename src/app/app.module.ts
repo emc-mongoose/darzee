@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { IpAddressService } from './services/ip-addresses/ip-address.service';
+import { IpAddressService } from './core/services/ip-addresses/ip-address.service';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ContorlPageModule } from './contorl-page/contorl-page.module';
@@ -14,11 +14,17 @@ import { NodesModule } from './nodes/nodes.module';
 // NOTE: NPM dependencies
 import {NgJsonEditorModule} from 'ang-jsoneditor'
 import { HeaderComponent } from './header/header.component';
+import { RunsTableComponent } from './runs-table/runs-table.component';
+import { MongooseRunStatusIconComponent } from './mongoose-run-status-icon/mongoose-run-status-icon.component';
+import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent
+    HeaderComponent,
+    RunsTableComponent,
+    MongooseRunStatusIconComponent,
+    RunsTableTabsComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IpAddressService } from 'src/app/services/ip-addresses/ip-address.service';
+import { IpAddressService } from 'src/app/core/services/ip-addresses/ip-address.service';
 
 @Component({
   selector: 'app-control-editing-root',

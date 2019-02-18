@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { RunDuration } from './core/run-duration';
+import { start } from 'repl';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,6 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'mongoose-console';
+
+  ngOnInit() {  }
 }

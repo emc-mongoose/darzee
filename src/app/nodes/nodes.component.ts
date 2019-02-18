@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { IpAddressService } from '../services/ip-addresses/ip-address.service';
+import { IpAddressService } from '../core/services/ip-addresses/ip-address.service';
 import { map, subscribeOn } from 'rxjs/operators';
 
-import { NodeConfig } from '../services/ip-addresses/nodeConfig';
-import { IpAddress } from '../services/ip-addresses/ipAddress';
+import { NodeConfig } from '../core/services/ip-addresses/nodeConfig';
+import { IpAddress } from '../core/services/ip-addresses/ipAddress';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
