@@ -9,10 +9,10 @@
       {{ setUpStep.title }} 
   </p>
 
-    <div class="progress-bar" role="progressbar" 
+    <div class="progress-bar bg-success" role="progressbar" 
     [style.width.%]="setUpStep.isCompleted ? 100 : 0" 
     aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-    <!-- NPTE: Element for tab state when the set up step has been completed. -->
+    <!-- NOTE: Element for tab state when the set up step has been completed. -->
       <div class="completed-step-tab" *ngIf="setUpStep.isCompleted"> {{ setUpStep.title }} </div>
     </div>
 </div> <!--  NOTE: End of class 'progress' -->
