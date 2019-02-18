@@ -2,9 +2,11 @@
 
   <nav class="navbar navbar-light bg-light">
       <form class="form-inline">
-        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="filterRunsByStatus('')">All</button>
-        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="filterRunsByStatus('Running')">Running</button>
-        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="filterRunsByStatus('Finished')">Finished</button>
+        <button *ngFor="let tab of runTabs"
+        class="btn btn-sm btn-outline-secondary"
+         type="button" (click)="filterRunsByStatus(tab.tabTitle)">
+         {{ tab.tabTitle }}
+        </button>
       </form>
     </nav>
 
