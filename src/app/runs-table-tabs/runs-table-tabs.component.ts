@@ -30,6 +30,10 @@ export class RunsTableTabsComponent implements OnInit {
       var runsTab = new MongooseRunTab(this.monitoringApiService, runStatus.toString());
       this.runTabs.push(runsTab);
     }
+
+    // NOTE: Tab "All" is selected by default. 
+    this.runTabs[0].isSelected = true; 
+    
     this.displayingRunRecords = this.monitoringApiService.getMongooseRunRecords();
   }
 
