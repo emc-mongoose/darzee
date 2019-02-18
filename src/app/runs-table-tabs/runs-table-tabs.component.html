@@ -4,7 +4,7 @@
       <form class="form-inline">
         <button *ngFor="let tab of runTabs"
         class="btn btn-sm btn-outline-secondary"
-         type="button" (click)="filterRunsByStatus(tab.tabTitle)">
+         type="button" (click)="filterRunsByStatus(tab)">
          {{ tab.tabTitle }}
         </button>
       </form>

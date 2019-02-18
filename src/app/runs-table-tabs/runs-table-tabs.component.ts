@@ -31,18 +31,9 @@ export class RunsTableTabsComponent implements OnInit {
     this.displayingRunRecords = this.monitoringApiService.getMongooseRunRecords();
   }
 
-  filterRunsByStatus(status: MongooseRunStatus) { 
-    if (status.toString() == this.ALL_MONGOOSE_RUNS_TAG) { 
-      this.displayingRunRecords = this.monitoringApiService.getMongooseRunRecords();
-      return;
-    }
-    // NOTE: Erasing the displaying records, filling it up with filtred records afterwards.
-    this.displayingRunRecords = []; 
-    for (var runRecord of this.monitoringApiService.getMongooseRunRecords()) { 
-      if (runRecord.status == status) { 
-        this.displayingRunRecords.push(runRecord);
-      }
-    }
+  filterRunsByStatus(requiredTab: MongooseRunTab) { 
+    console.log("Required tab tag: ", requiredTab.tabTitle);
+    this.displayingRunRecords = requiredTab.records;
   }
 
 }
