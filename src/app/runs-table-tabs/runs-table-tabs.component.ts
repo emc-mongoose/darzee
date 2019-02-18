@@ -3,12 +3,18 @@ import { MongooseRunRecord } from '../core/models/run-record.model';
 import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
 import { MongooseRunStatus } from '../core/mongoose-run-status';
 import { MongooseRunTab } from './model/monoose-run-tab.model';
+import { slideAnimation } from '../core/animations';
+
 
 @Component({
   selector: 'app-runs-table-tabs',
   templateUrl: './runs-table-tabs.component.html',
-  styleUrls: ['./runs-table-tabs.component.css']
+  styleUrls: ['./runs-table-tabs.component.css'],
+  animations: [
+    slideAnimation
+  ]
 })
+
 export class RunsTableTabsComponent implements OnInit {
 
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
