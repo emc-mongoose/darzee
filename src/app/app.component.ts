@@ -10,10 +10,5 @@ import { start } from 'repl';
 export class AppComponent {
   title = 'mongoose-console';
 
-  ngOnInit() { 
-    let startDateMock = new Date();
-     
-    // let endDateMock = new Date().getHours();
-    
-  }
+  ngOnInit() {  }
 }
