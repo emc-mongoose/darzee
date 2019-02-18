@@ -1,13 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
+import { Component, OnInit, Input } from '@angular/core';
 import { MongooseRunRecord } from '../core/models/run-record.model';
+
 
 @Component({
   selector: 'app-runs-table',
   templateUrl: './runs-table.component.html',
-  styleUrls: ['./runs-table.component.css']
+  styleUrls: ['./runs-table.component.css'],
+  
 })
+
 export class RunsTableComponent implements OnInit {
+
+  @Input() mongooseRunRecords: MongooseRunRecord[];  
 
   readonly columnHeaders = [
     "Status",
@@ -17,12 +21,10 @@ export class RunsTableComponent implements OnInit {
     "Comment"
   ];
 
-  mongooseRunRecords: MongooseRunRecord[];
+  constructor() { }
 
-  constructor(private monitoringApiService: MonitoringApiService) { }
+  // MARK: - Lifecycle 
 
-  ngOnInit() {
-    this.mongooseRunRecords = this.monitoringApiService.getMongooseRunRecords();
-  }
+  ngOnInit() {  }
 
 }
