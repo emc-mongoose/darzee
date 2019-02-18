@@ -33,7 +33,7 @@ export class RunsTableTabsComponent implements OnInit {
 
     // NOTE: Tab "All" is selected by default. 
     this.runTabs[0].isSelected = true; 
-    
+
     this.displayingRunRecords = this.monitoringApiService.getMongooseRunRecords();
   }
 
@@ -51,6 +51,11 @@ export class RunsTableTabsComponent implements OnInit {
    })
 
     this.displayingRunRecords = requiredTab.records;
+  }
+
+  hasSavedRunRecords(): boolean { 
+    console.log("this.monitoringApiService.getMongooseRunRecords().length: ", this.monitoringApiService.getMongooseRunRecords().length);
+    return (this.monitoringApiService.getMongooseRunRecords().length > 0);
   }
 
 }

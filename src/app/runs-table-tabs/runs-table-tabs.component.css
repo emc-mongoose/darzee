@@ -14,3 +14,9 @@
     color: white;
     outline: 0;
 }
+
+/* NOTE: Styling for custom alerts. For example: alert on empty Mongoose Run records. */
+.alert { 
+    margin: calc(5%) calc(20%);
+    text-align: center;
+}
