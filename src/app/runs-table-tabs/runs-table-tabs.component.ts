@@ -11,28 +11,25 @@ import { MongooseRunTab } from './model/monoose-run-tab.model';
 })
 export class RunsTableTabsComponent implements OnInit {
 
-  readonly ALL_MONGOOSE_RUNS_TAG = "";
   displayingRunRecords: MongooseRunRecord[]; 
 
   runTabs: MongooseRunTab[] = [];
 
   constructor(private monitoringApiService: MonitoringApiService) { }
 
-  ngOnInit() {
+  // MARK: - Lifecycle
 
+  ngOnInit() {
     for (var runStatus in MongooseRunStatus) { 
-      var runsTab = new MongooseRunTab(this.monitoringApiService, runStatus);
+      var runsTab = new MongooseRunTab(this.monitoringApiService, runStatus.toString());
       this.runTabs.push(runsTab);
     }
-
-
-    console.log("Run tabs has been initialized.");
-    // var tab: MongooseRunTab = new MongooseRunTab(this.monitoringApiService, MongooseRunStatus.Finished);
     this.displayingRunRecords = this.monitoringApiService.getMongooseRunRecords();
   }
 
+  // MARK: - Public 
+  
   filterRunsByStatus(requiredTab: MongooseRunTab) { 
-    console.log("Required tab tag: ", requiredTab.tabTitle);
     this.displayingRunRecords = requiredTab.records;
   }
 
