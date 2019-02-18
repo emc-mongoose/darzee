@@ -17,6 +17,7 @@ import { HeaderComponent } from './header/header.component';
 import { RunsTableComponent } from './runs-table/runs-table.component';
 import { MongooseRunStatusIconComponent } from './mongoose-run-status-icon/mongoose-run-status-icon.component';
 import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.component';
+import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.compon
     RunsTableComponent,
     MongooseRunStatusIconComponent,
     RunsTableTabsComponent,
+    MongooseSetUpComponent,
   ],
   imports: [
     BrowserModule,

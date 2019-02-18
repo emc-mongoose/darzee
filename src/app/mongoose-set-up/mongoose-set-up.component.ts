@@ -30,6 +30,7 @@ export class MongooseSetUpComponent implements OnInit {
   }
 
   getCurrentStepName(): string { 
+    // '1' is subbsracted in order to match array's number system which starts from zero.
     return this.setUpSteps[this.currentStepNumber - 1].stepName;
   }
 

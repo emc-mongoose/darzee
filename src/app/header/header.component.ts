@@ -10,7 +10,7 @@ export class HeaderComponent implements OnInit {
   readonly buttonRoutes = [
     // TODO: Add actual links to the pages once they'd be created
     {linkName: 'Runs', url: '/runs'},
-    {linkName: 'New run', url: '/nodes'},
+    {linkName: 'New run', url: '/setup'},
     {linkName: 'Create scenario', url: '/control'}
   ]
 
