@@ -66,6 +66,9 @@ export class MongooseSetUpComponent implements OnInit {
     console.log("Tab with ID: ", tabId, " has been selected.");
   }
 
+  onRunBtnClicked() { 
+    alert("Mongoose has started up.");
+  }
   // MARK: - Private
 
   private initSetUpTabs() { 
@@ -85,7 +88,7 @@ export class MongooseSetUpComponent implements OnInit {
     // NOTE: Hiding content of current tab, showing up another's. 
     this.setUpTabs[this.processingTabID].isContentDisplaying = false;
     this.setUpTabs[tabNumber].isContentDisplaying = true; 
-    
+
     this.router.navigate([this.BASE_URL, this.setUpTabs[tabNumber].contentLink]);
     this.processingTabID = tabNumber;
   }
