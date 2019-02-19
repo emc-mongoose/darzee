@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MongooseSetupTab } from './mongoose-setup-tab.model';
 import { bounceAnimation, slideAnimation } from '../core/animations';
-import { IdFabric } from '../common/utilities/id-fabric';
 
 @Component({
   selector: 'app-mongoose-set-up',
@@ -74,8 +73,9 @@ export class MongooseSetUpComponent implements OnInit {
   private initSetUpTabs() { 
     // NOTE: Filling up the array based on the tab-wrapper class. 
     // ... The wrapper is used in order to properly handle different tab states. 
-    for (var tabData of this.SETUP_TABS_DATA) { 
-      let mongooseTab = new MongooseSetupTab(IdFabric.getUniqueIdentifier(), tabData.title, tabData.link);
+    for (var i:number = 0; i < this.SETUP_TABS_DATA.length; ++i) { 
+      let tabData = this.SETUP_TABS_DATA[i];
+      let mongooseTab = new MongooseSetupTab(i, tabData.title, tabData.link);
       this.setUpTabs.push(mongooseTab);
     }
   }
