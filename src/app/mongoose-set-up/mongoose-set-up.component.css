@@ -5,7 +5,7 @@
     text-align: center;
 }
 
-/* NOTE: Spacing between progress bars  */
+/* NOTE: Spacing between progress bars.  */
 .progress-wrapper > * { 
     margin: 0px 20px;
 }
@@ -29,10 +29,6 @@
     margin-bottom: calc(5%);
 }
 
-.progress > .processing-tab { 
-    transition: visibility 1s, opacity 0.5s linear;
-
-}
 .processing-tab { 
     background-color: lightgreen;
     color: white;
