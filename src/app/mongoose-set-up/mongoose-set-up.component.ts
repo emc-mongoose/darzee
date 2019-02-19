@@ -33,9 +33,11 @@ export class MongooseSetUpComponent implements OnInit {
     return this.setUpSteps[this.currentStepNumber].title;
   }
 
-  getPercentagePerStep(): number { 
+  getPercentagePerTab(): number { 
     let rawPercentage = (100 / this.setUpSteps.length);
-    return rawPercentage;
+    // NOTE: tabs offset is an estimated va
+    let tabsOffset = this.setUpSteps.length;
+    return Math.round(rawPercentage) - tabsOffset;
   }
 
   onNextStepClicked() { 

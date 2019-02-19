@@ -1,10 +1,24 @@
 
-.progress { 
-    /* margin-left: calc(1%); */
-    /* margin-right: calc(1%); */
-    /* margin: calc(1%) calc(1%); */
+.progress-wrapper { 
+    /* margin: 1px calc(1%); */
     width: calc(100%);
     display: inline-block;
+    text-align: center;
+}
+
+/* NOTE: Spacing between progress bars  */
+.progress-wrapper > * { 
+    margin: 0px 20px;
+}
+
+.progress { 
+    width: calc(20%);
+    margin: auto;
+    display: inline-block;
+}
+
+.progress-bar {
+    left: 50px;
 }
 
 .progress-bar-uncompleted { 
