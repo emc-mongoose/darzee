@@ -4,7 +4,7 @@
   <div class="progress-wrapper">
       <div class="progress"
       *ngFor="let tab of setUpTabs"
-      (click)="onProgressBarClicked()"
+      (click)="onTabClicked(tab.getId())"
       [style.width.%]="getPercentagePerTab()" 
       style="display: inline-block; align-content: center; justify-content: center;"
       [ngClass]="tab.isContentDisplaying ? 'processing-tab ' : ''">

@@ -60,11 +60,11 @@ export class MongooseSetUpComponent implements OnInit {
     return this.setUpTabs.every(tab => tab.isCompleted);
   }
 
-  onProgressBarClicked() { 
-    console.log("Progress bar clicked.");
+  onTabClicked(tabId: number) { 
+    console.log("Tab with ID: ", tabId, " has been selected.");
   }
-  // MARK: - Private
 
+  // MARK: - Private
 
   private initSetUpTabs() { 
     // NOTE: Filling up the array based on the tab-wrapper class. 
