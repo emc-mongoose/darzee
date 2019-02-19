@@ -1,4 +1,4 @@
-<!-- NOTE: Main content is encapsulated to exclude any overlaying with the footer  -->
+<!-- NOTE: Main content is encapsulated to exclude any overlaying with the footer.  -->
 <div class="main-content">
     <!-- NOTE: Class 'progress' is used to style custom Mongoose Set Up tabs. -->
   <div class="progress-wrapper">
@@ -19,7 +19,7 @@
         <!-- NOTE: Element for tab state when the set up step has been completed. -->
           <div class="completed-step-tab" *ngIf="setUpStep.isCompleted"> {{ setUpStep.title }} </div>
         </div>
-    </div> <!--  NOTE: End of class 'progress' -->
+    </div> <!--  NOTE: End of class 'progress'. -->
   </div>
 
   <!-- NOTE: Outlet for actual set up pages.  -->
@@ -33,11 +33,10 @@
       <button id="btn-continue" class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onNextStepClicked()">
           Continiue &raquo;
       </button>
-
-      <div *ngIf="isSetupCompleted()">
-          <button id="btn-continue" class="btn btn-outline-success my-2 my-sm-0" type="submit">
-              RUN &raquo;
-          </button>
-      </div>
+  </div>
+  <div *ngIf="isSetupCompleted()">
+      <button id="btn-continue" class="btn btn-outline-success my-2 my-sm-0" type="submit">
+          Run benchmark
+      </button>
   </div>
 </nav>

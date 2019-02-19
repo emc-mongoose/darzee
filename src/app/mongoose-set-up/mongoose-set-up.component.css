@@ -29,11 +29,23 @@
     margin-bottom: calc(5%);
 }
 
+.progress > .processing-tab { 
+    transition: visibility 1s, opacity 0.5s linear;
+
+}
 .processing-tab { 
     background-color: lightgreen;
+    color: white;
+    border: 0.5px solid lightyellow;
+    transition-timing-function: ease-out;
+    transition: 0.2s;
+
+    /* NOTE: Making the tab bigger if its content is currently processing. */
+    transform: scale(1.1);
+    -webkit-transform: scale(1.1);
 }
 
-/* NOTE: Footer which is fixed at the bottom  */
+/* NOTE: Footer which is fixed at the bottom.  */
 #mongoose-setup-footer { 
     overflow: hidden;
     position: fixed;
