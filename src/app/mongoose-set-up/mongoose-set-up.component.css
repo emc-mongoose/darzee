@@ -16,7 +16,6 @@
     display: inline-block;
 }
 
-
 .progress-bar-displaying { 
     color: black; 
 }
@@ -28,6 +27,10 @@
 /* Warning: potential problem with margining. The margin-bottom is set to exclude overlaaying with mongoose-setup-footer. */
 .main-content { 
     margin-bottom: calc(5%);
+}
+
+.incompleted-step-tab { 
+    border: 1px solid yellow;
 }
 
 /* NOTE: Footer which is fixed at the bottom  */
