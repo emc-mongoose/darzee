@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MongooseSetupTab } from './mongoose-setup-tab.model';
+import { bounceAnimation } from '../core/animations';
 
 @Component({
   selector: 'app-mongoose-set-up',
   templateUrl: './mongoose-set-up.component.html',
-  styleUrls: ['./mongoose-set-up.component.css']
+  styleUrls: ['./mongoose-set-up.component.css'],
+  animations: [
+    bounceAnimation
+  ]
 })
 
 export class MongooseSetUpComponent implements OnInit {
@@ -23,9 +27,7 @@ export class MongooseSetUpComponent implements OnInit {
 
   // MARK: - Lifecycle 
 
-  ngOnInit() {
-    
-  }
+  ngOnInit() {}
 
   // MARK: - Public 
 

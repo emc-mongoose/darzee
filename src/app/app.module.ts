@@ -26,7 +26,7 @@ import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.compon
     RunsTableComponent,
     MongooseRunStatusIconComponent,
     RunsTableTabsComponent,
-    MongooseSetUpComponent,
+    MongooseSetUpComponent
   ],
   imports: [
     BrowserModule,
