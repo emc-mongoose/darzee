@@ -35,7 +35,7 @@ export class MongooseSetUpComponent implements OnInit {
 
   getPercentagePerTab(): number { 
     let rawPercentage = (100 / this.setUpSteps.length);
-    // NOTE: tabs offset is an estimated va
+    // NOTE: tabs offset is an estimated value. 
     let tabsOffset = this.setUpSteps.length;
     return Math.round(rawPercentage) - tabsOffset;
   }

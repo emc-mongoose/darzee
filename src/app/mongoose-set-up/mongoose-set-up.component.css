@@ -1,6 +1,5 @@
 
 .progress-wrapper { 
-    /* margin: 1px calc(1%); */
     width: calc(100%);
     display: inline-block;
     text-align: center;
@@ -34,4 +33,18 @@
 
 .transpatent-element { 
     display: none;
+}
+
+/* Warning: potential problem with margining. The margin-bottom is set to exclude overlaaying with mongoose-setup-footer. */
+.main-content { 
+    margin-bottom: calc(5%);
+}
+
+/* NOTE: Footer which is fixed at the bottom  */
+#mongoose-setup-footer { 
+    overflow: hidden;
+    position: fixed;
+    bottom: 0;
+    width: 100%; 
+    padding: calc(1%) calc(1%);
 }
