@@ -53,6 +53,7 @@ export class MongooseSetUpComponent implements OnInit {
 
   onNextStepClicked() { 
     let nextTabId = this.processingTabID + 1;
+    this.setUpTabs[this.processingTabID].isCompleted = true;
     this.switchTab(nextTabId);
   }
 
@@ -61,6 +62,7 @@ export class MongooseSetUpComponent implements OnInit {
   }
 
   onTabClicked(tabId: number) { 
+    this.openUpTab(tabId);
     console.log("Tab with ID: ", tabId, " has been selected.");
   }
 
@@ -91,7 +93,6 @@ export class MongooseSetUpComponent implements OnInit {
       return;
     }
     this.setUpTabs[this.processingTabID].isContentDisplaying = false; 
-    this.setUpTabs[this.processingTabID].isCompleted = true;
     this.openUpTab(nextTabId);
   }
 
