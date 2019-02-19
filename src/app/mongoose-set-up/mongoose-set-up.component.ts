@@ -77,6 +77,7 @@ export class MongooseSetUpComponent implements OnInit {
 
   private openUpTab(tabNumber: number) { 
     if (tabNumber >= this.setUpTabs.length) { 
+      console.error("Unable to open tab number ", tabNumber, " since it doesn't exist.");
       return;
     }
     this.setUpTabs[tabNumber].isContentDisplaying = true; 
@@ -86,6 +87,7 @@ export class MongooseSetUpComponent implements OnInit {
 
   private switchTab(nextTabId: number) { 
     if (nextTabId > this.setUpTabs.length) { 
+      console.error("Unable to switch to tab number ", nextTabId, " since it doesn't exist.");
       return;
     }
     this.setUpTabs[this.processingTabID].isContentDisplaying = false; 
