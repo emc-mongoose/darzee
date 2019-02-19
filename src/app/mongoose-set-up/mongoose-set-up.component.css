@@ -30,7 +30,7 @@
 }
 
 .processing-tab { 
-    border: 1px yellow solid;
+    background-color: lightgreen;
 }
 
 /* NOTE: Footer which is fixed at the bottom  */
