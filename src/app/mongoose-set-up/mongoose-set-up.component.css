@@ -16,20 +16,10 @@
     display: inline-block;
 }
 
-.progress-bar {
-    left: 50px;
-}
-
-.progress-bar-uncompleted { 
-    background-color: lightgray;
-    background: lightcoral;
-    color: transparent;
-}
 
 .progress-bar-displaying { 
     color: black; 
 }
-
 
 .transpatent-element { 
     display: none;
