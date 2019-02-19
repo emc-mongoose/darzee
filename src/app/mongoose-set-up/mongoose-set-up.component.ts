@@ -82,7 +82,10 @@ export class MongooseSetUpComponent implements OnInit {
       console.error("Unable to open tab number ", tabNumber, " since it doesn't exist.");
       return;
     }
+    // NOTE: Hiding content of current tab, showing up another's. 
+    this.setUpTabs[this.processingTabID].isContentDisplaying = false;
     this.setUpTabs[tabNumber].isContentDisplaying = true; 
+    
     this.router.navigate([this.BASE_URL, this.setUpTabs[tabNumber].contentLink]);
     this.processingTabID = tabNumber;
   }
