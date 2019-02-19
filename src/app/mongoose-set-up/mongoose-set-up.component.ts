@@ -18,12 +18,14 @@ export class MongooseSetUpComponent implements OnInit {
 
   constructor(private router: Router) {
     this.initSetUpTabs();
+    let defaultTabNumber = 0;
+    this.openUpTab(defaultTabNumber);
    }
 
   // MARK: - Lifecycle 
 
   ngOnInit() {
-    this.router.navigate([this.BASE_URL, this.setUpTabs[this.currentStepNumber].contentLink]);
+    
   }
 
   // MARK: - Public 
@@ -41,6 +43,7 @@ export class MongooseSetUpComponent implements OnInit {
 
   onNextStepClicked() { 
     this.setUpTabs[this.currentStepNumber].isCompleted = true; 
+    this.setUpTabs[this.currentStepNumber].isContentDisplaying = false;
     this.currentStepNumber++; 
     this.router.navigate([this.BASE_URL, this.setUpTabs[this.currentStepNumber].contentLink]);
   }
@@ -51,6 +54,14 @@ export class MongooseSetUpComponent implements OnInit {
     this.setUpTabs.push(new MongooseSetupTab("Nodes", "nodes"));
     this.setUpTabs.push(new MongooseSetupTab("Configuration", "editing-scenarios"));
     this.setUpTabs.push(new MongooseSetupTab("Scenario", "control"));
+  }
+
+  private openUpTab(tabNumber: number) { 
+    if (tabNumber >= this.setUpTabs.length) { 
+      return;
+    }
+    this.setUpTabs[tabNumber].isContentDisplaying = true; 
+    this.router.navigate([this.BASE_URL, this.setUpTabs[this.currentStepNumber].contentLink]);
   }
 
 }

@@ -29,8 +29,8 @@
     margin-bottom: calc(5%);
 }
 
-.incompleted-step-tab { 
-    border: 1px solid yellow;
+.processing-tab { 
+    border: 1px yellow solid;
 }
 
 /* NOTE: Footer which is fixed at the bottom  */
