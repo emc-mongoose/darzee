@@ -45,6 +45,10 @@ export class MongooseSetUpComponent implements OnInit {
     this.switchTab(nextTabId);
   }
 
+  isSetupCompleted() { 
+    return this.setUpTabs.every(tab => tab.isCompleted);
+  }
+
   // MARK: - Private
 
   private initSetUpTabs() { 
