@@ -6,8 +6,7 @@
       *ngFor="let tab of setUpTabs"
       (click)="onTabClicked(tab.getId())"
       [style.width.%]="getPercentagePerTab()" 
-      style="display: inline-block; align-content: center; justify-content: center;"
-      [ngClass]="tab.isContentDisplaying ? 'processing-tab ' : 'progress'">
+      [ngClass]="tab.isContentDisplaying ? 'processing-tab' : 'progress'">
     
       <!-- NOTE: Element for tab state when the set up step hasn't been completed yet. -->
       <p class="incompleted-step-tab" *ngIf="!tab.isCompleted">
