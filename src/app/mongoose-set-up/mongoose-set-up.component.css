@@ -16,6 +16,10 @@
     display: inline-block;
 }
 
+.progress:hover { 
+    border: 1px gray solid;
+}
+
 .progress-bar-displaying { 
     color: black; 
 }
