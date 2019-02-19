@@ -17,7 +17,10 @@
 }
 
 .progress:hover { 
-    border: 1px gray solid;
+    background: lightgreen;
+    color: white;
+    transition: 0.2s;
+    transition-timing-function: ease-out;
 }
 
 .progress-bar-displaying { 
