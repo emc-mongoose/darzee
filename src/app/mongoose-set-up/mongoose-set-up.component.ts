@@ -1,20 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MongooseSetupTab } from './mongoose-setup-tab.model';
-import { bounceAnimation } from '../core/animations';
+import { bounceAnimation, slideAnimation } from '../core/animations';
 
 @Component({
   selector: 'app-mongoose-set-up',
   templateUrl: './mongoose-set-up.component.html',
   styleUrls: ['./mongoose-set-up.component.css'],
   animations: [
-    bounceAnimation
+    bounceAnimation,
+    slideAnimation
   ]
 })
 
 export class MongooseSetUpComponent implements OnInit {
 
   readonly BASE_URL = "/setup";
+  
+  readonly SETUP_TABS_DATA = [
+    {title: 'Nodes', link: 'nodes'},
+    {title: 'Configuration', link: 'editing-scenarios'},
+    {title: 'Scenario', link: 'control'}
+
+  ];
 
   setUpTabs: MongooseSetupTab[] = []
   processingTabID: number = 0;
@@ -51,12 +59,20 @@ export class MongooseSetUpComponent implements OnInit {
     return this.setUpTabs.every(tab => tab.isCompleted);
   }
 
+  onProgressBarClicked() { 
+    console.log("Progress bar clicked.");
+  }
   // MARK: - Private
 
+
   private initSetUpTabs() { 
-    this.setUpTabs.push(new MongooseSetupTab("Nodes", "nodes"));
-    this.setUpTabs.push(new MongooseSetupTab("Configuration", "editing-scenarios"));
-    this.setUpTabs.push(new MongooseSetupTab("Scenario", "control"));
+    // NOTE: Filling up the array based on the tab-wrapper class. 
+    // ... The wrapper is used in order to properly handle different tab states. 
+    for (var tabId = 0; tabId < this.SETUP_TABS_DATA.length; ++tabId) { 
+      let tabData = this.SETUP_TABS_DATA[tabId];
+      let mongooseTab = new MongooseSetupTab(tabId, tabData.title, tabData.link);
+      this.setUpTabs.push(mongooseTab);
+    }
   }
 
   private openUpTab(tabNumber: number) { 
