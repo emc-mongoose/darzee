@@ -4,9 +4,10 @@ import com.bmuschko.gradle.docker.tasks.image.*
 
 buildscript {
   ext {
+    CONSOLE_PORT = '${CONSOLE_PORT}'
     depVersion = [
       gradle_docker_plugin: "3.6.1",
-      gradle_node_plugin: "1.2.0"
+      gradle_node_plugin: "1.2.0",
     ]
   }
   repositories {
@@ -29,7 +30,7 @@ apply plugin: 'com.moowork.node'
 apply plugin: 'base'
 
 
-version '0.1.0'
+version getMongooseConsoleVersion()
 
 repositories {
   mavenLocal()
@@ -44,34 +45,43 @@ node {
   workDir = file("${project.buildDir}/node")
   nodeModulesDir = file("${project.projectDir}")
 }
- 
-task dist(type: NpmTask) {
-  args = ['run', 'build', '--prod']
-}
- 
-dist.dependsOn(npm_install)
 
-task createDockerfile(type: Dockerfile, dependsOn: 'dist'){
+task createDockerfile(type: Dockerfile) {
     destFile = project.file('docker/Dockerfile')
    
-    from 'nginx:alpine'
-    copyFile("nginx/nginx.conf.template", "/etc/nginx/nginx.conf.template")
-    workingDir("/usr/share/nginx/html")
-    addFile("dist/mongoose-console", ".")
-    instruction "CMD /bin/sh -c \"envsubst '\$MONGOOSE_HOST' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf.template && exec nginx -g 'daemon off;'\""
+   // NOTE: We're using multistage building to separate containers with code and with production angular-generated files. 
+  
+    // NOTE: Stage 1 - building the angular application (Mongoose Console) 
+    from 'node:8.11.2-alpine as builder'
+    workingDir("/usr/src/app")
+    copyFile("package.json", "./")
+    instruction "RUN npm install"
+    copyFile(".", ".")
+    instruction "RUN npm run build"
+
+    // NOTE: Stage 2 - serving the app via Node.js server 
+    from 'node:alpine'
+    // NOTE: Copying the angular-generated files from builder image
+    instruction "COPY --from=builder /usr/src/app/dist/mongoose-console ."
+
+    // NOTE: Serving the app via Node.js server
+    instruction "COPY --from=builder /usr/src/app/server/node-server.js ."
+    instruction "RUN npm install express"
+    instruction "EXPOSE ${CONSOLE_PORT}"
+    instruction 'CMD [ "node", "node-server.js" ]' 
 }
 
-task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile'){
+task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
     imageId = 'emcmongoose/mongoose-console'
-    tags = ['emcmongoose/mongoose-console:$CONSOLE_VER', 'emcmongoose/mongoose-console:latest']
+    tags = ['emcmongoose/mongoose-console:' + getMongooseConsoleVersion(), 'emcmongoose/mongoose-console:latest']
     doLast { 
         clearProductionFiles()
     }
 }
 
-task tagImage(type: DockerTagImage, dependsOn: 'buildImage'){
+task tagImage(type: DockerTagImage, dependsOn: 'buildImage') {
     targetImageId { buildImage.getImageId() }
     tag 'mongoose-console'
     repository 'mongoose-console'
@@ -90,6 +100,27 @@ task clear() {
 clean.dependsOn clear
 
 def clearProductionFiles() { 
- delete 'dist', 'docker', 'build'
+ delete 'docker'
 }
 
+def getMongooseConsoleVersion() { 
+
+  // We're storing environment variables within .env file. The image tag ...
+  // ... (version of Mongoose Console) is defined inside of it. 
+  // The function retrives image tag from the environment variable named CONSOLE_VERSION_ENV_VARIABLE_NAME.
+ 
+  final ENVIRONMENT_VARIABLES_FILENAME = ".env";
+  final CONSOLE_VERSION_ENV_VARIABLE_NAME = "CONSOLE_VER";
+  final ENVIRONMENT_VARIABLES_DELIMITER = "\n";
+  final DELIMITER_OF_VARIABLES_AND_VALUE = "=";
+
+  def environmentVariables = file(ENVIRONMENT_VARIABLES_FILENAME).text.split(ENVIRONMENT_VARIABLES_DELIMITER);
+  def mongooseConsoleImageVersion = ""; 
+  environmentVariables.each { environmentVariable ->
+   if (environmentVariable.contains(CONSOLE_VERSION_ENV_VARIABLE_NAME)) { 
+     final versionPositionInStringArray = 1;
+     mongooseConsoleImageVersion = environmentVariable.split(DELIMITER_OF_VARIABLES_AND_VALUE)[versionPositionInStringArray];
+   }
+  }
+  return mongooseConsoleImageVersion;
+}
