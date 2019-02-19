@@ -42,10 +42,8 @@ export class MongooseSetUpComponent implements OnInit {
   }
 
   onNextStepClicked() { 
-    this.setUpTabs[this.currentStepNumber].isCompleted = true; 
-    this.setUpTabs[this.currentStepNumber].isContentDisplaying = false;
-    this.currentStepNumber++; 
-    this.router.navigate([this.BASE_URL, this.setUpTabs[this.currentStepNumber].contentLink]);
+    let nextTabId = this.currentStepNumber + 1;
+    this.switchTab(nextTabId);
   }
 
   // MARK: - Private
@@ -61,7 +59,17 @@ export class MongooseSetUpComponent implements OnInit {
       return;
     }
     this.setUpTabs[tabNumber].isContentDisplaying = true; 
-    this.router.navigate([this.BASE_URL, this.setUpTabs[this.currentStepNumber].contentLink]);
+    this.router.navigate([this.BASE_URL, this.setUpTabs[tabNumber].contentLink]);
+    this.currentStepNumber = tabNumber;
+  }
+
+  private switchTab(nextTabId: number) { 
+    if (nextTabId > this.setUpTabs.length) { 
+      return;
+    }
+    this.setUpTabs[this.currentStepNumber].isContentDisplaying = false; 
+    this.setUpTabs[this.currentStepNumber].isCompleted = true;
+    this.openUpTab(nextTabId);
   }
 
 }
