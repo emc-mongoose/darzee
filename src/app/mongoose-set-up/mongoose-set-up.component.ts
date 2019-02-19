@@ -13,8 +13,7 @@ export class MongooseSetUpComponent implements OnInit {
   readonly BASE_URL = "/setup";
 
   setUpTabs: MongooseSetupTab[] = []
-  
-  currentStepNumber: number = 0;
+  processingTabID: number = 0;
 
   constructor(private router: Router) {
     this.initSetUpTabs();
@@ -31,7 +30,7 @@ export class MongooseSetUpComponent implements OnInit {
   // MARK: - Public 
 
   getCurrentStepName(): string { 
-    return this.setUpTabs[this.currentStepNumber].title;
+    return this.setUpTabs[this.processingTabID].title;
   }
 
   getPercentagePerTab(): number { 
@@ -42,7 +41,7 @@ export class MongooseSetUpComponent implements OnInit {
   }
 
   onNextStepClicked() { 
-    let nextTabId = this.currentStepNumber + 1;
+    let nextTabId = this.processingTabID + 1;
     this.switchTab(nextTabId);
   }
 
@@ -60,15 +59,15 @@ export class MongooseSetUpComponent implements OnInit {
     }
     this.setUpTabs[tabNumber].isContentDisplaying = true; 
     this.router.navigate([this.BASE_URL, this.setUpTabs[tabNumber].contentLink]);
-    this.currentStepNumber = tabNumber;
+    this.processingTabID = tabNumber;
   }
 
   private switchTab(nextTabId: number) { 
     if (nextTabId > this.setUpTabs.length) { 
       return;
     }
-    this.setUpTabs[this.currentStepNumber].isContentDisplaying = false; 
-    this.setUpTabs[this.currentStepNumber].isCompleted = true;
+    this.setUpTabs[this.processingTabID].isContentDisplaying = false; 
+    this.setUpTabs[this.processingTabID].isCompleted = true;
     this.openUpTab(nextTabId);
   }
 
