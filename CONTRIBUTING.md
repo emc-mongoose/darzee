@@ -38,3 +38,50 @@ Types:
 | Sub-task | A task which could be included into a defect/story |
 
 Mongoose Console's tracker link: https://mongoose-issues.atlassian.net/projects/GUI
+
+## 2.1. States
+
+| State       | Description |
+|-------------|-------------|
+| OPEN        | All new issues should have this state. The issues are selected from the set of the *OPEN* issues for the proposal and review process. The task is updated w/ the corresponding comment but left in the *OPEN* state if it's considered incomplete/incorrect. Also incomplete/incorrect issue should be assigned back to the reporter.
+| IN PROGRESS | The issue is in progress currently either initially done and the corresponding merge request to the `master` branch is created
+| RESOLVED    | Issue is done and the corresponding changes are merged into the `master` branch
+| CLOSED      | The new version is released containing the corresponding changes
+
+**Note**:
+> The corresponding impact probability/frequency is not taken into account in the process currently. For example, all
+> defects are assumed to be equally frequently occurring and affecting same users, regardless the particular
+> scenario/use case. This approach is used due to the lack of the sufficient statistical information about the Mongoose Web UI
+> usage.
+
+## 2.2. Specific properties
+
+| Name                  | Applicable Issue Types | Who is responsible to specify  | Notes
+|-----------------------|------------------------|--------------------------------|-------|
+| Affected version      | Defect                 | Reporter: user/developer/owner | Only the *latest* version may be used for the defect reporting. The issue should be *rejected* if the reported version is not *latest*.
+| Branch                | Defect, Task, Sub-task | Reviewer: developer/owner      |
+| Description           | Task, Sub-task         | Reporter: user/developer/owner |
+| Expected behaviour    | Defect                 | Reporter: user/developer/owner | The reference to the particular documentation part describing the expected behavior is preferable.
+| Fix version           | Defect, Task, Sub-task | Reviewer: developer/owner      |
+| Limitations           | Story                  | Reviewer: developer/owner      |
+| Observed behaviour    | Defect                 | Reporter: user/developer/owner | Error message, errors.log output file, etc.
+| Pull request          | Defect, Task, Sub-task | Reviewer: developer/owner      |
+| Resolution commit     | Defect, Task, Sub-task | Reviewer: developer/owner      |
+| Root cause            | Defect                 | Reviewer: developer/owner      |
+| Start command/request | Defect                 | Reporter: user/developer/owner | Leave only the essential things to reproduce: try to check if possible if the bug is reproducible w/o distributed mode, different concurrency level, item data size, etc.
+| Steps                 | Defect                 | Reporter: user/developer/owner |
+| Purpose               | Story                  | Reporter: user/developer/owner | Which particular usage of Mongoose should be changed / included within the UI? Related mock ups, screenshots or a detailed discription of the requested feature are encouraged.
+| Requirements          | Story                  | Reporter: user/developer/owner | Both functional and performance requirements are mandatory. Optionally the additional requirements/possible enhancements may be specified.
+
+
+# 3. Code
+
+# 3.1. Performance
+Take care about the performance in the ***critical*** places:
+* Avoid *frequent* objects instantiation
+* Avoid unnecessary *frequent* allocation
+* Avoid *frequent* method calls if possible
+* Avoid deep call stack if possible
+* Avoid multiple component / modules reload 
+* Avoid *unnecessary* component observers and their calls 
+* Use services for REST API calls
