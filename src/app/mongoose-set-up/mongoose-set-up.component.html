@@ -29,11 +29,12 @@
 
 <!-- NOTE: SetUp footer  -->
 <nav id="mongoose-setup-footer" class="navbar navbar-light bg-light">
-  <div class="form-inline">
-      <button id="btn-continue" class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onNextStepClicked()">
-          Continiue &raquo;
-      </button>
-  </div>
+    <div class="mx-auto order-0">
+        <button id="btn-continue" class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onNextStepClicked()">
+            Confirm &raquo;
+        </button>
+    </div>
+
   <div *ngIf="isSetupCompleted()"  [@bounce]="isSetupCompleted()">
       <button id="btn-continue" class="btn btn-outline-success my-2 my-sm-0" type="submit"
         (click)="onRunBtnClicked()">
