@@ -27,8 +27,7 @@ Alphabetically:
 | Name | Responsibilities | Current Assignees
 |------|------------------|------------------
 | User | Report the issues | Definitely unknown
-| Developer | <ul><li>Development</li><li>Testing</li><li>Automation</li><li>Documentation</li></ul> | 
-<ul>
+| Developer | <ul><li>Development</li><li>Testing</li><li>Automation</li><li>Documentation</li></ul> | <ul>
 	<li>Andrey Koltsov</li>
 	<li>Andrey Kurilov</li>
 	<li>Aline Shishatskaya</li>
@@ -36,8 +35,7 @@ Alphabetically:
 	<li>Pavel Vinogradov</li>
 	<li>Veronika Kochugova</li>
 <ul>
-| Owner | <ul><li>The next version scope definition</li><li>Roadmap definition</li><li>User interaction</li></ul> | 
-<ul>
+| Owner | <ul><li>The next version scope definition</li><li>Roadmap definition</li><li>User interaction</li></ul> | <ul>
 	<li>Andrey Kurilov</li>
 	<li>Andrey Koltsov</li>
 	<li>Veronika Kochugova</li>
