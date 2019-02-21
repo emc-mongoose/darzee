@@ -14,13 +14,36 @@
     width: calc(20%);
     margin: auto;
     display: inline-block;
+    padding-top: calc(1%);
+    padding-bottom: calc(1%);
+    box-sizing: content-box;
 }
 
 .progress:hover { 
-    background: lightgreen;
-    color: white;
+    color: black;
+    border: 1px solid black;
+    transform: scale(1.1);
+    height: scale(1.1);
+    overflow: hidden;
+
+    /* NOTE: Making the tab bigger if its content is currently processing. */
+
     transition: 0.2s;
     transition-timing-function: ease-out;
+}
+
+.bg-success { 
+    height: inherit;
+    /* background-color: green; */
+}
+
+.processing-tab { 
+    color: black;
+    border: 1px solid black;
+
+    /* NOTE: Making the tab bigger if its content is currently processing.
+    transform: scale(1.1);
+    -webkit-transform: scale(1.1); */
 }
 
 .progress-bar-displaying { 
@@ -36,17 +59,9 @@
     margin-bottom: calc(5%);
 }
 
-.processing-tab { 
-    background-color: lightgreen;
-    color: white;
-    border: 0.5px solid lightyellow;
-    transition-timing-function: ease-out;
-    transition: 0.2s;
 
-    /* NOTE: Making the tab bigger if its content is currently processing. */
-    transform: scale(1.1);
-    -webkit-transform: scale(1.1);
-}
+
+
 
 /* NOTE: Footer which is fixed at the bottom.  */
 #mongoose-setup-footer { 
