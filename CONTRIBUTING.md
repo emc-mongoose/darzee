@@ -10,6 +10,7 @@ Please, note that all contributors shall follow the Contributor Agreement guidel
 
 1. [Contributors](#1-contributors)<br/>
 2. [Issues](#2-issues)<br/>
+3. [Code](#3-code)<br/>
 
 # 1. Contributors
 
