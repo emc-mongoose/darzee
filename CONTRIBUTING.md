@@ -9,7 +9,6 @@ Please, note that all contributors shall follow the Contributor Agreement guidel
 # Contents
 
 1. [Contributors](#1-contributors)<br/>
-1.2. [Roles](#12-roles)<br/>
 2. [Issues](#2-issues)<br/>
 
 # 1. Contributors
@@ -22,14 +21,6 @@ Alphabetically:
 * [Ivan Sysoev](https://github.com/ivan-abc)
 * [Pavel Vinogradov](https://github.com/paulgrape)
 * [Veronika Kochugova](https://github.com/veronikaKochugova)
-
-# 1.2. Roles
-
-| Name | Responsibilities | Current Assignees
-|------|------------------|------------------
-| User | Report the issues | Definitely unknown
-| Developer | <ul><li>Development</li><li>Testing</li><li>Automation</li><li>Documentation</li></ul> | <ul>  <li>Andrey Koltsov</li> <li>Andrey Kurilov</li> <li>Aline Shishatskaya</li> <li>Ivan Sysoev</li> <li>Pavel Vinogradov</li> <li>Veronika Kochugova</li>  <ul>
-| Owner | <ul><li>The next version scope definition</li><li>Roadmap definition</li><li>User interaction</li></ul> | <ul> <li>Andrey Kurilov</li> <li>Andrey Koltsov</li> <li>Veronika Kochugova</li> </ul>
 
 # 2. Issues
 
