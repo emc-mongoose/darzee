@@ -10,7 +10,10 @@ Please, note that all contributors shall follow the Contributor Agreement guidel
 
 1. [Contributors](#1-contributors)<br/>
 2. [Issues](#2-issues)<br/>
+2.1 [States](#21-sates)<br/>
+2.2. [Specific properties](#22-properties)<br/>
 3. [Code](#3-code)<br/>
+3.1. [Performance](#31-performance)<br/>
 
 # 1. Contributors
 
