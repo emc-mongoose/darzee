@@ -68,6 +68,10 @@ export class MongooseSetUpComponent implements OnInit {
   onRunBtnClicked() { 
     alert("Mongoose has started up.");
   }
+
+  getConfigrmationBtnTitle(): string { 
+    return (this.isSetupCompleted() ? "Configuration completed  ✔" : "Confirm »");
+  }
   // MARK: - Private
 
   private initSetUpTabs() { 
