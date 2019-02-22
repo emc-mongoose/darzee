@@ -9,7 +9,7 @@ Please, note that all contributors shall follow the Contributor Agreement guidel
 # Contents
 
 1. [Contributors](#1-contributors)<br/>
-2. [Issues](#2-versions)<br/>
+2. [Versions](#2-versions)<br/>
 3. [Issues](#3-issues)<br/>
 3.1 [States](#31-sates)<br/>
 3.2. [Specific properties](#32-properties)<br/>
