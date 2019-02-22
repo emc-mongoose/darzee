@@ -22,7 +22,8 @@ import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.compon
   // NOTE: CodeMirror's module for code displaying
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
   // NOTE: a module that provides functionality to display JSON as a tree
-import {NgJsonEditorModule} from 'ang-jsoneditor'
+import {NgJsonEditorModule} from 'ang-jsoneditor';
+import { SetUpFooterComponent } from './mongoose-set-up/set-up-footer/set-up-footer.component';
 
 
 @NgModule({
@@ -36,7 +37,9 @@ import {NgJsonEditorModule} from 'ang-jsoneditor'
     NodesComponent,
     ScenariosComponent,
     ConfigurationEditingRootComponent,
-    ConfigurationEditingComponent
+    ConfigurationEditingComponent,
+    SetUpFooterComponent,
+    
   ],
   imports: [
     BrowserModule,
