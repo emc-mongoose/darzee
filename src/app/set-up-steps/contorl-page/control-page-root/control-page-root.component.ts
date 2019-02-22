@@ -8,16 +8,7 @@ import { Router } from '@angular/router';
 })
 export class ControlPageRootComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor() { }
 
-  ngOnInit() {
-  }
-
-  onNavigateNextClicked() { 
-    this.router.navigate(["/editing-scenarios"])
-  }
-
-  onNavigatePreviousClicked() { 
-    this.router.navigate(["/nodes"])
-  }
+  ngOnInit() {}
 }
