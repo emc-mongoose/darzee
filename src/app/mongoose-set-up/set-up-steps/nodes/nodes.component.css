@@ -45,19 +45,6 @@
     width:40%;
 }
 
-
-.buttonAdd {
-    width: 100%;
-    margin: 2px 2px;
-    padding: 8px;
-    color: #212121;
-    text-decoration: none;
-    text-align: center;
-    background: rgba(230, 121, 20, 0.85);
-    border: 1px solid rgba(119, 76, 43, 0.966);
-    border-radius: 10px;
-}
-
 input {
     width: 91%;
     margin: 2px 2px;
