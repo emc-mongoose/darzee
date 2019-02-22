@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ControlEditingRootComponent } from './control-editing/control-editing-root/control-editing-root.component';
+import { ControlEditingRootComponent } from './set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component';
 import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.component';
 import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.component';
 import { NodesComponent } from './set-up-steps/nodes/nodes.component';
-import { ControlPageRootComponent } from './set-up-steps/contorl-page/control-page-root/control-page-root.component';
+import { ControlPageRootComponent } from './set-up-steps/scenarios-set-up/control-page-root/control-page-root.component';
 
 const routes: Routes = [
   { path: 'nodes', component: NodesComponent },

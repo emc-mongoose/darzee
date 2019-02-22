@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { IpAddressService } from 'src/app/core/services/ip-addresses/ip-address.service';
 
 @Component({
   selector: 'app-control-editing-root',
@@ -9,14 +7,9 @@ import { IpAddressService } from 'src/app/core/services/ip-addresses/ip-address.
 })
 export class ControlEditingRootComponent implements OnInit {
 
-  constructor(private router: Router, private service: IpAddressService) { }
+  constructor() { }
 
-  ngOnInit() {
-  }
-
-  onNavigatePreviousClicked() { 
-    this.router.navigate(["/control"]);
-  }
+  ngOnInit() {}
 
   onStartButtonClicked()  {
     alert("Mongoose has started.");
