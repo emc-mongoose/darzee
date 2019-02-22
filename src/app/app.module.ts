@@ -9,7 +9,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ContorlPageModule } from './contorl-page/contorl-page.module';
 import { ControlEditingModule } from './control-editing/control-editing.module';
-import { NodesModule } from './nodes/nodes.module';
 
 // NOTE: NPM dependencies
 import {NgJsonEditorModule} from 'ang-jsoneditor'
@@ -18,6 +17,7 @@ import { RunsTableComponent } from './runs-table/runs-table.component';
 import { MongooseRunStatusIconComponent } from './mongoose-run-status-icon/mongoose-run-status-icon.component';
 import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.component';
 import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.component';
+import { NodesModule } from './set-up-steps/nodes/nodes.module';
 
 @NgModule({
   declarations: [

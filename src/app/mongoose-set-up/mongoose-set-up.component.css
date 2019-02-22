@@ -33,11 +33,6 @@
     transition-timing-function: ease-out;
 }
 
-.bg-success { 
-    height: inherit;
-    /* background-color: green; */
-}
-
 .processing-tab { 
     color: black;
     border: 1px solid black;
@@ -55,10 +50,6 @@
 .main-content { 
     margin-bottom: calc(5%);
 }
-
-
-
-
 
 /* NOTE: Footer which is fixed at the bottom.  */
 #mongoose-setup-footer { 
