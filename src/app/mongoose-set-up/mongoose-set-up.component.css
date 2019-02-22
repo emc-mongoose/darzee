@@ -7,16 +7,18 @@
 
 /* NOTE: Spacing between progress bars.  */
 .progress-wrapper > * { 
-    margin: 0px 20px;
+    margin: 10px 20px;
 }
 
-.progress { 
+.progress, .progress-bar, .progress-bar-displaying { 
     width: calc(20%);
     margin: auto;
     display: inline-block;
     padding-top: calc(1%);
     padding-bottom: calc(1%);
     box-sizing: content-box;
+    height: calc(100%) + 20px;
+    border: 0.5px solid gray;
 }
 
 .progress:hover { 
@@ -27,7 +29,6 @@
     overflow: hidden;
 
     /* NOTE: Making the tab bigger if its content is currently processing. */
-
     transition: 0.2s;
     transition-timing-function: ease-out;
 }
@@ -40,10 +41,6 @@
 .processing-tab { 
     color: black;
     border: 1px solid black;
-
-    /* NOTE: Making the tab bigger if its content is currently processing.
-    transform: scale(1.1);
-    -webkit-transform: scale(1.1); */
 }
 
 .progress-bar-displaying { 
