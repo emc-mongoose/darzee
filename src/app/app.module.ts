@@ -20,7 +20,7 @@ import { ScenariosComponent } from './set-up-steps/scenarios-set-up/scenarios/sc
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
   // NOTE: a module that provides functionality to display JSON as a tree
 import {NgJsonEditorModule} from 'ang-jsoneditor'
-import { ControlEditingRootComponent } from './set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component';
+import { ConfigurationEditingRootComponent } from './set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component';
 import { ConfigurationEditingComponent } from './set-up-steps/configuration-set-up/configuration-editing/configuration-editing.component';
 
 
@@ -34,7 +34,7 @@ import { ConfigurationEditingComponent } from './set-up-steps/configuration-set-
     MongooseSetUpComponent,
     NodesComponent,
     ScenariosComponent,
-    ControlEditingRootComponent,
+    ConfigurationEditingRootComponent,
     ConfigurationEditingComponent
   ],
   imports: [

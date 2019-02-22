@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ControlEditingRootComponent } from './control-editing-root.component';
+import { ConfigurationEditingRootComponent } from './control-editing-root.component';
 
-describe('ControlEditingRootComponent', () => {
-  let component: ControlEditingRootComponent;
-  let fixture: ComponentFixture<ControlEditingRootComponent>;
+describe('ConfigurationEditingRootComponent', () => {
+  let component: ConfigurationEditingRootComponent;
+  let fixture: ComponentFixture<ConfigurationEditingRootComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ControlEditingRootComponent ]
+      declarations: [ ConfigurationEditingRootComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ControlEditingRootComponent);
+    fixture = TestBed.createComponent(ConfigurationEditingRootComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
