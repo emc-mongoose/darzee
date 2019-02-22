@@ -4,6 +4,7 @@ import { MongooseSetupTab } from './mongoose-setup-tab.model';
 import { bounceAnimation, slideAnimation } from '../core/animations';
 import { MongooseSetupStep } from './mongoose-setup-step.interface';
 import { MongooseSetUpService } from './mongoose-set-up-service/mongoose-set-up.service';
+import { RoutesList } from '../routes';
 
 @Component({
   selector: 'app-mongoose-set-up',
@@ -20,9 +21,9 @@ export class MongooseSetUpComponent implements OnInit {
   readonly BASE_URL = "/setup";
   
   readonly SETUP_TABS_DATA = [
-    {title: 'Nodes', link: 'nodes'},
-    {title: 'Configuration', link: 'configuration-editing.component'},
-    {title: 'Scenario', link: 'control'}
+    {title: 'Nodes', link: RoutesList.NODES},
+    {title: 'Configuration', link: RoutesList.MONGOOSE_COMFIGURATION},
+    {title: 'Scenario', link: RoutesList.SCENARIO}
 
   ];
 
