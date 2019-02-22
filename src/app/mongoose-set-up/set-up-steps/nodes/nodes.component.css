@@ -7,7 +7,6 @@
     font-weight: normal;
     font-style: normal;
     text-decoration: none;
-    /* position: absolute; */
     height: 80%;
     width: 90%;
     margin: auto;
@@ -141,4 +140,15 @@ ul {
     background: rgba(255, 255, 255, 0);
     border: 2px solid rgba(230, 121, 20, 0.85);
     border-radius: 10px;
+}
+
+.node-action {
+    display: inline-block;
+    width: inherit;
+    margin-bottom: 10px;
+}
+
+.nodes-action-btns { 
+    width: calc(100%);
+    text-align: center;
 }
