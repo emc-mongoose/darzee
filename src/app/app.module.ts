@@ -17,7 +17,7 @@ import { RunsTableComponent } from './runs-table/runs-table.component';
 import { MongooseRunStatusIconComponent } from './mongoose-run-status-icon/mongoose-run-status-icon.component';
 import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.component';
 import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.component';
-import { NodesModule } from './set-up-steps/nodes/nodes.module';
+import { NodesComponent } from './set-up-steps/nodes/nodes.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +26,8 @@ import { NodesModule } from './set-up-steps/nodes/nodes.module';
     RunsTableComponent,
     MongooseRunStatusIconComponent,
     RunsTableTabsComponent,
-    MongooseSetUpComponent
+    MongooseSetUpComponent,
+    NodesComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +42,6 @@ import { NodesModule } from './set-up-steps/nodes/nodes.module';
     ControlEditingModule, 
 
     // NOTE: Dependencies
-    NodesModule,
     NgJsonEditorModule
   ],
   providers: [IpAddressService],
