@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { NodeConfig } from '../../core/services/ip-addresses/nodeConfig';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IpAddressService } from 'src/app/core/services/ip-addresses/ip-address.service';
 import { IpAddress } from 'src/app/core/services/ip-addresses/ipAddress';
+import { NodeConfig } from 'src/app/core/services/ip-addresses/nodeConfig';
 
 @Component({
   selector: 'app-nodes',

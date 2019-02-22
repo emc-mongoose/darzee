@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ConfigurationEditingRootComponent } from './set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component';
-import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.component';
 import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.component';
-import { NodesComponent } from './set-up-steps/nodes/nodes.component';
-import { ScenariosComponent } from './set-up-steps/scenarios-set-up/scenarios/scenarios.component';
+import { ConfigurationEditingRootComponent } from './mongoose-set-up/set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component';
+import { RunsTableTabsComponent } from './runs-table/runs-table-tabs/runs-table-tabs.component';
+import { NodesComponent } from './mongoose-set-up/set-up-steps/nodes/nodes.component';
+import { ScenariosComponent } from './mongoose-set-up/set-up-steps/scenarios-set-up/scenarios/scenarios.component';
 
 const routes: Routes = [
   { path: 'nodes', component: NodesComponent },
