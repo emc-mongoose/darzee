@@ -11,8 +11,8 @@ Please, note that all contributors shall follow the Contributor Agreement guidel
 1. [Contributors](#1-contributors)<br/>
 2. [Versions](#2-versions)<br/>
 3. [Issues](#3-issues)<br/>
-3.1 [States](#31-sates)<br/>
-3.2. [Specific properties](#32-properties)<br/>
+3.1. [States](#31-sates)<br/>
+3.2. [Specific properties](#32-specific-properties)<br/>
 4. [Code](#4-code)<br/>
 4.1. [Performance](#41-performance)<br/>
 
