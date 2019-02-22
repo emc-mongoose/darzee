@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { IpAddressService } from './core/services/ip-addresses/ip-address.service';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ContorlPageModule } from './set-up-steps/scenarios-set-up/contorl-page.module';
 import { ControlEditingModule } from './set-up-steps/configuration-set-up/control-editing.module';
 
 // NOTE: NPM dependencies
@@ -18,6 +17,9 @@ import { MongooseRunStatusIconComponent } from './mongoose-run-status-icon/mongo
 import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.component';
 import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.component';
 import { NodesComponent } from './set-up-steps/nodes/nodes.component';
+import { ScenariosComponent } from './set-up-steps/scenarios-set-up/scenarios/scenarios.component';
+  // NOTE: CodeMirror's module for code displaying
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import { NodesComponent } from './set-up-steps/nodes/nodes.component';
     MongooseRunStatusIconComponent,
     RunsTableTabsComponent,
     MongooseSetUpComponent,
-    NodesComponent
+    NodesComponent,
+    ScenariosComponent
   ],
   imports: [
     BrowserModule,
@@ -38,14 +41,18 @@ import { NodesComponent } from './set-up-steps/nodes/nodes.component';
     BrowserAnimationsModule,
 
     // NOTE: Custom modules
-    ContorlPageModule,
     ControlEditingModule, 
+    CodemirrorModule,
 
     // NOTE: Dependencies
     NgJsonEditorModule
+
+
+    
   ],
   providers: [IpAddressService],
   bootstrap: [AppComponent],
-  exports: [AppComponent]
+  exports: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

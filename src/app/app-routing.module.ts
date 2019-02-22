@@ -4,12 +4,12 @@ import { ControlEditingRootComponent } from './set-up-steps/configuration-set-up
 import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.component';
 import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.component';
 import { NodesComponent } from './set-up-steps/nodes/nodes.component';
-import { ControlPageRootComponent } from './set-up-steps/scenarios-set-up/control-page-root/control-page-root.component';
+import { ScenariosComponent } from './set-up-steps/scenarios-set-up/scenarios/scenarios.component';
 
 const routes: Routes = [
   { path: 'nodes', component: NodesComponent },
   { path: 'runs', component: RunsTableTabsComponent },
-  { path: 'control', component: ControlPageRootComponent},
+  { path: 'control', component: ScenariosComponent},
   { path: "", redirectTo: '/nodes', pathMatch: 'full'},
   { path: "editing-scenarios", component: ControlEditingRootComponent},
 
@@ -18,7 +18,7 @@ const routes: Routes = [
     children: [
       { path: 'nodes', component: NodesComponent },
       { path: 'editing-scenarios', component: ControlEditingRootComponent },
-      { path: 'control', component: ControlPageRootComponent },
+      { path: 'control', component: ScenariosComponent },
       { path: '**', redirectTo: 'nodes', pathMatch: 'full'}
     ]},
 ];
