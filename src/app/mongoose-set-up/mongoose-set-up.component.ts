@@ -19,7 +19,7 @@ export class MongooseSetUpComponent implements OnInit {
   
   readonly SETUP_TABS_DATA = [
     {title: 'Nodes', link: 'nodes'},
-    {title: 'Configuration', link: 'editing-scenarios'},
+    {title: 'Configuration', link: 'configuration-editing.component'},
     {title: 'Scenario', link: 'control'}
 
   ];

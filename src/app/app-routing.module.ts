@@ -11,13 +11,13 @@ const routes: Routes = [
   { path: 'runs', component: RunsTableTabsComponent },
   { path: 'control', component: ScenariosComponent},
   { path: "", redirectTo: '/nodes', pathMatch: 'full'},
-  { path: "editing-scenarios", component: ControlEditingRootComponent},
+  { path: "configuration-editing.component", component: ControlEditingRootComponent},
 
   // MARK: - Mongoose Set Up pages
   { path: "setup", component: MongooseSetUpComponent,
     children: [
       { path: 'nodes', component: NodesComponent },
-      { path: 'editing-scenarios', component: ControlEditingRootComponent },
+      { path: 'configuration-editing.component', component: ControlEditingRootComponent },
       { path: 'control', component: ScenariosComponent },
       { path: '**', redirectTo: 'nodes', pathMatch: 'full'}
     ]},

@@ -21,7 +21,7 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
   // NOTE: a module that provides functionality to display JSON as a tree
 import {NgJsonEditorModule} from 'ang-jsoneditor'
 import { ControlEditingRootComponent } from './set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component';
-import { EditingScenariosComponent } from './set-up-steps/configuration-set-up/editing-scenarios/editing-scenarios.component';
+import { ConfigurationEditingComponent } from './set-up-steps/configuration-set-up/configuration-editing/configuration-editing.component';
 
 
 @NgModule({
@@ -35,7 +35,7 @@ import { EditingScenariosComponent } from './set-up-steps/configuration-set-up/e
     NodesComponent,
     ScenariosComponent,
     ControlEditingRootComponent,
-    EditingScenariosComponent
+    ConfigurationEditingComponent
   ],
   imports: [
     BrowserModule,
