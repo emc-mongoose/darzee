@@ -18,7 +18,8 @@ import { RoutesList } from '../routes';
 
 export class MongooseSetUpComponent implements OnInit {
 
-  readonly BASE_URL = "/setup";
+
+  readonly BASE_URL = "/" + RoutesList.MONGOOSE_SETUP;
   
   readonly SETUP_TABS_DATA = [
     {title: 'Nodes', link: RoutesList.NODES},
@@ -28,9 +29,11 @@ export class MongooseSetUpComponent implements OnInit {
   ];
 
   setUpTabs: MongooseSetupTab[] = []
-
-  setUpSteps: MongooseSetupStep[] = []; 
   processingTabID: number = 0;
+
+  private getCurrentSetupTab(): MongooseSetupTab { 
+    return this.setUpTabs[this.processingTabID];
+  }
 
   constructor(
     private router: Router;
@@ -58,9 +61,11 @@ export class MongooseSetUpComponent implements OnInit {
     return Math.round(rawPercentage) - tabsOffset;
   }
 
-  onNextStepClicked() { 
+  onConfirmClicked() { 
+    let processingTab = this.getCurrentSetupTab(); 
+    this.updateSetUpInfoFromSource(processingTab.contentLink);
+    processingTab.isCompleted = true;
     let nextTabId = this.processingTabID + 1;
-    this.setUpTabs[this.processingTabID].isCompleted = true;
     this.switchTab(nextTabId);
   }
 
@@ -77,6 +82,15 @@ export class MongooseSetUpComponent implements OnInit {
     alert("Mongoose has started up.");
   }
 
+  onRouterComponentActivated($event) { 
+    console.log("Activating " + this.getCurrentStepName());
+    // console.log("Router component has been activated.");
+  }
+
+  onRouterComponentDeactivated($event) { 
+    console.log("Deativating " + this.getCurrentStepName());
+  }
+
   getConfigrmationBtnTitle(): string { 
     return (this.isSetupCompleted() ? "Configuration completed  ✔" : "Confirm »");
   }
@@ -91,10 +105,6 @@ export class MongooseSetUpComponent implements OnInit {
       let mongooseTab = new MongooseSetupTab(i, tabData.title, tabData.link);
       this.setUpTabs.push(mongooseTab);
     }
-  }
-
-  private updateRunSetUp(sourceLink: string) { 
-    
   }
 
   private openUpTab(tabNumber: number) { 
@@ -118,5 +128,24 @@ export class MongooseSetUpComponent implements OnInit {
     this.setUpTabs[this.processingTabID].isContentDisplaying = false; 
     this.openUpTab(nextTabId);
   }
+
+    // NOTE: Source Link is the link to page from which the set up info will be updated. 
+    private updateSetUpInfoFromSource(sourceLink: string) { 
+      // NOTE: Confirming set up data from the **source** page. 
+      switch (sourceLink) { 
+        case RoutesList.MONGOOSE_COMFIGURATION: {
+          this.mongooseSetUpService.confirmConfigurationSetup();  
+          break;
+        }
+        case RoutesList.SCENARIO: { 
+          this.mongooseSetUpService.confirmScenarioSetup();
+          break;
+        }
+        case RoutesList.NODES: { 
+          this.mongooseSetUpService.confirmNodeConfiguration();
+          break;
+        }
+      }
+    }
 
 }

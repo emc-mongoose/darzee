@@ -9,13 +9,12 @@ export class SetUpFooterComponent implements OnInit {
 
   @Input() isSetupCompleted: boolean;
   @Input() confirmButtonTitle: string; 
-  
+
   @Output() confirmButtonClick = new EventEmitter<boolean>();
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {  }
 
   confirmButtonClicked() { 
     this.confirmButtonClick.emit(true);

@@ -32,6 +32,11 @@ export class MongooseSetUpService {
     this.mongooseSetupInfoModel.nodesData = data;
   }
 
+  // NOTE: Confirmation methods are used to validate the parameters which were set via "set" methods.
+  // They're separated because of the specific UI. ("confirm" button is placed within the footer, ...
+  // ... and set up pages are isplaying via <router-outler>. If user switches between set-up pages without...
+  // ... confirmation, we could still retain the data inside an "unprocessed" variable (e.g.: unprocessedScenario))
+
   confirmConfigurationSetup() { 
     this.setSenario(this.unprocessedConfiguration);
   }

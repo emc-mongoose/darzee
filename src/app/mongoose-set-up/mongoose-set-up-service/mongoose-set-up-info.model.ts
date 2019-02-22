@@ -1,7 +1,7 @@
 import { NodeConfig } from "src/app/core/services/ip-addresses/nodeConfig";
 
-export class MongooseSetInfoModel { 
-    
+export class MongooseSetupInfoModel { 
+
     configuration: any; // NOTE: Configuration is represented with JSON 
     scenario: string; // NOTE: As for 22.02.2019, 'Scenario' is a JavaScript code
     nodesData: NodeConfig[]; 
