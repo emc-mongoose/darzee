@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MongooseSetupInfoModel } from './mongoose-set-up-info.model';
 import { NodeConfig } from 'src/app/core/services/ip-addresses/nodeConfig';
+import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class MongooseSetUpService {
  unprocessedScenario: any; 
  unprocessedNodeConfiguration: NodeConfig[]; 
 
-  constructor() { 
+  constructor( private controlApiService: ControlApiService) { 
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(); 
   }
 
@@ -47,6 +48,11 @@ export class MongooseSetUpService {
 
   confirmNodeConfiguration() { 
     this.setNodesData(this.unprocessedNodeConfiguration);
+  }
+
+  runMongoose() { 
+    this.controlApiService.postNewConfiguration(JSON.stringify(this.mongooseSetupInfoModel.configuration))
+    alert("New configuration has been applied.");
   }
 
   // MARK: - Private

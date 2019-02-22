@@ -1,12 +1,9 @@
 import { Component, OnInit, ViewChild, ViewChildren, ElementRef } from '@angular/core';
 import { IpAddressService } from 'src/app/core/services/ip-addresses/ip-address.service';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
-import { Button } from 'protractor';
 import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
-import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { Constants } from 'src/app/common/constants';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
-import { MongooseSetupStep } from 'src/app/mongoose-set-up/mongoose-setup-step.interface';
 
 
 @Component({
@@ -15,7 +12,7 @@ import { MongooseSetupStep } from 'src/app/mongoose-set-up/mongoose-setup-step.i
   styleUrls: ['./configuration-editing.component.css']
 })
 
-export class ConfigurationEditingComponent implements OnInit, MongooseSetupStep {
+export class ConfigurationEditingComponent implements OnInit {
 
   readonly CONFIGURATION_FILENAME = Constants.FileNames.CUSTOM_CONFIGURATION_FILENAME;
 
@@ -45,7 +42,7 @@ export class ConfigurationEditingComponent implements OnInit, MongooseSetupStep 
   // MARK: - Lifecycle 
   
   ngOnInit() {}
-  
+
   ngAfterViewChecked() { 
     console.log("ngAfterViewChecked");
   }
@@ -134,8 +131,4 @@ export class ConfigurationEditingComponent implements OnInit, MongooseSetupStep 
     this.hasJsonEdited = false;
   }
 
-  // MARK: - Mongoose Set Up interface 
-  onSetUpFinished() {
-    console.log("New configuration has been applied.");
-  }
 }

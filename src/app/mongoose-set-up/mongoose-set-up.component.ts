@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MongooseSetupTab } from './mongoose-setup-tab.model';
 import { bounceAnimation, slideAnimation } from '../core/animations';
-import { MongooseSetupStep } from './mongoose-setup-step.interface';
 import { MongooseSetUpService } from './mongoose-set-up-service/mongoose-set-up.service';
 import { RoutesList } from '../routes';
 
@@ -79,6 +78,7 @@ export class MongooseSetUpComponent implements OnInit {
   }
 
   onRunBtnClicked() { 
+    this.mongooseSetUpService.runMongoose();
     alert("Mongoose has started up.");
   }
 
