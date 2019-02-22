@@ -7,7 +7,6 @@
     font-weight: normal;
     font-style: normal;
     text-decoration: none;
-    position: absolute;
     height: 80%;
     width: 90%;
     margin: auto;
@@ -39,24 +38,12 @@
     width: 30%;
 }
 
+
 .right {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
     width:40%;
-}
-
-
-.buttonAdd {
-    width: 100%;
-    margin: 2px 2px;
-    padding: 8px;
-    color: #212121;
-    text-decoration: none;
-    text-align: center;
-    background: rgba(230, 121, 20, 0.85);
-    border: 1px solid rgba(119, 76, 43, 0.966);
-    border-radius: 10px;
 }
 
 input {
@@ -121,9 +108,9 @@ ul {
     padding-right: 4px;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: calc(20%)) {
     .column {
-        width: 100%;
+        width: calc(20%);
     }
 }
 
@@ -141,4 +128,19 @@ ul {
     background: rgba(255, 255, 255, 0);
     border: 2px solid rgba(230, 121, 20, 0.85);
     border-radius: 10px;
+}
+
+.node-action {
+    display: inline-block;
+    width: inherit;
+    margin-bottom: 10px;
+}
+
+.nodes-action-btns { 
+    width: calc(100%);
+    text-align: center;
+}
+
+#mongoose-logo { 
+   transform: scale(0.3);
 }

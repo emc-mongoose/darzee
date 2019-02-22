@@ -14,23 +14,8 @@
     float: right;
 }
 
-.app-editing-scenarios { 
+.app-configuration-editing { 
     float: left;
-}
-
-.previous-button  { 
-    position: absolute;
-    bottom: 20px;
-
-    background-color: white;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 10px;
-    border: 1px solid black;
-    border-radius: 50%;
 }
 
 .start-button { 
@@ -63,9 +48,4 @@
 
 .start-button:hover { 
     background: rgb(100, 201, 100);    
-
-}
-
-.previous-button { 
-    left: 20px;
 }

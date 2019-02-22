@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { MongooseRunRecord } from '../core/models/run-record.model';
-import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
-import { MongooseRunStatus } from '../core/mongoose-run-status';
+import { MongooseRunStatus } from 'src/app/core/mongoose-run-status';
+import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
+import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
 import { MongooseRunTab } from './model/monoose-run-tab.model';
-import { slideAnimation } from '../core/animations';
-
+import { slideAnimation } from 'src/app/core/animations';
 
 @Component({
   selector: 'app-runs-table-tabs',

@@ -1,7 +1,7 @@
 <div class="w3-container">
   <div class="row">
     <div class="column left">
-      <img src="assets/images/mongoose.png">
+      <img id="mongoose-logo" src="assets/images/mongoose.png">
     </div>
 
     <div class="column middle">
@@ -11,9 +11,12 @@
         <div class="addIp">
           <p #ipAd hidden="true">{{ ip }}</p>
           <input [(ngModel)]="ip" placeholder="enter IP here..." />
-          <button class="buttonAdd" title="add IP address" (click)="addIp(ipAd.textContent)">
-            Add
-          </button>
+    
+          <div class="nodes-action-btns">
+             <button type="button" title="No nodes has been set." class="btn btn-light node-action" (click)="addIp(ipAd.textContent)">Add</button>
+             <button type="button" class="btn btn-light node-action" (click)="onNavigateNextClicked()">Confirm nodes list</button>
+          </div>
+
         </div>
       <!-- </span> -->
     </div>
@@ -25,12 +28,7 @@
           <button class="buttonDel" title="delete IP address" (click)="deleteIp(ipAddress.id)">&#10005;</button>
         </li>
       </ul>
-    </div> 
 
+    </div> 
   </div>
 </div>
-
-
-<button class="next-button" (click)="onNavigateNextClicked()">
-  Next
-</button>

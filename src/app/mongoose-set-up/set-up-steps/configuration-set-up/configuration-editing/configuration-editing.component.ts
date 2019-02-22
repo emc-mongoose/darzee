@@ -9,11 +9,11 @@ import { ControlApiService } from 'src/app/core/services/control-api/control-api
 
 
 @Component({
-  selector: 'app-editing-scenarios',
-  templateUrl: './editing-scenarios.component.html',
-  styleUrls: ['./editing-scenarios.component.css']
+  selector: 'app-configuration-editing',
+  templateUrl: './configuration-editing.component.html',
+  styleUrls: ['./configuration-editing.component.css']
 })
-export class EditingScenariosComponent implements OnInit {
+export class ConfigurationEditingComponent implements OnInit {
 
   readonly CONFIGURATION_FILENAME = Constants.FileNames.CUSTOM_CONFIGURATION_FILENAME;
 

@@ -1,7 +1,7 @@
+
 .scenarios-wrapper { 
     flex-wrap: wrap;
     align-items: center;
-    
 }
 
 /* NOTE: Configuring buttons */
@@ -44,6 +44,7 @@
 }
 
 .code-editor-wrapper { 
+    text-align: left;
     border: 1px black solid;
     display: block;
     top: 20px;
