@@ -6,6 +6,7 @@ import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { Constants } from 'src/app/common/constants';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
+import { MongooseSetupStep } from 'src/app/mongoose-set-up/mongoose-setup-step.interface';
 
 
 @Component({
@@ -13,7 +14,8 @@ import { ControlApiService } from 'src/app/core/services/control-api/control-api
   templateUrl: './configuration-editing.component.html',
   styleUrls: ['./configuration-editing.component.css']
 })
-export class ConfigurationEditingComponent implements OnInit {
+
+export class ConfigurationEditingComponent implements OnInit, MongooseSetupStep {
 
   readonly CONFIGURATION_FILENAME = Constants.FileNames.CUSTOM_CONFIGURATION_FILENAME;
 
@@ -40,9 +42,17 @@ export class ConfigurationEditingComponent implements OnInit {
     this.fileOperations = new FileOperations();
   }
 
-
+  // MARK: - Lifecycle 
+  
   ngOnInit() {}
+  
+  ngAfterViewChecked() { 
+    console.log("ngAfterViewChecked");
+  }
 
+  ngOnDestroy() { 
+    console.log("Configuration component has been destroyed.");
+  }
 
   // NOTE: Private methods
 
@@ -122,5 +132,10 @@ export class ConfigurationEditingComponent implements OnInit {
     this.controlApiService.postNewConfiguration(JSON.stringify(this.currentJsonEditorData))
     alert("New configuration has been applied.");
     this.hasJsonEdited = false;
+  }
+
+  // MARK: - Mongoose Set Up interface 
+  onSetUpFinished() {
+    console.log("New configuration has been applied.");
   }
 }

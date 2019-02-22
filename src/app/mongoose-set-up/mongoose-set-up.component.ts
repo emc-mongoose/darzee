@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MongooseSetupTab } from './mongoose-setup-tab.model';
 import { bounceAnimation, slideAnimation } from '../core/animations';
+import { MongooseSetupStep } from './mongoose-setup-step.interface';
+import { MongooseSetUpService } from './mongoose-set-up-service/mongoose-set-up.service';
 
 @Component({
   selector: 'app-mongoose-set-up',
@@ -25,9 +27,14 @@ export class MongooseSetUpComponent implements OnInit {
   ];
 
   setUpTabs: MongooseSetupTab[] = []
+
+  setUpSteps: MongooseSetupStep[] = []; 
   processingTabID: number = 0;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router;
+    private mongooseSetUpService: MongooseSetUpService
+    ) {
     this.initSetUpTabs();
     let defaultTabNumber = 0;
     this.openUpTab(defaultTabNumber);
@@ -72,6 +79,7 @@ export class MongooseSetUpComponent implements OnInit {
   getConfigrmationBtnTitle(): string { 
     return (this.isSetupCompleted() ? "Configuration completed  ✔" : "Confirm »");
   }
+
   // MARK: - Private
 
   private initSetUpTabs() { 
@@ -82,6 +90,10 @@ export class MongooseSetUpComponent implements OnInit {
       let mongooseTab = new MongooseSetupTab(i, tabData.title, tabData.link);
       this.setUpTabs.push(mongooseTab);
     }
+  }
+
+  private updateRunSetUp(sourceLink: string) { 
+    
   }
 
   private openUpTab(tabNumber: number) { 
