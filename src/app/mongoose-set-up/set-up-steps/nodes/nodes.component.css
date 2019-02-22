@@ -38,6 +38,7 @@
     width: 30%;
 }
 
+
 .right {
     position: relative;
     top: 50%;
@@ -107,9 +108,9 @@ ul {
     padding-right: 4px;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: calc(20%)) {
     .column {
-        width: 100%;
+        width: calc(20%);
     }
 }
 
@@ -138,4 +139,8 @@ ul {
 .nodes-action-btns { 
     width: calc(100%);
     text-align: center;
+}
+
+#mongoose-logo { 
+   transform: scale(0.3);
 }
