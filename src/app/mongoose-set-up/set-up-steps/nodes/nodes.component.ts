@@ -22,7 +22,6 @@ export class NodesComponent implements OnInit {
   constructor(private ipAddressService: IpAddressService, private router: Router) { }
 
   ngOnInit() {
-    
     this.ipAddresses = this.ipAddressService.getIpAddresses();
   }
 
@@ -32,7 +31,7 @@ export class NodesComponent implements OnInit {
     ip = ip.trim();
 
     if (!ip) {
-      console.log('ip null');
+      console.log("IP hasn't been set up.");
     }
 
     if (regExpr.test(ip)) {
