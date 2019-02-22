@@ -9,11 +9,12 @@ Please, note that all contributors shall follow the Contributor Agreement guidel
 # Contents
 
 1. [Contributors](#1-contributors)<br/>
-2. [Issues](#2-issues)<br/>
-2.1 [States](#21-sates)<br/>
-2.2. [Specific properties](#22-properties)<br/>
-3. [Code](#3-code)<br/>
-3.1. [Performance](#31-performance)<br/>
+2. [Issues](#2-versions)<br/>
+3. [Issues](#3-issues)<br/>
+3.1 [States](#31-sates)<br/>
+3.2. [Specific properties](#32-properties)<br/>
+4. [Code](#4-code)<br/>
+4.1. [Performance](#41-performance)<br/>
 
 # 1. Contributors
 
@@ -26,7 +27,29 @@ Alphabetically:
 * [Pavel Vinogradov](https://github.com/paulgrape)
 * [Veronika Kochugova](https://github.com/veronikaKochugova)
 
-# 2. Issues
+# 2. Versions
+
+## 2.1. Backward Compatibility
+
+The following interfaces are mentioned as the subject of the backward compatibility:
+1. Input (item list files, scenario files, configuration options)
+2. Output files containing the metrics
+3. API
+
+## 2.2. Numbers
+
+Mongoose Console uses the [semantic versioning](http://semver.org/). This means that the ***X.Y.Z*** version notation is used:
+
+* ***X***<br/>
+    Major version number. Points to significant design and interfaces change. The *backward compatibility* is **not
+    guaranteed**.
+* ***Y***<br/>
+    Minor version number. The *backward compatibility* is guaranteed.
+* ***Z***<br/>
+    Patch version number. Includes only the defect fixes.
+
+
+# 3. Issues
 
 Types:
 * Defect
@@ -43,7 +66,7 @@ Types:
 
 Mongoose Console's tracker link: https://mongoose-issues.atlassian.net/projects/GUI
 
-## 2.1. States
+## 3.1. States
 
 | State       | Description |
 |-------------|-------------|
@@ -58,7 +81,7 @@ Mongoose Console's tracker link: https://mongoose-issues.atlassian.net/projects/
 > scenario/use case. This approach is used due to the lack of the sufficient statistical information about the Mongoose Web UI
 > usage.
 
-## 2.2. Specific properties
+## 3.2. Specific properties
 
 | Name                  | Applicable Issue Types | Who is responsible to specify  | Notes
 |-----------------------|------------------------|--------------------------------|-------|
@@ -78,9 +101,9 @@ Mongoose Console's tracker link: https://mongoose-issues.atlassian.net/projects/
 | Requirements          | Story                  | Reporter: user/developer/owner | Both functional and performance requirements are mandatory. Optionally the additional requirements/possible enhancements may be specified.
 
 
-# 3. Code
+# 4. Code
 
-# 3.1. Performance
+# 4.1. Performance
 Take care about the performance in the ***critical*** places:
 * Avoid *frequent* objects instantiation
 * Avoid unnecessary *frequent* allocation
