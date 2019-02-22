@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { IpAddressService } from './core/services/ip-addresses/ip-address.service';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ContorlPageModule } from './contorl-page/contorl-page.module';
+import { ContorlPageModule } from './set-up-steps/contorl-page/contorl-page.module';
 import { ControlEditingModule } from './control-editing/control-editing.module';
 
 // NOTE: NPM dependencies
