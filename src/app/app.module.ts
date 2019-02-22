@@ -7,10 +7,8 @@ import { AppComponent } from './app.component';
 import { IpAddressService } from './core/services/ip-addresses/ip-address.service';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ControlEditingModule } from './set-up-steps/configuration-set-up/control-editing.module';
 
 // NOTE: NPM dependencies
-import {NgJsonEditorModule} from 'ang-jsoneditor'
 import { HeaderComponent } from './header/header.component';
 import { RunsTableComponent } from './runs-table/runs-table.component';
 import { MongooseRunStatusIconComponent } from './mongoose-run-status-icon/mongoose-run-status-icon.component';
@@ -20,6 +18,9 @@ import { NodesComponent } from './set-up-steps/nodes/nodes.component';
 import { ScenariosComponent } from './set-up-steps/scenarios-set-up/scenarios/scenarios.component';
   // NOTE: CodeMirror's module for code displaying
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+  // NOTE: a module that provides functionality to display JSON as a tree
+import {NgJsonEditorModule} from 'ang-jsoneditor'
+
 
 @NgModule({
   declarations: [
@@ -40,16 +41,11 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
     AppRoutingModule,
     BrowserAnimationsModule,
 
-    // NOTE: Custom modules
-    ControlEditingModule, 
-    CodemirrorModule,
-
     // NOTE: Dependencies
-    NgJsonEditorModule
-
-
-    
+    NgJsonEditorModule,
+    CodemirrorModule
   ],
+  
   providers: [IpAddressService],
   bootstrap: [AppComponent],
   exports: [AppComponent],
