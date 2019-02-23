@@ -5,6 +5,7 @@ import { Doc } from 'codemirror';
 import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { Constants } from 'src/app/common/constants';
+import { MongooseSetUpService } from 'src/app/mongoose-set-up/mongoose-set-up-service/mongoose-set-up.service';
 
 
 
@@ -28,15 +29,15 @@ export class ScenariosComponent implements OnInit {
 
   readonly CODE_EDITOR_PLACEHOLDER = Constants.Placeholders.CODE_EDITOR_PLACEHOLDER;
 
-  constructor(private service: IpAddressService) { 
+  constructor(private service: IpAddressService,
+    private mongooseSetUpService: MongooseSetUpService) { 
     this.fileContent = ""
     this.processingFile = null;
   }
 
   // MARK: - Component lifecycle
 
-  ngOnInit() {
-  }
+  ngOnInit() {  }
 
   ngAfterViewInit() { 
     this.setValueForEditor(this.CODE_EDITOR_PLACEHOLDER);

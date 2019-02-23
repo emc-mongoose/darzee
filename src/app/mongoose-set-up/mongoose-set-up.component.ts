@@ -35,7 +35,7 @@ export class MongooseSetUpComponent implements OnInit {
   }
 
   constructor(
-    private router: Router;
+    private router: Router,
     private mongooseSetUpService: MongooseSetUpService
     ) {
     this.initSetUpTabs();
@@ -62,10 +62,11 @@ export class MongooseSetUpComponent implements OnInit {
 
   onConfirmClicked() { 
     let processingTab = this.getCurrentSetupTab(); 
-    this.updateSetUpInfoFromSource(processingTab.contentLink);
     processingTab.isCompleted = true;
     let nextTabId = this.processingTabID + 1;
     this.switchTab(nextTabId);
+    // NOTE: Calling the 'Update' method afterwards since the unprocessed value is setting up in compoennts onDestroy() hook. 
+    this.updateSetUpInfoFromSource(processingTab.contentLink);
   }
 
   isSetupCompleted() { 
@@ -74,17 +75,14 @@ export class MongooseSetUpComponent implements OnInit {
 
   onTabClicked(tabId: number) { 
     this.openUpTab(tabId);
-    console.log("Tab with ID: ", tabId, " has been selected.");
   }
 
   onRunBtnClicked() { 
     this.mongooseSetUpService.runMongoose();
-    alert("Mongoose has started up.");
   }
 
   onRouterComponentActivated($event) { 
     console.log("Activating " + this.getCurrentStepName());
-    // console.log("Router component has been activated.");
   }
 
   onRouterComponentDeactivated($event) { 

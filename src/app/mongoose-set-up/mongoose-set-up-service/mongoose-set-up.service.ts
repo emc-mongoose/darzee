@@ -21,7 +21,7 @@ export class MongooseSetUpService {
 
   // MARK: - Public 
 
-  setConfiguration(configuration: any) { 
+  setConfiguration(configuration: string) { 
     this.mongooseSetupInfoModel.configuration = configuration;
   }
 
@@ -39,7 +39,7 @@ export class MongooseSetUpService {
   // ... confirmation, we could still retain the data inside an "unprocessed" variable (e.g.: unprocessedScenario))
 
   confirmConfigurationSetup() { 
-    this.setSenario(this.unprocessedConfiguration);
+    this.setConfiguration(this.unprocessedConfiguration);
   }
 
   confirmScenarioSetup() { 
@@ -51,7 +51,7 @@ export class MongooseSetUpService {
   }
 
   runMongoose() { 
-    this.controlApiService.postNewConfiguration(JSON.stringify(this.mongooseSetupInfoModel.configuration))
+    this.controlApiService.postNewConfiguration(JSON.stringify(this.mongooseSetupInfoModel.configuration));
     alert("New configuration has been applied.");
   }
 
