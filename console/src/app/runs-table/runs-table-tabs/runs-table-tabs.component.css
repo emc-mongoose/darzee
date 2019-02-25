@@ -1,0 +1,22 @@
+:host { 
+    margin-top: 50px;
+    top: calc(15%);
+}
+
+.btn { 
+    margin-left: 10px;
+    border-radius: 20px;
+}
+
+/* NOTE: Styling for selected tab.  */
+#selected-tab { 
+    background-color: #bfbfbf;
+    color: white;
+    outline: 0;
+}
+
+/* NOTE: Styling for custom alerts. For example: alert on empty Mongoose Run records. */
+.alert { 
+    margin: calc(5%) calc(20%);
+    text-align: center;
+}

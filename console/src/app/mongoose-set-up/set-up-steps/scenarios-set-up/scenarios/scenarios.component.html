@@ -1,0 +1,22 @@
+<div class="scenarios-page-wrapper">
+        <div class="scenarios-wrapper">
+                <div class="scenarios-buttons">
+                    <input type="file" style="display:none" accept="ts" (change)="processFile($event)" #file>
+                    <button class="scenarios-open-btn" (click)="file.click()">
+                    <img src="assets/icons/folder-open-icon.svg">
+                    </button>
+                  
+                    <button class="scenarios-save-btn" (click)="onSaveBtnClicked()">
+                        <img src="assets/icons/save-icon.svg">
+                    </button>
+                  </div>
+            </div>
+            <div class="code-editor-wrapper">
+            
+                    <ngx-codemirror class="code-editor"
+                    #scenarioCodeEditor
+                    [options]="scenarioEditorOptions"
+                    (focusChange)="onScenarioEditorFocusChange()"
+                    ></ngx-codemirror>
+            </div>
+</div>
