@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -7,16 +7,26 @@ import { AppComponent } from './app.component';
 import { IpAddressService } from './core/services/ip-addresses/ip-address.service';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ContorlPageModule } from './contorl-page/contorl-page.module';
-import { ControlEditingModule } from './control-editing/control-editing.module';
-import { NodesModule } from './nodes/nodes.module';
+
+import { MongooseRunStatusIconComponent } from './runs-table/mongoose-run-status-icon/mongoose-run-status-icon.component';
+import { RunsTableTabsComponent } from './runs-table/runs-table-tabs/runs-table-tabs.component';
+import { NodesComponent } from './mongoose-set-up/set-up-steps/nodes/nodes.component';
+import { ScenariosComponent } from './mongoose-set-up/set-up-steps/scenarios-set-up/scenarios/scenarios.component';
+import { ConfigurationEditingComponent } from './mongoose-set-up/set-up-steps/configuration-set-up/configuration-editing/configuration-editing.component';
+import { ConfigurationEditingRootComponent } from './mongoose-set-up/set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component';
 
 // NOTE: NPM dependencies
-import {NgJsonEditorModule} from 'ang-jsoneditor'
 import { HeaderComponent } from './header/header.component';
 import { RunsTableComponent } from './runs-table/runs-table.component';
-import { MongooseRunStatusIconComponent } from './mongoose-run-status-icon/mongoose-run-status-icon.component';
-import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.component';
+import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.component';
+  // NOTE: CodeMirror's module for code displaying
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+  // NOTE: a module that provides functionality to display JSON as a tree
+import {NgJsonEditorModule} from 'ang-jsoneditor';
+import { SetUpFooterComponent } from './mongoose-set-up/set-up-footer/set-up-footer.component';
+import { ControlApiService } from './core/services/control-api/control-api.service';
+import { MonitoringApiService } from './core/services/monitoring-api/monitoring-api.service';
+
 
 @NgModule({
   declarations: [
@@ -25,6 +35,13 @@ import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.compon
     RunsTableComponent,
     MongooseRunStatusIconComponent,
     RunsTableTabsComponent,
+    MongooseSetUpComponent,
+    NodesComponent,
+    ScenariosComponent,
+    ConfigurationEditingRootComponent,
+    ConfigurationEditingComponent,
+    SetUpFooterComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -34,16 +51,16 @@ import { RunsTableTabsComponent } from './runs-table-tabs/runs-table-tabs.compon
     AppRoutingModule,
     BrowserAnimationsModule,
 
-    // NOTE: Custom modules
-    ContorlPageModule,
-    ControlEditingModule, 
-
     // NOTE: Dependencies
-    NodesModule,
-    NgJsonEditorModule
+    NgJsonEditorModule,
+    CodemirrorModule
   ],
-  providers: [IpAddressService],
+
+  // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
+  // ... since we use it for the set up. 
+  providers: [IpAddressService, ControlApiService, MonitoringApiService],
   bootstrap: [AppComponent],
-  exports: [AppComponent]
+  exports: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }
