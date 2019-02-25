@@ -22,7 +22,7 @@ Alphabetically:
 
 * [Andrey Koltsov](https://github.com/AndreyKoltsov1997)
 * [Andrey Kurilov](https://github.com/akurilov)
-* [Aline Shishatskaya](https://github.com/mandarinSh)
+* [Alina Shishatskaya](https://github.com/mandarinSh)
 * [Ivan Sysoev](https://github.com/ivan-abc)
 * [Pavel Vinogradov](https://github.com/paulgrape)
 * [Veronika Kochugova](https://github.com/veronikaKochugova)
