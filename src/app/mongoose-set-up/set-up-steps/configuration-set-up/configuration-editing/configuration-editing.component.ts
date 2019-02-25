@@ -51,7 +51,7 @@ export class ConfigurationEditingComponent implements OnInit {
   // NOTE: Private methods
 
   private fetchConfigurationFromMongoose() { 
-    this.ipService.getConfig(Constants.Configuration.MONGOOSE_PROXY_PASS) // TODO: Replace *localhost* with a valid paramteter
+    this.ipService.getConfig(Constants.Configuration.MONGOOSE_HOST_IP) // TODO: Replace *localhost* with a valid paramteter
     .subscribe(
       data => { 
         // NOTE: Fetching current Mongoose configuration. Saving it in order to display the data in JSON tree.
