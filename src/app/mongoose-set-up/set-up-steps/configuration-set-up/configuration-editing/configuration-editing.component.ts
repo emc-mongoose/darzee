@@ -112,7 +112,7 @@ export class ConfigurationEditingComponent implements OnInit {
 
 
   onApplyButtonClicked() { 
-    this.controlApiService.postNewConfiguration(JSON.stringify(this.currentJsonEditorData))
+    this.controlApiService.runMongoose(JSON.stringify(this.currentJsonEditorData));
     alert("New configuration has been applied.");
     this.hasJsonEdited = false;
   }
