@@ -1,8 +1,0 @@
-/* NOTE: Footer which is fixed at the bottom.  */
-#mongoose-setup-footer { 
-    overflow: hidden;
-    position: fixed;
-    bottom: 0;
-    width: 100%; 
-    padding: calc(1%) calc(1%);
-}
