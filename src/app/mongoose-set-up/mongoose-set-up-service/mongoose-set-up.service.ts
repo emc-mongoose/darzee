@@ -43,6 +43,11 @@ export class MongooseSetUpService {
   }
 
   confirmScenarioSetup() { 
+    const emptyJavascriptCode = "";
+    // NOTE: Retain default scenario stored within mongooseSetupInfoModel. 
+    if (this.unprocessedScenario == emptyJavascriptCode) { 
+      return;
+    }
     console.log("[SetUpService] Confirming scenario: " + this.unprocessedScenario);
     this.setSenario(this.unprocessedScenario);
   }
@@ -53,7 +58,6 @@ export class MongooseSetUpService {
 
   runMongoose() { 
     this.controlApiService.postNewConfiguration(JSON.stringify(this.mongooseSetupInfoModel.configuration));
-    alert("New configuration has been applied.");
   }
 
   // MARK: - Private
