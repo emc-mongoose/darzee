@@ -14,19 +14,19 @@ export class ControlApiService {
   constructor(private http: HttpClient) { }
 
   runMongoose(jsonConfiguration: string = "", javaScriptScenario: string = ""): any {
-    
+
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
     javaScriptScenario = JSON.stringify(javaScriptScenario);
 
     let formData = new FormData(); 
     formData.append('defaults', jsonConfiguration);
-    this.http.post('http://' + Constants.Configuration.MONGOOSE_PROXY_PASS + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForRun()).subscribe(
+    this.http.post('http://' + Constants.Configuration.MONGOOSE_PROXY_PASS + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeaderForJsonFile()).subscribe(
       error => alert("Unable to run Mongoose with current configuration. Reason: " + error)
     );
   }
 
 
-  private getHttpHeadersForRun(): HttpHeaders { 
+  private getHttpHeaderForJsonFile(): HttpHeaders { 
     const httpHeadersForMongooseRun = new HttpHeaders();
     httpHeadersForMongooseRun.append('Accept', 'application/json');
     const eTag = this.getEtagForRun();
