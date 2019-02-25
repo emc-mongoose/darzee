@@ -43,6 +43,7 @@ export class MongooseSetUpService {
   }
 
   confirmScenarioSetup() { 
+    console.log("[SetUpService] Confirming scenario: " + this.unprocessedScenario);
     this.setSenario(this.unprocessedScenario);
   }
 

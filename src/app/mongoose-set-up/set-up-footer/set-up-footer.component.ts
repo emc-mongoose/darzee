@@ -1,9 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { bounceAnimation } from 'src/app/core/animations';
 
 @Component({
   selector: 'app-set-up-footer',
   templateUrl: './set-up-footer.component.html',
-  styleUrls: ['./set-up-footer.component.css']
+  styleUrls: ['./set-up-footer.component.css'],
+  animations: [
+    bounceAnimation
+  ]
 })
 export class SetUpFooterComponent implements OnInit {
 

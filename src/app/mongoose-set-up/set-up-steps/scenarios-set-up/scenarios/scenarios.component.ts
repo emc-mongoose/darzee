@@ -43,19 +43,16 @@ export class ScenariosComponent implements OnInit {
     this.setValueForEditor(this.CODE_EDITOR_PLACEHOLDER);
   }
 
-  private setValueForEditor(newValue: string) { 
-    const { doc } = this;
-    if (doc) { 
-      doc.setValue(newValue);
-    }
+  ngOnViewDestroyed() {
+    this.mongooseSetUpService.unprocessedScenario = this.getValueFromEditor().toString();
   }
 
-  private getValueFromEditor(): string | undefined { 
-    const { doc } = this;
-    if (!doc) { 
-      return null;
-    }
-    return doc.getValue(); 
+  // MARK: - Public 
+
+  onScenarioEditorFocusChange() { 
+    this.changeTextFieldPlaceholder();
+    // NOTE: Saving Scenario as soon as the User stops writing it. 
+    this.mongooseSetUpService.unprocessedScenario = this.getValueFromEditor().toString();
   }
 
   get doc() {
@@ -101,6 +98,8 @@ export class ScenariosComponent implements OnInit {
       alert(misleadingMsg);
   }
 
+  // MARK: - Private
+
   private isSavingAvaliable(): boolean { 
     const { doc } = this;
     const textFromCodeEditor = this.getValueFromEditor().toString();
@@ -127,7 +126,18 @@ export class ScenariosComponent implements OnInit {
     }
   }
 
-  onScenarioEditorFocusChange() { 
-    this.changeTextFieldPlaceholder();
+  private setValueForEditor(newValue: string) { 
+    const { doc } = this;
+    if (doc) { 
+      doc.setValue(newValue);
+    }
+  }
+
+  private getValueFromEditor(): string | undefined { 
+    const { doc } = this;
+    if (!doc) { 
+      return null;
+    }
+    return doc.getValue(); 
   }
 }
