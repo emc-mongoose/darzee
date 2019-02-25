@@ -11,7 +11,7 @@
     
       <!-- NOTE: Element for tab state when the set up step hasn't been completed yet. -->
       <p class="incompleted-step-tab" *ngIf="!tab.isCompleted">
-          Completed tab {{ tab.title }} 
+          {{ tab.title }} 
       </p>
 
     
@@ -20,30 +20,16 @@
         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
         <!-- NOTE: Element for tab state when the set up step has been completed. -->
           <div class="completed-step-tab" *ngIf="tab.isCompleted"> 
-            Incompleted tab {{ tab.title }} 
+            {{ tab.title }} 
           </div>
         
     </div> <!--  NOTE: End of class 'progress-bar'. -->
   </div><!--  NOTE: End of class 'progress'. -->
 
   <!-- NOTE: Outlet for actual set up pages.  -->
-  <router-outlet></router-outlet>
+  <router-outlet (activate)="onRouterComponentActivated($event)" (deactivate)="onRouterComponentDeactivated($event)"></router-outlet>
 </div>
 
 
-<!-- NOTE: Set Up footer  -->
-<nav id="mongoose-setup-footer" class="navbar navbar-light bg-light">
-    <div class="mx-auto order-0">
-        <button id="btn-continue" class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onNextStepClicked()">
-            {{ getConfigrmationBtnTitle() }}
-        </button>
-    </div>
-
-  <div *ngIf="isSetupCompleted()"  [@bounce]="isSetupCompleted()">
-      <button id="btn-continue" class="btn btn-outline-success my-2 my-sm-0" type="submit"
-        (click)="onRunBtnClicked()">
-          Run
-      </button>
-  </div>
-</nav>
-
+ <app-set-up-footer [isSetupCompleted]="isSetupCompleted()" [confirmButtonTitle]="getConfigrmationBtnTitle()"
+ (confirmButtonClick)="onConfirmClicked()" (runButtonClick)="onRunBtnClicked()"></app-set-up-footer>

@@ -5,6 +5,7 @@ import { Doc } from 'codemirror';
 import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { Constants } from 'src/app/common/constants';
+import { MongooseSetUpService } from 'src/app/mongoose-set-up/mongoose-set-up-service/mongoose-set-up.service';
 
 
 
@@ -28,33 +29,30 @@ export class ScenariosComponent implements OnInit {
 
   readonly CODE_EDITOR_PLACEHOLDER = Constants.Placeholders.CODE_EDITOR_PLACEHOLDER;
 
-  constructor(private service: IpAddressService) { 
+  constructor(private service: IpAddressService,
+    private mongooseSetUpService: MongooseSetUpService) { 
     this.fileContent = ""
     this.processingFile = null;
   }
 
   // MARK: - Component lifecycle
 
-  ngOnInit() {
-  }
+  ngOnInit() {  }
 
   ngAfterViewInit() { 
     this.setValueForEditor(this.CODE_EDITOR_PLACEHOLDER);
   }
 
-  private setValueForEditor(newValue: string) { 
-    const { doc } = this;
-    if (doc) { 
-      doc.setValue(newValue);
-    }
+  ngOnViewDestroyed() {
+    this.mongooseSetUpService.unprocessedScenario = this.getValueFromEditor().toString();
   }
 
-  private getValueFromEditor(): string | undefined { 
-    const { doc } = this;
-    if (!doc) { 
-      return null;
-    }
-    return doc.getValue(); 
+  // MARK: - Public 
+
+  onScenarioEditorFocusChange() { 
+    this.changeTextFieldPlaceholder();
+    // NOTE: Saving Scenario as soon as the User stops writing it. 
+    this.mongooseSetUpService.unprocessedScenario = this.getValueFromEditor().toString();
   }
 
   get doc() {
@@ -100,6 +98,8 @@ export class ScenariosComponent implements OnInit {
       alert(misleadingMsg);
   }
 
+  // MARK: - Private
+
   private isSavingAvaliable(): boolean { 
     const { doc } = this;
     const textFromCodeEditor = this.getValueFromEditor().toString();
@@ -126,7 +126,18 @@ export class ScenariosComponent implements OnInit {
     }
   }
 
-  onScenarioEditorFocusChange() { 
-    this.changeTextFieldPlaceholder();
+  private setValueForEditor(newValue: string) { 
+    const { doc } = this;
+    if (doc) { 
+      doc.setValue(newValue);
+    }
+  }
+
+  private getValueFromEditor(): string | undefined { 
+    const { doc } = this;
+    if (!doc) { 
+      return null;
+    }
+    return doc.getValue(); 
   }
 }

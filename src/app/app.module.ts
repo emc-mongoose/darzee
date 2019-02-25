@@ -22,7 +22,10 @@ import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.compon
   // NOTE: CodeMirror's module for code displaying
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
   // NOTE: a module that provides functionality to display JSON as a tree
-import {NgJsonEditorModule} from 'ang-jsoneditor'
+import {NgJsonEditorModule} from 'ang-jsoneditor';
+import { SetUpFooterComponent } from './mongoose-set-up/set-up-footer/set-up-footer.component';
+import { ControlApiService } from './core/services/control-api/control-api.service';
+import { MonitoringApiService } from './core/services/monitoring-api/monitoring-api.service';
 
 
 @NgModule({
@@ -36,7 +39,9 @@ import {NgJsonEditorModule} from 'ang-jsoneditor'
     NodesComponent,
     ScenariosComponent,
     ConfigurationEditingRootComponent,
-    ConfigurationEditingComponent
+    ConfigurationEditingComponent,
+    SetUpFooterComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -51,7 +56,9 @@ import {NgJsonEditorModule} from 'ang-jsoneditor'
     CodemirrorModule
   ],
 
-  providers: [IpAddressService],
+  // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
+  // ... since we use it for the set up. 
+  providers: [IpAddressService, ControlApiService, MonitoringApiService],
   bootstrap: [AppComponent],
   exports: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

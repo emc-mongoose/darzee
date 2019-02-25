@@ -5,21 +5,22 @@ import { ConfigurationEditingRootComponent } from './mongoose-set-up/set-up-step
 import { RunsTableTabsComponent } from './runs-table/runs-table-tabs/runs-table-tabs.component';
 import { NodesComponent } from './mongoose-set-up/set-up-steps/nodes/nodes.component';
 import { ScenariosComponent } from './mongoose-set-up/set-up-steps/scenarios-set-up/scenarios/scenarios.component';
+import { RoutesList } from './routes';
 
 const routes: Routes = [
-  { path: 'nodes', component: NodesComponent },
-  { path: 'runs', component: RunsTableTabsComponent },
-  { path: 'control', component: ScenariosComponent},
-  { path: "", redirectTo: '/nodes', pathMatch: 'full'},
-  { path: "configuration-editing.component", component: ConfigurationEditingRootComponent},
+  { path: RoutesList.NODES, component: NodesComponent },
+  { path: RoutesList.RUNS, component: RunsTableTabsComponent },
+  { path: RoutesList.SCENARIO, component: ScenariosComponent},
+  { path: "", redirectTo: RoutesList.RUNS, pathMatch: 'full'},
+  { path: RoutesList.MONGOOSE_COMFIGURATION, component: ConfigurationEditingRootComponent},
 
   // MARK: - Mongoose Set Up pages
-  { path: "setup", component: MongooseSetUpComponent,
+  { path: RoutesList.MONGOOSE_SETUP, component: MongooseSetUpComponent,
     children: [
-      { path: 'nodes', component: NodesComponent },
-      { path: 'configuration-editing.component', component: ConfigurationEditingRootComponent },
-      { path: 'control', component: ScenariosComponent },
-      { path: '**', redirectTo: 'nodes', pathMatch: 'full'}
+      { path: RoutesList.NODES, component: NodesComponent },
+      { path: RoutesList.MONGOOSE_COMFIGURATION, component: ConfigurationEditingRootComponent },
+      { path: RoutesList.SCENARIO, component: ScenariosComponent },
+      { path: '**', redirectTo: RoutesList.RUNS, pathMatch: 'full'}
     ]},
 ];
 

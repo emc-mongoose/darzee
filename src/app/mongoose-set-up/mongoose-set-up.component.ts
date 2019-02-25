@@ -1,33 +1,42 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MongooseSetupTab } from './mongoose-setup-tab.model';
-import { bounceAnimation, slideAnimation } from '../core/animations';
+import { slideAnimation } from '../core/animations';
+import { MongooseSetUpService } from './mongoose-set-up-service/mongoose-set-up.service';
+import { RoutesList } from '../routes';
 
 @Component({
   selector: 'app-mongoose-set-up',
   templateUrl: './mongoose-set-up.component.html',
   styleUrls: ['./mongoose-set-up.component.css'],
   animations: [
-    bounceAnimation,
     slideAnimation
   ]
 })
 
 export class MongooseSetUpComponent implements OnInit {
 
-  readonly BASE_URL = "/setup";
+
+  readonly BASE_URL = "/" + RoutesList.MONGOOSE_SETUP;
   
   readonly SETUP_TABS_DATA = [
-    {title: 'Nodes', link: 'nodes'},
-    {title: 'Configuration', link: 'configuration-editing.component'},
-    {title: 'Scenario', link: 'control'}
+    {title: 'Nodes', link: RoutesList.NODES},
+    {title: 'Configuration', link: RoutesList.MONGOOSE_COMFIGURATION},
+    {title: 'Scenario', link: RoutesList.SCENARIO}
 
   ];
 
   setUpTabs: MongooseSetupTab[] = []
   processingTabID: number = 0;
 
-  constructor(private router: Router) {
+  private getCurrentSetupTab(): MongooseSetupTab { 
+    return this.setUpTabs[this.processingTabID];
+  }
+
+  constructor(
+    private router: Router,
+    private mongooseSetUpService: MongooseSetUpService
+    ) {
     this.initSetUpTabs();
     let defaultTabNumber = 0;
     this.openUpTab(defaultTabNumber);
@@ -50,10 +59,13 @@ export class MongooseSetUpComponent implements OnInit {
     return Math.round(rawPercentage) - tabsOffset;
   }
 
-  onNextStepClicked() { 
+  onConfirmClicked() { 
+    let processingTab = this.getCurrentSetupTab(); 
+    processingTab.isCompleted = true;
     let nextTabId = this.processingTabID + 1;
-    this.setUpTabs[this.processingTabID].isCompleted = true;
     this.switchTab(nextTabId);
+    // NOTE: Calling the 'Update' method afterwards since the unprocessed value is setting up in compoennts onDestroy() hook. 
+    this.updateSetUpInfoFromSource(processingTab.contentLink);
   }
 
   isSetupCompleted() { 
@@ -62,16 +74,20 @@ export class MongooseSetUpComponent implements OnInit {
 
   onTabClicked(tabId: number) { 
     this.openUpTab(tabId);
-    console.log("Tab with ID: ", tabId, " has been selected.");
   }
 
   onRunBtnClicked() { 
-    alert("Mongoose has started up.");
+    this.mongooseSetUpService.runMongoose();
   }
+
+  onRouterComponentActivated($event) {   }
+
+  onRouterComponentDeactivated($event) {   }
 
   getConfigrmationBtnTitle(): string { 
     return (this.isSetupCompleted() ? "Configuration completed  ✔" : "Confirm »");
   }
+
   // MARK: - Private
 
   private initSetUpTabs() { 
@@ -105,5 +121,24 @@ export class MongooseSetUpComponent implements OnInit {
     this.setUpTabs[this.processingTabID].isContentDisplaying = false; 
     this.openUpTab(nextTabId);
   }
+
+    // NOTE: Source Link is the link to page from which the set up info will be updated. 
+    private updateSetUpInfoFromSource(sourceLink: string) { 
+      // NOTE: Confirming set up data from the **source** page. 
+      switch (sourceLink) { 
+        case RoutesList.MONGOOSE_COMFIGURATION: {
+          this.mongooseSetUpService.confirmConfigurationSetup();  
+          break;
+        }
+        case RoutesList.SCENARIO: { 
+          this.mongooseSetUpService.confirmScenarioSetup();
+          break;
+        }
+        case RoutesList.NODES: { 
+          this.mongooseSetUpService.confirmNodeConfiguration();
+          break;
+        }
+      }
+    }
 
 }

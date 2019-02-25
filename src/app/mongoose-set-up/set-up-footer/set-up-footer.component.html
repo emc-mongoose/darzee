@@ -1,0 +1,15 @@
+<!-- NOTE: Set Up footer  -->
+<nav id="mongoose-setup-footer" class="navbar navbar-light bg-light">
+  <div class="mx-auto order-0">
+      <button id="btn-continue" class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onConfirmButtonClicked()">
+          {{ confirmButtonTitle }}
+      </button>
+  </div>
+
+<div *ngIf="isSetupCompleted"  [@bounce]="isSetupCompleted">
+    <button id="btn-continue" class="btn btn-outline-success my-2 my-sm-0" type="submit"
+      (click)="onRunButtonClicked()">
+        Run
+    </button>
+</div>
+</nav>

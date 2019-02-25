@@ -28,9 +28,9 @@ export class IpAddressService {
   constructor(private http: HttpClient) { }
 
   getConfig(ip: string): any {
-    return this.http.get('http://' + ip + '/config', httpOptions)
-      .pipe(catchError(this.handleError));
-    // return this.http.get('http://localhost:9999/config', httpOptions);  // for easy debug
+    // return this.http.get('http://' + ip + '/config', httpOptions)
+    //   .pipe(catchError(this.handleError));
+     return this.http.get('http://localhost:9999/config', httpOptions);  // for easy debug
   }
 
   getIpAddresses(): IpAddress[] {
