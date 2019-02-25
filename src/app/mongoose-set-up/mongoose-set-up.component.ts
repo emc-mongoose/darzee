@@ -80,13 +80,9 @@ export class MongooseSetUpComponent implements OnInit {
     this.mongooseSetUpService.runMongoose();
   }
 
-  onRouterComponentActivated($event) { 
-    console.log("Activating " + this.getCurrentStepName());
-  }
+  onRouterComponentActivated($event) {   }
 
-  onRouterComponentDeactivated($event) { 
-    console.log("Deativating " + this.getCurrentStepName());
-  }
+  onRouterComponentDeactivated($event) {   }
 
   getConfigrmationBtnTitle(): string { 
     return (this.isSetupCompleted() ? "Configuration completed  ✔" : "Confirm »");

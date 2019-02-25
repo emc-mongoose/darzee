@@ -48,7 +48,6 @@ export class MongooseSetUpService {
     if ((this.unprocessedScenario == emptyJavascriptCode) || (this.unprocessedScenario == undefined)) { 
       return;
     }
-    console.log("[SetUpService] Confirming scenario: " + this.unprocessedScenario);
     this.setSenario(this.unprocessedScenario);
   }
 
@@ -59,7 +58,6 @@ export class MongooseSetUpService {
   runMongoose() { 
     // TODO: Add scenario and nodes.
     this.controlApiService.runMongoose(JSON.stringify(this.mongooseSetupInfoModel.configuration), this.mongooseSetupInfoModel.scenario);
-    console.log("Starting up with scenario: " + this.mongooseSetupInfoModel.scenario);
   }
 
   // MARK: - Private
