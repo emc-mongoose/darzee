@@ -79,7 +79,7 @@ To launch the GUI, you will need to pre-install the [Docker Compose](https://doc
 
 Then check using the browser that the GUI is available at http://localhost:8080
 
-## To run in development mode, use:
+## To run in development mode, navigate to 'console' folder and use:
 `ng serve` 
 
 ## Configuring container images parameters

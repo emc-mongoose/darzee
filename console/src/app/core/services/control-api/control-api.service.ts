@@ -20,7 +20,7 @@ export class ControlApiService {
 
     let formData = new FormData(); 
     formData.append('defaults', jsonConfiguration);
-    this.http.post('http://' + Constants.Configuration.MONGOOSE_PROXY_PASS + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeaderForJsonFile()).subscribe(
+    this.http.post('http://' + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeaderForJsonFile()).subscribe(
       error => alert("Unable to run Mongoose with current configuration. Reason: " + error)
     );
   }

@@ -54,9 +54,10 @@ task createDockerfile(type: Dockerfile) {
     // NOTE: Stage 1 - building the angular application (Mongoose Console) 
     from 'node:8.11.2-alpine as builder'
     workingDir("/usr/src/app")
-    copyFile("package.json", "./")
+    copyFile("console/package.json", "./")
     instruction "RUN npm install"
-    copyFile(".", ".")
+    copyFile("./console", ".")
+
     instruction "RUN npm run build"
 
     // NOTE: Stage 2 - serving the app via Node.js server 
