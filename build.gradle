@@ -56,7 +56,6 @@ task createDockerfile(type: Dockerfile) {
     workingDir("/usr/src/app")
     copyFile("console/package.json", "./")
     instruction "RUN npm install"
-    copyFile(".", ".")
     copyFile("./console", ".")
 
     instruction "RUN npm run build"
