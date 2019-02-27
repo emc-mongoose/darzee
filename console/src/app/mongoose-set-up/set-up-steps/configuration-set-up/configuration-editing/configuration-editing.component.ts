@@ -55,7 +55,7 @@ export class ConfigurationEditingComponent implements OnInit {
     .subscribe(
       data => { 
         // NOTE: Fetching current Mongoose configuration. Saving it in order to display the data in JSON tree.
-        console.log(data);
+        console.log("Mongoose configuration: " + JSON.stringify(data));
          this.jsonEditorData = data; 
          this.mongooseSetUpService.unprocessedConfiguration = data; 
       },

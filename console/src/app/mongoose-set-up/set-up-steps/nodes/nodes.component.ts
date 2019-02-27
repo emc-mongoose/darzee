@@ -45,33 +45,47 @@ export class NodesComponent implements OnInit {
     this.ipAddressService.deleteIp(id);
   }
 
-  onNavigateNextClicked() {
+  onConfirmNodesConfigurationClicked() {
     if (this.ipAddressService.ipAddresses.length === 0) {
       alert('no IP entered!');
       return;
     }
-    console.log(this.ipAddresses[0].ip);
+    console.log("this.ipAddresses[0].ip): ", this.ipAddresses[0].ip);
     this.ipAddressService.entryNode = this.ipAddressService.ipAddresses[0].ip;
 
     this.ipAddressService.getConfig(this.ipAddressService.ipAddresses[0].ip)
       .subscribe(
         data => {
-          console.log(data);
-          this.updateConfiguration(data); },
+          // NOTE: Loading Mongoose configuration in debug purposes
+          var IP_LIST_MOCK = [];
+          IP_LIST_MOCK.push("255.255.255.0:4200");
+          IP_LIST_MOCK.push("453.125.129.0:9999");
+
+          data.load.step.node.addrs = IP_LIST_MOCK;
+
+          this.updateConfiguration(data);
+         },
         error => this.error = error
       );
   }
 
-  private updateConfiguration(data: any) {
-    console.log(data.output);
-    this.nodeConfig = data;
-    this.ipAddressService.nodeConfig = new NodeConfig(this.ipAddressService.ipAddresses[0].ip, this.nodeConfig);
-    if (this.nodeConfig == null) {
-      alert('Can not get config! Remove first IP and if neccessary add another one.');
-    } else {
-      console.log('OK');
-      this.router.navigate(['/control']);
-    }
+  private testJsonParsing(data: any) { 
+    console.log("data.object" + data.object);
+    // console.log("Data")
+  }
+
+  private updateConfiguration(data: string) {
+
+    console.log("Updated configuration: " + JSON.stringify(data));
+    // console.log(data.output);
+    // this.nodeConfig = data;
+    // console.log("Node configuration data: " + JSON.stringify(data));
+    // this.ipAddressService.nodeConfig = new NodeConfig(this.ipAddressService.ipAddresses[0].ip, this.nodeConfig);
+    // if (this.nodeConfig == null) {
+    //   alert('Can not get config! Remove first IP and if neccessary add another one.');
+    // } else {
+    //   console.log('OK');
+    // }
   }
 
 }
