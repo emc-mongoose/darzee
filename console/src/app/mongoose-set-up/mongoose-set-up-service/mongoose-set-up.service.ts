@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MongooseSetupInfoModel } from './mongoose-set-up-info.model';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
+import { Constants } from 'src/app/common/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +13,13 @@ export class MongooseSetUpService {
  // NOTE: Unprocessed values are the values that weren't validated via the confirmation button. 
  // Unprocessed parameters are Object types since the UI displays it, yet they could be modified within the service.
  // ... Passing them by reference (object-type), the UI will be updated automatically.
- unprocessedConfiguration: Object; 
- unprocessedScenario: String; 
- private unprocessedNodeConfiguration: String[]; 
+unprocessedScenario: String; 
+unprocessedConfiguration: Object; 
+ private unprocessedNodeConfiguration: String[] = []; 
 
   constructor( private controlApiService: ControlApiService) { 
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(); 
+    this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP);
   }
 
   // MARK: - Public 
@@ -34,8 +36,25 @@ export class MongooseSetUpService {
     this.mongooseSetupInfoModel.nodesData = data;
   }
 
+  setUnprocessedConfiguration(configuration: Object) { 
+    this.unprocessedConfiguration = configuration;
+  }
+
+  getUnprocessedConfiguration(): Object { 
+    if (!this.unprocessedConfiguration) { 
+      return;
+    }
+    if (this.mongooseSetupInfoModel.nodesData.length == 0) { 
+      console.log("Configuration is empty.");
+      return this.unprocessedConfiguration;
+    }
+    console.log("getUnprocessedConfiguration: " + JSON.stringify(this.unprocessedConfiguration));
+    this.unprocessedConfiguration.load.step.node.addrs = this.mongooseSetupInfoModel.nodesData;
+    return this.unprocessedConfiguration;
+  }
+
   addNode(ip: String) { 
-    if (this.isIpExist) { 
+    if (this.isIpExist(ip)) { 
       alert ("IP " + ip + " has already been added to list.");
       return;
     }
@@ -72,7 +91,7 @@ export class MongooseSetUpService {
   // MARK: - Private
 
   private isIpExist(ip: String) { 
-      // NOTE: Prevent addition of duplicate IPs
+    // NOTE: Prevent addition of duplicate IPs
     return ((this.unprocessedNodeConfiguration.includes(ip)) && (this.mongooseSetupInfoModel.nodesData.includes(ip)));
   }
 

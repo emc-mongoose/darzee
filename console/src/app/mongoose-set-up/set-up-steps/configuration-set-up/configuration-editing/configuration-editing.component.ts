@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewChildren, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { IpAddressService } from 'src/app/core/services/ip-addresses/ip-address.service';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { Constants } from 'src/app/common/constants';
@@ -21,7 +21,7 @@ export class ConfigurationEditingComponent implements OnInit {
   @ViewChild("apply-button-content-wrppaer") applyNewValueBtn: ElementRef;
   public jsonEditorOptions: JsonEditorOptions;
   // @PARAM jsonEditorData is the data which was originally in JSON 
-  public jsonEditorData: any = this.mongooseSetUpService.unprocessedConfiguration;
+  public jsonEditorData: any = "";
   // currentJsonEditorData is data which was modified from the UI. It's ...
   // ... sing to compare edited and current values of JSON 
   public currentJsonEditorData: any; 
@@ -31,8 +31,7 @@ export class ConfigurationEditingComponent implements OnInit {
   public hasJsonEdited: Boolean = false
 
 
-  constructor(private ipService: IpAddressService, 
-    private controlApiService: ControlApiService,
+  constructor(private controlApiService: ControlApiService,
     private mongooseSetUpService: MongooseSetUpService) {
     this.fetchConfigurationFromMongoose();
     this.configureJsonEditor();
@@ -45,7 +44,7 @@ export class ConfigurationEditingComponent implements OnInit {
   ngOnDestroy() { 
     console.log("Destroying configuration component. Saved configuration: " + JSON.stringify(this.currentJsonEditorData));
      // NOTE: Saving up an ubcomfirmed configuration in order to let user edit it later if he'd like to. 
-    this.mongooseSetUpService.unprocessedConfiguration = this.currentJsonEditorData;
+    this.mongooseSetUpService.setConfiguration(this.currentJsonEditorData);
   }
 
   // NOTE: Private methods
@@ -55,7 +54,8 @@ export class ConfigurationEditingComponent implements OnInit {
       configuration => { 
         // TODO: Add entred nodes into configuration 
         console.log("Fetched configuration: ", configuration);
-        this.mongooseSetUpService.unprocessedConfiguration = configuration; 
+        this.mongooseSetUpService.setUnprocessedConfiguration(configuration);
+        this.jsonEditorData = this.mongooseSetUpService.getUnprocessedConfiguration();
       },
       error => { 
         // TODO: Hadnel error correctly. Maybe retry fetching the configuration? 
@@ -92,7 +92,7 @@ export class ConfigurationEditingComponent implements OnInit {
 
     this.currentJsonEditorData = this.jsonEditorData; 
     // NOTE: Setting up value for MongooseSetUp service in debug purposes.
-    this.mongooseSetUpService.unprocessedConfiguration = this.jsonEditorData;
+    // this.mongooseSetUpService.setUnprocessedConfiguration(this.jsonEditorData);
    
     // NOTE: You could also configure JSON Editor's nav bar tools using the view child's fields.
     // ... example:
@@ -105,7 +105,7 @@ export class ConfigurationEditingComponent implements OnInit {
   // NOTE: Callback which is observing whether the JSON value has been updated from editor
   public onJsonUpdated(editedJson) { 
     this.hasJsonEdited = !(editedJson === this.currentJsonEditorData);
-    this.hasJsonEdited ? this.mongooseSetUpService.unprocessedConfiguration = editedJson : console.log("Nothing to be applied.");
+    this.hasJsonEdited ? this.mongooseSetUpService.setUnprocessedConfiguration(editedJson) : console.log("Nothing to be applied.");
   }
 
 
