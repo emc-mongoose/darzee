@@ -13,18 +13,20 @@ export class MongooseSetUpService {
  // NOTE: Unprocessed values are the values that weren't validated via the confirmation button. 
  // Unprocessed parameters are Object types since the UI displays it, yet they could be modified within the service.
  // ... Passing them by reference (object-type), the UI will be updated automatically.
-unprocessedScenario: String; 
-unprocessedConfiguration: Object; 
- private unprocessedNodeConfiguration: String[] = []; 
+  unprocessedScenario: String; 
+  private unprocessedConfiguration: Object; 
+  private unprocessedNodeConfiguration: String[] = []; 
 
   constructor( private controlApiService: ControlApiService) { 
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(); 
     this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP);
   }
 
-  // MARK: - Public 
+
+  // MARK: - Getters & Setters 
 
   setConfiguration(configuration: Object) { 
+    console.log("Configuration has been set to: " + JSON.stringify(configuration));
     this.mongooseSetupInfoModel.configuration = configuration;
   }
 
@@ -45,17 +47,19 @@ unprocessedConfiguration: Object;
       return;
     }
     if (this.mongooseSetupInfoModel.nodesData.length == 0) { 
-      console.log("Configuration is empty.");
+      console.log("No additional nodes have been added.");
       return this.unprocessedConfiguration;
     }
-    console.log("getUnprocessedConfiguration: " + JSON.stringify(this.unprocessedConfiguration));
     this.unprocessedConfiguration.load.step.node.addrs = this.mongooseSetupInfoModel.nodesData;
     return this.unprocessedConfiguration;
   }
 
+    // MARK: - Public 
+
+
   addNode(ip: String) { 
     if (this.isIpExist(ip)) { 
-      alert ("IP " + ip + " has already been added to list.");
+      alert ("IP " + ip + " has already been added to the slave-nodes list.");
       return;
     }
     this.unprocessedNodeConfiguration.push(ip);
@@ -67,6 +71,7 @@ unprocessedConfiguration: Object;
   // ... confirmation, we could still retain the data inside an "unprocessed" variable (e.g.: unprocessedScenario))
 
   confirmConfigurationSetup() { 
+    console.log("Confirming configuration: " + JSON.stringify(this.unprocessedConfiguration));
     this.setConfiguration(this.unprocessedConfiguration);
   }
 
@@ -84,7 +89,7 @@ unprocessedConfiguration: Object;
   }
 
   runMongoose() { 
-    // TODO: Add scenario and nodes.
+    console.log("Running Mongoose with ocnfiguration: " + JSON.stringify(this.mongooseSetupInfoModel.configuration));
     this.controlApiService.runMongoose(JSON.stringify(this.mongooseSetupInfoModel.configuration), this.mongooseSetupInfoModel.scenario);
   }
 

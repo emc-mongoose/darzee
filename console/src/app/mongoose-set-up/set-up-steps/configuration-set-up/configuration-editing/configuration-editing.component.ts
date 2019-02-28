@@ -42,9 +42,9 @@ export class ConfigurationEditingComponent implements OnInit {
   ngOnInit() {}
 
   ngOnDestroy() { 
-    console.log("Destroying configuration component. Saved configuration: " + JSON.stringify(this.currentJsonEditorData));
+    console.log("Destroying configuration component. Saved configuration: " + JSON.stringify(this.jsonEditorData));
      // NOTE: Saving up an ubcomfirmed configuration in order to let user edit it later if he'd like to. 
-    this.mongooseSetUpService.setConfiguration(this.currentJsonEditorData);
+    this.mongooseSetUpService.setUnprocessedConfiguration(this.currentJsonEditorData);
   }
 
   // NOTE: Private methods
