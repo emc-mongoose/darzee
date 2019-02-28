@@ -54,6 +54,12 @@ export class MongooseSetUpService {
     return this.unprocessedConfiguration;
   }
 
+  getSlaveNodesList(): String[] { 
+    var slaveNodesList: String[] = this.unprocessedNodeConfiguration; 
+    slaveNodesList.concat(this.mongooseSetupInfoModel.nodesData);
+    return slaveNodesList;
+  }
+
     // MARK: - Public 
 
 
@@ -95,9 +101,11 @@ export class MongooseSetUpService {
 
   // MARK: - Private
 
-  private isIpExist(ip: String) { 
+  private isIpExist(ip: String): boolean { 
     // NOTE: Prevent addition of duplicate IPs
-    return ((this.unprocessedNodeConfiguration.includes(ip)) && (this.mongooseSetupInfoModel.nodesData.includes(ip)));
+    const isIpInUnprocessedList: boolean = this.unprocessedNodeConfiguration.includes(ip);
+    const isIpInConfiguration: boolean = this.mongooseSetupInfoModel.nodesData.includes(ip);
+    return ((isIpInUnprocessedList) || (isIpInConfiguration));
   }
 
 }

@@ -15,6 +15,7 @@ import { MongooseSetUpService } from '../../mongoose-set-up-service/mongoose-set
 export class NodesComponent implements OnInit {
 
   ipAddresses: IpAddress[] = null;
+  displayingIpAddresses: String[] = [];
   ip = '';
 
   nodeConfig: any = null;
@@ -25,6 +26,7 @@ export class NodesComponent implements OnInit {
 
   ngOnInit() {
     this.ipAddresses = this.ipAddressService.getIpAddresses();
+    this.displayingIpAddresses = this.mongooseSetUpService.getSlaveNodesList();
   }
 
   onAddIpButtonClicked(ip: string): void {
