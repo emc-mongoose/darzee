@@ -13,7 +13,7 @@ export class MongooseSetUpService {
  // NOTE: Unprocessed values are the values that weren't validated via the confirmation button. 
  unprocessedConfiguration: any; 
  unprocessedScenario: any; 
- unprocessedNodeConfiguration: NodeConfig[]; 
+ private unprocessedNodeConfiguration: String[]; 
 
   constructor( private controlApiService: ControlApiService) { 
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(); 
@@ -29,8 +29,16 @@ export class MongooseSetUpService {
     this.mongooseSetupInfoModel.scenario = scenario;
   }
 
-  setNodesData(data: NodeConfig[]) {
+  setNodesData(data: String[]) {
     this.mongooseSetupInfoModel.nodesData = data;
+  }
+
+  addNode(ip: string) { 
+    if (this.isIpExist) { 
+      alert ("IP " + ip + " has already been added to list.");
+      return;
+    }
+    this.unprocessedNodeConfiguration.push(ip);
   }
 
   // NOTE: Confirmation methods are used to validate the parameters which were set via "set" methods.
@@ -61,5 +69,10 @@ export class MongooseSetUpService {
   }
 
   // MARK: - Private
+
+  private isIpExist(ip: string) { 
+      // NOTE: Prevent addition of duplicate IPs
+    return ((this.unprocessedNodeConfiguration.includes(ip)) && (this.mongooseSetupInfoModel.nodesData.includes(ip)));
+  }
 
 }

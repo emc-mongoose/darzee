@@ -4,7 +4,7 @@ export class MongooseSetupInfoModel {
 
     configuration: any; // NOTE: Configuration is represented with JSON 
     scenario: string; // NOTE: As for 22.02.2019, 'Scenario' is a JavaScript code
-    nodesData: NodeConfig[]; 
+    nodesData: String[]; 
 
     private readonly DEFAULT_CONFIGURATION = "";
     private readonly DEFAULT_SCENARIO = "Load.run();";

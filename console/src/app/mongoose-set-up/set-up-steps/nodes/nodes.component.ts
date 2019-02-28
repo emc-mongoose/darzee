@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { IpAddressService } from 'src/app/core/services/ip-addresses/ip-address.service';
 import { IpAddress } from 'src/app/core/services/ip-addresses/ipAddress';
 import { NodeConfig } from 'src/app/core/services/ip-addresses/nodeConfig';
+import { MongooseSetUpService } from '../../mongoose-set-up-service/mongoose-set-up.service';
 
 @Component({
   selector: 'app-nodes',
@@ -19,7 +20,8 @@ export class NodesComponent implements OnInit {
   nodeConfig: any = null;
   error: HttpErrorResponse = null;
 
-  constructor(private ipAddressService: IpAddressService, private router: Router) { }
+  constructor(private ipAddressService: IpAddressService, 
+    private mongooseSetUpService: MongooseSetUpService) { }
 
   ngOnInit() {
     this.ipAddresses = this.ipAddressService.getIpAddresses();
@@ -34,11 +36,13 @@ export class NodesComponent implements OnInit {
       console.log("IP hasn't been set up.");
     }
 
-    if (regExpr.test(ip)) {
-      this.ipAddressService.saveIpAddress(ip);
-    } else {
-      alert('Invalid IP: ' + ip + '\nPlease enter valid IP.');
-    }
+    const isIpValid = regExpr.test(ip);
+    if (!isIpValid) {
+      alert("IP " + ip + " is not valid. Please, provide a valid address.");
+      return;
+    } 
+
+    this.mongooseSetUpService.addNode(ip);
   }
 
   deleteIp(id: number): void {
@@ -47,7 +51,7 @@ export class NodesComponent implements OnInit {
 
   onConfirmNodesConfigurationClicked() {
     if (this.ipAddressService.ipAddresses.length === 0) {
-      alert('no IP entered!');
+      alert('Please, provide an IP.');
       return;
     }
     console.log("this.ipAddresses[0].ip): ", this.ipAddresses[0].ip);
@@ -57,26 +61,15 @@ export class NodesComponent implements OnInit {
       .subscribe(
         data => {
           // NOTE: Loading Mongoose configuration in debug purposes
-          var IP_LIST_MOCK = [];
-          IP_LIST_MOCK.push("255.255.255.0:4200");
-          IP_LIST_MOCK.push("453.125.129.0:9999");
-
-          data.load.step.node.addrs = IP_LIST_MOCK;
-
           this.updateConfiguration(data);
          },
         error => this.error = error
       );
   }
 
-  private testJsonParsing(data: any) { 
-    console.log("data.object" + data.object);
-    // console.log("Data")
-  }
-
   private updateConfiguration(data: string) {
 
-    console.log("Updated configuration: " + JSON.stringify(data));
+    console.log("Configuration has been updated.");
     // console.log(data.output);
     // this.nodeConfig = data;
     // console.log("Node configuration data: " + JSON.stringify(data));
