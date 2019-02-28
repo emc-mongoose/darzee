@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { MongooseSetupInfoModel } from './mongoose-set-up-info.model';
-import { NodeConfig } from 'src/app/core/services/ip-addresses/nodeConfig';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 
 @Injectable({
@@ -14,7 +13,7 @@ export class MongooseSetUpService {
  // Unprocessed parameters are Object types since the UI displays it, yet they could be modified within the service.
  // ... Passing them by reference (object-type), the UI will be updated automatically.
  unprocessedConfiguration: Object; 
- unprocessedScenario: Object; 
+ unprocessedScenario: String; 
  private unprocessedNodeConfiguration: String[]; 
 
   constructor( private controlApiService: ControlApiService) { 
@@ -23,7 +22,7 @@ export class MongooseSetUpService {
 
   // MARK: - Public 
 
-  setConfiguration(configuration: String) { 
+  setConfiguration(configuration: Object) { 
     this.mongooseSetupInfoModel.configuration = configuration;
   }
 

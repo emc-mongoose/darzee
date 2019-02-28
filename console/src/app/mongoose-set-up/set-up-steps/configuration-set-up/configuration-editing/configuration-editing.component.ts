@@ -45,7 +45,7 @@ export class ConfigurationEditingComponent implements OnInit {
   ngOnDestroy() { 
     console.log("Destroying configuration component. Saved configuration: " + JSON.stringify(this.currentJsonEditorData));
      // NOTE: Saving up an ubcomfirmed configuration in order to let user edit it later if he'd like to. 
-    this.mongooseSetUpService.unprocessedConfiguration = JSON.stringify(this.currentJsonEditorData);
+    this.mongooseSetUpService.unprocessedConfiguration = this.currentJsonEditorData;
   }
 
   // NOTE: Private methods
@@ -54,6 +54,7 @@ export class ConfigurationEditingComponent implements OnInit {
     this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP).subscribe(
       configuration => { 
         // TODO: Add entred nodes into configuration 
+        console.log("Fetched configuration: ", configuration);
         this.mongooseSetUpService.unprocessedConfiguration = configuration; 
       },
       error => { 
