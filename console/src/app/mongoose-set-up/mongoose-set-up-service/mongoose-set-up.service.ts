@@ -11,8 +11,10 @@ export class MongooseSetUpService {
  private mongooseSetupInfoModel: MongooseSetupInfoModel; 
 
  // NOTE: Unprocessed values are the values that weren't validated via the confirmation button. 
- unprocessedConfiguration: any; 
- unprocessedScenario: any; 
+ // Unprocessed parameters are Object types since the UI displays it, yet they could be modified within the service.
+ // ... Passing them by reference (object-type), the UI will be updated automatically.
+ unprocessedConfiguration: Object; 
+ unprocessedScenario: Object; 
  private unprocessedNodeConfiguration: String[]; 
 
   constructor( private controlApiService: ControlApiService) { 
@@ -21,11 +23,11 @@ export class MongooseSetUpService {
 
   // MARK: - Public 
 
-  setConfiguration(configuration: string) { 
+  setConfiguration(configuration: String) { 
     this.mongooseSetupInfoModel.configuration = configuration;
   }
 
-  setSenario(scenario: string) { 
+  setSenario(scenario: String) { 
     this.mongooseSetupInfoModel.scenario = scenario;
   }
 
@@ -33,7 +35,7 @@ export class MongooseSetUpService {
     this.mongooseSetupInfoModel.nodesData = data;
   }
 
-  addNode(ip: string) { 
+  addNode(ip: String) { 
     if (this.isIpExist) { 
       alert ("IP " + ip + " has already been added to list.");
       return;
@@ -70,7 +72,7 @@ export class MongooseSetUpService {
 
   // MARK: - Private
 
-  private isIpExist(ip: string) { 
+  private isIpExist(ip: String) { 
       // NOTE: Prevent addition of duplicate IPs
     return ((this.unprocessedNodeConfiguration.includes(ip)) && (this.mongooseSetupInfoModel.nodesData.includes(ip)));
   }

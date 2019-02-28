@@ -11,20 +11,33 @@ import { Constants } from 'src/app/common/constants';
 
 export class ControlApiService {
 
+  readonly HTTP_PREFIX = "http://";
+  readonly JSON_CONTENT_TYPE = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+
   constructor(private http: HttpClient) { }
 
-  runMongoose(jsonConfiguration: string = "", javaScriptScenario: string = ""): any {
+  // MARK: - Public
 
+  runMongoose(jsonConfiguration: string = "", javaScriptScenario: string = ""): any {
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
     javaScriptScenario = JSON.stringify(javaScriptScenario);
 
     let formData = new FormData(); 
     formData.append('defaults', jsonConfiguration);
-    this.http.post('http://' + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeaderForJsonFile()).subscribe(
+    this.http.post(this.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeaderForJsonFile()).subscribe(
       error => alert("Unable to run Mongoose with current configuration. Reason: " + error)
     );
   }
 
+  // NOTE: Returning Mongoose configuration as JSON 
+  getMongooseConfiguration(): any { 
+    const configEndpoint = "/config";
+    return this.http.get(this.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + configEndpoint, this.JSON_CONTENT_TYPE);
+  }
+
+  // MARK: - Private
 
   private getHttpHeaderForJsonFile(): HttpHeaders { 
     const httpHeadersForMongooseRun = new HttpHeaders();
@@ -33,7 +46,6 @@ export class ControlApiService {
     httpHeadersForMongooseRun.append('If-Match', eTag);
     return httpHeadersForMongooseRun;
   }
-
 
   // NOTE: ETAG is HEX representation of configuration start time in milliseconds 
   private getEtagForRun(): string { 
