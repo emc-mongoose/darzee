@@ -26,7 +26,6 @@ export class MongooseSetUpService {
   // MARK: - Getters & Setters 
 
   setConfiguration(configuration: Object) { 
-    console.log("Configuration has been set to: " + JSON.stringify(configuration));
     this.mongooseSetupInfoModel.configuration = configuration;
   }
 
@@ -50,7 +49,10 @@ export class MongooseSetUpService {
       console.log("No additional nodes have been added.");
       return this.unprocessedConfiguration;
     }
-    this.unprocessedConfiguration.load.step.node.addrs = this.mongooseSetupInfoModel.nodesData;
+
+    
+    // NOTE: Returning configuration appended with slave nodes. 
+    this.unprocessedConfiguration = this.getConfigurationWithSlaveNodes(this.mongooseSetupInfoModel.nodesData);
     return this.unprocessedConfiguration;
   }
 
@@ -77,7 +79,6 @@ export class MongooseSetUpService {
   // ... confirmation, we could still retain the data inside an "unprocessed" variable (e.g.: unprocessedScenario))
 
   confirmConfigurationSetup() { 
-    console.log("Confirming configuration: " + JSON.stringify(this.unprocessedConfiguration));
     this.setConfiguration(this.unprocessedConfiguration);
   }
 
@@ -95,7 +96,6 @@ export class MongooseSetUpService {
   }
 
   runMongoose() { 
-    console.log("Running Mongoose with ocnfiguration: " + JSON.stringify(this.mongooseSetupInfoModel.configuration));
     this.controlApiService.runMongoose(JSON.stringify(this.mongooseSetupInfoModel.configuration), this.mongooseSetupInfoModel.scenario);
   }
 
@@ -107,5 +107,16 @@ export class MongooseSetUpService {
     const isIpInConfiguration: boolean = this.mongooseSetupInfoModel.nodesData.includes(ip);
     return ((isIpInUnprocessedList) || (isIpInConfiguration));
   }
+
+  private getConfigurationWithSlaveNodes(slaveNodes: String[]): Object { 
+    // NOTE: In order to prevent "non-existing-field" errors on Mongoose Configuration Object, ...
+    // ... the configuration is copied into 'any'-typed variable. 
+    // As for 28.02.2019, the slave nodes are stored within "load-step-node-addrs" field ...]
+    // ... of Mongoose JSON cnfiguration. 
+    var unprocessedConfigurationCopy: any = this.unprocessedConfiguration;
+    unprocessedConfigurationCopy.load.step.node.addrs = slaveNodes;
+    return unprocessedConfigurationCopy;
+  }
+
 
 }
