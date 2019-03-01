@@ -5,6 +5,7 @@ import { IpAddressService } from 'src/app/core/services/ip-addresses/ip-address.
 import { IpAddress } from 'src/app/core/services/ip-addresses/ipAddress';
 import { NodeConfig } from 'src/app/core/services/ip-addresses/nodeConfig';
 import { MongooseSetUpService } from '../../mongoose-set-up-service/mongoose-set-up.service';
+import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 
 @Component({
   selector: 'app-nodes',
@@ -15,14 +16,15 @@ import { MongooseSetUpService } from '../../mongoose-set-up-service/mongoose-set
 export class NodesComponent implements OnInit {
 
   ipAddresses: IpAddress[] = null;
-  displayingIpAddresses: String[] = [];
+  displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
   ip = '';
 
   nodeConfig: any = null;
   error: HttpErrorResponse = null;
 
   constructor(private ipAddressService: IpAddressService, 
-    private mongooseSetUpService: MongooseSetUpService) { }
+    private mongooseSetUpService: MongooseSetUpService,
+    private controlApiService: ControlApiService) { }
 
   ngOnInit() {
     this.ipAddresses = this.ipAddressService.getIpAddresses();

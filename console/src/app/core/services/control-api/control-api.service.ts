@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +13,18 @@ import { Constants } from 'src/app/common/constants';
 
 export class ControlApiService {
 
+  mongooseSlaveNodes: String[] = [];
+
+  mongooseConfiguration: Object; 
+
   readonly HTTP_PREFIX = "http://";
   readonly JSON_CONTENT_TYPE = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP);
+   }
 
   // MARK: - Public
 
@@ -39,6 +47,7 @@ export class ControlApiService {
     return this.http.get(this.HTTP_PREFIX + mongooseHostIp + configEndpoint, this.JSON_CONTENT_TYPE);
   }
 
+
   // MARK: - Private
 
   private getHttpHeaderForJsonFile(): HttpHeaders { 
@@ -55,5 +64,6 @@ export class ControlApiService {
     const hexNumericSystemBase = 16; 
     return currentDateTime.toString(hexNumericSystemBase);
   }
+
 
 }

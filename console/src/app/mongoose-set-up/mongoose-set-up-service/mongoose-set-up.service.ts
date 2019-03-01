@@ -19,7 +19,12 @@ export class MongooseSetUpService {
 
   constructor( private controlApiService: ControlApiService) { 
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(); 
-    this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP);
+    this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
+      .subscribe( (configuration: any) => { 
+        this.unprocessedNodeConfiguration = this.getSlaveNodesFromConfiguration(configuration);
+        console.log("unprocessedNodeConfiguration: " + this.unprocessedNodeConfiguration);
+      })
+    // this.unprocessedNodeConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
   }
 
 
@@ -50,7 +55,6 @@ export class MongooseSetUpService {
       return this.unprocessedConfiguration;
     }
 
-    
     // NOTE: Returning configuration appended with slave nodes. 
     this.unprocessedConfiguration = this.getConfigurationWithSlaveNodes(this.mongooseSetupInfoModel.nodesData);
     return this.unprocessedConfiguration;
@@ -118,5 +122,17 @@ export class MongooseSetUpService {
     return unprocessedConfigurationCopy;
   }
 
+
+  private getSlaveNodesFromConfiguration(configuration: any): String[] { 
+    // NOTE: Retrieving existing slave nodes.
+    console.log("target configuration: " + JSON.stringify(configuration));
+    const slaveNodesList: String[] = configuration.load.step.node.addrs;
+    if (slaveNodesList == undefined) { 
+      console.error("Unable to read slave nodes from configuration. Possible Mongoose's configuration JSON change.");
+      const emptyList = [];
+      return emptyList;
+    }
+    return slaveNodesList;
+  }
 
 }
