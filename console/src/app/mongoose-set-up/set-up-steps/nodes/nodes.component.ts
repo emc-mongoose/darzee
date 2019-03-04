@@ -29,6 +29,15 @@ export class NodesComponent implements OnInit {
   ngOnInit() {
     this.ipAddresses = this.ipAddressService.getIpAddresses();
     this.displayingIpAddresses = this.mongooseSetUpService.getSlaveNodesList();
+    this.mongooseSetUpService.getObservableSlaveNodes().subscribe(nodes => { 
+      this.displayingIpAddresses = nodes;
+      console.log("Observable salve nodes: " + nodes);
+    })
+
+    // this.mongooseSetUpService.getSlaveNodesList().subscribe(
+    //   (fetchedNodes: String[]) => { 
+    //     console.log("Updated nodes: " + fetchedNodes);
+    //   });
   }
 
   onAddIpButtonClicked(ip: string): void {

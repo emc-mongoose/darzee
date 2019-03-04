@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MongooseSetupInfoModel } from './mongoose-set-up-info.model';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Constants } from 'src/app/common/constants';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,21 +15,32 @@ export class MongooseSetUpService {
  // Unprocessed parameters are Object types since the UI displays it, yet they could be modified within the service.
  // ... Passing them by reference (object-type), the UI will be updated automatically.
   unprocessedScenario: String; 
+
+  private observableSlaveNodes: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]); 
+
   private unprocessedConfiguration: Object; 
   private unprocessedNodeConfiguration: String[] = []; 
 
   constructor( private controlApiService: ControlApiService) { 
+
+    this.observableSlaveNodes = new BehaviorSubject<String[]>([]);
+
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(); 
     this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
       .subscribe( (configuration: any) => { 
-        this.unprocessedNodeConfiguration = this.getSlaveNodesFromConfiguration(configuration);
-        console.log("unprocessedNodeConfiguration: " + this.unprocessedNodeConfiguration);
-      })
-    // this.unprocessedNodeConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
+        this.mongooseSetupInfoModel.configuration = configuration;
+        this.mongooseSetupInfoModel.nodesData = this.getSlaveNodesFromConfiguration(configuration);
+        this.observableSlaveNodes.next(this.mongooseSetupInfoModel.nodesData);
+
+      });
   }
 
 
   // MARK: - Getters & Setters 
+
+  public getObservableSlaveNodes(): Observable<String[]> { 
+    return this.observableSlaveNodes.asObservable();
+  }
 
   setConfiguration(configuration: Object) { 
     this.mongooseSetupInfoModel.configuration = configuration;
@@ -39,6 +51,8 @@ export class MongooseSetUpService {
   }
 
   setNodesData(data: String[]) {
+    console.log("nodes data has been set.");
+    this.observableSlaveNodes.next(data);
     this.mongooseSetupInfoModel.nodesData = data;
   }
 
@@ -47,23 +61,29 @@ export class MongooseSetUpService {
   }
 
   getUnprocessedConfiguration(): Object { 
-    if (!this.unprocessedConfiguration) { 
-      return;
+    if (this.unprocessedConfiguration == undefined) { 
+      return this.mongooseSetupInfoModel.nodesData;
     }
+
     if (this.mongooseSetupInfoModel.nodesData.length == 0) { 
       console.log("No additional nodes have been added.");
       return this.unprocessedConfiguration;
     }
 
     // NOTE: Returning configuration appended with slave nodes. 
-    this.unprocessedConfiguration = this.getConfigurationWithSlaveNodes(this.mongooseSetupInfoModel.nodesData);
-    return this.unprocessedConfiguration;
+    // this.unprocessedConfiguration = this.getConfigurationWithSlaveNodes(this.mongooseSetupInfoModel.nodesData);
+    
+    return this.mongooseSetupInfoModel.nodesData;
   }
 
   getSlaveNodesList(): String[] { 
     var slaveNodesList: String[] = this.unprocessedNodeConfiguration; 
     slaveNodesList.concat(this.mongooseSetupInfoModel.nodesData);
     return slaveNodesList;
+  }
+
+  observeSlaveNodesChange(): Observable<String[]> { 
+    return new Observable();
   }
 
     // MARK: - Public 
@@ -74,7 +94,9 @@ export class MongooseSetUpService {
       alert ("IP " + ip + " has already been added to the slave-nodes list.");
       return;
     }
-    this.unprocessedNodeConfiguration.push(ip);
+    const currentSlaveNodesList = this.observableSlaveNodes.getValue();
+    currentSlaveNodesList.push(ip);
+    this.observableSlaveNodes.next(currentSlaveNodesList);
   }
 
   // NOTE: Confirmation methods are used to validate the parameters which were set via "set" methods.
@@ -107,19 +129,9 @@ export class MongooseSetUpService {
 
   private isIpExist(ip: String): boolean { 
     // NOTE: Prevent addition of duplicate IPs
-    const isIpInUnprocessedList: boolean = this.unprocessedNodeConfiguration.includes(ip);
+    const isIpInUnprocessedList: boolean = this.observableSlaveNodes.getValue().includes(ip); 
     const isIpInConfiguration: boolean = this.mongooseSetupInfoModel.nodesData.includes(ip);
     return ((isIpInUnprocessedList) || (isIpInConfiguration));
-  }
-
-  private getConfigurationWithSlaveNodes(slaveNodes: String[]): Object { 
-    // NOTE: In order to prevent "non-existing-field" errors on Mongoose Configuration Object, ...
-    // ... the configuration is copied into 'any'-typed variable. 
-    // As for 28.02.2019, the slave nodes are stored within "load-step-node-addrs" field ...]
-    // ... of Mongoose JSON cnfiguration. 
-    var unprocessedConfigurationCopy: any = this.unprocessedConfiguration;
-    unprocessedConfigurationCopy.load.step.node.addrs = slaveNodes;
-    return unprocessedConfigurationCopy;
   }
 
 
