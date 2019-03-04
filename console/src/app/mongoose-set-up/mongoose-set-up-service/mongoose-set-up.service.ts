@@ -61,19 +61,16 @@ export class MongooseSetUpService {
   }
 
   getUnprocessedConfiguration(): Object { 
-    if (this.unprocessedConfiguration == undefined) { 
-      return this.mongooseSetupInfoModel.nodesData;
-    }
+    // if (this.unprocessedConfiguration == undefined) { 
+    //   return this.mongooseSetupInfoModel.nodesData;
+    // }
 
     if (this.mongooseSetupInfoModel.nodesData.length == 0) { 
       console.log("No additional nodes have been added.");
       return this.unprocessedConfiguration;
     }
-
-    // NOTE: Returning configuration appended with slave nodes. 
-    // this.unprocessedConfiguration = this.getConfigurationWithSlaveNodes(this.mongooseSetupInfoModel.nodesData);
-    
-    return this.mongooseSetupInfoModel.nodesData;
+    this.unprocessedConfiguration.load.step.node.addrs = this.mongooseSetupInfoModel.nodesData;
+    return this.unprocessedConfiguration;
   }
 
   getSlaveNodesList(): String[] { 

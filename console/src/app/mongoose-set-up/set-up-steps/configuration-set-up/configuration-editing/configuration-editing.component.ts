@@ -74,21 +74,6 @@ export class ConfigurationEditingComponent implements OnInit {
     // ... ... avaliable modes are: code', 'text', 'tree', 'view'
     // ... this.editorOptions.schema = schema; - it'd customize the displaying of JSON editor 
     this.jsonEditorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
-    // this.jsonEditorData = {
-    //   products: [{
-    //     name: 'car',
-    //     product: [{
-    //       name: 'honda',
-    //       model: [
-    //         { id: 'civic', name: 'civic' },
-    //         { id: 'accord', name: 'accord' },
-    //         { id: 'crv', name: 'crv' },
-    //         { id: 'pilot', name: 'pilot' },
-    //         { id: 'odyssey', name: 'odyssey' }
-    //       ]
-    //     }]
-    //   }]
-    // };
 
     this.currentJsonEditorData = this.jsonEditorData; 
     // NOTE: Setting up value for MongooseSetUp service in debug purposes.
