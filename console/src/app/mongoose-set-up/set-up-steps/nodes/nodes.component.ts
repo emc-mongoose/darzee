@@ -22,22 +22,17 @@ export class NodesComponent implements OnInit {
   nodeConfig: any = null;
   error: HttpErrorResponse = null;
 
-  constructor(private ipAddressService: IpAddressService, 
+  constructor(
     private mongooseSetUpService: MongooseSetUpService,
-    private controlApiService: ControlApiService) { }
+    private controlApiService: ControlApiService
+    ) { }
 
   ngOnInit() {
-    this.ipAddresses = this.ipAddressService.getIpAddresses();
     this.displayingIpAddresses = this.mongooseSetUpService.getSlaveNodesList();
     this.mongooseSetUpService.getObservableSlaveNodes().subscribe(nodes => { 
       this.displayingIpAddresses = nodes;
       console.log("Observable salve nodes: " + nodes);
     })
-
-    // this.mongooseSetUpService.getSlaveNodesList().subscribe(
-    //   (fetchedNodes: String[]) => { 
-    //     console.log("Updated nodes: " + fetchedNodes);
-    //   });
   }
 
   onAddIpButtonClicked(ip: string): void {
@@ -58,40 +53,17 @@ export class NodesComponent implements OnInit {
     this.mongooseSetUpService.addNode(ip);
   }
 
-  deleteIp(id: number): void {
-    this.ipAddressService.deleteIp(id);
+  deleteIp(targetIp: String): void {
+    this.mongooseSetUpService.deleteSlaveNode(targetIp);
+    // this.ipAddressService.deleteIp(id);
   }
 
   onConfirmNodesConfigurationClicked() {
-    if (this.ipAddressService.ipAddresses.length === 0) {
+    if (this.displayingIpAddresses.length === 0) {
       alert('Please, provide an IP.');
       return;
     }
-    console.log("this.ipAddresses[0].ip): ", this.ipAddresses[0].ip);
-    this.ipAddressService.entryNode = this.ipAddressService.ipAddresses[0].ip;
-
-    this.ipAddressService.getConfig(this.ipAddressService.ipAddresses[0].ip)
-      .subscribe(
-        data => {
-          // NOTE: Loading Mongoose configuration in debug purposes
-          this.updateConfiguration(data);
-         },
-        error => this.error = error
-      );
-  }
-
-  private updateConfiguration(data: string) {
-
-    console.log("Configuration has been updated.");
-    // console.log(data.output);
-    // this.nodeConfig = data;
-    // console.log("Node configuration data: " + JSON.stringify(data));
-    // this.ipAddressService.nodeConfig = new NodeConfig(this.ipAddressService.ipAddresses[0].ip, this.nodeConfig);
-    // if (this.nodeConfig == null) {
-    //   alert('Can not get config! Remove first IP and if neccessary add another one.');
-    // } else {
-    //   console.log('OK');
-    // }
+    this.mongooseSetUpService.confirmNodeConfiguration();
   }
 
 }

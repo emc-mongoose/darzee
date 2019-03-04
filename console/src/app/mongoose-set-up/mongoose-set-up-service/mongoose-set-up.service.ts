@@ -17,13 +17,9 @@ export class MongooseSetUpService {
   unprocessedScenario: String; 
 
   private observableSlaveNodes: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]); 
-
   private unprocessedConfiguration: Object; 
-  private unprocessedNodeConfiguration: String[] = []; 
 
-  constructor( private controlApiService: ControlApiService) { 
-
-    this.observableSlaveNodes = new BehaviorSubject<String[]>([]);
+  constructor(private controlApiService: ControlApiService) { 
 
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(); 
     this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
@@ -31,7 +27,6 @@ export class MongooseSetUpService {
         this.mongooseSetupInfoModel.configuration = configuration;
         this.mongooseSetupInfoModel.nodesData = this.getSlaveNodesFromConfiguration(configuration);
         this.observableSlaveNodes.next(this.mongooseSetupInfoModel.nodesData);
-
       });
   }
 
@@ -51,7 +46,6 @@ export class MongooseSetUpService {
   }
 
   setNodesData(data: String[]) {
-    console.log("nodes data has been set.");
     this.observableSlaveNodes.next(data);
     this.mongooseSetupInfoModel.nodesData = data;
   }
@@ -77,13 +71,9 @@ export class MongooseSetUpService {
   }
 
   getSlaveNodesList(): String[] { 
-    var slaveNodesList: String[] = this.unprocessedNodeConfiguration; 
+    var slaveNodesList: String[] = this.observableSlaveNodes.getValue(); 
     slaveNodesList.concat(this.mongooseSetupInfoModel.nodesData);
     return slaveNodesList;
-  }
-
-  observeSlaveNodesChange(): Observable<String[]> { 
-    return new Observable();
   }
 
     // MARK: - Public 
@@ -97,6 +87,14 @@ export class MongooseSetUpService {
     const currentSlaveNodesList = this.observableSlaveNodes.getValue();
     currentSlaveNodesList.push(ip);
     this.observableSlaveNodes.next(currentSlaveNodesList);
+  }
+
+  deleteSlaveNode(nodeAddress: String) {
+    // NOTE: Retaining IP addresses that doesn't match deleting IP. 
+    const filtredNodesList = this.observableSlaveNodes.getValue().filter(ipAddress => { 
+      nodeAddress != ipAddress; 
+    });
+    this.observableSlaveNodes.next(filtredNodesList);
   }
 
   // NOTE: Confirmation methods are used to validate the parameters which were set via "set" methods.
@@ -118,7 +116,7 @@ export class MongooseSetUpService {
   }
 
   confirmNodeConfiguration() { 
-    this.setNodesData(this.unprocessedNodeConfiguration);
+    this.setNodesData(this.observableSlaveNodes.getValue());
   }
 
   runMongoose() { 

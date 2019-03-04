@@ -76,8 +76,6 @@ export class ConfigurationEditingComponent implements OnInit {
     this.jsonEditorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
 
     this.currentJsonEditorData = this.jsonEditorData; 
-    // NOTE: Setting up value for MongooseSetUp service in debug purposes.
-    // this.mongooseSetUpService.setUnprocessedConfiguration(this.jsonEditorData);
    
     // NOTE: You could also configure JSON Editor's nav bar tools using the view child's fields.
     // ... example:
