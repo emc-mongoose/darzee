@@ -30,3 +30,40 @@
   opacity: 1;
   right: 0;
 }
+
+
+/* NOTE: Styling for 'Details' custom tag that appears on Status Icon hover.
+It appears in case Mongoose Run hasn't finished yet.  */
+
+#detailsTag {
+  text-align: center;
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+  margin-right: calc(30%);
+}
+
+#status-btn #detailsTag:after {
+  content: "Details";
+  font-size: inherit;
+  display: inline-block;
+  text-align: center;
+  align-self: center;
+  position: absolute;
+  opacity: 0;
+  right: 0;
+  top: calc(45%);
+  bottom: calc(-10%);
+  margin-right: calc(7.1%);
+  transition: 0.5s;
+}
+
+#status-btn:hover #detailsTag {
+  padding-bottom: calc(30%);
+}
+
+#status-btn:hover #detailsTag:after {
+  opacity: 1;
+  right: 0;
+}
