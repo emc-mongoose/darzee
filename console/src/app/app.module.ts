@@ -25,6 +25,7 @@ import {NgJsonEditorModule} from 'ang-jsoneditor';
 import { SetUpFooterComponent } from './mongoose-set-up/set-up-footer/set-up-footer.component';
 import { ControlApiService } from './core/services/control-api/control-api.service';
 import { MonitoringApiService } from './core/services/monitoring-api/monitoring-api.service';
+import { RunStatisticsComponent } from './run-statistics/run-statistics.component';
 
 
 @NgModule({
@@ -40,6 +41,7 @@ import { MonitoringApiService } from './core/services/monitoring-api/monitoring-
     ConfigurationEditingRootComponent,
     ConfigurationEditingComponent,
     SetUpFooterComponent,
+    RunStatisticsComponent,
     
   ],
   imports: [
