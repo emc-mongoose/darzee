@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IpAddressService } from 'src/app/core/services/ip-addresses/ip-address.service';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { Doc } from 'codemirror';
 import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
@@ -29,8 +28,9 @@ export class ScenariosComponent implements OnInit {
 
   readonly CODE_EDITOR_PLACEHOLDER = Constants.Placeholders.CODE_EDITOR_PLACEHOLDER;
 
-  constructor(private service: IpAddressService,
-    private mongooseSetUpService: MongooseSetUpService) { 
+  constructor(
+    private mongooseSetUpService: MongooseSetUpService
+    ) { 
     this.fileContent = ""
     this.processingFile = null;
   }
@@ -71,7 +71,7 @@ export class ScenariosComponent implements OnInit {
       console.log(fileReader.result);
       this.fileContent = fileReader.result;
       this.setValueForEditor(this.fileContent.toString());
-      this.service.fileContent = fileReader.result;
+      // this.service.fileContent = fileReader.result;
     };
     fileReader.readAsText(this.processingFile);
   }

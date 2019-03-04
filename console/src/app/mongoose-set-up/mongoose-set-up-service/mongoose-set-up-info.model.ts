@@ -1,18 +1,19 @@
-import { NodeConfig } from "src/app/core/services/ip-addresses/nodeConfig";
+import { BehaviorSubject } from "rxjs";
 
 export class MongooseSetupInfoModel { 
 
     configuration: any; // NOTE: Configuration is represented with JSON 
-    scenario: string; // NOTE: As for 22.02.2019, 'Scenario' is a JavaScript code
-    nodesData: NodeConfig[]; 
+    scenario: String; // NOTE: As for 22.02.2019, 'Scenario' is a JavaScript code
+    nodesData: String[]; 
 
     private readonly DEFAULT_CONFIGURATION = "";
     private readonly DEFAULT_SCENARIO = "Load.run();";
-    private readonly DEFAULT_NODES_DATA = [];
 
-    constructor() { 
+    constructor(observableSlaveNodes: BehaviorSubject<String[]>) { 
         this.configuration = this.DEFAULT_CONFIGURATION;
         this.scenario = this.DEFAULT_SCENARIO;
-        this.nodesData = this.DEFAULT_NODES_DATA;
+        observableSlaveNodes.subscribe(slaveNodes => { 
+            this.nodesData = slaveNodes;
+        })
     }
 }

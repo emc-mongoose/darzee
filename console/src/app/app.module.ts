@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { IpAddressService } from './core/services/ip-addresses/ip-address.service';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -58,7 +57,7 @@ import { MonitoringApiService } from './core/services/monitoring-api/monitoring-
 
   // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
   // ... since we use it for the set up. 
-  providers: [IpAddressService, ControlApiService, MonitoringApiService],
+  providers: [ControlApiService, MonitoringApiService],
   bootstrap: [AppComponent],
   exports: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

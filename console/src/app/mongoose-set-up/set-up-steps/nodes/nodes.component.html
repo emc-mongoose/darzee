@@ -9,12 +9,12 @@
         <br />Mongoose node address:<br />
       </span>
         <div class="addIp">
-          <p #ipAd hidden="true">{{ ip }}</p>
-          <input [(ngModel)]="ip" placeholder="enter IP here..." />
+          <p #ipAd hidden="true"> {{ entredIpAddress }} </p>
+          <input [(ngModel)]="entredIpAddress" placeholder="enter IP here..." />
     
           <div class="nodes-action-btns">
-             <button type="button" title="No nodes has been set." class="btn btn-light node-action" (click)="addIp(ipAd.textContent)">Add</button>
-             <button type="button" class="btn btn-light node-action" (click)="onNavigateNextClicked()">Confirm nodes list</button>
+             <button type="button" title="No nodes has been set." class="btn btn-light node-action" (click)="onAddIpButtonClicked(ipAd.textContent)">Add</button>
+             <button type="button" class="btn btn-light node-action" (click)="onConfirmNodesConfigurationClicked()">Confirm nodes list</button>
           </div>
 
         </div>
@@ -22,9 +22,9 @@
 
     <div class="column right">
       <ul class="ipAddresses" style="list-style-type: none">
-        <li *ngFor="let ipAddress of ipAddresses">
-          <span class="ipAddr">{{ ipAddress.ip }}</span>
-          <button class="buttonDel" title="delete IP address" (click)="deleteIp(ipAddress.id)">&#10005;</button>
+        <li *ngFor="let ipAddress of displayingIpAddresses">
+          <span class="ipAddr">{{ ipAddress }}</span>
+          <button class="buttonDel" title="delete IP address" (click)="deleteIp(ipAddress)">&#10005;</button>
         </li>
       </ul>
 
