@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { MongooseSetupTab } from './mongoose-setup-tab.model';
 import { slideAnimation } from '../core/animations';
 import { MongooseSetUpService } from './mongoose-set-up-service/mongoose-set-up.service';
-import { RoutesList } from '../routes';
+import { RoutesList } from '../routes-list';
 
 @Component({
   selector: 'app-mongoose-set-up',

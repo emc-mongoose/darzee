@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MongooseRunRecord } from '../core/models/run-record.model';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -21,10 +22,14 @@ export class RunsTableComponent implements OnInit {
     "Comment"
   ];
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   // MARK: - Lifecycle 
 
   ngOnInit() {  }
+
+  onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) { 
+    this.router.navigate(['/run-details', mongooseRunRecord.getIdentifier()]);
+  }
 
 }
