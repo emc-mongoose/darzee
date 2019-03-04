@@ -55,7 +55,6 @@ export class NodesComponent implements OnInit {
 
   deleteIp(targetIp: String): void {
     this.mongooseSetUpService.deleteSlaveNode(targetIp);
-    // this.ipAddressService.deleteIp(id);
   }
 
   onConfirmNodesConfigurationClicked() {

@@ -21,7 +21,7 @@ export class MongooseSetUpService {
 
   constructor(private controlApiService: ControlApiService) { 
 
-    this.mongooseSetupInfoModel = new MongooseSetupInfoModel(); 
+    this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.observableSlaveNodes); 
     this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
       .subscribe( (configuration: any) => { 
         this.mongooseSetupInfoModel.configuration = configuration;
@@ -55,7 +55,6 @@ export class MongooseSetUpService {
   }
 
   getUnprocessedConfiguration(): Object { 
-
     if (this.mongooseSetupInfoModel.nodesData.length == 0) { 
       console.log("No additional nodes have been added.");
       return this.unprocessedConfiguration;
