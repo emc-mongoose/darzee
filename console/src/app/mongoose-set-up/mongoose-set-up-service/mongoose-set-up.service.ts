@@ -61,15 +61,18 @@ export class MongooseSetUpService {
   }
 
   getUnprocessedConfiguration(): Object { 
-    // if (this.unprocessedConfiguration == undefined) { 
-    //   return this.mongooseSetupInfoModel.nodesData;
-    // }
 
     if (this.mongooseSetupInfoModel.nodesData.length == 0) { 
       console.log("No additional nodes have been added.");
       return this.unprocessedConfiguration;
     }
-    this.unprocessedConfiguration.load.step.node.addrs = this.mongooseSetupInfoModel.nodesData;
+
+    try { 
+      this.unprocessedConfiguration.load.step.node.addrs = this.mongooseSetupInfoModel.nodesData;
+    } catch (error) { 
+      alert("Unable to add additional nodes to set up. Reason: Unable to find related slave nodes field within the configuration.");
+    }
+   
     return this.unprocessedConfiguration;
   }
 
