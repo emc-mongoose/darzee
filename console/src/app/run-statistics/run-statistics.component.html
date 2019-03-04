@@ -1,3 +1,5 @@
+
+<!-- NOTE: Basic discription of displaying run  -->
 <table class="table">
   <thead class="thead-light">
   
@@ -19,3 +21,13 @@
     </tr>
   </tbody>
 </table>
+
+<!-- NOTE: Tabs that switches between run statistics (as for 04.03.2019, it's "Logs" and "Charts") -->
+<nav class="navbar navbar-light bg-light">
+  <form class="form-inline">
+     <button *ngFor="let section of STATISTICS_SECTIONS" class="btn btn-sm btn-outline-secondary" 
+     type="button" (click)="switchSection(section)">
+        {{ section }}
+     </button>
+  </form>
+</nav>

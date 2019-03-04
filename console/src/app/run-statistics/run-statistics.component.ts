@@ -10,8 +10,11 @@ import { MongooseRunRecord } from '../core/models/run-record.model';
 })
 export class RunStatisticsComponent implements OnInit {
 
+  private readonly STATISTICS_SECTIONS: String[] = ["Logs", "Charts"];
+
   private routeParameters: any; 
   private runRecord: MongooseRunRecord; 
+
 
   constructor(private route: ActivatedRoute,
     private monitoringApiService: MonitoringApiService) { }
@@ -31,5 +34,9 @@ export class RunStatisticsComponent implements OnInit {
   }
 
   // MARK: - Public 
+
+  switchSection(section: String) { 
+    console.log("Switching to section" + section);
+  }
 
 }
