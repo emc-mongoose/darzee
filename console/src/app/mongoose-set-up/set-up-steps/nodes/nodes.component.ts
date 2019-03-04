@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { IpAddressService } from 'src/app/core/services/ip-addresses/ip-address.service';
-import { IpAddress } from 'src/app/core/services/ip-addresses/ipAddress';
-import { NodeConfig } from 'src/app/core/services/ip-addresses/nodeConfig';
 import { MongooseSetUpService } from '../../mongoose-set-up-service/mongoose-set-up.service';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 
@@ -11,13 +7,11 @@ import { ControlApiService } from 'src/app/core/services/control-api/control-api
   selector: 'app-nodes',
   templateUrl: './nodes.component.html',
   styleUrls: ['./nodes.component.css'],
-  providers: [IpAddressService]
+  providers: []
 })
 export class NodesComponent implements OnInit {
 
-  ipAddresses: IpAddress[] = null;
   displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
-  ip = '';
 
   nodeConfig: any = null;
   error: HttpErrorResponse = null;

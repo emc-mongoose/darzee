@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { IpAddressService } from 'src/app/core/services/ip-addresses/ip-address.service';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { Constants } from 'src/app/common/constants';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
