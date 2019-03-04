@@ -8,12 +8,28 @@ import { RunDuration } from '../../run-duration';
 })
 export class MonitoringApiService {
 
-  constructor() { }
+  private mongooseRunRecords: MongooseRunRecord[] = []; 
+
+  constructor() {
+    this.mongooseRunRecords = this.generateMongooseRunRecords();
+   }
 
   // MARK: - Public
 
   public getMongooseRunRecords(): MongooseRunRecord[] { 
-    return this.generateMongooseRunRecords();
+    return this.mongooseRunRecords;
+  }
+
+  public getMongooseRunRecordById(id: number): MongooseRunRecord { 
+    let targerRecord: MongooseRunRecord; 
+    this.getMongooseRunRecords().filter(record => { 
+      console.log("record.getIdentifier(): ", record.getIdentifier());
+      console.log("id: ", id);
+      if (record.getIdentifier() == id) { 
+        targerRecord = record;
+      }
+    });
+    return targerRecord; 
   }
 
   // MARK: - Private 
