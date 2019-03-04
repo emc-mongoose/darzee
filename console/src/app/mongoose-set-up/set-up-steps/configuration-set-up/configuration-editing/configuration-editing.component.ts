@@ -92,7 +92,7 @@ export class ConfigurationEditingComponent implements OnInit {
 
 
   onApplyButtonClicked() { 
-    this.controlApiService.runMongoose(JSON.stringify(this.currentJsonEditorData));
+    this.controlApiService.runMongoose(this.currentJsonEditorData);
     alert("New configuration has been applied.");
     this.hasJsonEdited = false;
   }

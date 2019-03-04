@@ -13,6 +13,7 @@ export class NodesComponent implements OnInit {
 
   displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
 
+  entredIpAddress = '';
   nodeConfig: any = null;
   error: HttpErrorResponse = null;
 
@@ -29,22 +30,22 @@ export class NodesComponent implements OnInit {
     })
   }
 
-  onAddIpButtonClicked(ip: string): void {
+  onAddIpButtonClicked(entredIpAddress: string): void {
     const regExpr = new
       RegExp('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\:([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$');
-    ip = ip.trim();
+    entredIpAddress = entredIpAddress.trim();
 
-    if (!ip) {
+    if (!entredIpAddress) {
       console.log("IP hasn't been set up.");
     }
 
-    const isIpValid = regExpr.test(ip);
+    const isIpValid = regExpr.test(entredIpAddress);
     if (!isIpValid) {
-      alert("IP " + ip + " is not valid. Please, provide a valid address.");
+      alert("IP " + entredIpAddress + " is not valid. Please, provide a valid address.");
       return;
     } 
 
-    this.mongooseSetUpService.addNode(ip);
+    this.mongooseSetUpService.addNode(entredIpAddress);
   }
 
   deleteIp(targetIp: String): void {

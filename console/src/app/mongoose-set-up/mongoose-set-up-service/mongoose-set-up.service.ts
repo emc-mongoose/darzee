@@ -9,21 +9,21 @@ import { Observable, BehaviorSubject } from 'rxjs';
 })
 export class MongooseSetUpService {
 
- private mongooseSetupInfoModel: MongooseSetupInfoModel; 
+  private mongooseSetupInfoModel: MongooseSetupInfoModel;
 
- // NOTE: Unprocessed values are the values that weren't validated via the confirmation button. 
- // Unprocessed parameters are Object types since the UI displays it, yet they could be modified within the service.
- // ... Passing them by reference (object-type), the UI will be updated automatically.
-  unprocessedScenario: String; 
+  // NOTE: Unprocessed values are the values that weren't validated via the confirmation button. 
+  // Unprocessed parameters are Object types since the UI displays it, yet they could be modified within the service.
+  // ... Passing them by reference (object-type), the UI will be updated automatically.
+  unprocessedScenario: String;
 
-  private observableSlaveNodes: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]); 
-  private unprocessedConfiguration: Object; 
+  private observableSlaveNodes: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]);
+  private unprocessedConfiguration: Object;
 
-  constructor(private controlApiService: ControlApiService) { 
+  constructor(private controlApiService: ControlApiService) {
 
-    this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.observableSlaveNodes); 
+    this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.observableSlaveNodes);
     this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
-      .subscribe( (configuration: any) => { 
+      .subscribe((configuration: any) => {
         this.mongooseSetupInfoModel.configuration = configuration;
         this.mongooseSetupInfoModel.nodesData = this.getSlaveNodesFromConfiguration(configuration);
         this.observableSlaveNodes.next(this.mongooseSetupInfoModel.nodesData);
@@ -33,15 +33,15 @@ export class MongooseSetUpService {
 
   // MARK: - Getters & Setters 
 
-  public getObservableSlaveNodes(): Observable<String[]> { 
+  public getObservableSlaveNodes(): Observable<String[]> {
     return this.observableSlaveNodes.asObservable();
   }
 
-  setConfiguration(configuration: Object) { 
+  setConfiguration(configuration: Object) {
     this.mongooseSetupInfoModel.configuration = configuration;
   }
 
-  setSenario(scenario: String) { 
+  setSenario(scenario: String) {
     this.mongooseSetupInfoModel.scenario = scenario;
   }
 
@@ -50,37 +50,43 @@ export class MongooseSetUpService {
     this.mongooseSetupInfoModel.nodesData = data;
   }
 
-  setUnprocessedConfiguration(configuration: Object) { 
+  setUnprocessedConfiguration(configuration: Object) {
     this.unprocessedConfiguration = configuration;
   }
 
-  getUnprocessedConfiguration(): Object { 
-    if (this.mongooseSetupInfoModel.nodesData.length == 0) { 
+  getUnprocessedConfiguration(): Object {
+    if (this.mongooseSetupInfoModel.nodesData.length == 0) {
       console.log("No additional nodes have been added.");
       return this.unprocessedConfiguration;
     }
 
-    try { 
-      this.unprocessedConfiguration.load.step.node.addrs = this.mongooseSetupInfoModel.nodesData;
-    } catch (error) { 
-      alert("Unable to add additional nodes to set up. Reason: Unable to find related slave nodes field within the configuration.");
+    try {
+      let targetConfiguration: any = this.unprocessedConfiguration;
+      if (!this.isSlaveNodesFieldExistInConfiguration(targetConfiguration)) {
+        let misleadingMsg = "Unable to find slave nodes within the confguration ('addrs' field).";
+        throw new Error(misleadingMsg);
+      }
+      targetConfiguration.load.step.node.addrs = this.mongooseSetupInfoModel.nodesData;
+      this.unprocessedConfiguration = targetConfiguration;
+    } catch (error) {
+      alert("Unable to add additional nodes to set up. Reason: " + error);
     }
-   
+
     return this.unprocessedConfiguration;
   }
 
-  getSlaveNodesList(): String[] { 
-    var slaveNodesList: String[] = this.observableSlaveNodes.getValue(); 
+  getSlaveNodesList(): String[] {
+    var slaveNodesList: String[] = this.observableSlaveNodes.getValue();
     slaveNodesList.concat(this.mongooseSetupInfoModel.nodesData);
     return slaveNodesList;
   }
 
-    // MARK: - Public 
+  // MARK: - Public 
 
 
-  addNode(ip: String) { 
-    if (this.isIpExist(ip)) { 
-      alert ("IP " + ip + " has already been added to the slave-nodes list.");
+  addNode(ip: String) {
+    if (this.isIpExist(ip)) {
+      alert("IP " + ip + " has already been added to the slave-nodes list.");
       return;
     }
     const currentSlaveNodesList = this.observableSlaveNodes.getValue();
@@ -90,8 +96,8 @@ export class MongooseSetUpService {
 
   deleteSlaveNode(nodeAddress: String) {
     // NOTE: Retaining IP addresses that doesn't match deleting IP. 
-    const filtredNodesList = this.observableSlaveNodes.getValue().filter(ipAddress => { 
-      nodeAddress != ipAddress; 
+    const filtredNodesList = this.observableSlaveNodes.getValue().filter(ipAddress => {
+      nodeAddress != ipAddress;
     });
     this.observableSlaveNodes.next(filtredNodesList);
   }
@@ -101,47 +107,57 @@ export class MongooseSetUpService {
   // ... and set up pages are isplaying via <router-outler>. If user switches between set-up pages without...
   // ... confirmation, we could still retain the data inside an "unprocessed" variable (e.g.: unprocessedScenario))
 
-  confirmConfigurationSetup() { 
+  confirmConfigurationSetup() {
     this.setConfiguration(this.unprocessedConfiguration);
   }
 
-  confirmScenarioSetup() { 
+  confirmScenarioSetup() {
     const emptyJavascriptCode = "";
     // NOTE: Retain default scenario stored within mongooseSetupInfoModel. 
-    if ((this.unprocessedScenario == emptyJavascriptCode) || (this.unprocessedScenario == undefined)) { 
+    if ((this.unprocessedScenario == emptyJavascriptCode) || (this.unprocessedScenario == undefined)) {
       return;
     }
     this.setSenario(this.unprocessedScenario);
   }
 
-  confirmNodeConfiguration() { 
+  confirmNodeConfiguration() {
     this.setNodesData(this.observableSlaveNodes.getValue());
   }
 
-  runMongoose() { 
-    this.controlApiService.runMongoose(JSON.stringify(this.mongooseSetupInfoModel.configuration), this.mongooseSetupInfoModel.scenario);
+  runMongoose() {
+    this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario);
   }
 
   // MARK: - Private
 
-  private isIpExist(ip: String): boolean { 
+  private isIpExist(ip: String): boolean {
     // NOTE: Prevent addition of duplicate IPs
-    const isIpInUnprocessedList: boolean = this.observableSlaveNodes.getValue().includes(ip); 
+    const isIpInUnprocessedList: boolean = this.observableSlaveNodes.getValue().includes(ip);
     const isIpInConfiguration: boolean = this.mongooseSetupInfoModel.nodesData.includes(ip);
     return ((isIpInUnprocessedList) || (isIpInConfiguration));
   }
 
 
-  private getSlaveNodesFromConfiguration(configuration: any): String[] { 
+  private getSlaveNodesFromConfiguration(configuration: any): String[] {
     // NOTE: Retrieving existing slave nodes.
     console.log("target configuration: " + JSON.stringify(configuration));
-    const slaveNodesList: String[] = configuration.load.step.node.addrs;
-    if (slaveNodesList == undefined) { 
-      console.error("Unable to read slave nodes from configuration. Possible Mongoose's configuration JSON change.");
+    if (!this.isSlaveNodesFieldExistInConfiguration(configuration)) { 
+      let misleadingMsg = "Unable to find slave nodes field within the Mongoose configuration.";
+      alert (misleadingMsg); 
       const emptyList = [];
       return emptyList;
     }
+    const slaveNodesList: String[] = configuration.load.step.node.addrs;
     return slaveNodesList;
+  }
+
+  private isSlaveNodesFieldExistInConfiguration(configuration: any): boolean {
+    // NOTE: Check if 'Address' field exists on received Mongoose JSON configuration. 
+    // As for 04.03.2019, it's located at load -> step -> node -> addrs
+    return !((configuration.load == undefined) &&
+      (configuration.load.step == undefined) &&
+      (configuration.load.step.node == undefined) &&
+      (configuration.load.step.node.addrs == undefined));
   }
 
 }
