@@ -1,6 +1,21 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item active" aria-current="page">Log1</li>
-    <li class="breadcrumb-item active" aria-current="page">Log2</li>
-  </ol>
-</nav>
+<table class="table">
+  <thead class="thead-light">
+  
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Nodes: </th>
+      <td> {{ runRecord.nodes }} </td>
+    </tr>
+
+    <tr>
+      <th scope="row">Duration</th>
+      <td>{{ runRecord.getDuration() }}</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Comment</th>
+      <td> {{ runRecord.comment }} </td>
+    </tr>
+  </tbody>
+</table>

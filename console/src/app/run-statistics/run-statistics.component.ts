@@ -10,7 +10,6 @@ import { MongooseRunRecord } from '../core/models/run-record.model';
 })
 export class RunStatisticsComponent implements OnInit {
 
-  public displayingRecordId: number; 
   private routeParameters: any; 
   private runRecord: MongooseRunRecord; 
 
@@ -21,10 +20,9 @@ export class RunStatisticsComponent implements OnInit {
 
   ngOnInit() {
     this.routeParameters = this.route.params.subscribe(params => { 
-      console.log("params['id']: ", params['id']);
-      this.displayingRecordId += params['id'];
-      this.runRecord = this.monitoringApiService.getMongooseRunRecordById(this.displayingRecordId);
-      console.log("Loading record with comment: " + this.runRecord.comment);
+      // TODO: Move parameter name into constants 
+      let displayingRecordId = params['id'];
+      this.runRecord = this.monitoringApiService.getMongooseRunRecordById(displayingRecordId);
     });
   }
 
