@@ -42,7 +42,7 @@ export class RunsTableTabsComponent implements OnInit {
     // NOTE: I haven't found a better way to set custom background color for bootstrap selected button. 
     // ... so I put a selector "isSelected" and if it's set to 'true', the tab button is highlighted.
    this.runTabs.forEach(tab => {
-     if (tab == requiredTab) { 
+     if (tab === requiredTab) { 
        tab.isSelected = true; 
        return;
      }

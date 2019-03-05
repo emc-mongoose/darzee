@@ -25,6 +25,9 @@ import {NgJsonEditorModule} from 'ang-jsoneditor';
 import { SetUpFooterComponent } from './mongoose-set-up/set-up-footer/set-up-footer.component';
 import { ControlApiService } from './core/services/control-api/control-api.service';
 import { MonitoringApiService } from './core/services/monitoring-api/monitoring-api.service';
+import { RunStatisticsComponent } from './run-statistics/run-statistics.component';
+import { RunStatisticLogsComponent } from './run-statistics/run-statistic-logs/run-statistic-logs.component';
+import { RunStatisticsChartsComponent } from './run-statistics/run-statistics-charts/run-statistics-charts.component';
 
 
 @NgModule({
@@ -40,6 +43,9 @@ import { MonitoringApiService } from './core/services/monitoring-api/monitoring-
     ConfigurationEditingRootComponent,
     ConfigurationEditingComponent,
     SetUpFooterComponent,
+    RunStatisticsComponent,
+    RunStatisticLogsComponent,
+    RunStatisticsChartsComponent,
     
   ],
   imports: [

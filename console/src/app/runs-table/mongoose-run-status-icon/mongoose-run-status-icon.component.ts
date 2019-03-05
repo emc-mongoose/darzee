@@ -25,4 +25,8 @@ export class MongooseRunStatusIconComponent implements OnInit {
     isRunningCompleted(): boolean { 
       return (this.runStatus == MongooseRunStatus.Finished);
     }
+
+    onStatusButtonClicked() { 
+      console.log("status btn clicked");
+    }
 }
