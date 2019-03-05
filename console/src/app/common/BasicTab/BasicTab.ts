@@ -36,7 +36,7 @@ export class BasicTab {
 
     // MARK: - Private
     private getUniqueIdentifier(): string { 
-        const currentDateTime = Date.now();
+        const currentDateTime = new Date().getMilliseconds();
         const hexNumericSystemBase = 16; 
         return currentDateTime.toString(hexNumericSystemBase) + this.name;
       }
