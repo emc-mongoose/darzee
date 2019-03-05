@@ -19,14 +19,7 @@ export class RunStatisticsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
     private monitoringApiService: MonitoringApiService) {
-      // NOTE: Filling up statistic tabs data  
-    for (let sectionName of this.STATISTICS_SECTIONS) {
-      // TODO: Change link to actual one.
-      let TAB_LINK_MOCK = "/";
-      let tab = new BasicTab(sectionName, TAB_LINK_MOCK);
-      this.statisticTabs.push(tab);
-    }
-    this.statisticTabs[0].onTabSelected(); 
+    this.initTabs();
 
   }
 
@@ -49,15 +42,27 @@ export class RunStatisticsComponent implements OnInit {
 
   switchTab(targetTabId: BasicTab) {
 
-    this.statisticTabs.forEach(section => { 
-      // console.log("sectuin.getId():" + section.getId());
-
-      if (targetTabId.isEqual(section)) { 
-        section.isActive = true; 
+    this.statisticTabs.forEach(section => {
+      if (targetTabId.isEqual(section)) {
+        section.isActive = true;
         return;
       }
       section.isActive = false;
     })
+  }
+
+  // MARK: - Private
+
+  private initTabs() {
+    // NOTE: Filling up statistic tabs data  
+    for (let sectionName of this.STATISTICS_SECTIONS) {
+      // TODO: Change link to actual one.
+      let TAB_LINK_MOCK = "/";
+      let tab = new BasicTab(sectionName, TAB_LINK_MOCK);
+      this.statisticTabs.push(tab);
+    }
+    let initialSelectedTabNumber = 0;
+    this.statisticTabs[initialSelectedTabNumber].onTabSelected();
   }
 
 }
