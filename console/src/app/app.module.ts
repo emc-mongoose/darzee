@@ -27,6 +27,7 @@ import { ControlApiService } from './core/services/control-api/control-api.servi
 import { MonitoringApiService } from './core/services/monitoring-api/monitoring-api.service';
 import { RunStatisticsComponent } from './run-statistics/run-statistics.component';
 import { RunStatisticLogsComponent } from './run-statistics/run-statistic-logs/run-statistic-logs.component';
+import { RunStatisticsChartsComponent } from './run-statistics/run-statistics-charts/run-statistics-charts.component';
 
 
 @NgModule({
@@ -44,6 +45,7 @@ import { RunStatisticLogsComponent } from './run-statistics/run-statistic-logs/r
     SetUpFooterComponent,
     RunStatisticsComponent,
     RunStatisticLogsComponent,
+    RunStatisticsChartsComponent,
     
   ],
   imports: [

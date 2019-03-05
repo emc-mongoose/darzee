@@ -12,7 +12,11 @@ import { RoutesList } from '../routes-list';
 })
 export class RunStatisticsComponent implements OnInit {
 
-  private readonly STATISTICS_SECTIONS: String[] = ["Logs", "Charts"];
+  private readonly STATISTICS_SECTIONS = [
+    { name: "Logs", url: RoutesList.RUN_LOGS},
+    { name: "Charts", url: RoutesList.RUN_CHARTS}
+  ];
+
   private statisticTabs: BasicTab[] = [];
 
   private routeParameters: any;
@@ -59,16 +63,17 @@ export class RunStatisticsComponent implements OnInit {
 
   private initTabs() {
     // NOTE: Filling up statistic tabs data  
-    for (let sectionName of this.STATISTICS_SECTIONS) {
-      // TODO: Change link to actual one.
-      let TAB_LINK_MOCK = "/";
-      let tab = new BasicTab(sectionName, TAB_LINK_MOCK);
+    for (let section of this.STATISTICS_SECTIONS) {
+      let tab = new BasicTab(section.name, section.url);
       this.statisticTabs.push(tab);
     }
     let initialSelectedTabNumber = 0;
     this.statisticTabs[initialSelectedTabNumber].onTabSelected();
   }
 
+  private displayRuquiredStatistics() { 
+
+  }
 
 
 }

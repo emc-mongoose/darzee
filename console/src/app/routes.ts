@@ -7,6 +7,7 @@ import { ScenariosComponent } from './mongoose-set-up/set-up-steps/scenarios-set
 import { RunStatisticsComponent } from './run-statistics/run-statistics.component';
 import { RoutesList } from "./routes-list";
 import { RunStatisticLogsComponent } from "./run-statistics/run-statistic-logs/run-statistic-logs.component";
+import { RunStatisticsChartsComponent } from "./run-statistics/run-statistics-charts/run-statistics-charts.component";
 
 
 export const routes: Routes = [
@@ -16,7 +17,8 @@ export const routes: Routes = [
 
     { path: RoutesList.RUN_STATISTICS + '/:id', component: RunStatisticsComponent,
       children: [
-        { path: RoutesList.RUN_LOGS, component: RunStatisticLogsComponent}
+        { path: RoutesList.RUN_LOGS, component: RunStatisticLogsComponent},
+        { path: RoutesList.RUN_CHARTS, component: RunStatisticsChartsComponent}
       ] },
     { path: RoutesList.SCENARIO, component: ScenariosComponent},
     { path: "", redirectTo: RoutesList.RUNS, pathMatch: 'full'},
