@@ -1,0 +1,5 @@
+.card { 
+    margin: calc(1%) calc(5%);
+    background-color: black;
+    color: white;
+}
