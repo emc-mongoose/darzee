@@ -46,17 +46,15 @@ export class RunStatisticsComponent implements OnInit {
 
   // MARK: - Public 
 
-  switchTab(targetTabId: BasicTab) {
-
+  switchTab(targetTab: BasicTab) {
     this.statisticTabs.forEach(section => {
-      if (targetTabId.isEqual(section)) {
+      if (targetTab.isEqual(section)) {
         section.isActive = true;
         return;
       }
       section.isActive = false;
     });
-    this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.runRecord.getIdentifier() + '/' + RoutesList.RUN_LOGS]);
-
+    this.loadTab(targetTab);
   }
 
   // MARK: - Private
@@ -71,7 +69,8 @@ export class RunStatisticsComponent implements OnInit {
     this.statisticTabs[initialSelectedTabNumber].onTabSelected();
   }
 
-  private displayRuquiredStatistics() { 
+  private loadTab(selectedTab: BasicTab) { 
+    this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.runRecord.getIdentifier() + '/' + selectedTab.getLink()]);
 
   }
 
