@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
 import { MongooseRunRecord } from '../core/models/run-record.model';
 import { BasicTab } from '../common/BasicTab/BasicTab';
-import { RoutesList } from '../routes-list';
+import { RoutesList } from '../Routing/routes-list';
+import { RouteParams } from '../Routing/params.routes';
 
 @Component({
   selector: 'app-run-statistics',
@@ -35,7 +36,7 @@ export class RunStatisticsComponent implements OnInit {
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.params.subscribe(params => {
       // TODO: Move parameter name into constants 
-      let displayingRecordId = params['id'];
+      let displayingRecordId = params[RouteParams.ID];
       this.runRecord = this.monitoringApiService.getMongooseRunRecordById(displayingRecordId);
     });
   }

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MongooseRunRecord } from '../core/models/run-record.model';
 import { Router } from '@angular/router';
-import { RoutesList } from '../routes-list';
+import { RoutesList } from '../Routing/routes-list';
 
 
 @Component({
