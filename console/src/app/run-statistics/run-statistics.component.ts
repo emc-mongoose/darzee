@@ -26,8 +26,6 @@ export class RunStatisticsComponent implements OnInit {
   constructor(private route: ActivatedRoute,
     private router: Router,
     private monitoringApiService: MonitoringApiService) {
-    this.initTabs();
-
   }
 
   // MARK: - Lifecycle 
@@ -38,6 +36,7 @@ export class RunStatisticsComponent implements OnInit {
       let displayingRecordId = params[RouteParams.ID];
       try { 
         this.runRecord = this.monitoringApiService.getMongooseRunRecordById(displayingRecordId);
+        this.initTabs();
       } catch (recordNotFoundError) { 
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
         alert("Unable to load requested record.");
@@ -73,7 +72,9 @@ export class RunStatisticsComponent implements OnInit {
       this.statisticTabs.push(tab);
     }
     let initialSelectedTabNumber = 0;
-    this.statisticTabs[initialSelectedTabNumber].onTabSelected();
+    const initialTab = this.statisticTabs[initialSelectedTabNumber];
+    initialTab.isActive = true;
+    this.loadTab(initialTab);
   }
 
   private loadTab(selectedTab: BasicTab) {
