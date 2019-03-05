@@ -11,6 +11,10 @@ import { MongooseRunRecord } from '../core/models/run-record.model';
 export class RunStatisticsComponent implements OnInit {
 
   private readonly STATISTICS_SECTIONS: String[] = ["Logs", "Charts"];
+  private readonly SECTIONS = [ 
+    {name: "Logs", isSelected: true, url: ''},
+    {name: "Charts", isSelected: false, url: ''}
+  ]
 
   private routeParameters: any; 
   private runRecord: MongooseRunRecord; 
@@ -37,6 +41,12 @@ export class RunStatisticsComponent implements OnInit {
 
   switchSection(section: String) { 
     console.log("Switching to section" + section);
+  }
+  
+  switchTab(sender) { 
+    console.log(sender);
+    sender.isSelected = !sender.isSelected; 
+    console.log("received request from tab: " + sender.name);
   }
 
 }
