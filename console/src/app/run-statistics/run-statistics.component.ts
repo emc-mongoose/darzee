@@ -14,8 +14,8 @@ import { RouteParams } from '../Routing/params.routes';
 export class RunStatisticsComponent implements OnInit {
 
   private readonly STATISTICS_SECTIONS = [
-    { name: "Logs", url: RoutesList.RUN_LOGS},
-    { name: "Charts", url: RoutesList.RUN_CHARTS}
+    { name: "Logs", url: RoutesList.RUN_LOGS },
+    { name: "Charts", url: RoutesList.RUN_CHARTS }
   ];
 
   private statisticTabs: BasicTab[] = [];
@@ -35,9 +35,15 @@ export class RunStatisticsComponent implements OnInit {
   ngOnInit() {
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.params.subscribe(params => {
-      // TODO: Move parameter name into constants 
       let displayingRecordId = params[RouteParams.ID];
-      this.runRecord = this.monitoringApiService.getMongooseRunRecordById(displayingRecordId);
+      try { 
+        this.runRecord = this.monitoringApiService.getMongooseRunRecordById(displayingRecordId);
+      } catch (recordNotFoundError) { 
+        // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
+        alert("Unable to load requested record.");
+        console.error(recordNotFoundError);
+        this.router.navigate([RoutesList.RUNS]);
+      }
     });
   }
 
@@ -70,10 +76,9 @@ export class RunStatisticsComponent implements OnInit {
     this.statisticTabs[initialSelectedTabNumber].onTabSelected();
   }
 
-  private loadTab(selectedTab: BasicTab) { 
-    this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.runRecord.getIdentifier() + '/' + selectedTab.getLink()]);
-
+  private loadTab(selectedTab: BasicTab) {
+    this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.runRecord.getIdentifier()
+      + '/' + selectedTab.getLink()]);
   }
-
 
 }

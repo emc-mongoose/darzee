@@ -23,12 +23,16 @@ export class MonitoringApiService {
   public getMongooseRunRecordById(id: number): MongooseRunRecord { 
     let targerRecord: MongooseRunRecord; 
     this.getMongooseRunRecords().filter(record => { 
-      console.log("record.getIdentifier(): ", record.getIdentifier());
-      console.log("id: ", id);
       if (record.getIdentifier() == id) { 
         targerRecord = record;
       }
     });
+
+    if (!targerRecord) { 
+      // NOTE: Returning 'False' if record hasn't been found.
+      let misleadingMsg = "Mongoose Run record with ID " + id + " hasn't been found.";
+     throw new Error(misleadingMsg);
+    }
     return targerRecord; 
   }
 
