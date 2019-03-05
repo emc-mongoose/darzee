@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
 
 @Component({
   selector: 'app-run-statistic-logs',
@@ -7,9 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RunStatisticLogsComponent implements OnInit {
 
-  constructor() { }
+  private metricsName: String[] = [];
+
+  constructor(private monitoringApiService: MonitoringApiService) { }
+
+  // MARK: - Lifecycle
 
   ngOnInit() {
+    this.metricsName = this.monitoringApiService.getMetricName();
   }
+
+  // MARK: - Public
+
+  // MARK: - Private
 
 }
