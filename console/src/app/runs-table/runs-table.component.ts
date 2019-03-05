@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MongooseRunRecord } from '../core/models/run-record.model';
 import { Router } from '@angular/router';
+import { RoutesList } from '../routes-list';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class RunsTableComponent implements OnInit {
   ngOnInit() {  }
 
   onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) { 
-    this.router.navigate(['/run-details', mongooseRunRecord.getIdentifier()]);
+    this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);
   }
 
 }

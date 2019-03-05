@@ -6,16 +6,18 @@ import { NodesComponent } from './mongoose-set-up/set-up-steps/nodes/nodes.compo
 import { ScenariosComponent } from './mongoose-set-up/set-up-steps/scenarios-set-up/scenarios/scenarios.component';
 import { RunStatisticsComponent } from './run-statistics/run-statistics.component';
 import { RoutesList } from "./routes-list";
+import { RunStatisticLogsComponent } from "./run-statistics/run-statistic-logs/run-statistic-logs.component";
 
 
 export const routes: Routes = [
     { path: RoutesList.NODES, component: NodesComponent },
-    { path: RoutesList.RUNS, component: RunsTableTabsComponent,
+
+    { path: RoutesList.RUNS, component: RunsTableTabsComponent },
+
+    { path: RoutesList.RUN_STATISTICS + '/:id', component: RunStatisticsComponent,
       children: [
-      { path: 'run-details/:id', component: RunStatisticsComponent } 
-      ]
-    },
-    { path: 'run-details/:id', component: RunStatisticsComponent },
+        { path: 'logs', component: RunStatisticLogsComponent}
+      ] },
     { path: RoutesList.SCENARIO, component: ScenariosComponent},
     { path: "", redirectTo: RoutesList.RUNS, pathMatch: 'full'},
     { path: RoutesList.MONGOOSE_COMFIGURATION, component: ConfigurationEditingRootComponent},

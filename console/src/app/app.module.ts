@@ -26,6 +26,7 @@ import { SetUpFooterComponent } from './mongoose-set-up/set-up-footer/set-up-foo
 import { ControlApiService } from './core/services/control-api/control-api.service';
 import { MonitoringApiService } from './core/services/monitoring-api/monitoring-api.service';
 import { RunStatisticsComponent } from './run-statistics/run-statistics.component';
+import { RunStatisticLogsComponent } from './run-statistics/run-statistic-logs/run-statistic-logs.component';
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import { RunStatisticsComponent } from './run-statistics/run-statistics.componen
     ConfigurationEditingComponent,
     SetUpFooterComponent,
     RunStatisticsComponent,
+    RunStatisticLogsComponent,
     
   ],
   imports: [

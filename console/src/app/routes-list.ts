@@ -4,4 +4,5 @@ export class RoutesList {
     public static readonly RUNS = "runs";
     public static readonly SCENARIO = "control";
     public static readonly MONGOOSE_COMFIGURATION = "configuration-editing.component";
+    public static readonly RUN_STATISTICS = "run-statistics";
 }
