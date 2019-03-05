@@ -11,6 +11,10 @@ export class BasicTab {
         return this.id;
     }
 
+    public getName(): String { 
+        return this.name;
+    }
+    
     public getLink(): String { 
         return this.link;
     }

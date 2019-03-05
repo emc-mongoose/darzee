@@ -1,7 +1,8 @@
 <ul class="nav">
   <!-- TODO: Possible states are 'active' and 'disabled'. Make sure to impliment them. -->
-  <li class="nav-item" *ngFor="let metricName of metricsName">
-    <a class="nav-link" href="#"> {{ metricName }} </a>
+  <li class="nav-item" *ngFor="let metricTab of metricsTabs">
+    <a class="nav-link" href="#"
+    [ngClass]="metricTab.isActive ? 'selected-metric-item' : 'metric-item'"> {{ metricTab.getName() }} </a>
   </li>
 </ul>
 

@@ -3,3 +3,11 @@
     background-color: black;
     color: white;
 }
+
+.metric-item { 
+    color: #040030;
+}
+
+.selected-metric-item { 
+    color: #33b5e5;
+}
