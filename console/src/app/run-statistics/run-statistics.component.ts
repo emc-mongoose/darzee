@@ -51,7 +51,7 @@ export class RunStatisticsComponent implements OnInit {
       }
       section.isActive = false;
     });
-    this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.runRecord.getIdentifier() + '/logs']);
+    this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.runRecord.getIdentifier() + '/' + RoutesList.RUN_LOGS]);
 
   }
 

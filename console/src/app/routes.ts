@@ -16,7 +16,7 @@ export const routes: Routes = [
 
     { path: RoutesList.RUN_STATISTICS + '/:id', component: RunStatisticsComponent,
       children: [
-        { path: 'logs', component: RunStatisticLogsComponent}
+        { path: RoutesList.RUN_LOGS, component: RunStatisticLogsComponent}
       ] },
     { path: RoutesList.SCENARIO, component: ScenariosComponent},
     { path: "", redirectTo: RoutesList.RUNS, pathMatch: 'full'},
