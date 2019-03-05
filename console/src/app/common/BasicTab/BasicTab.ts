@@ -30,8 +30,8 @@ export class BasicTab {
 
     // MARK: - Public 
 
-    public isEqual(comparingTab: BasicTab) { 
-        return this.id == comparingTab.getId(); 
+    public isEqual(comparingTab): boolean { 
+        return (this.id == comparingTab.getId());
     }
 
     // MARK: - Private

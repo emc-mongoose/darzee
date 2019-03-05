@@ -13,10 +13,6 @@ export class RunStatisticsComponent implements OnInit {
 
   private readonly STATISTICS_SECTIONS: String[] = ["Logs", "Charts"];
   private statisticTabs: BasicTab[] = [];
-  private readonly SECTIONS = [
-    { name: "Logs", isSelected: true, url: '' },
-    { name: "Charts", isSelected: false, url: '' }
-  ]
 
   private routeParameters: any;
   private runRecord: MongooseRunRecord;
@@ -30,7 +26,6 @@ export class RunStatisticsComponent implements OnInit {
       let tab = new BasicTab(sectionName, TAB_LINK_MOCK);
       this.statisticTabs.push(tab);
     }
-
     this.statisticTabs[0].onTabSelected(); 
 
   }
@@ -38,6 +33,7 @@ export class RunStatisticsComponent implements OnInit {
   // MARK: - Lifecycle 
 
   ngOnInit() {
+    // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.params.subscribe(params => {
       // TODO: Move parameter name into constants 
       let displayingRecordId = params['id'];
@@ -51,9 +47,17 @@ export class RunStatisticsComponent implements OnInit {
 
   // MARK: - Public 
 
-  switchTab(targetTab) {
-    console.log(targetTab);
-    targetTab.isSelected = !targetTab.isSelected;
+  switchTab(targetTabId: BasicTab) {
+
+    this.statisticTabs.forEach(section => { 
+      // console.log("sectuin.getId():" + section.getId());
+
+      if (targetTabId.isEqual(section)) { 
+        section.isActive = true; 
+        return;
+      }
+      section.isActive = false;
+    })
   }
 
 }

@@ -23,8 +23,9 @@
 
 <!-- NOTE: Tabs that switches between run statistics (as for 04.03.2019, it's "Logs" and "Charts") -->
 <ul class="nav nav-tabs">
-  <li class="nav-item" role="tab" *ngFor="let section of SECTIONS">
-    <a class="nav-link" [ngClass]="section.isSelected ? 'active' : ''" (click)="switchTab(section)"> {{ section.name }}
+  <li class="nav-item" role="tab" *ngFor="let section of statisticTabs">
+    <a class="nav-link" [ngClass]="section.isActive ? 'active' : ''"
+     (click)="switchTab(section)"> {{ section.name }}
     </a>
   </li>
 </ul>
