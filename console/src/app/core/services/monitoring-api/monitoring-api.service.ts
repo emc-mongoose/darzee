@@ -2,15 +2,18 @@ import { Injectable } from '@angular/core';
 import { MongooseRunRecord } from '../../models/run-record.model';
 import { MongooseRunStatus } from '../../mongoose-run-status';
 import { RunDuration } from '../../run-duration';
+import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MonitoringApiService {
 
+  readonly LOGS_LINK_NAME = "link";
+
   private mongooseRunRecords: MongooseRunRecord[] = [];
 
-  constructor() {
+  constructor(private prometheusApiService: PrometheusApiService) {
     this.mongooseRunRecords = this.generateMongooseRunRecords();
   }
 
