@@ -1,3 +1,5 @@
+import { HttpHeaders } from "@angular/common/http";
+
 export namespace Constants { 
 
     // NOTE: Default filenames for files saved via UI
@@ -25,5 +27,18 @@ export namespace Constants {
     export class Configuration { 
         // TODO: Figure out how to run on multiple nodes 
         static readonly MONGOOSE_HOST_IP = "localhost:9999" 
+
+        // TODO: read port from .env file 
+        static readonly PROMETHEUS_PORT = 9090;
+        static readonly PROMETHEUS_IP = "localhost:" + Constants.Configuration.PROMETHEUS_PORT; 
+    }
+
+    export class Http { 
+        
+        static readonly JSON_CONTENT_TYPE = {
+            headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+          };
+
+          static readonly HTTP_PREFIX = "http://";
     }
 }

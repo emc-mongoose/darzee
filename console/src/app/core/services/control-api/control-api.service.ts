@@ -13,11 +13,6 @@ export class ControlApiService {
 
   mongooseSlaveNodes: String[] = [];
 
-  readonly HTTP_PREFIX = "http://";
-  readonly JSON_CONTENT_TYPE = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  };
-
   constructor(private http: HttpClient) {
     this.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP);
   }
@@ -31,7 +26,7 @@ export class ControlApiService {
     let formData = new FormData();
     formData.append('defaults', jsonConfiguration.toString());
 
-    this.http.post(this.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeaderForJsonFile()).subscribe(
+    this.http.post(Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeaderForJsonFile()).subscribe(
       error => {
         alert("Unable to run Mongoose. Reason: " + error);
       });
@@ -40,7 +35,7 @@ export class ControlApiService {
   // NOTE: Returning Mongoose configuration as JSON 
   getMongooseConfiguration(mongooseHostIp: string): any {
     const configEndpoint = "/config";
-    return this.http.get(this.HTTP_PREFIX + mongooseHostIp + configEndpoint, this.JSON_CONTENT_TYPE);
+    return this.http.get(Constants.Http.HTTP_PREFIX + mongooseHostIp + configEndpoint, Constants.Http.JSON_CONTENT_TYPE);
   }
 
 
