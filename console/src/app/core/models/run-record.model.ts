@@ -3,7 +3,6 @@ import { MongooseRunStatus } from '../mongoose-run-status';
 
 export class MongooseRunRecord { 
 
-    private readonly id: number;
     private readonly loadStepId: String;
     public status: MongooseRunStatus;
     public startTime: String;
@@ -14,7 +13,6 @@ export class MongooseRunRecord {
 
     constructor(loadStepId: String, status: MongooseRunStatus,  startTime: String, nodes: String[],  duration: string, comment: String) { 
         this.loadStepId = loadStepId;
-        this.id = MongooseRecordIdFabric.generateIdentifier();
         this.status = status;
         this.startTime = startTime;
         this.nodes = nodes;
@@ -27,8 +25,8 @@ export class MongooseRunRecord {
         return this.duration;
     }
 
-    getIdentifier(): number { 
-        return this.id;
+    getIdentifier(): String { 
+        return this.loadStepId;
     }
 
     getNodesList(): String[] { 
@@ -40,12 +38,4 @@ export class MongooseRunRecord {
     }
 
     // MARK: - Private 
-}
-
-class MongooseRecordIdFabric { 
-    static id: number = 0; 
-
-    static generateIdentifier(): number { 
-        return ++MongooseRecordIdFabric.id; 
-    }
 }

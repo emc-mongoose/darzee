@@ -30,7 +30,7 @@ export class MonitoringApiService {
     return this.behaviorSubjectRunRecords.asObservable();
   }
 
-  public getMongooseRunRecordById(id: number): MongooseRunRecord {
+  public getMongooseRunRecordById(id: String): MongooseRunRecord {
     let targerRecord: MongooseRunRecord;
     this.mongooseRunRecords.filter(record => {
       if (record.getIdentifier() == id) {
