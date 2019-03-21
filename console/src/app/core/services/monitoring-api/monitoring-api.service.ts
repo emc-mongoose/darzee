@@ -56,7 +56,6 @@ export class MonitoringApiService {
   public getObservableMongooseRunRecords() {
     let mongooseMetricMock = "mongoose_duration_count";
     return this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(metricsArray => {
-      console.log("[getObservableMongooseRunRecords] metricsArray: ", metricsArray);
       var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
 
       this.behaviorSubjectRunRecords.next(fetchedRunRecords);
@@ -70,25 +69,23 @@ export class MonitoringApiService {
 
   private extractRunRecordsFromMetricLabels(rawMongooseRunData: any): MongooseRunRecord[] {
 
-    console.log("rawMongooseRunData:", JSON.stringify(rawMongooseRunData));
-    // console.log("[extracting] rawRunData: ", rawRunData);
-
-
     var runRecords: MongooseRunRecord[] = [];
+
+    // NOTE: Looping throught found Mongoose Run Records 
     for (var processingRunIndex in rawMongooseRunData) {
+      // NOTE: Static run data contains non-computed values of Mongoose Run. 
       let metricsTag = "metric";
-      // NOTE: Raw run data contains non-computed data about Mongoose run.
       let staticRunData = rawMongooseRunData[processingRunIndex][metricsTag];
+
+      // MARK: - Retrieving static data 
       let idTag = "load_step_id";
       let loadStepId = this.fetchLabelValue(staticRunData, idTag);
 
       let startTimeTag = "start_time";
       let startTime = this.fetchLabelValue(staticRunData, startTimeTag);
-      console.log("staticRunData: ", staticRunData);
 
       // TODO: get actual status & duration
       let statusMock = MongooseRunStatus.Running;
-      let durationMock = new RunDuration(startTime, "endTime");
 
       let nodesListTag = "nodes_list";
       let nodesList = this.fetchLabelValue(staticRunData, nodesListTag);
@@ -101,14 +98,12 @@ export class MonitoringApiService {
       // ... As for 21.03.2019, it's duration (position 0) and san index (position 1)
       let valuesTag = "value";
       let computedRunData = rawMongooseRunData[processingRunIndex][valuesTag];
-      console.log("rawRunComputedValues: ", computedRunData);
 
+      // MARK: - Retrieving computed data.
       let durationIndex = 0; 
       let duration = computedRunData[durationIndex];
 
       let currentRunRecord = new MongooseRunRecord(loadStepId, statusMock, startTime, nodesList, duration, userComment);
-      console.log("currentRunRecord: ", currentRunRecord);
-
       runRecords.push(currentRunRecord);
     }
 
