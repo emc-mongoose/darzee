@@ -9,10 +9,10 @@ export class MongooseRunRecord {
     public startTime: String;
     public nodes: String[];
     public comment: String;
-    private duration: RunDuration;
+    private duration: string;
 
 
-    constructor(loadStepId: String, status: MongooseRunStatus,  startTime: String, nodes: String[],  duration: RunDuration, comment: String) { 
+    constructor(loadStepId: String, status: MongooseRunStatus,  startTime: String, nodes: String[],  duration: string, comment: String) { 
         this.loadStepId = loadStepId;
         this.id = MongooseRecordIdFabric.generateIdentifier();
         this.status = status;
@@ -24,7 +24,7 @@ export class MongooseRunRecord {
 
     // MARK: - Public
     getDuration(): string { 
-        return this.duration.getDuration();
+        return this.duration;
     }
 
     getIdentifier(): number { 
