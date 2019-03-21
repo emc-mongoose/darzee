@@ -84,7 +84,7 @@ export class MonitoringApiService {
       let startTimeTag = "start_time";
       let startTime = this.fetchLabelValue(staticRunData, startTimeTag);
 
-      // TODO: get actual status & duration
+      // TODO: get actual status 
       let statusMock = MongooseRunStatus.Running;
 
       let nodesListTag = "nodes_list";

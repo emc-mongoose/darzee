@@ -30,6 +30,16 @@ export class MongooseRunRecord {
     getIdentifier(): number { 
         return this.id;
     }
+
+    getNodesList(): String[] { 
+        return this.nodes;
+    }
+
+    getComment(): String { 
+        return this.comment;
+    }
+
+    // MARK: - Private 
 }
 
 class MongooseRecordIdFabric { 

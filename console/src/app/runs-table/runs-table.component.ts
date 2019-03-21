@@ -13,6 +13,8 @@ import { RoutesList } from '../Routing/routes-list';
 
 export class RunsTableComponent implements OnInit {
 
+  readonly EMPTY_FIELD_DEFAULT_TAG = "-";
+
   @Input() mongooseRunRecords: MongooseRunRecord[];  
 
   readonly columnHeaders = [
@@ -29,8 +31,27 @@ export class RunsTableComponent implements OnInit {
 
   ngOnInit() {  }
 
+  // MARK: - Public 
+
   onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) { 
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);
+  }
+
+  getNodesList(record: MongooseRunRecord): String[] { 
+    var result: String[] = []; 
+    if (record.getNodesList().length == 0) { 
+      result.push(this.EMPTY_FIELD_DEFAULT_TAG);
+      return result;
+    }
+    return record.getNodesList();
+  }
+
+  getComment(record: MongooseRunRecord): String { 
+    var comment = record.getComment(); 
+    let emptyValue = ""; 
+    let isCommentEmpty = (comment === emptyValue);
+
+    return (isCommentEmpty ? this.EMPTY_FIELD_DEFAULT_TAG : comment);
   }
 
 }

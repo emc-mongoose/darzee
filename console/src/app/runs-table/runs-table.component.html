@@ -22,12 +22,12 @@
 
         <td> {{ runRecord.startTime }} </td>
         <td> 
-          <a *ngFor="let node of runRecord.nodes">
+          <a *ngFor="let node of this.getNodesList(runRecord)">
             {{ node }}
           </a>
         </td>
         <td> {{ runRecord.getDuration() }} </td>
-        <td> {{ runRecord.comment }} </td>
+        <td> {{ this.getComment(runRecord) }} </td>
       </tr>
     </tbody>
   </table>
