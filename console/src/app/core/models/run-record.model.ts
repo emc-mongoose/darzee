@@ -4,6 +4,7 @@ import { MongooseRunStatus } from '../mongoose-run-status';
 export class MongooseRunRecord { 
 
     private readonly id: number;
+    private readonly loadStepId: String;
     public status: MongooseRunStatus;
     public startTime: String;
     public nodes: String[];
@@ -11,7 +12,8 @@ export class MongooseRunRecord {
     private duration: RunDuration;
 
 
-    constructor(status: MongooseRunStatus,  startTime: String, nodes: String[],  duration: RunDuration, comment: String) { 
+    constructor(loadStepId: String, status: MongooseRunStatus,  startTime: String, nodes: String[],  duration: RunDuration, comment: String) { 
+        this.loadStepId = loadStepId;
         this.id = MongooseRecordIdFabric.generateIdentifier();
         this.status = status;
         this.startTime = startTime;
