@@ -3,16 +3,18 @@ import { MongooseRunStatus } from '../mongoose-run-status';
 
 export class MongooseRunRecord { 
 
-    private readonly id: number;
+    readonly DEFAULT_VALUE = "-";
+
+    private readonly loadStepId: String;
     public status: MongooseRunStatus;
     public startTime: String;
     public nodes: String[];
     public comment: String;
-    private duration: RunDuration;
+    private duration: string;
 
 
-    constructor(status: MongooseRunStatus,  startTime: String, nodes: String[],  duration: RunDuration, comment: String) { 
-        this.id = MongooseRecordIdFabric.generateIdentifier();
+    constructor(loadStepId: String, status: MongooseRunStatus,  startTime: String, nodes: String[],  duration: string, comment: String) { 
+        this.loadStepId = loadStepId;
         this.status = status;
         this.startTime = startTime;
         this.nodes = nodes;
@@ -22,18 +24,27 @@ export class MongooseRunRecord {
 
     // MARK: - Public
     getDuration(): string { 
-        return this.duration.getDuration();
+        if (this.duration == "") { 
+            return this.DEFAULT_VALUE;
+        }
+        return this.duration;
     }
 
-    getIdentifier(): number { 
-        return this.id;
+    getIdentifier(): String { 
+        return this.loadStepId;
     }
-}
 
-class MongooseRecordIdFabric { 
-    static id: number = 0; 
-
-    static generateIdentifier(): number { 
-        return ++MongooseRecordIdFabric.id; 
+    getNodesList(): String[] { 
+        if (this.nodes.length == 0) { 
+            return [this.DEFAULT_VALUE];
+        }
+        return this.nodes;
     }
+
+    getComment(): String { 
+        let isEmpty: boolean = (this.comment == "");
+        return (isEmpty ? this. DEFAULT_VALUE : this.comment)
+    }
+
+    // MARK: - Private 
 }

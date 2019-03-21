@@ -13,6 +13,8 @@ import { RoutesList } from '../Routing/routes-list';
 
 export class RunsTableComponent implements OnInit {
 
+  readonly EMPTY_FIELD_DEFAULT_TAG = "-";
+
   @Input() mongooseRunRecords: MongooseRunRecord[];  
 
   readonly columnHeaders = [
@@ -28,6 +30,8 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Lifecycle 
 
   ngOnInit() {  }
+
+  // MARK: - Public 
 
   onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) { 
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);

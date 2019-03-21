@@ -18,7 +18,7 @@ export class RunsTableTabsComponent implements OnInit {
 
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
   runTabs: MongooseRunTab[] = [];
-  displayingRunRecords: MongooseRunRecord[]; 
+  displayingRunRecords: MongooseRunRecord[] = []; 
 
   constructor(private monitoringApiService: MonitoringApiService) { }
 
@@ -33,7 +33,11 @@ export class RunsTableTabsComponent implements OnInit {
     // NOTE: Tab "All" is selected by default. 
     this.runTabs[0].isSelected = true; 
 
-    this.displayingRunRecords = this.monitoringApiService.getMongooseRunRecords();
+    this.monitoringApiService.getMongooseRunRecords().subscribe(updatedRecords => { 
+      this.displayingRunRecords = updatedRecords;
+      console.log("Run table update. Value: ", updatedRecords);
+    })
+  //  this.displayingRunRecords = this.monitoringApiService.mongooseRunRecords;
   }
 
   // MARK: - Public 
@@ -53,7 +57,7 @@ export class RunsTableTabsComponent implements OnInit {
   }
 
   hasSavedRunRecords(): boolean { 
-    return (this.monitoringApiService.getMongooseRunRecords().length > 0);
+    return (this.monitoringApiService.getExistingRunRecords().length > 0);
   }
 
 }

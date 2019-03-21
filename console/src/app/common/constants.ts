@@ -25,12 +25,14 @@ export namespace Constants {
     }
 
     export class Configuration { 
+        // TODO: Fetch Mongoose port from .env file 
+        static readonly MONGOOSE_PORT = 9999;
         // TODO: Figure out how to run on multiple nodes 
-        static readonly MONGOOSE_HOST_IP = "localhost:9999" 
+        static readonly MONGOOSE_HOST_IP = "localhost:" + Configuration.MONGOOSE_PORT; 
 
         // TODO: read port from .env file 
         static readonly PROMETHEUS_PORT = 9090;
-        static readonly PROMETHEUS_IP = "localhost:" + Constants.Configuration.PROMETHEUS_PORT; 
+        static readonly PROMETHEUS_IP = "localhost:" + Configuration.PROMETHEUS_PORT; 
     }
 
     export class Http { 
