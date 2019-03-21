@@ -3,6 +3,8 @@ import { MongooseRunRecord } from '../../models/run-record.model';
 import { MongooseRunStatus } from '../../mongoose-run-status';
 import { RunDuration } from '../../run-duration';
 import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,11 +14,17 @@ export class MonitoringApiService {
   readonly LOGS_LINK_NAME = "link";
 
   private mongooseRunRecords: MongooseRunRecord[] = [];
+  private behaviorSubjectRunRecords: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
 
   constructor(private prometheusApiService: PrometheusApiService) {
     this.mongooseRunRecords = this.generateMongooseRunRecords();
 
-    this.fetchRunsList();
+    //this.fetchRunsList();
+
+    this.getObservableMongooseRunRecords();
+    this.behaviorSubjectRunRecords.subscribe(updatedRecordsList => { 
+      console.log("new records list: " + JSON.stringify(updatedRecordsList));
+    })
 
   }
 
@@ -49,7 +57,66 @@ export class MonitoringApiService {
       "Average Metrics", "Summary metrics", "Op traces"];
   }
 
+  public getObservableMongooseRunRecords() {
+    let mongooseMetricMock = "mongoose_duration_count";
+    return this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(metricsArray => { 
+      console.log("[getObservableMongooseRunRecords] metricsArray: ", metricsArray);
+      var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
+      
+      this.behaviorSubjectRunRecords.next(fetchedRunRecords);
+
+    })
+      
+    
+  }
+
   // MARK: - Private 
+
+  private extractRunRecordsFromMetricLabels(rawMongooseRunData: any): MongooseRunRecord[] { 
+
+    console.log("rawMongooseRunData:", JSON.stringify(rawMongooseRunData));
+    // console.log("[extracting] rawRunData: ", rawRunData);
+
+    // NOTE: Any computed info is stored within "value" field of JSON. ...
+    // ... As for 21.03.2019, it's duration (position 0) and san index (position 1)
+    let valuesTag = "value";
+    let rawRunResult = rawMongooseRunData[valuesTag];
+
+    var runRecords: MongooseRunRecord[] = []; 
+    for (var rawRunInfo in rawMongooseRunData) { 
+      let metricsTag = "metric";
+      // NOTE: Raw run data contains non-computed data about Mongoose run.
+      let rawRunData = rawMongooseRunData[metricsTag];
+      let idTag = "load_step_id";
+      let id = rawRunInfo[idTag];
+  
+      let startTimeTag = "start_time";
+      let startTime = rawRunInfo[startTimeTag];
+
+      // TODO: get actual status & duration
+      let statusMock = MongooseRunStatus.Running;
+      let durationMock = new RunDuration(startTime, "endTime");
+  
+  
+
+  
+      let nodesListTag = "nodes_list";
+      let nodesList = rawRunInfo[nodesListTag];
+  
+      let userCommentTag = "user_comment";
+      let userComment = rawRunInfo[userCommentTag];
+
+
+      // TODO: Add load step ID 
+      let currentRunRecord = new MongooseRunRecord(statusMock, startTime, nodesList, durationMock, userComment);
+      console.log("currentRunRecord: ", currentRunRecord);
+      runRecords.push(currentRunRecord);
+  
+    }
+   
+    return runRecords;
+   
+  }
 
   // NOTE: Returning a hard-coded list in order to test the UI first. 
   private generateMongooseRunRecords(): MongooseRunRecord[] {
