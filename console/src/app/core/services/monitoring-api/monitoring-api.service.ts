@@ -22,7 +22,7 @@ export class MonitoringApiService {
     //this.fetchRunsList();
 
     this.getObservableMongooseRunRecords();
-    this.behaviorSubjectRunRecords.subscribe(updatedRecordsList => { 
+    this.behaviorSubjectRunRecords.subscribe(updatedRecordsList => {
       this.mongooseRunRecords = updatedRecordsList;
       console.log("new records list: " + JSON.stringify(updatedRecordsList));
     })
@@ -53,27 +53,27 @@ export class MonitoringApiService {
 
 
   // NOTE: Returning hard-coded metrics name in order to test the UI first.
-  public getMetricName(): String[] { 
-    return ["Configuration", "Messages", "Errors", 
+  public getMetricName(): String[] {
+    return ["Configuration", "Messages", "Errors",
       "Average Metrics", "Summary metrics", "Op traces"];
   }
 
   public getObservableMongooseRunRecords() {
     let mongooseMetricMock = "mongoose_duration_count";
-    return this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(metricsArray => { 
+    return this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(metricsArray => {
       console.log("[getObservableMongooseRunRecords] metricsArray: ", metricsArray);
       var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
-      
+
       this.behaviorSubjectRunRecords.next(fetchedRunRecords);
 
     })
-      
-    
+
+
   }
 
   // MARK: - Private 
 
-  private extractRunRecordsFromMetricLabels(rawMongooseRunData: any): MongooseRunRecord[] { 
+  private extractRunRecordsFromMetricLabels(rawMongooseRunData: any): MongooseRunRecord[] {
 
     console.log("rawMongooseRunData:", JSON.stringify(rawMongooseRunData));
     // console.log("[extracting] rawRunData: ", rawRunData);
@@ -83,42 +83,46 @@ export class MonitoringApiService {
     let valuesTag = "value";
     let rawRunResult = rawMongooseRunData[valuesTag];
 
-    var runRecords: MongooseRunRecord[] = []; 
-    for (var rawRunInfo in rawMongooseRunData) { 
+    var runRecords: MongooseRunRecord[] = [];
+    for (var rawRunInfo in rawMongooseRunData) {
       let metricsTag = "metric";
       // NOTE: Raw run data contains non-computed data about Mongoose run.
-      let rawRunData = rawMongooseRunData[metricsTag];
+      let rawRunData = rawMongooseRunData[rawRunInfo][metricsTag];
       let idTag = "load_step_id";
-      let id = rawRunInfo[idTag];
-  
+      let id = this.fetchLabelValue(rawRunData, idTag);
+
       let startTimeTag = "start_time";
-      let startTime = rawRunInfo[startTimeTag];
+      let startTime = this.fetchLabelValue(rawRunData, startTimeTag);
+      console.log("rawRunData: ", rawRunData);
 
       // TODO: get actual status & duration
       let statusMock = MongooseRunStatus.Running;
       let durationMock = new RunDuration(startTime, "endTime");
-  
-  
 
-  
       let nodesListTag = "nodes_list";
-      let nodesList = rawRunInfo[nodesListTag];
-  
+      let nodesList = this.fetchLabelValue(rawRunData, nodesListTag);
+
       let userCommentTag = "user_comment";
-      let userComment = rawRunInfo[userCommentTag];
+      let userComment = this.fetchLabelValue(rawRunData, userCommentTag);
 
 
       // TODO: Add load step ID 
       let currentRunRecord = new MongooseRunRecord(statusMock, startTime, nodesList, durationMock, userComment);
       console.log("currentRunRecord: ", currentRunRecord);
       runRecords.push(currentRunRecord);
-  
+
     }
-   
+
     return runRecords;
-   
+
   }
 
+  private fetchLabelValue(metricJson: any, label: string): any {
+    let targetValue = metricJson[label];
+    var isValueEmpty: Boolean = (targetValue == undefined);
+    let emptyValue = "";
+    return isValueEmpty ? emptyValue : targetValue;
+  }
   // NOTE: Returning a hard-coded list in order to test the UI first. 
   private generateMongooseRunRecords(): MongooseRunRecord[] {
     var resultRunList: MongooseRunRecord[] = [];
@@ -147,9 +151,9 @@ export class MonitoringApiService {
     return currentDateTime.toString(hexNumericSystemBase);
   }
 
-  private fetchRunsList() { 
+  private fetchRunsList() {
     let mongooseMetricMock = "mongoose_duration_count";
-    this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(labels => { 
+    this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(labels => {
       console.log("labels: ", labels);
     })
   }
