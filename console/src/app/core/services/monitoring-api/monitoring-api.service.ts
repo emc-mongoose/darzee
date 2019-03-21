@@ -13,7 +13,7 @@ export class MonitoringApiService {
 
   readonly LOGS_LINK_NAME = "link";
 
-  public mongooseRunRecords: MongooseRunRecord[] = [];
+  private mongooseRunRecords: MongooseRunRecord[] = [];
   private behaviorSubjectRunRecords: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
 
   constructor(private prometheusApiService: PrometheusApiService) {
@@ -25,6 +25,10 @@ export class MonitoringApiService {
   }
 
   // MARK: - Public
+
+  public getExistingRunRecords(): MongooseRunRecord[] { 
+    return this.mongooseRunRecords;
+  }
 
   public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
     return this.behaviorSubjectRunRecords.asObservable();

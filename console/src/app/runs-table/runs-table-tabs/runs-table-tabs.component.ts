@@ -57,7 +57,7 @@ export class RunsTableTabsComponent implements OnInit {
   }
 
   hasSavedRunRecords(): boolean { 
-    return (this.monitoringApiService.mongooseRunRecords.length > 0);
+    return (this.monitoringApiService.getExistingRunRecords().length > 0);
   }
 
 }

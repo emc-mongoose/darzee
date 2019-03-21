@@ -25,12 +25,13 @@ export class MongooseRunTab {
     // MARK: - Private 
 
     private filterRunRecordsByStatus(requiredStatus: string): MongooseRunRecord[] {
+        let existingRunRecords = this.monitoringApiService.getExistingRunRecords();
         if (requiredStatus.toString() == MongooseRunStatus.All) { 
-            return this.monitoringApiService.mongooseRunRecords;
+            return existingRunRecords;
           }
           // NOTE: Iterating over existing tabs, filtring them by 'status' property.
           var requiredRecords: MongooseRunRecord[] = [];
-          for (var runRecord of this.monitoringApiService.mongooseRunRecords) { 
+          for (var runRecord of existingRunRecords) { 
             if (runRecord.status == requiredStatus) { 
                 requiredRecords.push(runRecord);
             }
