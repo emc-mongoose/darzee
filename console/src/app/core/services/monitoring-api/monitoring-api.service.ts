@@ -4,24 +4,17 @@ import { MongooseRunStatus } from '../../mongoose-run-status';
 import { RunDuration } from '../../run-duration';
 import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MonitoringApiService {
 
-  readonly LOGS_LINK_NAME = "link";
-
   private mongooseRunRecords: MongooseRunRecord[] = [];
   private behaviorSubjectRunRecords: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
 
   constructor(private prometheusApiService: PrometheusApiService) {
-    this.getObservableMongooseRunRecords();
-    this.behaviorSubjectRunRecords.subscribe(updatedRecordsList => {
-      this.mongooseRunRecords = updatedRecordsList;
-    })
-
+    this.setUpService();
   }
 
   // MARK: - Public
@@ -55,18 +48,6 @@ export class MonitoringApiService {
   public getMetricName(): String[] {
     return ["Configuration", "Messages", "Errors",
       "Average Metrics", "Summary metrics", "Op traces"];
-  }
-
-  public getObservableMongooseRunRecords() {
-    let mongooseMetricMock = "mongoose_duration_count";
-    return this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(metricsArray => {
-      var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
-
-      this.behaviorSubjectRunRecords.next(fetchedRunRecords);
-
-    })
-
-
   }
 
   // MARK: - Private 
@@ -121,6 +102,7 @@ export class MonitoringApiService {
     let emptyValue = "";
     return isValueEmpty ? emptyValue : targetValue;
   }
+
   // NOTE: Returning a hard-coded list in order to test the UI first. 
   private generateMongooseRunRecords(): MongooseRunRecord[] {
     var resultRunList: MongooseRunRecord[] = [];
@@ -150,10 +132,23 @@ export class MonitoringApiService {
     return currentDateTime.toString(hexNumericSystemBase);
   }
 
-  private fetchRunsList() {
+  // NOTE: An initial fetch of Mongoose Run Records.
+  private fetchMongooseRunRecords() {
     let mongooseMetricMock = "mongoose_duration_count";
-    this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(labels => {
-      console.log("labels: ", labels);
+    return this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(metricsArray => {
+      var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
+      this.behaviorSubjectRunRecords.next(fetchedRunRecords);
+    })
+  }
+
+
+  // NOTE: Setting up service's observables 
+  private setUpService() { 
+    this.fetchMongooseRunRecords();
+
+    // NOTE: Adding behavior subject on Mongoose Run Records in order to detect changes within the list. 
+    this.behaviorSubjectRunRecords.subscribe(updatedRecordsList => {
+      this.mongooseRunRecords = updatedRecordsList;
     })
   }
 
