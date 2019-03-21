@@ -15,6 +15,9 @@ export class MonitoringApiService {
 
   constructor(private prometheusApiService: PrometheusApiService) {
     this.mongooseRunRecords = this.generateMongooseRunRecords();
+
+    this.fetchRunsList();
+
   }
 
   // MARK: - Public
@@ -75,4 +78,12 @@ export class MonitoringApiService {
     const hexNumericSystemBase = 16;
     return currentDateTime.toString(hexNumericSystemBase);
   }
+
+  private fetchRunsList() { 
+    let mongooseMetricMock = "mongoose_duration_count";
+    this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(labels => { 
+      console.log("labels: ", labels);
+    })
+  }
+
 }
