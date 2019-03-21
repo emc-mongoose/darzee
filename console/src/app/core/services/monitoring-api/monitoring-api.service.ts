@@ -13,16 +13,17 @@ export class MonitoringApiService {
 
   readonly LOGS_LINK_NAME = "link";
 
-  private mongooseRunRecords: MongooseRunRecord[] = [];
+  public mongooseRunRecords: MongooseRunRecord[] = [];
   private behaviorSubjectRunRecords: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
 
   constructor(private prometheusApiService: PrometheusApiService) {
-    this.mongooseRunRecords = this.generateMongooseRunRecords();
+    // this.mongooseRunRecords = this.generateMongooseRunRecords();
 
     //this.fetchRunsList();
 
     this.getObservableMongooseRunRecords();
     this.behaviorSubjectRunRecords.subscribe(updatedRecordsList => { 
+      this.mongooseRunRecords = updatedRecordsList;
       console.log("new records list: " + JSON.stringify(updatedRecordsList));
     })
 
@@ -30,13 +31,13 @@ export class MonitoringApiService {
 
   // MARK: - Public
 
-  public getMongooseRunRecords(): MongooseRunRecord[] {
-    return this.mongooseRunRecords;
+  public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
+    return this.behaviorSubjectRunRecords.asObservable();
   }
 
   public getMongooseRunRecordById(id: number): MongooseRunRecord {
     let targerRecord: MongooseRunRecord;
-    this.getMongooseRunRecords().filter(record => {
+    this.mongooseRunRecords.filter(record => {
       if (record.getIdentifier() == id) {
         targerRecord = record;
       }
