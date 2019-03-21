@@ -3,6 +3,8 @@ import { MongooseRunStatus } from '../mongoose-run-status';
 
 export class MongooseRunRecord { 
 
+    readonly DEFAULT_VALUE = "-";
+
     private readonly loadStepId: String;
     public status: MongooseRunStatus;
     public startTime: String;
@@ -22,6 +24,9 @@ export class MongooseRunRecord {
 
     // MARK: - Public
     getDuration(): string { 
+        if (this.duration == "") { 
+            return this.DEFAULT_VALUE;
+        }
         return this.duration;
     }
 
@@ -30,11 +35,15 @@ export class MongooseRunRecord {
     }
 
     getNodesList(): String[] { 
+        if (this.nodes.length == 0) { 
+            return [this.DEFAULT_VALUE];
+        }
         return this.nodes;
     }
 
     getComment(): String { 
-        return this.comment;
+        let isEmpty: boolean = (this.comment == "");
+        return (isEmpty ? this. DEFAULT_VALUE : this.comment)
     }
 
     // MARK: - Private 
