@@ -17,6 +17,10 @@ export class MonitoringApiService {
 
   private mongooseRunRecords: MongooseRunRecord[] = [];
   private behaviorSubjectRunRecords: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
+  
+  // NOTE: availableLogs is a list of logs provided by Mongoose. Key is REST API's endpoint for fetching the log, ...
+  // ... value is a displaying name. 
+  private availableLogs: Map<String, String> = new Map<String, String>(); 
 
   constructor(private prometheusApiService: PrometheusApiService,
     private http: HttpClient) {
@@ -51,9 +55,9 @@ export class MonitoringApiService {
 
 
   // NOTE: Returning hard-coded metrics name in order to test the UI first.
-  public getMetricName(): String[] {
-    return ["Configuration", "Messages", "Errors",
-      "Average Metrics", "Summary metrics", "Op traces"];
+  public getAvailableLogNames(): String[] {
+    let availableLogsName = Array.from(this.availableLogs.values());
+    return availableLogsName;
   }
 
   public getLog(stepId: String, logName: String): Observable<any> { 
@@ -157,11 +161,22 @@ export class MonitoringApiService {
   // NOTE: Setting up service's observables 
   private setUpService() { 
     this.fetchMongooseRunRecords();
+    this.configurateAvailableLogs(); 
 
     // NOTE: Adding behavior subject on Mongoose Run Records in order to detect changes within the list. 
     this.behaviorSubjectRunRecords.subscribe(updatedRecordsList => {
       this.mongooseRunRecords = updatedRecordsList;
     })
+  }
+
+  private configurateAvailableLogs() { 
+    // NOTE: Key is a REST API endpoint's name, value is displaying name. 
+    // NOTE: Endpoints can be found at https://github.com/emc-mongoose/mongoose/tree/master/doc/interfaces/api/remote#logs
+    this.availableLogs.set("Config", "Configuration");
+    this.availableLogs.set("Cli", "Command line arguments dump");
+    this.availableLogs.set("Error", "Error messages");
+    this.availableLogs.set("OpTraces", "Load operation traces");
+    this.availableLogs.set("metrics.File", "Load step periodic metrics");
   }
 
 }
