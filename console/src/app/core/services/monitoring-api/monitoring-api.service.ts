@@ -17,10 +17,10 @@ export class MonitoringApiService {
 
   private mongooseRunRecords: MongooseRunRecord[] = [];
   private behaviorSubjectRunRecords: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
-  
+
   // NOTE: availableLogs is a list of logs provided by Mongoose. Key is REST API's endpoint for fetching the log, ...
   // ... value is a displaying name. 
-  private availableLogs: Map<String, String> = new Map<String, String>(); 
+  private availableLogs: Map<String, String> = new Map<String, String>();
 
   constructor(private prometheusApiService: PrometheusApiService,
     private http: HttpClient) {
@@ -29,7 +29,7 @@ export class MonitoringApiService {
 
   // MARK: - Public
 
-  public getExistingRunRecords(): MongooseRunRecord[] { 
+  public getExistingRunRecords(): MongooseRunRecord[] {
     return this.mongooseRunRecords;
   }
 
@@ -60,7 +60,18 @@ export class MonitoringApiService {
     return availableLogsName;
   }
 
-  public getLog(stepId: String, logName: String): Observable<any> { 
+  public getLogApiEndpoint(displayingLogName: String): String {
+    // NOTE: Finding first matching key. Key is an API's endpoint.
+    var targetEndpoint: String = "";
+    Array.from(this.availableLogs.keys()).forEach(key => {
+      if (this.availableLogs.get(key) == displayingLogName) {
+        targetEndpoint = key;
+      }
+    });
+    return targetEndpoint;
+  }
+
+  public getLog(stepId: String, logName: String): Observable<any> {
     let logsEndpoint = "/logs";
     let delimiter = "/";
     return this.http.get(this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName);
@@ -101,7 +112,7 @@ export class MonitoringApiService {
       let computedRunData = rawMongooseRunData[processingRunIndex][valuesTag];
 
       // MARK: - Retrieving computed data.
-      let durationIndex = 0; 
+      let durationIndex = 0;
       let duration = computedRunData[durationIndex];
 
       let currentRunRecord = new MongooseRunRecord(loadStepId, statusMock, startTime, nodesList, duration, userComment);
@@ -159,9 +170,9 @@ export class MonitoringApiService {
 
 
   // NOTE: Setting up service's observables 
-  private setUpService() { 
+  private setUpService() {
     this.fetchMongooseRunRecords();
-    this.configurateAvailableLogs(); 
+    this.configurateAvailableLogs();
 
     // NOTE: Adding behavior subject on Mongoose Run Records in order to detect changes within the list. 
     this.behaviorSubjectRunRecords.subscribe(updatedRecordsList => {
@@ -169,7 +180,7 @@ export class MonitoringApiService {
     })
   }
 
-  private configurateAvailableLogs() { 
+  private configurateAvailableLogs() {
     // NOTE: Key is a REST API endpoint's name, value is displaying name. 
     // NOTE: Endpoints can be found at https://github.com/emc-mongoose/mongoose/tree/master/doc/interfaces/api/remote#logs
     this.availableLogs.set("Config", "Configuration");

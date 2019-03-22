@@ -47,8 +47,9 @@ export class RunStatisticLogsComponent implements OnInit {
   // MARK: - Public
 
   changeDisplayingLog(selectedTabName) { 
-    this.monitoringApiService.getLog(this.processingRunRecord.getIdentifier(), selectedTabName).subscribe(logs => { 
-      this.displayingLog = logs;
+    let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(selectedTabName);
+    this.monitoringApiService.getLog(this.processingRunRecord.getIdentifier(), logApiEndpoint).subscribe(logs => { 
+      this.displayingLog = JSON.stringify(logs);
     });
   }
 
