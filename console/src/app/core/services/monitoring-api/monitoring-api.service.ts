@@ -4,16 +4,22 @@ import { MongooseRunStatus } from '../../mongoose-run-status';
 import { RunDuration } from '../../run-duration';
 import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Constants } from 'src/app/common/constants';
+import { del } from 'selenium-webdriver/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MonitoringApiService {
 
+  private readonly MONGOOSE_HTTP_ADDRESS = Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP;
+
   private mongooseRunRecords: MongooseRunRecord[] = [];
   private behaviorSubjectRunRecords: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
 
-  constructor(private prometheusApiService: PrometheusApiService) {
+  constructor(private prometheusApiService: PrometheusApiService,
+    private http: HttpClient) {
     this.setUpService();
   }
 
@@ -48,6 +54,12 @@ export class MonitoringApiService {
   public getMetricName(): String[] {
     return ["Configuration", "Messages", "Errors",
       "Average Metrics", "Summary metrics", "Op traces"];
+  }
+
+  public getLog(stepId: String, logName: String): Observable<any> { 
+    let logsEndpoint = "/logs";
+    let delimiter = "/";
+    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName);
   }
 
   // MARK: - Private 

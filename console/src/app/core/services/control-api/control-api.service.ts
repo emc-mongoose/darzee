@@ -34,7 +34,7 @@ export class ControlApiService {
 
   // NOTE: Returning Mongoose configuration as JSON 
   getMongooseConfiguration(mongooseHostIp: string): any {
-    const configEndpoint = "/config";
+    let configEndpoint = "/config";
     return this.http.get(Constants.Http.HTTP_PREFIX + mongooseHostIp + configEndpoint, Constants.Http.JSON_CONTENT_TYPE);
   }
 
@@ -42,7 +42,7 @@ export class ControlApiService {
   // MARK: - Private
 
   private getHttpHeaderForJsonFile(): HttpHeaders {
-    const httpHeadersForMongooseRun = new HttpHeaders();
+    var httpHeadersForMongooseRun = new HttpHeaders();
     httpHeadersForMongooseRun.append('Accept', 'application/json');
     const eTag = this.getEtagForRun();
     httpHeadersForMongooseRun.append('If-Match', eTag);
