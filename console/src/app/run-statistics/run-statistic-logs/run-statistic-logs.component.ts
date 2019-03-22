@@ -48,9 +48,17 @@ export class RunStatisticLogsComponent implements OnInit {
 
   changeDisplayingLog(selectedTabName) { 
     let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(selectedTabName);
-    this.monitoringApiService.getLog(this.processingRunRecord.getIdentifier(), logApiEndpoint).subscribe(logs => { 
-      this.displayingLog = logs;
-    });
+    this.monitoringApiService.getLog(this.processingRunRecord.getIdentifier(), logApiEndpoint).subscribe(
+      logs => { 
+        this.displayingLog = logs;
+      },
+      error => { 
+        var misleadingMessage = "Requested target doesn't seem to exist. Details: ";
+        let delimiter = "\n";
+        misleadingMessage += delimiter + error.error;
+        this.displayingLog = misleadingMessage;
+      }
+    );
   }
 
   // MARK: - Private

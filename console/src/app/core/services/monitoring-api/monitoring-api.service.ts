@@ -72,7 +72,7 @@ export class MonitoringApiService {
   public getLog(stepId: String, logName: String): Observable<any> {
     let logsEndpoint = "/logs";
     let delimiter = "/";
-    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName, Constants.Http.UNSTRUCTURED_DATA_TYPE);
+    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName, {responseType: 'text'});
   }
 
   // MARK: - Private 
