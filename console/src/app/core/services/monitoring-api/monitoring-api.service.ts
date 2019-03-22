@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { MongooseRunRecord } from '../../models/run-record.model';
 import { MongooseRunStatus } from '../../mongoose-run-status';
-import { RunDuration } from '../../run-duration';
 import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
-import { del } from 'selenium-webdriver/http';
 
 @Injectable({
   providedIn: 'root'
@@ -74,7 +72,7 @@ export class MonitoringApiService {
   public getLog(stepId: String, logName: String): Observable<any> {
     let logsEndpoint = "/logs";
     let delimiter = "/";
-    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName);
+    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName, Constants.Http.UNSTRUCTURED_DATA_TYPE);
   }
 
   // MARK: - Private 
@@ -187,7 +185,14 @@ export class MonitoringApiService {
     this.availableLogs.set("Cli", "Command line arguments dump");
     this.availableLogs.set("Error", "Error messages");
     this.availableLogs.set("OpTraces", "Load operation traces");
+
     this.availableLogs.set("metrics.File", "Load step periodic metrics");
+    this.availableLogs.set("metrics.FileTotal", "Load step total metrics log");
+    this.availableLogs.set("metrics.threshold.File", "Load step periodic threshold metrics");
+    this.availableLogs.set("metrics.threshold.FileTotal", "Load step total threshold metrics log");
+
+    this.availableLogs.set("Messages", "Generic messages");
+    this.availableLogs.set("Scenario", "Scenario dump");
   }
 
 }

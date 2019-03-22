@@ -41,6 +41,10 @@ export namespace Constants {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' })
           };
 
+          static readonly UNSTRUCTURED_DATA_TYPE = {
+            headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded'})
+          };
+
           static readonly HTTP_PREFIX = "http://";
     }
 }
