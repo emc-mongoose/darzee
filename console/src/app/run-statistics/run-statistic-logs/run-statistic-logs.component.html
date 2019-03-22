@@ -10,6 +10,7 @@
 <!-- NOTE: Area for displaying Mongoose logs -->
 <div id="displaying-logs-area" class="card">
     <div class="card-body">
-        <p class="text-break" style="white-space: pre; overflow-x:scroll">{{ displayingLog }}</p>
+        <p class="text-break" style="white-space: pre; overflow-x: scroll">{{ displayingLog }}</p>
+        <div class="error-message" [innerHTML]="occuredError" style="background-color: rgba(163.0, 163.0, 163.0, 0.5);"></div>
     </div>
   </div>
