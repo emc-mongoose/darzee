@@ -105,7 +105,7 @@ export class MonitoringApiService {
 
 
       // NOTE: Any computed info is stored within "value" field of JSON. ...
-      // ... As for 21.03.2019, it's duration (position 1) and san index (position 0)
+      // ... As for 21.03.2019, it's duration (position 1) and Prometheus DB index (position 0)
       let valuesTag = "value";
       let computedRunData = rawMongooseRunData[processingRunIndex][valuesTag];
 
