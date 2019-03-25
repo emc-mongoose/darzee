@@ -1,9 +1,9 @@
 <ul class="nav" id="metrics-navbar">
   <!-- TODO: Possible states are 'active' and 'disabled'. Make sure to impliment them. -->
   <li class="nav-item" *ngFor="let logTab of logTabs">
-    <a class="nav-link" 
-    (click)="this.changeDisplayingLog(logTab.getName())"
-    [ngClass]="logTab.isActive ? 'selected-metric-item' : 'metric-item'"> {{ logTab.getName() }} </a>
+    <p class="nav-link" 
+    (click)="this.changeDisplayingLog(logTab)"
+    [ngClass]="logTab.isActive ? 'selected-metric-item' : 'metric-item'"> {{ logTab.getName() }} </p>
   </li>
 </ul>
 

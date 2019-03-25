@@ -105,12 +105,12 @@ export class MonitoringApiService {
 
 
       // NOTE: Any computed info is stored within "value" field of JSON. ...
-      // ... As for 21.03.2019, it's duration (position 0) and san index (position 1)
+      // ... As for 21.03.2019, it's duration (position 1) and san index (position 0)
       let valuesTag = "value";
       let computedRunData = rawMongooseRunData[processingRunIndex][valuesTag];
 
       // MARK: - Retrieving computed data.
-      let durationIndex = 0;
+      let durationIndex = 1;
       let duration = computedRunData[durationIndex];
 
       let currentRunRecord = new MongooseRunRecord(loadStepId, statusMock, startTime, nodesList, duration, userComment);

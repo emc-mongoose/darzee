@@ -16,9 +16,10 @@ export class RunStatisticLogsComponent implements OnInit {
   private processingRunRecord: MongooseRunRecord;
 
   private displayingLog = ' mongoose_duration_count{load_step_id="robotest",load_op_type="CREATE",storage_driver_limit_concurrency="1",item_data_size="1MB",start_time="1544351424363",node_list="[]",user_comment="",} 2981.0 \n mongoose_duration_sum{load_step_id="robotest",load_op_type="CREATE",storage_driver_limit_concurrency="1",item_data_size="1MB",start_time="1544351424363",node_list="[]",user_comment="",} 0.060955 mongoose_duration_count{load_step_id="robotest",load_op_type="CREATE",storage_driver_limit_concurrency="1",item_data_size="1MB",start_time="1544351424363",node_list="[]",user_comment="",} 2981.0 \n mongoose_duration_sum{load_step_id="robotest",load_op_type="CREATE",storage_driver_limit_concurrency="1",item_data_size="1MB",start_time="1544351424363",node_list="[]",user_comment="",} 0.060955 mongoose_duration_count{load_step_id="robotest",load_op_type="CREATE",storage_driver_limit_concurrency="1",item_data_size="1MB",start_time="1544351424363",node_list="[]",user_comment="",} 2981.0 \n mongoose_duration_sum{load_step_id="robotest",load_op_type="CREATE",storage_driver_limit_concurrency="1",item_data_size="1MB",start_time="1544351424363",node_list="[]",user_comment="",} 0.060955 mongoose_duration_count{load_step_id="robotest",load_op_type="CREATE",storage_driver_limit_concurrency="1",item_data_size="1MB",start_time="1544351424363",node_list="[]",user_comment="",} 2981.0 \n mongoose_duration_sum{load_step_id="robotest",load_op_type="CREATE",storage_driver_limit_concurrency="1",item_data_size="1MB",start_time="1544351424363",node_list="[]",user_comment="",} 0.060955';
+  private currentDisplayingTabId = 0; 
   private logTabs: BasicTab[] = []; 
-  private routeParameters: any;
   private occuredError: any; 
+  private routeParameters: RouteParams; 
 
  
   constructor(private monitoringApiService: MonitoringApiService,
@@ -47,13 +48,21 @@ export class RunStatisticLogsComponent implements OnInit {
 
   // MARK: - Public
 
-  changeDisplayingLog(selectedTabName) { 
-    let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(selectedTabName);
+  changeDisplayingLog(selectedTab: BasicTab) { 
+    // TODO: Change logic of setting 'active' status to a selected tab.
+    this.logTabs.forEach(tab => { 
+      let isSelectedTab = (tab.getName() == selectedTab.getName());
+
+      tab.isActive = isSelectedTab ? true : false;
+    })
+
+
+    let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(selectedTab.getName());
 
     // NOTE: Resetting error's inner HTML 
     let emptyErrorHtmlValue = "";
     this.occuredError = emptyErrorHtmlValue;
-    
+
     this.monitoringApiService.getLog(this.processingRunRecord.getIdentifier(), logApiEndpoint).subscribe(
       logs => { 
         this.displayingLog = logs;
@@ -75,7 +84,7 @@ export class RunStatisticLogsComponent implements OnInit {
       let tab = new BasicTab(logName, TAB_LINK_MOCK);
       this.logTabs.push(tab);
     }
-    const initialTab = this.logTabs[0];
+    const initialTab = this.logTabs[this.currentDisplayingTabId];
     initialTab.isActive = true; 
   }
 }
