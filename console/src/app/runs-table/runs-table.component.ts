@@ -3,6 +3,7 @@ import { MongooseRunRecord } from '../core/models/run-record.model';
 import { Router } from '@angular/router';
 import { RoutesList } from '../Routing/routes-list';
 import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
+import { timer } from 'rxjs';
 
 
 @Component({
@@ -32,9 +33,7 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Lifecycle 
 
   ngOnInit() {  
-    this.mongooseRunRecords.forEach(runRecord => { 
-      this.updateDuration(runRecord);
-    })
+    this.setUpDurationUpdateTimer();
   }
 
   // MARK: - Public 
@@ -45,10 +44,22 @@ export class RunsTableComponent implements OnInit {
 
 
   // NOTE: Updating run duration for the target run record 
-  updateDuration(targetRecord: MongooseRunRecord) { 
+  private updateDuration(targetRecord: MongooseRunRecord) { 
     this.monitoringApiService.getDuration(targetRecord).subscribe(updatedDuration => { 
+      console.log("updatedDuration: ", updatedDuration);
       targetRecord.setDuration(updatedDuration);
     }); 
   }
+
+  private setUpDurationUpdateTimer() { 
+    let initialRunTableUpdateDelay = 0; 
+    let runTableUpdatePeriod = 3000; 
+    timer(initialRunTableUpdateDelay, runTableUpdatePeriod).subscribe(value => { 
+      this.mongooseRunRecords.forEach(runRecord => { 
+        this.updateDuration(runRecord);
+        console.log("Duration has been updated.");
+      })
+  });
+}
 
 }

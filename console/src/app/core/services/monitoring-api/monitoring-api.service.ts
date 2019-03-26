@@ -6,6 +6,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseMetrics } from './MongooseMetrics';
+import { filter, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -67,7 +68,13 @@ export class MonitoringApiService {
     var targetLabels = new Map<String, String>(); 
     targetLabels.set(targetMetricLabels, targetRecord.getIdentifier());
     
-    return this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels);
+    return this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels).pipe(
+      map(runRecordsResponse => {
+        let prometheusQueryResult =  this.extractRunRecordsFromMetricLabels(runRecordsResponse);
+        let firstElementIndex = 0;
+        return prometheusQueryResult[firstElementIndex].getDuration(); 
+      })
+    )
   }
 
   public getLogApiEndpoint(displayingLogName: String): String {
@@ -89,7 +96,7 @@ export class MonitoringApiService {
 
   // NOTE: An initial fetch of Mongoose Run Records.
   public fetchMongooseRunRecords() {
-    let mongooseMetricMock = "mongoose_duration_count";
+    let mongooseMetricMock = MongooseMetrics.PrometheusMetrics.DURATION;
     return this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(metricsArray => {
       var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
       this.behaviorSubjectRunRecords.next(fetchedRunRecords);
@@ -101,6 +108,9 @@ export class MonitoringApiService {
   private extractRunRecordsFromMetricLabels(rawMongooseRunData: any): MongooseRunRecord[] {
 
     var runRecords: MongooseRunRecord[] = [];
+
+    // let actualPrometheusResponse = rawMongooseRunData["data"];
+    // console.log("actualPrometheusResponse:", JSON.stringify(actualPrometheusResponse));
 
     // NOTE: Looping throught found Mongoose Run Records 
     for (var processingRunIndex in rawMongooseRunData) {
@@ -127,7 +137,7 @@ export class MonitoringApiService {
 
       // NOTE: Any computed info is stored within "value" field of JSON. ...
       // ... As for 21.03.2019, it's duration (position 1) and Prometheus DB index (position 0)
-      let valuesTag = "value";
+      let valuesTag = "value"; // NOTE: "Value" fetches Duration. 
       let computedRunData = rawMongooseRunData[processingRunIndex][valuesTag];
 
       // MARK: - Retrieving computed data.

@@ -27,7 +27,7 @@ export class PrometheusApiService {
 
   public getDataForMetric(metric: String): Observable<any> {
     return this.runQuery(metric).pipe(
-      map((rawResponse: any) => this.extractLabrlsFromMetric(rawResponse))
+      map((rawResponse: any) => this.extractResultPayload(rawResponse))
     )
   }
 
@@ -54,10 +54,14 @@ export class PrometheusApiService {
     }
 
     let prometheusQuery = metric + this.METRIC_LABELS_LIST_START_SYMBOL + targetLabels + this.METRIC_LABELS_LIST_END_SYMBOL; 
-    return this.runQuery(prometheusQuery);
+    return this.runQuery(prometheusQuery).pipe(
+      map((rawResponse: any) => this.extractResultPayload(rawResponse))
+    );
   }
 
-  private extractLabrlsFromMetric(rawMetric: any): any {
+
+  // NOTE: Extracting payload from Prometheus' query response. 
+  private extractResultPayload(rawMetric: any): any {
     // NOTE: As for 21.03.2019, Ptometheus stores array of result for a query ...
     // ... within response's data.result field.
 

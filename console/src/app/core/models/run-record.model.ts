@@ -54,6 +54,10 @@ export class MongooseRunRecord {
         return this.startTime;
     }
 
+    getDuraton(): string { 
+        return this.duration; 
+    }
+
     setDuration(updatedDuration: string) {
         this.duration = updatedDuration;
       } 
