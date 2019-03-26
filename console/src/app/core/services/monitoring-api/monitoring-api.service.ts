@@ -7,11 +7,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseMetrics } from './MongooseMetrics';
 import { filter, map } from 'rxjs/operators';
+import { MongooseApi } from './MongooseApi.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MonitoringApiService {
+
 
   private readonly MONGOOSE_HTTP_ADDRESS = Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP;
 
@@ -94,8 +96,41 @@ export class MonitoringApiService {
     return targetEndpoint;
   }
 
+  public updateRecord(targetRecord: MongooseRunRecord): any {
+     // NOTE: Duration won't change if Mongoose run has finished. 
+     if (targetRecord.getStatus() == MongooseRunStatus.Finished) { 
+      return;
+    }
+
+    let targetMetrics = MongooseMetrics.PrometheusMetrics.DURATION;
+    let targetMetricLabels = MongooseMetrics.PrometheusMetricLabels.ID;
+
+    var targetLabels = new Map<String, String>();
+    targetLabels.set(targetMetricLabels, targetRecord.getIdentifier());
+
+    return this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels).pipe(
+      map(runRecordsResponse => {
+        let prometheusQueryResult = this.extractRunRecordsFromMetricLabels(runRecordsResponse);
+        let firstElementIndex = 0;
+        let fetchedRecord = prometheusQueryResult[firstElementIndex];
+        this.getStatusForRecord(fetchedRecord).subscribe(status => { 
+          fetchedRecord.status = status;
+        })
+      })
+    )
+  }
+
+  
+  getStatusForRecord(fetchedRecord: MongooseRunRecord): Observable<MongooseRunStatus> {
+    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + MongooseApi.RunApi.RUN, {observe: 'response'}).pipe(
+      map(response => { 
+        return MongooseRunStatus.Finished;
+      })
+    );
+  }
+
   public getLog(stepId: String, logName: String): Observable<any> {
-    let logsEndpoint = "/logs";
+    let logsEndpoint = MongooseApi.LogsApi.LOGS;
     let delimiter = "/";
     return this.http.get(this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName, { responseType: 'text' });
   }

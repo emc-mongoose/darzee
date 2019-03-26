@@ -50,6 +50,10 @@ export class RunsTableComponent implements OnInit {
     });
   }
 
+  private updateStatus(targetRecord: MongooseRunRecord) {
+
+  }
+
 
   // NOTE: Updating dynamic Mongoose run parameters (run status, run duration).
   private setUpRecordsUpdateTimer() {
@@ -58,6 +62,7 @@ export class RunsTableComponent implements OnInit {
     timer(initialRunTableUpdateDelay, runTableUpdatePeriod).subscribe(value => {
       this.mongooseRunRecords.forEach(runRecord => {
         this.updateDuration(runRecord);
+        this.updateStatus(runRecord);
       })
     });
   }

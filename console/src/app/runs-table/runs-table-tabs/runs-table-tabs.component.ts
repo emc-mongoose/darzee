@@ -21,70 +21,69 @@ export class RunsTableTabsComponent implements OnInit {
 
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
   runTabs: MongooseRunTab[] = [];
-  displayingRunRecords: MongooseRunRecord[] = []; 
-  
+  displayingRunRecords: MongooseRunRecord[] = [];
+
 
   constructor(private monitoringApiService: MonitoringApiService) { }
 
   // MARK: - Lifecycle
 
   ngOnInit() {
-    this.setUpMongooseRunRecordsUpdateTimer(); 
+    this.setUpMongooseRunRecordsUpdateTimer();
     this.updateRunRecords();
-    this.updateTabs(); 
+    this.updateTabs();
     // NOTE: Tab "All" is selected by default. 
-    this.runTabs[0].isSelected = true; 
+    this.runTabs[0].isSelected = true;
   }
 
 
   // MARK: - Public 
 
-  filterRunsByStatus(requiredTab: MongooseRunTab) { 
+  filterRunsByStatus(requiredTab: MongooseRunTab) {
     // NOTE: I haven't found a better way to set custom background color for bootstrap selected button. 
     // ... so I put a selector "isSelected" and if it's set to 'true', the tab button is highlighted.
-   this.runTabs.forEach(tab => {
-     if (tab === requiredTab) { 
-       tab.isSelected = true; 
-       return;
-     }
-     tab.isSelected = false;
-   })
+    this.runTabs.forEach(tab => {
+      if (tab === requiredTab) {
+        tab.isSelected = true;
+        return;
+      }
+      tab.isSelected = false;
+    })
 
     this.displayingRunRecords = requiredTab.records;
   }
 
-  hasSavedRunRecords(): boolean { 
+  hasSavedRunRecords(): boolean {
     return (this.monitoringApiService.getExistingRunRecords().length > 0);
   }
 
   // MARK: - Private 
 
-  private updateRunRecords() { 
-    this.monitoringApiService.getMongooseRunRecords().subscribe(updatedRecords => { 
+  private updateRunRecords() {
+    this.monitoringApiService.getMongooseRunRecords().subscribe(updatedRecords => {
       // NOTE: If an update has been received = updating the values 
-      let hasReceivedUpdate: boolean = !(updatedRecords.length == this.displayingRunRecords.length); 
-      if (hasReceivedUpdate) { 
+      let hasReceivedUpdate: boolean = !(updatedRecords.length == this.displayingRunRecords.length);
+      if (hasReceivedUpdate) {
         this.displayingRunRecords = updatedRecords;
         this.updateTabs();
       }
     })
   }
 
-  private updateTabs() { 
-    var updatedTabs: MongooseRunTab[] = []; 
-    for (var runStatus in MongooseRunStatus) { 
+  private updateTabs() {
+    var updatedTabs: MongooseRunTab[] = [];
+    for (var runStatus in MongooseRunStatus) {
       var runsTab = new MongooseRunTab(this.monitoringApiService, runStatus.toString());
       updatedTabs.push(runsTab);
     }
     this.runTabs = updatedTabs;
   }
 
-  private setUpMongooseRunRecordsUpdateTimer() { 
-    let initialRunTableUpdateDelay = 0; 
-    let runTableUpdatePeriod = 3000; 
-    timer(initialRunTableUpdateDelay, runTableUpdatePeriod).subscribe(value => { 
+  private setUpMongooseRunRecordsUpdateTimer() {
+    let initialRunTableUpdateDelay = 0;
+    let runTableUpdatePeriod = 3000;
+    timer(initialRunTableUpdateDelay, runTableUpdatePeriod).subscribe(value => {
       this.monitoringApiService.fetchMongooseRunRecords();
-      console.log("update");
     });
   }
 
