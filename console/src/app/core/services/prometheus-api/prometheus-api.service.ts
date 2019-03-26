@@ -31,12 +31,24 @@ export class PrometheusApiService {
     )
   }
 
-  public getDataForMetricWithLabels(metric: String, labels: Map<String, String>) { 
+  public getDataForMetricWithLabels(metric: String, labels: Map<String, String>): Observable<any> { 
     var targetLabels = "";
-    for (var labelName of Array.from(labels.keys())) { 
+
+    // NOTE: Special symbols used to construct a query 
+    let labelNameAndValueSeparator = "=";
+    let labelsListDelimiter = ",";
+  
+    let targetLabelsNames = Array.from(labels.keys());
+    
+    // NOTE: Performing query with unspecified labels in case empty labels list has been passed.
+    if (targetLabelsNames.length < 1) {
+      return this.runQuery(metric);
+    }
+
+    for (var labelName of targetLabelsNames) { 
       let labelValue = labels.get(labelName);
-      targetLabels += labelName + "=" + labelValue; 
-      let labelsListDelimiter = ",";
+
+      targetLabels += labelName + labelNameAndValueSeparator + JSON.stringify(labelValue); 
       targetLabels += labelsListDelimiter;
     }
 
