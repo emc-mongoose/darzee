@@ -9,6 +9,7 @@ import { map, filter } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class PrometheusApiService {
+  
 
   readonly API_BASE = Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP + "/api/v1/";
   
@@ -22,13 +23,13 @@ export class PrometheusApiService {
 
   public runQuery(query: String): Observable<any> {
     let queryRequest = "query?query=";
-    return this.httpClient.get(this.API_BASE + queryRequest + query, Constants.Http.JSON_CONTENT_TYPE);
+    return this.httpClient.get(this.API_BASE + queryRequest + query, Constants.Http.JSON_CONTENT_TYPE).pipe(
+      map((rawResponse: any) => this.extractResultPayload(rawResponse))
+    );
   }
 
   public getDataForMetric(metric: String): Observable<any> {
-    return this.runQuery(metric).pipe(
-      map((rawResponse: any) => this.extractResultPayload(rawResponse))
-    )
+    return this.runQuery(metric);
   }
 
   public getDataForMetricWithLabels(metric: String, labels: Map<String, String>): Observable<any> { 
@@ -54,11 +55,16 @@ export class PrometheusApiService {
     }
 
     let prometheusQuery = metric + this.METRIC_LABELS_LIST_START_SYMBOL + targetLabels + this.METRIC_LABELS_LIST_END_SYMBOL; 
-    return this.runQuery(prometheusQuery).pipe(
-      map((rawResponse: any) => this.extractResultPayload(rawResponse))
-    );
+    return this.runQuery(prometheusQuery);
   }
 
+  getExistingRecordsInfo(): Observable<any> {
+    // TODO: Add function that creates that kind of a query 
+    let targetQuery = "sum without (instance)(rate(mongoose_duration_count[99y]))"; 
+    return this.runQuery(targetQuery);
+  }
+
+  // MARK: - Private 
 
   // NOTE: Extracting payload from Prometheus' query response. 
   private extractResultPayload(rawMetric: any): any {

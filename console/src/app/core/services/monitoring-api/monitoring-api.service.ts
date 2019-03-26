@@ -96,8 +96,9 @@ export class MonitoringApiService {
 
   // NOTE: An initial fetch of Mongoose Run Records.
   public fetchMongooseRunRecords() {
-    let mongooseMetricMock = MongooseMetrics.PrometheusMetrics.DURATION;
-    return this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(metricsArray => {
+    // let mongooseMetricMock = MongooseMetrics.PrometheusM/etrics.DURATION;
+    return this.prometheusApiService.getExistingRecordsInfo().subscribe(metricsArray => {
+      console.log("Every fetched record: ", metricsArray);
       var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
       this.behaviorSubjectRunRecords.next(fetchedRunRecords);
     })
@@ -108,9 +109,6 @@ export class MonitoringApiService {
   private extractRunRecordsFromMetricLabels(rawMongooseRunData: any): MongooseRunRecord[] {
 
     var runRecords: MongooseRunRecord[] = [];
-
-    // let actualPrometheusResponse = rawMongooseRunData["data"];
-    // console.log("actualPrometheusResponse:", JSON.stringify(actualPrometheusResponse));
 
     // NOTE: Looping throught found Mongoose Run Records 
     for (var processingRunIndex in rawMongooseRunData) {
