@@ -60,12 +60,14 @@ export class MonitoringApiService {
   }
 
   // NOTE: Fetching duration for the target run record 
-  getDuration(targetRecord: MongooseRunRecord): any {
+  getDuration(targetRecord: MongooseRunRecord): Observable<any> {
     let targetMetrics = MongooseMetrics.PrometheusMetrics.DURATION; 
     let targetMetricLabels = MongooseMetrics.PrometheusMetricLabels.ID; 
+
     var targetLabels = new Map<String, String>(); 
     targetLabels.set(targetMetricLabels, targetRecord.getIdentifier());
-    this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels);
+    
+    return this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels);
   }
 
   public getLogApiEndpoint(displayingLogName: String): String {

@@ -29,7 +29,6 @@ export class RunStatisticLogsComponent implements OnInit {
   // MARK: - Lifecycle
 
   ngOnInit() {
-
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.parent.params.subscribe(params => {
       console.log("params: ", JSON.stringify(params));

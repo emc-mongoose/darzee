@@ -1,7 +1,7 @@
 import { RunDuration } from '../run-duration';
 import { MongooseRunStatus } from '../mongoose-run-status';
 
-export class MongooseRunRecord { 
+export class MongooseRunRecord {
 
     readonly DEFAULT_VALUE = "-";
 
@@ -45,6 +45,18 @@ export class MongooseRunRecord {
         let isEmpty: boolean = (this.comment == "");
         return (isEmpty ? this. DEFAULT_VALUE : this.comment)
     }
+
+    getStatus(): MongooseRunStatus { 
+        return this.status;
+    }
+
+    getStartTime(): String { 
+        return this.startTime;
+    }
+
+    setDuration(updatedDuration: string) {
+        this.duration = updatedDuration;
+      } 
 
     // MARK: - Private 
 }

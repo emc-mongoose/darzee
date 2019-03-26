@@ -32,18 +32,19 @@ export class PrometheusApiService {
   }
 
   public getDataForMetricWithLabels(metric: String, labels: Map<String, String>): Observable<any> { 
-    var targetLabels = "";
 
-    // NOTE: Special symbols used to construct a query 
-    let labelNameAndValueSeparator = "=";
-    let labelsListDelimiter = ",";
-  
     let targetLabelsNames = Array.from(labels.keys());
     
     // NOTE: Performing query with unspecified labels in case empty labels list has been passed.
     if (targetLabelsNames.length < 1) {
       return this.runQuery(metric);
     }
+
+    var targetLabels = "";
+
+    // NOTE: Special symbols used to construct a query 
+    let labelNameAndValueSeparator = "=";
+    let labelsListDelimiter = ",";
 
     for (var labelName of targetLabelsNames) { 
       let labelValue = labels.get(labelName);
@@ -53,7 +54,7 @@ export class PrometheusApiService {
     }
 
     let prometheusQuery = metric + this.METRIC_LABELS_LIST_START_SYMBOL + targetLabels + this.METRIC_LABELS_LIST_END_SYMBOL; 
-    console.log("Performing query: ", prometheusQuery);
+    return this.runQuery(prometheusQuery);
   }
 
   private extractLabrlsFromMetric(rawMetric: any): any {

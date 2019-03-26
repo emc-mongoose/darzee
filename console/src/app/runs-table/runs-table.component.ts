@@ -31,7 +31,11 @@ export class RunsTableComponent implements OnInit {
 
   // MARK: - Lifecycle 
 
-  ngOnInit() {  }
+  ngOnInit() {  
+    this.mongooseRunRecords.forEach(runRecord => { 
+      this.updateDuration(runRecord);
+    })
+  }
 
   // MARK: - Public 
 
@@ -42,7 +46,9 @@ export class RunsTableComponent implements OnInit {
 
   // NOTE: Updating run duration for the target run record 
   updateDuration(targetRecord: MongooseRunRecord) { 
-    this.monitoringApiService.getDuration(targetRecord); 
+    this.monitoringApiService.getDuration(targetRecord).subscribe(updatedDuration => { 
+      targetRecord.setDuration(updatedDuration);
+    }); 
   }
 
 }
