@@ -33,7 +33,7 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Lifecycle 
 
   ngOnInit() {  
-    this.setUpDurationUpdateTimer();
+    this.setUpRecordsUpdateTimer();
   }
 
   // MARK: - Public 
@@ -46,18 +46,17 @@ export class RunsTableComponent implements OnInit {
   // NOTE: Updating run duration for the target run record 
   private updateDuration(targetRecord: MongooseRunRecord) { 
     this.monitoringApiService.getDuration(targetRecord).subscribe(updatedDuration => { 
-      console.log("updatedDuration: ", updatedDuration);
       targetRecord.setDuration(updatedDuration);
     }); 
   }
 
-  private setUpDurationUpdateTimer() { 
+
+  private setUpRecordsUpdateTimer() { 
     let initialRunTableUpdateDelay = 0; 
-    let runTableUpdatePeriod = 3000; 
+    let runTableUpdatePeriod = 1000; 
     timer(initialRunTableUpdateDelay, runTableUpdatePeriod).subscribe(value => { 
       this.mongooseRunRecords.forEach(runRecord => { 
         this.updateDuration(runRecord);
-        console.log("Duration has been updated.");
       })
   });
 }
