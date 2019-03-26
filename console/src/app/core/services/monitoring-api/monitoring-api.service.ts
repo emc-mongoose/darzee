@@ -62,17 +62,23 @@ export class MonitoringApiService {
 
   // NOTE: Fetching duration for the target run record 
   getDuration(targetRecord: MongooseRunRecord): Observable<any> {
-    let targetMetrics = MongooseMetrics.PrometheusMetrics.DURATION; 
-    let targetMetricLabels = MongooseMetrics.PrometheusMetricLabels.ID; 
-
-    var targetLabels = new Map<String, String>(); 
-    targetLabels.set(targetMetricLabels, targetRecord.getIdentifier());
     
+    // NOTE: Duration won't change if Mongoose run has finished. 
+    if (targetRecord.getStatus() == MongooseRunStatus.Finished) { 
+      return;
+    }
+
+    let targetMetrics = MongooseMetrics.PrometheusMetrics.DURATION;
+    let targetMetricLabels = MongooseMetrics.PrometheusMetricLabels.ID;
+
+    var targetLabels = new Map<String, String>();
+    targetLabels.set(targetMetricLabels, targetRecord.getIdentifier());
+
     return this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels).pipe(
       map(runRecordsResponse => {
-        let prometheusQueryResult =  this.extractRunRecordsFromMetricLabels(runRecordsResponse);
+        let prometheusQueryResult = this.extractRunRecordsFromMetricLabels(runRecordsResponse);
         let firstElementIndex = 0;
-        return prometheusQueryResult[firstElementIndex].getDuration(); 
+        return prometheusQueryResult[firstElementIndex].getDuration();
       })
     )
   }
