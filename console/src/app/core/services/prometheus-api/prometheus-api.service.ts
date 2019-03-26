@@ -11,6 +11,11 @@ import { map, filter } from 'rxjs/operators';
 export class PrometheusApiService {
 
   readonly API_BASE = Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP + "/api/v1/";
+  
+  // NOTE: Symbols used for queryting Prometheus for value of metric with specific labels. They ...
+  // ... are listed within the labels list. 
+  readonly METRIC_LABELS_LIST_START_SYMBOL = "{"; 
+  readonly METRIC_LABELS_LIST_END_SYMBOL = "}";
 
 
   constructor(private httpClient: HttpClient) { }
@@ -27,10 +32,16 @@ export class PrometheusApiService {
   }
 
   public getDataForMetricWithLabels(metric: String, labels: Map<String, String>) { 
-    var processedLabels = ""; 
-    labels.forEach(labelValue => { 
-      console.log("labelValue: ", labelValue);
-    })
+    var targetLabels = "";
+    for (var labelName of Array.from(labels.keys())) { 
+      let labelValue = labels.get(labelName);
+      targetLabels += labelName + "=" + labelValue; 
+      let labelsListDelimiter = ",";
+      targetLabels += labelsListDelimiter;
+    }
+
+    let prometheusQuery = metric + this.METRIC_LABELS_LIST_START_SYMBOL + targetLabels + this.METRIC_LABELS_LIST_END_SYMBOL; 
+    console.log("Performing query: ", prometheusQuery);
   }
 
   private extractLabrlsFromMetric(rawMetric: any): any {

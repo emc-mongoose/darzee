@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MongooseRunRecord } from '../core/models/run-record.model';
 import { Router } from '@angular/router';
 import { RoutesList } from '../Routing/routes-list';
+import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
 
 
 @Component({
@@ -25,7 +26,8 @@ export class RunsTableComponent implements OnInit {
     "Comment"
   ];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,
+    private monitoringApiService: MonitoringApiService) { }
 
   // MARK: - Lifecycle 
 
@@ -35,6 +37,12 @@ export class RunsTableComponent implements OnInit {
 
   onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) { 
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);
+  }
+
+
+  // NOTE: Updating run duration for the target run record 
+  updateDuration(targetRecord: MongooseRunRecord) { 
+    this.monitoringApiService.getDuration(targetRecord); 
   }
 
 }
