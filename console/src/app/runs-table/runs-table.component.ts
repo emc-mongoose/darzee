@@ -10,14 +10,14 @@ import { timer } from 'rxjs';
   selector: 'app-runs-table',
   templateUrl: './runs-table.component.html',
   styleUrls: ['./runs-table.component.css'],
-  
+
 })
 
 export class RunsTableComponent implements OnInit {
 
   readonly EMPTY_FIELD_DEFAULT_TAG = "-";
 
-  @Input() mongooseRunRecords: MongooseRunRecord[];  
+  @Input() mongooseRunRecords: MongooseRunRecord[];
 
   readonly columnHeaders = [
     "Status",
@@ -32,33 +32,34 @@ export class RunsTableComponent implements OnInit {
 
   // MARK: - Lifecycle 
 
-  ngOnInit() {  
+  ngOnInit() {
     this.setUpRecordsUpdateTimer();
   }
 
   // MARK: - Public 
 
-  onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) { 
+  onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) {
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);
   }
 
 
   // NOTE: Updating run duration for the target run record 
-  private updateDuration(targetRecord: MongooseRunRecord) { 
-    this.monitoringApiService.getDuration(targetRecord).subscribe(updatedDuration => { 
+  private updateDuration(targetRecord: MongooseRunRecord) {
+    this.monitoringApiService.getDuration(targetRecord).subscribe(updatedDuration => {
       targetRecord.setDuration(updatedDuration);
-    }); 
+    });
   }
 
 
-  private setUpRecordsUpdateTimer() { 
-    let initialRunTableUpdateDelay = 0; 
-    let runTableUpdatePeriod = 1000; 
-    timer(initialRunTableUpdateDelay, runTableUpdatePeriod).subscribe(value => { 
-      this.mongooseRunRecords.forEach(runRecord => { 
+  // NOTE: Updating dynamic Mongoose run parameters (run status, run duration).
+  private setUpRecordsUpdateTimer() {
+    let initialRunTableUpdateDelay = 0;
+    let runTableUpdatePeriod = 1000;
+    timer(initialRunTableUpdateDelay, runTableUpdatePeriod).subscribe(value => {
+      this.mongooseRunRecords.forEach(runRecord => {
         this.updateDuration(runRecord);
       })
-  });
-}
+    });
+  }
 
 }
