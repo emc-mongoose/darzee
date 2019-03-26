@@ -26,6 +26,13 @@ export class PrometheusApiService {
     )
   }
 
+  public getDataForMetricWithLabels(metric: String, labels: Map<String, String>) { 
+    var processedLabels = ""; 
+    labels.forEach(labelValue => { 
+      console.log("labelValue: ", labelValue);
+    })
+  }
+
   private extractLabrlsFromMetric(rawMetric: any): any {
     // NOTE: As for 21.03.2019, Ptometheus stores array of result for a query ...
     // ... within response's data.result field.

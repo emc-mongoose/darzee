@@ -5,6 +5,7 @@ import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
+import { MongooseMetrics } from './MongooseMetrics';
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +57,15 @@ export class MonitoringApiService {
   public getAvailableLogNames(): String[] {
     let availableLogsName = Array.from(this.availableLogs.values());
     return availableLogsName;
+  }
+
+  // NOTE: Fetching duration for the target run record 
+  getDuration(targetRecord: MongooseRunRecord): any {
+    let targetMetrics = MongooseMetrics.PrometheusMetrics.DURATION; 
+    let targetMetricLabels = MongooseMetrics.PrometheusMetricLabels.ID; 
+    var targetLabels = new Map<String, String>(); 
+    targetLabels.set(targetMetricLabels, targetRecord.getIdentifier());
+    this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels);
   }
 
   public getLogApiEndpoint(displayingLogName: String): String {

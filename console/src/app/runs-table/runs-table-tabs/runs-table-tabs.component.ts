@@ -62,7 +62,7 @@ export class RunsTableTabsComponent implements OnInit {
   private updateRunRecords() { 
     this.monitoringApiService.getMongooseRunRecords().subscribe(updatedRecords => { 
       // NOTE: If an update has been received = updating the values 
-      let hasReceivedUpdate: boolean = !(JSON.stringify(updatedRecords) == JSON.stringify(this.displayingRunRecords)); 
+      let hasReceivedUpdate: boolean = !(updatedRecords.length == this.displayingRunRecords.length); 
       if (hasReceivedUpdate) { 
         this.displayingRunRecords = updatedRecords;
         this.updateTabs();
