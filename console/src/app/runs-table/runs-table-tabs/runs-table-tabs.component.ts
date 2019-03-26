@@ -4,6 +4,9 @@ import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
 import { MongooseRunTab } from './model/monoose-run-tab.model';
 import { slideAnimation } from 'src/app/core/animations';
+import { Observable, Subscription, timer } from 'rxjs';
+import { take } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-runs-table-tabs',
@@ -19,26 +22,20 @@ export class RunsTableTabsComponent implements OnInit {
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
   runTabs: MongooseRunTab[] = [];
   displayingRunRecords: MongooseRunRecord[] = []; 
+  
 
   constructor(private monitoringApiService: MonitoringApiService) { }
 
   // MARK: - Lifecycle
 
   ngOnInit() {
-    for (var runStatus in MongooseRunStatus) { 
-      var runsTab = new MongooseRunTab(this.monitoringApiService, runStatus.toString());
-      this.runTabs.push(runsTab);
-    }
-
+    this.setUpMongooseRunRecordsUpdateTimer(); 
+    this.updateRunRecords();
+    this.updateTabs(); 
     // NOTE: Tab "All" is selected by default. 
     this.runTabs[0].isSelected = true; 
-
-    this.monitoringApiService.getMongooseRunRecords().subscribe(updatedRecords => { 
-      this.displayingRunRecords = updatedRecords;
-      console.log("Run table update. Value: ", updatedRecords);
-    })
-  //  this.displayingRunRecords = this.monitoringApiService.mongooseRunRecords;
   }
+
 
   // MARK: - Public 
 
@@ -58,6 +55,37 @@ export class RunsTableTabsComponent implements OnInit {
 
   hasSavedRunRecords(): boolean { 
     return (this.monitoringApiService.getExistingRunRecords().length > 0);
+  }
+
+  // MARK: - Private 
+
+  private updateRunRecords() { 
+    this.monitoringApiService.getMongooseRunRecords().subscribe(updatedRecords => { 
+      // NOTE: If an update has been received = updating the values 
+      let hasReceivedUpdate: boolean = !(JSON.stringify(updatedRecords) == JSON.stringify(this.displayingRunRecords)); 
+      if (hasReceivedUpdate) { 
+        this.displayingRunRecords = updatedRecords;
+        this.updateTabs();
+      }
+    })
+  }
+
+  private updateTabs() { 
+    var updatedTabs: MongooseRunTab[] = []; 
+    for (var runStatus in MongooseRunStatus) { 
+      var runsTab = new MongooseRunTab(this.monitoringApiService, runStatus.toString());
+      updatedTabs.push(runsTab);
+    }
+    this.runTabs = updatedTabs;
+  }
+
+  private setUpMongooseRunRecordsUpdateTimer() { 
+    let initialRunTableUpdateDelay = 0; 
+    let runTableUpdatePeriod = 3000; 
+    timer(initialRunTableUpdateDelay, runTableUpdatePeriod).subscribe(value => { 
+      this.monitoringApiService.fetchMongooseRunRecords();
+      console.log("update");
+    });
   }
 
 }

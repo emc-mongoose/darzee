@@ -72,7 +72,16 @@ export class MonitoringApiService {
   public getLog(stepId: String, logName: String): Observable<any> {
     let logsEndpoint = "/logs";
     let delimiter = "/";
-    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName, {responseType: 'text'});
+    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName, { responseType: 'text' });
+  }
+
+  // NOTE: An initial fetch of Mongoose Run Records.
+  public fetchMongooseRunRecords() {
+    let mongooseMetricMock = "mongoose_duration_count";
+    return this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(metricsArray => {
+      var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
+      this.behaviorSubjectRunRecords.next(fetchedRunRecords);
+    })
   }
 
   // MARK: - Private 
@@ -155,15 +164,6 @@ export class MonitoringApiService {
     const currentDateTime = Date.now();
     const hexNumericSystemBase = 16;
     return currentDateTime.toString(hexNumericSystemBase);
-  }
-
-  // NOTE: An initial fetch of Mongoose Run Records.
-  private fetchMongooseRunRecords() {
-    let mongooseMetricMock = "mongoose_duration_count";
-    return this.prometheusApiService.getDataForMetric(mongooseMetricMock).subscribe(metricsArray => {
-      var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
-      this.behaviorSubjectRunRecords.next(fetchedRunRecords);
-    })
   }
 
 
