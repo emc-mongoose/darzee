@@ -18,17 +18,19 @@ export class RunStatisticsComponent implements OnInit {
     { name: "Charts", url: RoutesList.RUN_CHARTS }
   ];
 
-  private statisticTabs: BasicTab[] = [];
+  // NOTE: Displaying run record and related statistic tabs. 
+  // Objects are being used within DOM. 
+  public runRecord: MongooseRunRecord;
+  public statisticTabs: BasicTab[] = [];
 
   private routeParameters: any;
-  private runRecord: MongooseRunRecord;
+
+  // MARK: - Lifecycle 
 
   constructor(private route: ActivatedRoute,
     private router: Router,
     private monitoringApiService: MonitoringApiService) {
   }
-
-  // MARK: - Lifecycle 
 
   ngOnInit() {
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
@@ -52,7 +54,7 @@ export class RunStatisticsComponent implements OnInit {
 
   // MARK: - Public 
 
-  switchTab(targetTab: BasicTab) {
+  public switchTab(targetTab: BasicTab) {
     this.statisticTabs.forEach(section => {
       if (targetTab.isEqual(section)) {
         section.isActive = true;

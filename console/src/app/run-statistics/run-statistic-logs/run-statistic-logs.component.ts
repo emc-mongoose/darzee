@@ -16,7 +16,7 @@ export class RunStatisticLogsComponent implements OnInit {
   // NOTE: Public fields are mostly used within DOM. 
   public logTabs: BasicTab[] = []; 
   public displayingLog = ''; 
-  private occuredError: any; 
+  public occuredError: any; 
 
   private processingRunRecord: MongooseRunRecord;
   private currentDisplayingTabId = 0; 
