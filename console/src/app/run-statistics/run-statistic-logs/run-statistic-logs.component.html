@@ -1,14 +1,16 @@
 <ul class="nav" id="metrics-navbar">
   <!-- TODO: Possible states are 'active' and 'disabled'. Make sure to impliment them. -->
-  <li class="nav-item" *ngFor="let metricTab of metricsTabs">
-    <a class="nav-link" href="#"
-    [ngClass]="metricTab.isActive ? 'selected-metric-item' : 'metric-item'"> {{ metricTab.getName() }} </a>
+  <li class="nav-item" *ngFor="let logTab of logTabs">
+    <p class="nav-link" 
+    (click)="this.changeDisplayingLog(logTab)"
+    [ngClass]="logTab.isActive ? 'selected-metric-item' : 'metric-item'"> {{ logTab.getName() }} </p>
   </li>
 </ul>
 
 <!-- NOTE: Area for displaying Mongoose logs -->
 <div id="displaying-logs-area" class="card">
     <div class="card-body">
-        <p class="text-break">{{ displayingLog }}</p>
+        <p class="text-break" style="white-space: pre; overflow-x: scroll">{{ displayingLog }}</p>
+        <div class="error-message" [innerHTML]="occuredError" style="background-color: rgba(163.0, 163.0, 163.0, 0.5);"></div>
     </div>
   </div>
