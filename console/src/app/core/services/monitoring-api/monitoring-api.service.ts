@@ -63,7 +63,7 @@ export class MonitoringApiService {
   }
 
   // NOTE: Fetching duration for the target run record 
-  getDuration(targetRecord: MongooseRunRecord): Observable<any> {
+  public getDuration(targetRecord: MongooseRunRecord): Observable<any> {
     
     // NOTE: Duration won't change if Mongoose run has finished. 
     if (targetRecord.getStatus() == MongooseRunStatus.Finished) { 
@@ -96,7 +96,7 @@ export class MonitoringApiService {
     return targetEndpoint;
   }
 
-  public updateRecord(targetRecord: MongooseRunRecord): any {
+  public updateRecord(targetRecord: MongooseRunRecord): Observable<MongooseRunRecord> {
      // NOTE: Duration won't change if Mongoose run has finished. 
      if (targetRecord.getStatus() == MongooseRunStatus.Finished) { 
       return;
@@ -113,17 +113,21 @@ export class MonitoringApiService {
         let prometheusQueryResult = this.extractRunRecordsFromMetricLabels(runRecordsResponse);
         let firstElementIndex = 0;
         let fetchedRecord = prometheusQueryResult[firstElementIndex];
-        this.getStatusForRecord(fetchedRecord).subscribe(status => { 
-          fetchedRecord.status = status;
-        })
+        // this.getStatusForRecord(fetchedRecord).subscribe(status => { 
+        //   fetchedRecord.status = status;
+        // });
+        return fetchedRecord;
       })
     )
   }
 
   
   getStatusForRecord(fetchedRecord: MongooseRunRecord): Observable<MongooseRunStatus> {
+    // TODO: Impliment method correctly. 
+    let headersForRunStatus = new Headers();
     return this.http.get(this.MONGOOSE_HTTP_ADDRESS + MongooseApi.RunApi.RUN, {observe: 'response'}).pipe(
       map(response => { 
+        console.log("Response is: ", response);
         return MongooseRunStatus.Finished;
       })
     );
@@ -139,7 +143,7 @@ export class MonitoringApiService {
   public fetchMongooseRunRecords() {
     // let mongooseMetricMock = MongooseMetrics.PrometheusM/etrics.DURATION;
     return this.prometheusApiService.getExistingRecordsInfo().subscribe(metricsArray => {
-      console.log("Every fetched record: ", metricsArray);
+      console.log("Every fetched record: ", JSON.stringify(metricsArray));
       var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
       this.behaviorSubjectRunRecords.next(fetchedRunRecords);
     })

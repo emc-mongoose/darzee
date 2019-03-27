@@ -9,13 +9,13 @@ import { map, filter } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class PrometheusApiService {
-  
+
 
   readonly API_BASE = Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP + "/api/v1/";
-  
+
   // NOTE: Symbols used for queryting Prometheus for value of metric with specific labels. They ...
   // ... are listed within the labels list. 
-  readonly METRIC_LABELS_LIST_START_SYMBOL = "{"; 
+  readonly METRIC_LABELS_LIST_START_SYMBOL = "{";
   readonly METRIC_LABELS_LIST_END_SYMBOL = "}";
 
 
@@ -32,10 +32,10 @@ export class PrometheusApiService {
     return this.runQuery(metric);
   }
 
-  public getDataForMetricWithLabels(metric: String, labels: Map<String, String>): Observable<any> { 
+  public getDataForMetricWithLabels(metric: String, labels: Map<String, String>): Observable<any> {
 
     let targetLabelsNames = Array.from(labels.keys());
-    
+
     // NOTE: Performing query with unspecified labels in case empty labels list has been passed.
     if (targetLabelsNames.length < 1) {
       return this.runQuery(metric);
@@ -47,20 +47,20 @@ export class PrometheusApiService {
     let labelNameAndValueSeparator = "=";
     let labelsListDelimiter = ",";
 
-    for (var labelName of targetLabelsNames) { 
+    for (var labelName of targetLabelsNames) {
       let labelValue = labels.get(labelName);
 
-      targetLabels += labelName + labelNameAndValueSeparator + JSON.stringify(labelValue); 
+      targetLabels += labelName + labelNameAndValueSeparator + JSON.stringify(labelValue);
       targetLabels += labelsListDelimiter;
     }
 
-    let prometheusQuery = metric + this.METRIC_LABELS_LIST_START_SYMBOL + targetLabels + this.METRIC_LABELS_LIST_END_SYMBOL; 
+    let prometheusQuery = metric + this.METRIC_LABELS_LIST_START_SYMBOL + targetLabels + this.METRIC_LABELS_LIST_END_SYMBOL;
     return this.runQuery(prometheusQuery);
   }
 
   getExistingRecordsInfo(): Observable<any> {
     // TODO: Add function that creates that kind of a query 
-    let targetQuery = "sum without (instance)(rate(mongoose_duration_count[99y]))"; 
+    let targetQuery = "sum without (instance)(rate(mongoose_duration_count[1y]))";
     return this.runQuery(targetQuery);
   }
 

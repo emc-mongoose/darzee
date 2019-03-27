@@ -42,18 +42,16 @@ export class RunsTableComponent implements OnInit {
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);
   }
 
-
   // NOTE: Updating run duration for the target run record 
-  private updateDuration(targetRecord: MongooseRunRecord) {
-    this.monitoringApiService.getDuration(targetRecord).subscribe(updatedDuration => {
-      targetRecord.setDuration(updatedDuration);
+  private updateRecord(targetRecord: MongooseRunRecord) {
+    this.monitoringApiService.updateRecord(targetRecord).subscribe(updatedRecord => {
+      if (updatedRecord == undefined) { 
+        return; 
+      }
+      targetRecord.setDuration(updatedRecord.getDuration());
+      // targetRecord.status = updatedRecord.getStatus();
     });
   }
-
-  private updateStatus(targetRecord: MongooseRunRecord) {
-
-  }
-
 
   // NOTE: Updating dynamic Mongoose run parameters (run status, run duration).
   private setUpRecordsUpdateTimer() {
@@ -61,8 +59,7 @@ export class RunsTableComponent implements OnInit {
     let runTableUpdatePeriod = 1000;
     timer(initialRunTableUpdateDelay, runTableUpdatePeriod).subscribe(value => {
       this.mongooseRunRecords.forEach(runRecord => {
-        this.updateDuration(runRecord);
-        this.updateStatus(runRecord);
+        this.updateRecord(runRecord);
       })
     });
   }
