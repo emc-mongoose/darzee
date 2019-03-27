@@ -5,7 +5,7 @@ import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
-import { MongooseMetrics } from './MongooseMetrics';
+import { MongooseMetrics } from '../mongoose-api-models/MongooseMetrics';
 import { filter, map } from 'rxjs/operators';
 import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
 
@@ -15,7 +15,6 @@ import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
 })
 export class MonitoringApiService {
 
-
   private readonly MONGOOSE_HTTP_ADDRESS = Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP;
 
   private mongooseRunRecords: MongooseRunRecord[] = [];
@@ -24,6 +23,8 @@ export class MonitoringApiService {
   // NOTE: availableLogs is a list of logs provided by Mongoose. Key is REST API's endpoint for fetching the log, ...
   // ... value is a displaying name. 
   private availableLogs: Map<String, String> = new Map<String, String>();
+
+  // MARK: - Lifecycle 
 
   constructor(private prometheusApiService: PrometheusApiService,
     private http: HttpClient) {
@@ -55,7 +56,6 @@ export class MonitoringApiService {
     }
     return targerRecord;
   }
-
 
   // NOTE: Returning hard-coded metrics name in order to test the UI first.
   public getAvailableLogNames(): String[] {
@@ -122,8 +122,7 @@ export class MonitoringApiService {
     )
   }
 
-
-  getStatusForRecord(fetchedRecord: MongooseRunRecord): Observable<MongooseRunStatus> {
+  public getStatusForRecord(fetchedRecord: MongooseRunRecord): Observable<MongooseRunStatus> {
     // TODO: Impliment method correctly. 
     let headersForRunStatus = new Headers();
     return this.http.get(this.MONGOOSE_HTTP_ADDRESS + MongooseApi.RunApi.RUN, { observe: 'response' }).pipe(
@@ -178,7 +177,6 @@ export class MonitoringApiService {
       let userCommentTag = "user_comment";
       let userComment = this.fetchLabelValue(staticRunData, userCommentTag);
 
-
       // NOTE: Any computed info is stored within "value" field of JSON. ...
       // ... As for 21.03.2019, it's duration (position 1) and Prometheus DB index (position 0)
       let valuesTag = "value"; // NOTE: "Value" fetches Duration. 
@@ -193,7 +191,6 @@ export class MonitoringApiService {
     }
 
     return runRecords;
-
   }
 
   private fetchLabelValue(metricJson: any, label: string): any {
@@ -202,36 +199,6 @@ export class MonitoringApiService {
     let emptyValue = "";
     return isValueEmpty ? emptyValue : targetValue;
   }
-
-  // NOTE: Returning a hard-coded list in order to test the UI first. 
-  private generateMongooseRunRecords(): MongooseRunRecord[] {
-    var resultRunList: MongooseRunRecord[] = [];
-    const amountOfTestRecords = 10;
-    for (var i: number = 0; i < amountOfTestRecords; i++) {
-      const startTimeHexMock = this.generateHexStartTime();
-      const loadStepIdMock = "load_step_id_1";
-      const endTimeHexMock = this.generateHexStartTime();
-      const testNodesListMock = ["Node" + i, "Node" + i, "Node" + i];
-      const durationMock = "12921912291";
-      const commentMock = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-      const runStatusMock = (i % 2) ? MongooseRunStatus.Finished : MongooseRunStatus.Running;
-      let runRecord = new MongooseRunRecord(loadStepIdMock, runStatusMock, startTimeHexMock,
-        testNodesListMock, durationMock, commentMock);
-      if (runRecord.status == MongooseRunStatus.Finished) {
-        resultRunList.push(runRecord);
-      }
-      resultRunList.push(runRecord);
-    }
-
-    return resultRunList;
-  }
-
-  private generateHexStartTime(): string {
-    const currentDateTime = Date.now();
-    const hexNumericSystemBase = 16;
-    return currentDateTime.toString(hexNumericSystemBase);
-  }
-
 
   // NOTE: Setting up service's observables 
   private setUpService() {
