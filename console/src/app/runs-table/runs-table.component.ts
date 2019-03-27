@@ -5,19 +5,17 @@ import { RoutesList } from '../Routing/routes-list';
 import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
 import { timer } from 'rxjs';
 
-
 @Component({
   selector: 'app-runs-table',
   templateUrl: './runs-table.component.html',
-  styleUrls: ['./runs-table.component.css'],
-
+  styleUrls: ['./runs-table.component.css']
 })
 
 export class RunsTableComponent implements OnInit {
 
-  readonly EMPTY_FIELD_DEFAULT_TAG = "-";
-
   @Input() mongooseRunRecords: MongooseRunRecord[];
+
+  readonly EMPTY_FIELD_DEFAULT_TAG = "-";
 
   readonly columnHeaders = [
     "Status",
@@ -38,15 +36,15 @@ export class RunsTableComponent implements OnInit {
 
   // MARK: - Public 
 
-  onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) {
+  public onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) {
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);
   }
 
   // NOTE: Updating run duration for the target run record 
   private updateRecord(targetRecord: MongooseRunRecord) {
     this.monitoringApiService.updateRecord(targetRecord).subscribe(updatedRecord => {
-      if (updatedRecord == undefined) { 
-        return; 
+      if (updatedRecord == undefined) {
+        return;
       }
       targetRecord.setDuration(updatedRecord.getDuration());
       // targetRecord.status = updatedRecord.getStatus();

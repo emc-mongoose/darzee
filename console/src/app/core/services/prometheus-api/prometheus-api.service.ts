@@ -10,16 +10,18 @@ import { map, filter } from 'rxjs/operators';
 })
 export class PrometheusApiService {
 
-
   readonly API_BASE = Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP + "/api/v1/";
-
+  
   // NOTE: Symbols used for queryting Prometheus for value of metric with specific labels. They ...
   // ... are listed within the labels list. 
   readonly METRIC_LABELS_LIST_START_SYMBOL = "{";
   readonly METRIC_LABELS_LIST_END_SYMBOL = "}";
 
+  // MARK: - Lifecycle 
 
   constructor(private httpClient: HttpClient) { }
+
+  // MARK: - Public 
 
   public runQuery(query: String): Observable<any> {
     let queryRequest = "query?query=";
@@ -33,7 +35,6 @@ export class PrometheusApiService {
   }
 
   public getDataForMetricWithLabels(metric: String, labels: Map<String, String>): Observable<any> {
-
     let targetLabelsNames = Array.from(labels.keys());
 
     // NOTE: Performing query with unspecified labels in case empty labels list has been passed.
@@ -58,7 +59,7 @@ export class PrometheusApiService {
     return this.runQuery(prometheusQuery);
   }
 
-  getExistingRecordsInfo(): Observable<any> {
+  public getExistingRecordsInfo(): Observable<any> {
     // TODO: Add function that creates that kind of a query 
     let targetQuery = "sum without (instance)(rate(mongoose_duration_count[1y]))";
     return this.runQuery(targetQuery);
@@ -70,7 +71,6 @@ export class PrometheusApiService {
   private extractResultPayload(rawMetric: any): any {
     // NOTE: As for 21.03.2019, Ptometheus stores array of result for a query ...
     // ... within response's data.result field.
-
     let dataField = "data";
     let resultFieldTag = "result";
 

@@ -5,8 +5,6 @@ import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monit
 import { MongooseRunTab } from './model/monoose-run-tab.model';
 import { slideAnimation } from 'src/app/core/animations';
 import { Observable, Subscription, timer } from 'rxjs';
-import { take } from 'rxjs/operators';
-
 
 @Component({
   selector: 'app-runs-table-tabs',
@@ -23,10 +21,9 @@ export class RunsTableTabsComponent implements OnInit {
   runTabs: MongooseRunTab[] = [];
   displayingRunRecords: MongooseRunRecord[] = [];
 
+  // MARK: - Lifecycle
 
   constructor(private monitoringApiService: MonitoringApiService) { }
-
-  // MARK: - Lifecycle
 
   ngOnInit() {
     this.setUpMongooseRunRecordsUpdateTimer();
@@ -35,7 +32,6 @@ export class RunsTableTabsComponent implements OnInit {
     // NOTE: Tab "All" is selected by default. 
     this.runTabs[0].isSelected = true;
   }
-
 
   // MARK: - Public 
 
