@@ -7,7 +7,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseMetrics } from './MongooseMetrics';
 import { filter, map } from 'rxjs/operators';
-import { MongooseApi } from './MongooseApi.model';
+import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -64,9 +65,9 @@ export class MonitoringApiService {
 
   // NOTE: Fetching duration for the target run record 
   public getDuration(targetRecord: MongooseRunRecord): Observable<any> {
-    
+
     // NOTE: Duration won't change if Mongoose run has finished. 
-    if (targetRecord.getStatus() == MongooseRunStatus.Finished) { 
+    if (targetRecord.getStatus() == MongooseRunStatus.Finished) {
       return;
     }
 
@@ -97,8 +98,8 @@ export class MonitoringApiService {
   }
 
   public updateRecord(targetRecord: MongooseRunRecord): Observable<MongooseRunRecord> {
-     // NOTE: Duration won't change if Mongoose run has finished. 
-     if (targetRecord.getStatus() == MongooseRunStatus.Finished) { 
+    // NOTE: Duration won't change if Mongoose run has finished. 
+    if (targetRecord.getStatus() == MongooseRunStatus.Finished) {
       return;
     }
 
@@ -121,12 +122,12 @@ export class MonitoringApiService {
     )
   }
 
-  
+
   getStatusForRecord(fetchedRecord: MongooseRunRecord): Observable<MongooseRunStatus> {
     // TODO: Impliment method correctly. 
     let headersForRunStatus = new Headers();
-    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + MongooseApi.RunApi.RUN, {observe: 'response'}).pipe(
-      map(response => { 
+    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + MongooseApi.RunApi.RUN, { observe: 'response' }).pipe(
+      map(response => {
         console.log("Response is: ", response);
         return MongooseRunStatus.Finished;
       })

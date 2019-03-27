@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
+import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class ControlApiService {
 
   // NOTE: Returning Mongoose configuration as JSON 
   getMongooseConfiguration(mongooseHostIp: string): any {
-    let configEndpoint = "/config";
+    let configEndpoint = MongooseApi.Config.CONFIG;
     return this.http.get(Constants.Http.HTTP_PREFIX + mongooseHostIp + configEndpoint, Constants.Http.JSON_CONTENT_TYPE);
   }
 
