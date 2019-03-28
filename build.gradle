@@ -4,7 +4,10 @@ import com.bmuschko.gradle.docker.tasks.image.*
 
 buildscript {
   ext {
-    CONSOLE_PORT = '${getConsoleConfiurationParameter("CONSOLE_PORT")}'
+    consoleConfiguration = [ 
+      CONFIGURATION: '${getConsoleConfiurationParameter("CONSOLE_VER")}'
+    ]
+    
     depVersion = [
       gradle_docker_plugin: "3.6.1",
       gradle_node_plugin: "1.2.0",
@@ -29,8 +32,7 @@ apply plugin: 'com.bmuschko.docker-java-application'
 apply plugin: 'com.moowork.node'
 apply plugin: 'base'
 
-
-version getConsoleConfiurationParameter("CONSOLE_VER")
+version rootProject.ext.consoleConfiguration.CONFIGURATION
 
 repositories {
   mavenLocal()
@@ -123,8 +125,4 @@ def getConsoleConfiurationParameter(final String parameterName) {
    }
   }
   return targetParameterValue;
-}
-
-def getConsoleExposingPort() { 
-  
 }
