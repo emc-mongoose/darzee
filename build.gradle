@@ -1,11 +1,19 @@
 import com.bmuschko.gradle.docker.tasks.container.*
 import com.bmuschko.gradle.docker.tasks.image.*
 
+// NOTE: Project-related configuration properties are listed within .env file. 
+// The structure contains names of the properties. 
+def CONSOLE_CONFIGURATION_NAMES = [
+  version: "CONSOLE_VER",
+  port: "CONSOLE_PORT"
+]
 
 buildscript {
   ext {
+    // NOTE: Project configurations' actual parameter values. 
     consoleConfiguration = [ 
-      CONFIGURATION: '${getConsoleConfiurationParameter("CONSOLE_VER")}'
+      CONSOLE_VERSION: '${getConsoleConfiurationParameter(${CONSOLE_CONFIGURATION_NAMES.version})}',
+      CONSOLE_PORT: '${getConsoleConfiurationParameter(${CONSOLE_CONFIGURATION_NAMES.port})}'
     ]
     
     depVersion = [
@@ -32,7 +40,7 @@ apply plugin: 'com.bmuschko.docker-java-application'
 apply plugin: 'com.moowork.node'
 apply plugin: 'base'
 
-version rootProject.ext.consoleConfiguration.CONFIGURATION
+version rootProject.ext.consoleConfiguration.CONSOLE_VERSION
 
 repositories {
   mavenLocal()
@@ -70,7 +78,7 @@ task createDockerfile(type: Dockerfile) {
     // NOTE: Serving the app via Node.js server
     instruction "COPY --from=builder /usr/src/app/server/node-server.js ."
     instruction "RUN npm install express"
-    instruction "EXPOSE ${getConsoleConfiurationParameter("CONSOLE_PORT")}"
+    instruction "EXPOSE ${getConsoleExposingPort()}"
     instruction 'CMD [ "node", "node-server.js" ]' 
 }
 
@@ -125,4 +133,10 @@ def getConsoleConfiurationParameter(final String parameterName) {
    }
   }
   return targetParameterValue;
+}
+
+def getConsoleExposingPort() { 
+  // TODO: Figure out the way how to extract parameter name from the variable. 
+  // return getConsoleConfiurationParameter(ext.consoleConfiguration.CONSOLE_PORT);
+    return getConsoleConfiurationParameter("CONSOLE_PORT");
 }
