@@ -20,12 +20,13 @@ export class ControlApiService {
 
   // MARK: - Public
 
-  public runMongoose(jsonConfiguration: Object, javaScriptScenario: String = ""): any {
+  public runMongoose(mongooseJsonConfiguration: Object, javaScriptScenario: String = ""): any {
+    
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
     javaScriptScenario = JSON.stringify(javaScriptScenario);
 
     let formData = new FormData();
-    formData.append('defaults', jsonConfiguration.toString());
+    formData.append('defaults', JSON.stringify(mongooseJsonConfiguration));
 
     this.http.post(Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), {observe: "response"}).subscribe(runResponse => {
       console.log("Mongoose run response: " + JSON.stringify(runResponse));
