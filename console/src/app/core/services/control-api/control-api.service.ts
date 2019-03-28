@@ -27,7 +27,7 @@ export class ControlApiService {
     let formData = new FormData();
     formData.append('defaults', jsonConfiguration.toString());
 
-    this.http.post(Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeaderForJsonFile()).subscribe(runResponse => {
+    this.http.post(Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun()).subscribe(runResponse => {
       console.log("Mongoose run response: " + JSON.stringify(runResponse));
       // console.log("response headers: ", runResponse.headers)
     });
@@ -47,6 +47,13 @@ export class ControlApiService {
     httpHeadersForMongooseRun.append('Accept', 'application/json');
     const eTag = this.getEtagForRun();
     httpHeadersForMongooseRun.append('If-Match', eTag);
+    return httpHeadersForMongooseRun;
+  }
+
+  private getHttpHeadersForMongooseRun(): HttpHeaders { 
+    let httpHeadersForMongooseRun = new HttpHeaders();
+    httpHeadersForMongooseRun.append('Content-Type', 'multipart/form-data'); 
+    httpHeadersForMongooseRun.append('Accept', '*/*'); 
     return httpHeadersForMongooseRun;
   }
 
