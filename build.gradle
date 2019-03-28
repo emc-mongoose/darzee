@@ -15,7 +15,8 @@ buildscript {
     consoleConfiguration = [ 
       CONSOLE_VERSION: '${getConsoleConfiurationParameter(${CONSOLE_CONFIGURATION_NAMES.version})}',
       CONSOLE_PORT: '${getConsoleConfiurationParameter(${CONSOLE_CONFIGURATION_NAMES.port})}',
-      CONSOLE_IMAGE_ID: 'emcmongoose/mongoose-console'
+      CONSOLE_IMAGE_FULL_ID: 'emcmongoose/mongoose-console',
+      CONSOLE_IMAGE_NAME: 'mongoose-console'
     ]
     
     depVersion = [
@@ -88,7 +89,7 @@ task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
     imageId = consoleConfiguration.CONSOLE_IMAGE_ID
-    tags = [consoleConfiguration.CONSOLE_IMAGE_ID + ':' + getConsoleConfiurationParameter(CONSOLE_CONFIGURATION_NAMES.version), consoleConfiguration.CONSOLE_IMAGE_ID + 'latest']
+    tags = [consoleConfiguration.CONSOLE_IMAGE_FULL_ID + ':' + getConsoleConfiurationParameter(CONSOLE_CONFIGURATION_NAMES.version), consoleConfiguration.CONSOLE_IMAGE_FULL_ID + ':latest']
     doLast { 
         clearProductionFiles()
     }
@@ -96,12 +97,12 @@ task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
 
 task tagImage(type: DockerTagImage, dependsOn: 'buildImage') {
     targetImageId { buildImage.getImageId() }
-    tag 'mongoose-console'
-    repository 'mongoose-console'
+    tag consoleConfiguration.CONSOLE_IMAGE_NAME
+    repository consoleConfiguration.CONSOLE_IMAGE_NAME
 }
 
 task pushImage(type: DockerPushImage, dependsOn: 'tagImage'){
-    imageName 'emcmongoose/mongoose-console'
+    imageName consoleConfiguration.CONSOLE_IMAGE_FULL_ID
 }
 
 // Leaving "clear" task so it could be configured lately. Remaining clearProductionFiles() as a function in order ...
