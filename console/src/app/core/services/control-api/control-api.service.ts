@@ -20,21 +20,21 @@ export class ControlApiService {
 
   // MARK: - Public
 
-  runMongoose(jsonConfiguration: Object, javaScriptScenario: String = ""): any {
+  public runMongoose(jsonConfiguration: Object, javaScriptScenario: String = ""): any {
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
     javaScriptScenario = JSON.stringify(javaScriptScenario);
 
     let formData = new FormData();
     formData.append('defaults', jsonConfiguration.toString());
 
-    this.http.post(Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeaderForJsonFile()).subscribe(
-      error => {
-        alert("Unable to run Mongoose. Reason: " + error);
-      });
+    this.http.post(Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeaderForJsonFile()).subscribe(runResponse => {
+      console.log("Mongoose run response: " + JSON.stringify(runResponse));
+      // console.log("response headers: ", runResponse.headers)
+    });
   }
 
   // NOTE: Returning Mongoose configuration as JSON 
-  getMongooseConfiguration(mongooseHostIp: string): any {
+  public getMongooseConfiguration(mongooseHostIp: string): any {
     let configEndpoint = MongooseApi.Config.CONFIG;
     return this.http.get(Constants.Http.HTTP_PREFIX + mongooseHostIp + configEndpoint, Constants.Http.JSON_CONTENT_TYPE);
   }
