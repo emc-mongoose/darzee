@@ -3,17 +3,17 @@ import com.bmuschko.gradle.docker.tasks.image.*
 
 // NOTE: Project-related configuration properties are listed within .env file. 
 // The structure contains names of the properties. 
-def CONSOLE_CONFIGURATION_NAMES = [
-  version: "CONSOLE_VER",
-  port: "CONSOLE_PORT"
+def consoleConfigurationNames = [
+  ENV_VERSION: "CONSOLE_VER",
+  ENV_PORT: "CONSOLE_PORT"
 ]
 
 buildscript {
   ext {
     // NOTE: Project configurations' actual parameter values. 
     consoleConfiguration = [ 
-      CONSOLE_VERSION: '${getConsoleConfiurationParameter(${CONSOLE_CONFIGURATION_NAMES.version})}',
-      CONSOLE_PORT: '${getConsoleConfiurationParameter(${CONSOLE_CONFIGURATION_NAMES.port})}'
+      CONSOLE_VERSION: '${getConsoleConfiurationParameter(${consoleConfigurationNames.ENV_VERSION})}',
+      CONSOLE_PORT: '${getConsoleConfiurationParameter(${consoleConfigurationNames.ENV_PORT})}'
     ]
     
     depVersion = [
