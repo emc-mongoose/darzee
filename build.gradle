@@ -1,19 +1,22 @@
 import com.bmuschko.gradle.docker.tasks.container.*
 import com.bmuschko.gradle.docker.tasks.image.*
 
+
 // NOTE: Project-related configuration properties are listed within .env file. 
 // The structure contains names of the properties. 
-def consoleConfigurationNames = [
-  ENV_VERSION: "CONSOLE_VER",
-  ENV_PORT: "CONSOLE_PORT"
+def CONSOLE_CONFIGURATION_NAMES = [
+  version: "CONSOLE_VER",
+  port: "CONSOLE_PORT",
 ]
 
 buildscript {
   ext {
     // NOTE: Project configurations' actual parameter values. 
     consoleConfiguration = [ 
-      CONSOLE_VERSION: '${getConsoleConfiurationParameter(${consoleConfigurationNames.ENV_VERSION})}',
-      CONSOLE_PORT: '${getConsoleConfiurationParameter(${consoleConfigurationNames.ENV_PORT})}'
+      CONSOLE_VERSION: '${getConsoleConfiurationParameter(${CONSOLE_CONFIGURATION_NAMES.version})}',
+      CONSOLE_PORT: '${getConsoleConfiurationParameter(${CONSOLE_CONFIGURATION_NAMES.port})}',
+      CONSOLE_IMAGE_FULL_ID: 'emcmongoose/mongoose-console',
+      CONSOLE_IMAGE_NAME: 'mongoose-console'
     ]
     
     depVersion = [
@@ -78,15 +81,15 @@ task createDockerfile(type: Dockerfile) {
     // NOTE: Serving the app via Node.js server
     instruction "COPY --from=builder /usr/src/app/server/node-server.js ."
     instruction "RUN npm install express"
-    instruction "EXPOSE ${getConsoleExposingPort()}"
+    instruction "EXPOSE " + getConsoleConfiurationParameter(CONSOLE_CONFIGURATION_NAMES.port)
     instruction 'CMD [ "node", "node-server.js" ]' 
 }
 
 task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
-    imageId = 'emcmongoose/mongoose-console'
-    tags = ['emcmongoose/mongoose-console:' + getConsoleConfiurationParameter("CONSOLE_VER"), 'emcmongoose/mongoose-console:latest']
+    imageId = consoleConfiguration.CONSOLE_IMAGE_ID
+    tags = [consoleConfiguration.CONSOLE_IMAGE_FULL_ID + ':' + getConsoleConfiurationParameter(CONSOLE_CONFIGURATION_NAMES.version), consoleConfiguration.CONSOLE_IMAGE_FULL_ID + ':latest']
     doLast { 
         clearProductionFiles()
     }
@@ -94,12 +97,12 @@ task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
 
 task tagImage(type: DockerTagImage, dependsOn: 'buildImage') {
     targetImageId { buildImage.getImageId() }
-    tag 'mongoose-console'
-    repository 'mongoose-console'
+    tag consoleConfiguration.CONSOLE_IMAGE_NAME
+    repository consoleConfiguration.CONSOLE_IMAGE_NAME
 }
 
 task pushImage(type: DockerPushImage, dependsOn: 'tagImage'){
-    imageName 'emcmongoose/mongoose-console'
+    imageName consoleConfiguration.CONSOLE_IMAGE_FULL_ID
 }
 
 // Leaving "clear" task so it could be configured lately. Remaining clearProductionFiles() as a function in order ...
@@ -138,5 +141,6 @@ def getConsoleConfiurationParameter(final String parameterName) {
 def getConsoleExposingPort() { 
   // TODO: Figure out the way how to extract parameter name from the variable. 
   // return getConsoleConfiurationParameter(ext.consoleConfiguration.CONSOLE_PORT);
-    return getConsoleConfiurationParameter("CONSOLE_PORT");
+  return getConsoleConfiurationParameter(CONSOLE_CONFIGURATION_NAMES.port);
 }
+
