@@ -143,7 +143,7 @@ export class MonitoringApiService {
   public fetchMongooseRunRecords() {
     // let mongooseMetricMock = MongooseMetrics.PrometheusM/etrics.DURATION;
     return this.prometheusApiService.getExistingRecordsInfo().subscribe(metricsArray => {
-      console.log("Every fetched record: ", JSON.stringify(metricsArray));
+      // console.log("Every fetched record: ", JSON.stringify(metricsArray));
       var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
       this.behaviorSubjectRunRecords.next(fetchedRunRecords);
     })

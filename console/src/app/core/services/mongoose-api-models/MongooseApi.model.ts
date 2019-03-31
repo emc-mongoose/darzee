@@ -18,4 +18,8 @@ export namespace MongooseApi {
     export class LogsApi {
         public static readonly LOGS = "/logs";
     }
+
+    export class Headers { 
+        public static readonly ETAG = "etag";
+    }
 }

@@ -29,8 +29,7 @@ export class ControlApiService {
     formData.append('defaults', JSON.stringify(mongooseJsonConfiguration));
 
     this.http.post(Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), {observe: "response"}).subscribe(runResponse => {
-      console.log("Mongoose run response: " + JSON.stringify(runResponse));
-      console.log("Mongoose run response headers: ", runResponse.headers.keys())
+     console.log("Run ETAG: ", runResponse.headers.get(MongooseApi.Headers.ETAG));
     });
   }
 
