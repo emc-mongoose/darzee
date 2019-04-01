@@ -148,8 +148,6 @@ export class MongooseSetUpService {
     // NOTE: Load step ID parretn is <STEP_TYPE>-<yyyyMMdd.HHmmss.SSS>
     let stepTypeMock = "none"; // TODO: get actual step type 
     let formattedDate = this.dateFormatPipe.transform(new Date());
-    console.log("formattedDate: ", formattedDate);
-
     let loadStepId = "<${stepType}>-<y${formattedDate}>"
     return loadStepId;
 

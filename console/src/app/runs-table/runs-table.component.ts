@@ -54,8 +54,8 @@ export class RunsTableComponent implements OnInit {
   // NOTE: Updating dynamic Mongoose run parameters (run status, run duration).
   private setUpRecordsUpdateTimer() {
     let initialRunTableUpdateDelay = 0;
-    let runTableUpdatePeriod = 1000;
-    timer(initialRunTableUpdateDelay, runTableUpdatePeriod).subscribe(value => {
+    let runTableUpdatePeriodMs = 10000;
+    timer(initialRunTableUpdateDelay, runTableUpdatePeriodMs).subscribe(value => {
       this.mongooseRunRecords.forEach(runRecord => {
         this.updateRecord(runRecord);
       })
