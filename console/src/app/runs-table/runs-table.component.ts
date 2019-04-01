@@ -3,7 +3,7 @@ import { MongooseRunRecord } from '../core/models/run-record.model';
 import { Router } from '@angular/router';
 import { RoutesList } from '../Routing/routes-list';
 import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
-import { timer, Observable } from 'rxjs';
+import { timer, Observable, Subscription } from 'rxjs';
 import { MongooseRunStatus } from '../core/mongoose-run-status';
 
 @Component({
@@ -13,9 +13,6 @@ import { MongooseRunStatus } from '../core/mongoose-run-status';
 })
 
 export class RunsTableComponent implements OnInit {
-
-  @Input("mongooseRunRecords") mongooseRunRecordsObservable: Observable<MongooseRunRecord[]>;
-  public mongooseRunRecords: MongooseRunRecord[] = []; 
 
   readonly EMPTY_FIELD_DEFAULT_TAG = "-";
 
@@ -27,13 +24,18 @@ export class RunsTableComponent implements OnInit {
     "Comment"
   ];
 
+  @Input("mongooseRunRecords") mongooseRunRecordsObservable: Observable<MongooseRunRecord[]>;
+  public mongooseRunRecords: MongooseRunRecord[] = []; 
+
+  private runRecordsSubscription: Subscription = new Subscription(); 
+
   constructor(private router: Router,
     private monitoringApiService: MonitoringApiService) { }
 
   // MARK: - Lifecycle 
 
   ngOnInit() {
-    this.mongooseRunRecordsObservable.subscribe(updatedRecords => { 
+    this.runRecordsSubscription = this.mongooseRunRecordsObservable.subscribe(updatedRecords => { 
 
       if (this.mongooseRunRecords.length == 0) { 
         // NOTE: No need in updating records if it hasn't been set before. 
@@ -88,6 +90,10 @@ export class RunsTableComponent implements OnInit {
       }      
     })
     // this.setUpRecordsUpdateTimer();
+  }
+
+  ngOnDestroy() { 
+    this.runRecordsSubscription.unsubscribe(); 
   }
 
   // MARK: - Public 
