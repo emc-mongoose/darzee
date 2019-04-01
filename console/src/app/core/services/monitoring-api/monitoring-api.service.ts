@@ -38,7 +38,12 @@ export class MonitoringApiService {
   }
 
   public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
-    return this.behaviorSubjectRunRecords.asObservable();
+    return this.behaviorSubjectRunRecords.asObservable().pipe(
+      map(records => { 
+        records = this.sortMongooseRecordsByStartTime(records);
+        return records; 
+      })
+    );
   }
 
   public getMongooseRunRecordById(id: String): MongooseRunRecord {
@@ -150,6 +155,15 @@ export class MonitoringApiService {
   }
 
   // MARK: - Private 
+
+  private sortMongooseRecordsByStartTime(records: MongooseRunRecord[]): MongooseRunRecord[] { 
+    return records.sort((lhs, rhs) => { 
+      let hasLhsStartedEarlier = (Number(lhs.getStartTime()) < Number(rhs.getStartTime()));
+      let valueTrue = 1; 
+      let valueFalse = -1;
+      return hasLhsStartedEarlier ? valueTrue : valueFalse; 
+    });
+  }
 
   private extractRunRecordsFromMetricLabels(rawMongooseRunData: any): MongooseRunRecord[] {
 

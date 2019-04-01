@@ -16,7 +16,6 @@ import { ConfigurationEditingRootComponent } from './mongoose-set-up/set-up-step
 
 // NOTE: NPM dependencies
 import { HeaderComponent } from './header/header.component';
-import { RunsTableComponent } from './runs-table/runs-table.component';
 import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.component';
   // NOTE: CodeMirror's module for code displaying
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
@@ -29,6 +28,7 @@ import { RunStatisticsComponent } from './run-statistics/run-statistics.componen
 import { RunStatisticLogsComponent } from './run-statistics/run-statistic-logs/run-statistic-logs.component';
 import { RunStatisticsChartsComponent } from './run-statistics/run-statistics-charts/run-statistics-charts.component';
 import { DateFormatPipe } from './common/date-format-pipe';
+import { RunsTableComponent } from './runs-table/runs-table.component';
 
 
 @NgModule({

@@ -33,6 +33,7 @@ export class RunsTableComponent implements OnInit {
 
   ngOnInit() {
     this.mongooseRunRecordsObservable.subscribe(runRecords => { 
+      console.log("First incoming run record identifier: ", runRecords[0].getIdentifier());
       this.mongooseRunRecords = runRecords;
     })
     this.setUpRecordsUpdateTimer();
