@@ -51,6 +51,7 @@ export class RunsTableComponent implements OnInit {
           continue;
         }
         this.mongooseRunRecords[i] = updatedRecords[i];
+        this.updateRecordStatus(this.mongooseRunRecords[i]);
       }
       let shouldUpdateExistingRecords = (this.mongooseRunRecords.length != updatedRecords.length);
       if (!shouldUpdateExistingRecords) {
@@ -109,11 +110,21 @@ export class RunsTableComponent implements OnInit {
 
   private updateRecordsStatus(runRecords: MongooseRunRecord[]) {
     runRecords.forEach(record => {
-      this.statusUpdateSubscription.add(this.monitoringApiService.getStatusForRecord(record).subscribe(status => {
-        console.log("Got status for record:", status);
-        record.setStatus(status);
-      }));
+      this.updateRecordStatus(record);
     });
+  }
+
+  private updateRecordStatus(runRecord: MongooseRunRecord) { 
+    this.statusUpdateSubscription.add(this.monitoringApiService.getStatusForRecord(runRecord).subscribe(status => {
+      console.log("Got status for record:", status);
+      runRecord.setStatus(status);
+    },
+    error => { 
+      runRecord.setStatus(MongooseRunStatus.Finished);
+    },
+    () => { 
+      // TODO: Update tabs here 
+    }));
   }
 
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MongooseRunRecord } from '../../models/run-record.model';
 import { MongooseRunStatus } from '../../mongoose-run-status';
 import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseMetrics } from '../mongoose-api-models/MongooseMetrics';
@@ -39,11 +39,11 @@ export class MonitoringApiService {
 
   public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
     return this.behaviorSubjectRunRecords.asObservable().pipe(
-      map(records => { 
+      map(records => {
         // NOTE: Records are being sorted for order retaining. This ...
         // ... is useful while updating Run Records table. 
         records = this.sortMongooseRecordsByStartTime(records);
-        return records; 
+        return records;
       })
     );
   }
@@ -127,13 +127,61 @@ export class MonitoringApiService {
   }
 
   public getStatusForRecord(record: MongooseRunRecord): Observable<MongooseRunStatus> {
+    let initialMetricsName = "Config";
+
+    let initialMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), initialMetricsName).pipe(
+      map(initialMetricResponse => {
+        return true;
+      },
+        error => {
+          return false;
+        })
+    );
+
     let finalMetricsName = "metrics.threshold.FileTotal";
-    return this.getLog(record.getIdentifier(), finalMetricsName).pipe(
-      map(response => { 
-        console.log("response for status request: ", response);
-        return response;
+    let finalMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), finalMetricsName).pipe(
+      map(finalMetricResponse => {
+        return true;
+      },
+        error => {
+          return false;
+        })
+    );
+
+    return forkJoin(initialMetricsObservable, finalMetricsObservable).pipe(
+      map(results => { 
+        let hasInitialMetrics: Boolean = results[0]; 
+        let hasFinalMetircs: Boolean = results[1];
+        
+        let isRunningActive: Boolean = (hasInitialMetrics && !hasFinalMetircs);
+        console.log("isRunningActive: ", isRunningActive);
+        return isRunningActive ? MongooseRunStatus.Running : MongooseRunStatus.Finished;
       })
-    ); 
+    )
+
+    return this.getLog(record.getIdentifier(), finalMetricsName).pipe(
+      map(finalMetricResponse => {
+        // NOTE: If final metrics are available, Mongoose Run has been finished. 
+        console.log("Final metrics response: ", finalMetricResponse);
+        return MongooseRunStatus.Finished;
+      },
+        error => {
+          console.log("Error. ")
+          // NOTE: If file hasn't been found, the file hasn't been finished. 
+          return this.getLog(record.getIdentifier(), initialMetricsName).pipe(
+            map(initialMetricResponse => {
+              console.log("Error initial metrics response.");
+              // NOTE: If initial metric is available, Mongoose Run is still up.
+              return MongooseRunStatus.Running;
+            },
+              error => {
+                console.log("Error-error response.");
+                // NOTE: If initial metric is not available, Mongoose Run is finished. 
+                return MongooseRunStatus.Finished;
+              })
+          )
+        })
+    );
   }
 
   public getLog(stepId: String, logName: String): Observable<any> {
@@ -154,12 +202,12 @@ export class MonitoringApiService {
 
   // MARK: - Private 
 
-  private sortMongooseRecordsByStartTime(records: MongooseRunRecord[]): MongooseRunRecord[] { 
-    return records.sort((lhs, rhs) => { 
+  private sortMongooseRecordsByStartTime(records: MongooseRunRecord[]): MongooseRunRecord[] {
+    return records.sort((lhs, rhs) => {
       let hasLhsStartedEarlier = (Number(lhs.getStartTime()) < Number(rhs.getStartTime()));
-      let valueTrue = 1; 
+      let valueTrue = 1;
       let valueFalse = -1;
-      return hasLhsStartedEarlier ? valueTrue : valueFalse; 
+      return hasLhsStartedEarlier ? valueTrue : valueFalse;
     });
   }
 
