@@ -4,6 +4,7 @@ import { MongooseSetupTab } from './mongoose-setup-tab.model';
 import { slideAnimation } from '../core/animations';
 import { MongooseSetUpService } from './mongoose-set-up-service/mongoose-set-up.service';
 import { RoutesList } from '../Routing/routes-list';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-mongoose-set-up',
@@ -16,51 +17,54 @@ import { RoutesList } from '../Routing/routes-list';
 
 export class MongooseSetUpComponent implements OnInit {
 
-
   readonly BASE_URL = "/" + RoutesList.MONGOOSE_SETUP;
-  
   readonly SETUP_TABS_DATA = [
-    {title: 'Nodes', link: RoutesList.NODES},
-    {title: 'Configuration', link: RoutesList.MONGOOSE_COMFIGURATION},
-    {title: 'Scenario', link: RoutesList.SCENARIO}
+    { title: 'Nodes', link: RoutesList.NODES },
+    { title: 'Configuration', link: RoutesList.MONGOOSE_COMFIGURATION },
+    { title: 'Scenario', link: RoutesList.SCENARIO }
 
   ];
 
-  setUpTabs: MongooseSetupTab[] = []
-  processingTabID: number = 0;
+  public setUpTabs: MongooseSetupTab[] = []
+  public processingTabID: number = 0;
 
-  private getCurrentSetupTab(): MongooseSetupTab { 
+  private mongooseRunSubscription: Subscription = new Subscription();
+
+  private getCurrentSetupTab(): MongooseSetupTab {
     return this.setUpTabs[this.processingTabID];
   }
 
+  // MARK: - Lifecycle 
+
   constructor(
     private router: Router,
-    private mongooseSetUpService: MongooseSetUpService
-    ) {
+    private mongooseSetUpService: MongooseSetUpService) {
     this.initSetUpTabs();
     let defaultTabNumber = 0;
     this.openUpTab(defaultTabNumber);
-   }
+  }
+  
+  ngOnInit() { }
 
-  // MARK: - Lifecycle 
-
-  ngOnInit() {}
+  ngOnDestroy() {
+    this.mongooseRunSubscription.unsubscribe();
+  }
 
   // MARK: - Public 
 
-  getCurrentStepName(): string { 
+  public getCurrentStepName(): string {
     return this.setUpTabs[this.processingTabID].title;
   }
 
-  getPercentagePerTab(): number { 
+  public getPercentagePerTab(): number {
     let rawPercentage = (100 / this.setUpTabs.length);
     // NOTE: tabs offset is an estimated value. 
     let tabsOffset = this.setUpTabs.length;
     return Math.round(rawPercentage) - tabsOffset;
   }
 
-  onConfirmClicked() { 
-    let processingTab = this.getCurrentSetupTab(); 
+  public onConfirmClicked() {
+    let processingTab = this.getCurrentSetupTab();
     processingTab.isCompleted = true;
     let nextTabId = this.processingTabID + 1;
     this.switchTab(nextTabId);
@@ -68,77 +72,93 @@ export class MongooseSetUpComponent implements OnInit {
     this.updateSetUpInfoFromSource(processingTab.contentLink);
   }
 
-  isSetupCompleted() { 
+  public isSetupCompleted() {
     return this.setUpTabs.every(tab => tab.isCompleted);
   }
 
-  onTabClicked(tabId: number) { 
+  public onTabClicked(tabId: number) {
     this.openUpTab(tabId);
   }
 
-  onRunBtnClicked() { 
-    this.mongooseSetUpService.runMongoose();
+  public onRunBtnClicked() {
+    this.mongooseRunSubscription = this.mongooseSetUpService.runMongoose().subscribe(mongooseRunId => {
+      // NOTE: Updated Metrics will include both run ID and load step ID. In case ...
+      // ... it won't be implimented, map them here. If you want to get ...
+      // ... load step id, you can do it via mongoose set up service. 
+      console.log("Launched Mongoose run with run ID: ", mongooseRunId);
+      
+      // NOTE: If run ID has been returned from the server, Mongoose run has started
+      let hasMongooseSuccessfullyStarted = (mongooseRunId != undefined);
+      if (!hasMongooseSuccessfullyStarted) {
+        let misleadingMessage = "Unable to start Mongoose Run."
+        alert(misleadingMessage);
+      } else {
+        let misleadingMessage = "Mongoose Run has started with ID " + mongooseRunId;
+        alert(misleadingMessage);
+      }
+      this.router.navigate[this.BASE_URL];
+    });
   }
 
-  onRouterComponentActivated($event) {   }
+  public onRouterComponentActivated($event) { }
 
-  onRouterComponentDeactivated($event) {   }
+  public onRouterComponentDeactivated($event) { }
 
-  getConfigrmationBtnTitle(): string { 
+  public getConfigrmationBtnTitle(): string {
     return (this.isSetupCompleted() ? "Configuration completed  ✔" : "Confirm »");
   }
 
   // MARK: - Private
 
-  private initSetUpTabs() { 
+  private initSetUpTabs() {
     // NOTE: Filling up the array based on the tab-wrapper class. 
     // ... The wrapper is used in order to properly handle different tab states. 
-    for (var i:number = 0; i < this.SETUP_TABS_DATA.length; ++i) { 
+    for (var i: number = 0; i < this.SETUP_TABS_DATA.length; ++i) {
       let tabData = this.SETUP_TABS_DATA[i];
       let mongooseTab = new MongooseSetupTab(i, tabData.title, tabData.link);
       this.setUpTabs.push(mongooseTab);
     }
   }
 
-  private openUpTab(tabNumber: number) { 
-    if (tabNumber >= this.setUpTabs.length) { 
+  private openUpTab(tabNumber: number) {
+    if (tabNumber >= this.setUpTabs.length) {
       console.error("Unable to open tab number ", tabNumber, " since it doesn't exist.");
       return;
     }
     // NOTE: Hiding content of current tab, showing up another's. 
     this.setUpTabs[this.processingTabID].isContentDisplaying = false;
-    this.setUpTabs[tabNumber].isContentDisplaying = true; 
+    this.setUpTabs[tabNumber].isContentDisplaying = true;
 
     this.router.navigate([this.BASE_URL, this.setUpTabs[tabNumber].contentLink]);
     this.processingTabID = tabNumber;
   }
 
-  private switchTab(nextTabId: number) { 
-    if (nextTabId > this.setUpTabs.length) { 
+  private switchTab(nextTabId: number) {
+    if (nextTabId > this.setUpTabs.length) {
       console.error("Unable to switch to tab number ", nextTabId, " since it doesn't exist.");
       return;
     }
-    this.setUpTabs[this.processingTabID].isContentDisplaying = false; 
+    this.setUpTabs[this.processingTabID].isContentDisplaying = false;
     this.openUpTab(nextTabId);
   }
 
-    // NOTE: Source Link is the link to page from which the set up info will be updated. 
-    private updateSetUpInfoFromSource(sourceLink: string) { 
-      // NOTE: Confirming set up data from the **source** page. 
-      switch (sourceLink) { 
-        case RoutesList.MONGOOSE_COMFIGURATION: {
-          this.mongooseSetUpService.confirmConfigurationSetup();  
-          break;
-        }
-        case RoutesList.SCENARIO: { 
-          this.mongooseSetUpService.confirmScenarioSetup();
-          break;
-        }
-        case RoutesList.NODES: { 
-          this.mongooseSetUpService.confirmNodeConfiguration();
-          break;
-        }
+  // NOTE: Source Link is the link to page from which the set up info will be updated. 
+  private updateSetUpInfoFromSource(sourceLink: string) {
+    // NOTE: Confirming set up data from the **source** page. 
+    switch (sourceLink) {
+      case RoutesList.MONGOOSE_COMFIGURATION: {
+        this.mongooseSetUpService.confirmConfigurationSetup();
+        break;
+      }
+      case RoutesList.SCENARIO: {
+        this.mongooseSetUpService.confirmScenarioSetup();
+        break;
+      }
+      case RoutesList.NODES: {
+        this.mongooseSetUpService.confirmNodeConfiguration();
+        break;
       }
     }
+  }
 
 }

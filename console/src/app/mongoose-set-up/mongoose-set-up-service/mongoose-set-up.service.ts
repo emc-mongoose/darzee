@@ -126,7 +126,7 @@ export class MongooseSetUpService {
     this.setNodesData(this.observableSlaveNodes.getValue());
   }
 
-  runMongoose() {
+  public runMongoose(): Observable<String> {
     try { 
       if (!this.mongooseSetupInfoModel.hasLoadStepId()) {
         let generatedLoadStepId = this.getGeneratedLoadStepId();
@@ -136,12 +136,8 @@ export class MongooseSetUpService {
       let misleadingMsg = "Unable to apply generated load step id to Mongoose run configuration. Reason: " + configurationError; 
       console.error(misleadingMsg);
     }
-    this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario).subscribe(mongooseRunId => {
-      // NOTE: Updated Metrics will include both run ID and load step ID. In case ...
-      // ... it won't be implimented, map them here. 
-      console.log("Launched Mongoose run with run ID: ", mongooseRunId);
-      console.log("Related load step ID: ", this.mongooseSetupInfoModel.getLoadStepId());
-    });
+    // NOTE: you can get related load step ID from mongoose setup model here. 
+    return this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario);
   }
 
   // MARK: - Private
