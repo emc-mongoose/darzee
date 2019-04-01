@@ -8,7 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MongooseRunStatusIconComponent } from './runs-table/mongoose-run-status-icon/mongoose-run-status-icon.component';
-import { RunsTableTabsComponent } from './runs-table/runs-table-tabs/runs-table-tabs.component';
+import { RunsTableRootComponent } from './runs-table/runs-table-tabs/runs-table-root.component';
 import { NodesComponent } from './mongoose-set-up/set-up-steps/nodes/nodes.component';
 import { ScenariosComponent } from './mongoose-set-up/set-up-steps/scenarios-set-up/scenarios/scenarios.component';
 import { ConfigurationEditingComponent } from './mongoose-set-up/set-up-steps/configuration-set-up/configuration-editing/configuration-editing.component';
@@ -37,7 +37,7 @@ import { DateFormatPipe } from './common/date-format-pipe';
     HeaderComponent,
     RunsTableComponent,
     MongooseRunStatusIconComponent,
-    RunsTableTabsComponent,
+    RunsTableRootComponent,
     MongooseSetUpComponent,
     NodesComponent,
     ScenariosComponent,

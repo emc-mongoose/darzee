@@ -7,19 +7,19 @@ import { slideAnimation } from 'src/app/core/animations';
 import { Observable, Subscription, timer } from 'rxjs';
 
 @Component({
-  selector: 'app-runs-table-tabs',
-  templateUrl: './runs-table-tabs.component.html',
-  styleUrls: ['./runs-table-tabs.component.css'],
+  selector: 'app-runs-table-root',
+  templateUrl: './runs-table-root.component.html',
+  styleUrls: ['./runs-table-root.component.css'],
   animations: [
     slideAnimation
   ]
 })
 
-export class RunsTableTabsComponent implements OnInit {
+export class RunsTableRootComponent implements OnInit {
 
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
   runTabs: MongooseRunTab[] = [];
-  displayingRunRecords: MongooseRunRecord[] = [];
+  private displayingRunRecords: MongooseRunRecord[] = [];
 
   // MARK: - Lifecycle
 
@@ -53,6 +53,10 @@ export class RunsTableTabsComponent implements OnInit {
     return (this.monitoringApiService.getExistingRunRecords().length > 0);
   }
 
+  public getDisplayingRunRecords() { 
+    return this.displayingRunRecords; 
+  }
+
   // MARK: - Private 
 
   private updateRunRecords() {
@@ -77,8 +81,8 @@ export class RunsTableTabsComponent implements OnInit {
 
   private setUpMongooseRunRecordsUpdateTimer() {
     let initialRunTableUpdateDelay = 0;
-    let runTableUpdatePeriod = 3000;
-    timer(initialRunTableUpdateDelay, runTableUpdatePeriod).subscribe(value => {
+    let runTableUpdatePeriodMs = 10000;
+    timer(initialRunTableUpdateDelay, runTableUpdatePeriodMs).subscribe(value => {
       this.monitoringApiService.fetchMongooseRunRecords();
     });
   }
