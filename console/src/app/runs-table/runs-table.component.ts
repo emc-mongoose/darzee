@@ -3,7 +3,7 @@ import { MongooseRunRecord } from '../core/models/run-record.model';
 import { Router } from '@angular/router';
 import { RoutesList } from '../Routing/routes-list';
 import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
-import { timer } from 'rxjs';
+import { timer, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-runs-table',
@@ -13,7 +13,8 @@ import { timer } from 'rxjs';
 
 export class RunsTableComponent implements OnInit {
 
-  @Input() mongooseRunRecords: MongooseRunRecord[];
+  @Input("mongooseRunRecords") mongooseRunRecordsObservable: Observable<MongooseRunRecord[]>;
+  public mongooseRunRecords: MongooseRunRecord[] = []; 
 
   readonly EMPTY_FIELD_DEFAULT_TAG = "-";
 
@@ -31,6 +32,9 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Lifecycle 
 
   ngOnInit() {
+    this.mongooseRunRecordsObservable.subscribe(runRecords => { 
+      this.mongooseRunRecords = runRecords;
+    })
     this.setUpRecordsUpdateTimer();
   }
 

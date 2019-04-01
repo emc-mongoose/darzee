@@ -61,9 +61,9 @@ export class RunsTableRootComponent implements OnInit {
 
   private updateRunRecords() {
     this.monitoringApiService.getMongooseRunRecords().subscribe(updatedRecords => {
-      // NOTE: If an update has been received = updating the values 
-      let hasReceivedUpdate: boolean = !(updatedRecords.length == this.displayingRunRecords.length);
-      if (hasReceivedUpdate) {
+      // NOTE: Refreshing page ONLY if amount of Mongoose run records has been changed. 
+      let shouldRefreshPage: boolean = !(updatedRecords.length == this.displayingRunRecords.length);
+      if (shouldRefreshPage) {
         this.displayingRunRecords = updatedRecords;
         this.updateTabs();
       }
