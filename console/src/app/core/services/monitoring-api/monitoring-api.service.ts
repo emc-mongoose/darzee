@@ -121,23 +121,19 @@ export class MonitoringApiService {
         let prometheusQueryResult = this.extractRunRecordsFromMetricLabels(runRecordsResponse);
         let firstElementIndex = 0;
         let fetchedRecord = prometheusQueryResult[firstElementIndex];
-        // this.getStatusForRecord(fetchedRecord).subscribe(status => { 
-        //   fetchedRecord.status = status;
-        // });
         return fetchedRecord;
       })
     )
   }
 
-  public getStatusForRecord(fetchedRecord: MongooseRunRecord): Observable<MongooseRunStatus> {
-    // TODO: Impliment method correctly. 
-    let headersForRunStatus = new Headers();
-    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + MongooseApi.RunApi.RUN, { observe: 'response' }).pipe(
-      map(response => {
-        console.log("Response is: ", response);
-        return MongooseRunStatus.Finished;
+  public getStatusForRecord(record: MongooseRunRecord): Observable<MongooseRunStatus> {
+    let finalMetricsName = "metrics.threshold.FileTotal";
+    return this.getLog(record.getIdentifier(), finalMetricsName).pipe(
+      map(response => { 
+        console.log("response for status request: ", response);
+        return response;
       })
-    );
+    ); 
   }
 
   public getLog(stepId: String, logName: String): Observable<any> {

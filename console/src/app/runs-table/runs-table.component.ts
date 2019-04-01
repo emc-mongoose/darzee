@@ -25,9 +25,10 @@ export class RunsTableComponent implements OnInit {
   ];
 
   @Input("mongooseRunRecords") mongooseRunRecordsObservable: Observable<MongooseRunRecord[]>;
-  public mongooseRunRecords: MongooseRunRecord[] = []; 
+  public mongooseRunRecords: MongooseRunRecord[] = [];
 
-  private runRecordsSubscription: Subscription = new Subscription(); 
+  private runRecordsSubscription: Subscription = new Subscription();
+  private statusUpdateSubscription: Subscription = new Subscription();
 
   constructor(private router: Router,
     private monitoringApiService: MonitoringApiService) { }
@@ -35,65 +36,68 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Lifecycle 
 
   ngOnInit() {
-    this.runRecordsSubscription = this.mongooseRunRecordsObservable.subscribe(updatedRecords => { 
+    this.runRecordsSubscription = this.mongooseRunRecordsObservable.subscribe(updatedRecords => {
 
-      if (this.mongooseRunRecords.length == 0) { 
-        // NOTE: No need in updating records if it hasn't been set before. 
+      if (this.mongooseRunRecords.length == 0) {
+        // NOTE: Initial set up of run records.
         this.mongooseRunRecords = updatedRecords;
+        console.log("Updating status for records..");
+        this.updateRecordsStatus(this.mongooseRunRecords);
         return;
       }
       // NOTE: Updating only unfinished runs 
-      for (var i = 0; i < this.mongooseRunRecords.length; i++) { 
-        if (this.mongooseRunRecords[i].getStatus() == MongooseRunStatus.Finished) { 
+      for (var i = 0; i < this.mongooseRunRecords.length; i++) {
+        if (this.mongooseRunRecords[i].getStatus() == MongooseRunStatus.Finished) {
           continue;
         }
-        this.mongooseRunRecords[i] = updatedRecords[i]; 
+        this.mongooseRunRecords[i] = updatedRecords[i];
       }
       let shouldUpdateExistingRecords = (this.mongooseRunRecords.length != updatedRecords.length);
-      if (!shouldUpdateExistingRecords) { 
+      if (!shouldUpdateExistingRecords) {
         console.log("Shouldn't update records.");
         return;
       }
 
       let hasDeletedElements = (this.mongooseRunRecords.length < updatedRecords.length);
       if (hasDeletedElements) {
-        console.log("Updating due to deleted elements."); 
+        console.log("Updating due to deleted elements.");
         console.log("this.mongooseRunRecords.length :", this.mongooseRunRecords.length);
         console.log("updatedRecords.length: ", updatedRecords.length);
 
-        var recordsListAfterErasing: MongooseRunRecord[] = []; 
+        var recordsListAfterErasing: MongooseRunRecord[] = [];
         // NOTE: Retaining only non-deleted elements. 
         // It's possible since the order retains. 
-        for (var i = 0; i < this.mongooseRunRecords.length; i++) { 
+        for (var i = 0; i < this.mongooseRunRecords.length; i++) {
           var isRecordExist = false;
-          updatedRecords.forEach(updatedRecord => { 
+          updatedRecords.forEach(updatedRecord => {
             isRecordExist = (updatedRecord.getIdentifier() == this.mongooseRunRecords[i].getIdentifier());
-            if (isRecordExist) { 
+            if (isRecordExist) {
               return;
-            }  
+            }
           })
 
-          if (isRecordExist) { 
+          if (isRecordExist) {
             // NOTE: Retain element if it hasn't been deleted.
             recordsListAfterErasing.push(this.mongooseRunRecords[i]);
           }
         }
         this.mongooseRunRecords = recordsListAfterErasing;
-        return; 
+        return;
       }
 
       console.log("Updating due to added elements.");
       // NOTE: Append existing array with added elements. 
       let addedRecords = updatedRecords.slice(this.mongooseRunRecords.length, updatedRecords.length);
-      for (var addedRecord of addedRecords) { 
+      for (var addedRecord of addedRecords) {
         this.mongooseRunRecords.push(addedRecord);
-      }      
+      }
     })
     // this.setUpRecordsUpdateTimer();
   }
 
-  ngOnDestroy() { 
-    this.runRecordsSubscription.unsubscribe(); 
+  ngOnDestroy() {
+    this.runRecordsSubscription.unsubscribe();
+    this.statusUpdateSubscription.unsubscribe();
   }
 
   // MARK: - Public 
@@ -102,26 +106,14 @@ export class RunsTableComponent implements OnInit {
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);
   }
 
-  // NOTE: Updating run duration for the target run record 
-  private updateRecord(targetRecord: MongooseRunRecord) {
-    this.monitoringApiService.updateRecord(targetRecord).subscribe(updatedRecord => {
-      if (updatedRecord == undefined) {
-        return;
-      }
-      targetRecord.setDuration(updatedRecord.getDuration());
-      // targetRecord.status = updatedRecord.getStatus();
-    });
-  }
 
-  // NOTE: Updating dynamic Mongoose run parameters (run status, run duration).
-  private setUpRecordsUpdateTimer() {
-    let initialRunTableUpdateDelay = 0;
-    let singleRecordStatisticsUpdatePeriod = 3000;
-    // timer(initialRunTableUpdateDelay, singleRecordStatisticsUpdatePeriod).subscribe(value => {
-    //   this.mongooseRunRecords.forEach(runRecord => {
-    //     this.updateRecord(runRecord);
-    //   })
-    // });
+  private updateRecordsStatus(runRecords: MongooseRunRecord[]) {
+    runRecords.forEach(record => {
+      this.statusUpdateSubscription.add(this.monitoringApiService.getStatusForRecord(record).subscribe(status => {
+        console.log("Got status for record:", status);
+        record.setStatus(status);
+      }));
+    });
   }
 
 }

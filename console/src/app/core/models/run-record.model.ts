@@ -50,6 +50,10 @@ export class MongooseRunRecord {
         return this.status;
     }
 
+    setStatus(status: MongooseRunStatus) { 
+        this.status = status; 
+    }
+
     getStartTime(): String { 
         return this.startTime;
     }
