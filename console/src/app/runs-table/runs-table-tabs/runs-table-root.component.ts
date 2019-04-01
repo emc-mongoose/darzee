@@ -30,7 +30,7 @@ export class RunsTableRootComponent implements OnInit {
     this.updateRunRecords();
     this.updateTabs();
     // NOTE: Tab "All" is selected by default. 
-    this.runTabs[0].isSelected = true;
+    this.filterRunsByStatus(this.runTabs[0]);
   }
 
   // MARK: - Public 
