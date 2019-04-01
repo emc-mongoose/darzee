@@ -1,7 +1,6 @@
 import { Routes } from "@angular/router";
 import { MongooseSetUpComponent } from '../mongoose-set-up/mongoose-set-up.component';
 import { ConfigurationEditingRootComponent } from '../mongoose-set-up/set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component';
-import { RunsTableRootComponent } from '../runs-table/runs-table-tabs/runs-table-root.component';
 import { NodesComponent } from '../mongoose-set-up/set-up-steps/nodes/nodes.component';
 import { ScenariosComponent } from '../mongoose-set-up/set-up-steps/scenarios-set-up/scenarios/scenarios.component';
 import { RunStatisticsComponent } from '../run-statistics/run-statistics.component';
@@ -9,6 +8,7 @@ import { RoutesList } from "./routes-list";
 import { RunStatisticLogsComponent } from "../run-statistics/run-statistic-logs/run-statistic-logs.component";
 import { RunStatisticsChartsComponent } from "../run-statistics/run-statistics-charts/run-statistics-charts.component";
 import { RouteParams } from "./params.routes";
+import { RunsTableRootComponent } from "../runs-table/runs-table-root/runs-table-root.component";
 
 
 export const routes: Routes = [
