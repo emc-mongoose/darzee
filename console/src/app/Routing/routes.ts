@@ -31,6 +31,7 @@ export const routes: Routes = [
         { path: RoutesList.NODES, component: NodesComponent },
         { path: RoutesList.MONGOOSE_COMFIGURATION, component: ConfigurationEditingRootComponent },
         { path: RoutesList.SCENARIO, component: ScenariosComponent },
+        { path: RoutesList.RUNS, redirectTo: RoutesList.RUNS, pathMatch: 'full'},
         { path: '**', redirectTo: RoutesList.RUNS, pathMatch: 'full'}
       ]},
   ];

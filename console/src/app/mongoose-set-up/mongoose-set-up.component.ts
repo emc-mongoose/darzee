@@ -22,7 +22,6 @@ export class MongooseSetUpComponent implements OnInit {
     { title: 'Nodes', link: RoutesList.NODES },
     { title: 'Configuration', link: RoutesList.MONGOOSE_COMFIGURATION },
     { title: 'Scenario', link: RoutesList.SCENARIO }
-
   ];
 
   public setUpTabs: MongooseSetupTab[] = []
@@ -96,7 +95,7 @@ export class MongooseSetUpComponent implements OnInit {
         let misleadingMessage = "Mongoose Run has started with ID " + mongooseRunId;
         alert(misleadingMessage);
       }
-      this.router.navigate[this.BASE_URL];
+      this.router.navigate([RoutesList.RUNS]);
     });
   }
 
