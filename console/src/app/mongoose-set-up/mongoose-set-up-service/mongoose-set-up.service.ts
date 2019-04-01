@@ -137,6 +137,8 @@ export class MongooseSetUpService {
       console.error(misleadingMsg);
     }
     this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario).subscribe(mongooseRunId => {
+      // NOTE: Updated Metrics will include both run ID and load step ID. In case ...
+      // ... it won't be implimented, map them here. 
       console.log("Launched Mongoose run with run ID: ", mongooseRunId);
       console.log("Related load step ID: ", this.mongooseSetupInfoModel.getLoadStepId());
     });
