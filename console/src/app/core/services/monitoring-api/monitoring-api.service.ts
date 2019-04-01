@@ -40,6 +40,8 @@ export class MonitoringApiService {
   public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
     return this.behaviorSubjectRunRecords.asObservable().pipe(
       map(records => { 
+        // NOTE: Records are being sorted for order retaining. This ...
+        // ... is useful while updating Run Records table. 
         records = this.sortMongooseRecordsByStartTime(records);
         return records; 
       })
