@@ -58,7 +58,7 @@ export class RunsTableComponent implements OnInit {
       let hasDeletedElements = (this.mongooseRunRecords.length < updatedRecords.length);
       if (hasDeletedElements) {
         console.log("Updating due to deleted elements."); 
-        console.log("this.mongooseRunRecords.length :", this.mongooseRunRecords.length );
+        console.log("this.mongooseRunRecords.length :", this.mongooseRunRecords.length);
         console.log("updatedRecords.length: ", updatedRecords.length);
 
         var recordsListAfterErasing: MongooseRunRecord[] = []; 

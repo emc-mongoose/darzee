@@ -35,28 +35,32 @@ export class MongooseSetUpService {
 
   // MARK: - Getters & Setters 
 
+  public getMongooseRunTargetPort(): String {
+    return this.mongooseSetupInfoModel.getTargetRunPort();
+  }
+
   public getObservableSlaveNodes(): Observable<String[]> {
     return this.observableSlaveNodes.asObservable();
   }
 
-  setConfiguration(configuration: Object) {
+  public setConfiguration(configuration: Object) {
     this.mongooseSetupInfoModel.configuration = configuration;
   }
 
-  setSenario(scenario: String) {
+  public setSenario(scenario: String) {
     this.mongooseSetupInfoModel.scenario = scenario;
   }
 
-  setNodesData(data: String[]) {
+  public setNodesData(data: String[]) {
     this.observableSlaveNodes.next(data);
     this.mongooseSetupInfoModel.nodesData = data;
   }
 
-  setUnprocessedConfiguration(configuration: Object) {
+  public setUnprocessedConfiguration(configuration: Object) {
     this.unprocessedConfiguration = configuration;
   }
 
-  getUnprocessedConfiguration(): Object {
+  public getUnprocessedConfiguration(): Object {
     if (this.mongooseSetupInfoModel.nodesData.length == 0) {
       console.log("No additional nodes have been added.");
       return this.unprocessedConfiguration;
@@ -77,7 +81,7 @@ export class MongooseSetUpService {
     return this.unprocessedConfiguration;
   }
 
-  getSlaveNodesList(): String[] {
+  public getSlaveNodesList(): String[] {
     var slaveNodesList: String[] = this.observableSlaveNodes.getValue();
     slaveNodesList.concat(this.mongooseSetupInfoModel.nodesData);
     return slaveNodesList;
@@ -86,7 +90,7 @@ export class MongooseSetUpService {
   // MARK: - Public 
 
 
-  addNode(ip: String) {
+  public addNode(ip: String) {
     if (this.isIpExist(ip)) {
       alert("IP " + ip + " has already been added to the slave-nodes list.");
       return;
@@ -96,7 +100,7 @@ export class MongooseSetUpService {
     this.observableSlaveNodes.next(currentSlaveNodesList);
   }
 
-  deleteSlaveNode(nodeAddress: String) {
+  public deleteSlaveNode(nodeAddress: String) {
     // NOTE: Retaining IP addresses that doesn't match deleting IP. 
     const filtredNodesList = this.observableSlaveNodes.getValue().filter(ipAddress => {
       nodeAddress != ipAddress;
@@ -109,11 +113,11 @@ export class MongooseSetUpService {
   // ... and set up pages are isplaying via <router-outler>. If user switches between set-up pages without...
   // ... confirmation, we could still retain the data inside an "unprocessed" variable (e.g.: unprocessedScenario))
 
-  confirmConfigurationSetup() {
+  public confirmConfigurationSetup() {
     this.setConfiguration(this.unprocessedConfiguration);
   }
 
-  confirmScenarioSetup() {
+  public confirmScenarioSetup() {
     const emptyJavascriptCode = "";
     // NOTE: Retain default scenario stored within mongooseSetupInfoModel. 
     if ((this.unprocessedScenario == emptyJavascriptCode) || (this.unprocessedScenario == undefined)) {
@@ -122,18 +126,18 @@ export class MongooseSetUpService {
     this.setSenario(this.unprocessedScenario);
   }
 
-  confirmNodeConfiguration() {
+  public confirmNodeConfiguration() {
     this.setNodesData(this.observableSlaveNodes.getValue());
   }
 
   public runMongoose(): Observable<String> {
-    try { 
+    try {
       if (!this.mongooseSetupInfoModel.hasLoadStepId()) {
         let generatedLoadStepId = this.getGeneratedLoadStepId();
         this.mongooseSetupInfoModel.setLoadStepId(generatedLoadStepId);
       }
-    } catch (configurationError) { 
-      let misleadingMsg = "Unable to apply generated load step id to Mongoose run configuration. Reason: " + configurationError; 
+    } catch (configurationError) {
+      let misleadingMsg = "Unable to apply generated load step id to Mongoose run configuration. Reason: " + configurationError;
       console.error(misleadingMsg);
     }
     // NOTE: you can get related load step ID from mongoose setup model here. 
@@ -146,7 +150,7 @@ export class MongooseSetUpService {
     // NOTE: Load step ID parretn is <STEP_TYPE>-<yyyyMMdd.HHmmss.SSS>
     let stepTypeMock = "none"; // TODO: get actual step type 
     let formattedDate = this.dateFormatPipe.transform(new Date());
-    let loadStepId = "<${stepType}>-<y${formattedDate}>"
+    let loadStepId = stepTypeMock + "-" + formattedDate;
     return loadStepId;
 
   }

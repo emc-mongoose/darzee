@@ -5,6 +5,7 @@ import { MongooseRunRecord } from '../core/models/run-record.model';
 import { BasicTab } from '../common/BasicTab/BasicTab';
 import { RoutesList } from '../Routing/routes-list';
 import { RouteParams } from '../Routing/params.routes';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-run-statistics',

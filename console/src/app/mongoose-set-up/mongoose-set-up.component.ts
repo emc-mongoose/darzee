@@ -5,6 +5,7 @@ import { slideAnimation } from '../core/animations';
 import { MongooseSetUpService } from './mongoose-set-up-service/mongoose-set-up.service';
 import { RoutesList } from '../Routing/routes-list';
 import { Subscription } from 'rxjs';
+import { Constants } from '../common/constants';
 
 @Component({
   selector: 'app-mongoose-set-up',
@@ -96,6 +97,22 @@ export class MongooseSetUpComponent implements OnInit {
         alert(misleadingMessage);
       }
       this.router.navigate([RoutesList.RUNS]);
+    },
+    error => { 
+      let errorReason = ""; 
+      if (error.status != undefined) { 
+        if (error.status == Constants.HttpStatus.CONFLICT) { 
+          errorReason = "Another Mongoose run has already been launched on port " + this.mongooseSetUpService.getMongooseRunTargetPort() + ".";
+        }
+      }
+      let misleadingMessage = "Unable to start Mongoose Run.";
+      let emptyString = "";
+      if (errorReason != emptyString) { 
+        let phrasesDelimiter = " ";
+        misleadingMessage += phrasesDelimiter + "Reason: " + errorReason;
+      }
+      alert(misleadingMessage);
+      console.error(misleadingMessage + error);
     });
   }
 
