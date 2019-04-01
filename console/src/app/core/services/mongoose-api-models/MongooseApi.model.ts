@@ -20,6 +20,7 @@ export namespace MongooseApi {
     }
 
     export class Headers { 
+        // NOTE: ETAG is a Mongoose Run ID
         public static readonly ETAG = "etag";
     }
 }

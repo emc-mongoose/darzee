@@ -3,6 +3,7 @@ import { MongooseSetupInfoModel } from './mongoose-set-up-info.model';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Constants } from 'src/app/common/constants';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { DateFormatPipe } from 'src/app/common/date-format-pipe';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,8 @@ export class MongooseSetUpService {
   private observableSlaveNodes: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]);
   private unprocessedConfiguration: Object;
 
-  constructor(private controlApiService: ControlApiService) {
+  constructor(private controlApiService: ControlApiService,
+    private dateFormatPipe: DateFormatPipe) {
 
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.observableSlaveNodes);
     this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
@@ -125,10 +127,33 @@ export class MongooseSetUpService {
   }
 
   runMongoose() {
-    this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario);
+    try { 
+      if (!this.mongooseSetupInfoModel.hasLoadStepId()) {
+        let generatedLoadStepId = this.getGeneratedLoadStepId();
+        this.mongooseSetupInfoModel.setLoadStepId(generatedLoadStepId);
+      }
+    } catch (configurationError) { 
+      let misleadingMsg = "Unable to apply generated load step id to Mongoose run configuration. Reason: " + configurationError; 
+      console.error(misleadingMsg);
+    }
+    this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario).subscribe(mongooseRunId => {
+      console.log("Launched Mongoose run with run ID: ", mongooseRunId);
+      console.log("Related load step ID: ", this.mongooseSetupInfoModel.getLoadStepId());
+    });
   }
 
   // MARK: - Private
+
+  private getGeneratedLoadStepId(): String {
+    // NOTE: Load step ID parretn is <STEP_TYPE>-<yyyyMMdd.HHmmss.SSS>
+    let stepTypeMock = "none"; // TODO: get actual step type 
+    let formattedDate = this.dateFormatPipe.transform(new Date());
+    console.log("formattedDate: ", formattedDate);
+
+    let loadStepId = "<${stepType}>-<y${formattedDate}>"
+    return loadStepId;
+
+  }
 
   private isIpExist(ip: String): boolean {
     // NOTE: Prevent addition of duplicate IPs
@@ -141,9 +166,9 @@ export class MongooseSetUpService {
   private getSlaveNodesFromConfiguration(configuration: any): String[] {
     // NOTE: Retrieving existing slave nodes.
     console.log("target configuration: " + JSON.stringify(configuration));
-    if (!this.isSlaveNodesFieldExistInConfiguration(configuration)) { 
+    if (!this.isSlaveNodesFieldExistInConfiguration(configuration)) {
       let misleadingMsg = "Unable to find slave nodes field within the Mongoose configuration.";
-      alert (misleadingMsg); 
+      alert(misleadingMsg);
       const emptyList = [];
       return emptyList;
     }

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -20,17 +22,20 @@ export class ControlApiService {
 
   // MARK: - Public
 
-  public runMongoose(mongooseJsonConfiguration: Object, javaScriptScenario: String = ""): any {
-    
+  public runMongoose(mongooseJsonConfiguration: Object, javaScriptScenario: String = ""): Observable<any> {
+
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
     javaScriptScenario = JSON.stringify(javaScriptScenario);
 
     let formData = new FormData();
     formData.append('defaults', JSON.stringify(mongooseJsonConfiguration));
 
-    this.http.post(Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), {observe: "response"}).subscribe(runResponse => {
-     console.log("Run ETAG: ", runResponse.headers.get(MongooseApi.Headers.ETAG));
-    });
+    return this.http.post(Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), { observe: "response" }).pipe(
+      map(runResponse => {
+        let runId = runResponse.headers.get(MongooseApi.Headers.ETAG);
+        console.log("runId: ", runId);
+        return runId;
+      }));
   }
 
   // NOTE: Returning Mongoose configuration as JSON 
@@ -50,10 +55,10 @@ export class ControlApiService {
     return httpHeadersForMongooseRun;
   }
 
-  private getHttpHeadersForMongooseRun(): HttpHeaders { 
+  private getHttpHeadersForMongooseRun(): HttpHeaders {
     let httpHeadersForMongooseRun = new HttpHeaders();
-    httpHeadersForMongooseRun.append('Content-Type', 'multipart/form-data'); 
-    httpHeadersForMongooseRun.append('Accept', '*/*'); 
+    httpHeadersForMongooseRun.append('Content-Type', 'multipart/form-data');
+    httpHeadersForMongooseRun.append('Accept', '*/*');
     return httpHeadersForMongooseRun;
   }
 

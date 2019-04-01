@@ -28,6 +28,7 @@ import { MonitoringApiService } from './core/services/monitoring-api/monitoring-
 import { RunStatisticsComponent } from './run-statistics/run-statistics.component';
 import { RunStatisticLogsComponent } from './run-statistics/run-statistic-logs/run-statistic-logs.component';
 import { RunStatisticsChartsComponent } from './run-statistics/run-statistics-charts/run-statistics-charts.component';
+import { DateFormatPipe } from './common/date-format-pipe';
 
 
 @NgModule({
@@ -63,7 +64,7 @@ import { RunStatisticsChartsComponent } from './run-statistics/run-statistics-ch
 
   // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
   // ... since we use it for the set up. 
-  providers: [ControlApiService, MonitoringApiService],
+  providers: [ControlApiService, MonitoringApiService, DateFormatPipe],
   bootstrap: [AppComponent],
   exports: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
