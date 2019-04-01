@@ -8,7 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MongooseRunStatusIconComponent } from './runs-table/mongoose-run-status-icon/mongoose-run-status-icon.component';
-import { RunsTableTabsComponent } from './runs-table/runs-table-tabs/runs-table-tabs.component';
+import { RunsTableRootComponent } from './runs-table/runs-table-tabs/runs-table-root.component';
 import { NodesComponent } from './mongoose-set-up/set-up-steps/nodes/nodes.component';
 import { ScenariosComponent } from './mongoose-set-up/set-up-steps/scenarios-set-up/scenarios/scenarios.component';
 import { ConfigurationEditingComponent } from './mongoose-set-up/set-up-steps/configuration-set-up/configuration-editing/configuration-editing.component';
@@ -16,7 +16,6 @@ import { ConfigurationEditingRootComponent } from './mongoose-set-up/set-up-step
 
 // NOTE: NPM dependencies
 import { HeaderComponent } from './header/header.component';
-import { RunsTableComponent } from './runs-table/runs-table.component';
 import { MongooseSetUpComponent } from './mongoose-set-up/mongoose-set-up.component';
   // NOTE: CodeMirror's module for code displaying
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
@@ -28,6 +27,8 @@ import { MonitoringApiService } from './core/services/monitoring-api/monitoring-
 import { RunStatisticsComponent } from './run-statistics/run-statistics.component';
 import { RunStatisticLogsComponent } from './run-statistics/run-statistic-logs/run-statistic-logs.component';
 import { RunStatisticsChartsComponent } from './run-statistics/run-statistics-charts/run-statistics-charts.component';
+import { DateFormatPipe } from './common/date-format-pipe';
+import { RunsTableComponent } from './runs-table/runs-table.component';
 
 
 @NgModule({
@@ -36,7 +37,7 @@ import { RunStatisticsChartsComponent } from './run-statistics/run-statistics-ch
     HeaderComponent,
     RunsTableComponent,
     MongooseRunStatusIconComponent,
-    RunsTableTabsComponent,
+    RunsTableRootComponent,
     MongooseSetUpComponent,
     NodesComponent,
     ScenariosComponent,
@@ -63,7 +64,7 @@ import { RunStatisticsChartsComponent } from './run-statistics/run-statistics-ch
 
   // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
   // ... since we use it for the set up. 
-  providers: [ControlApiService, MonitoringApiService],
+  providers: [ControlApiService, MonitoringApiService, DateFormatPipe],
   bootstrap: [AppComponent],
   exports: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

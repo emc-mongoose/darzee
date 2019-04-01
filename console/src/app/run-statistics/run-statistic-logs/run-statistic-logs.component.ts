@@ -13,20 +13,20 @@ import { RoutesList } from 'src/app/Routing/routes-list';
 })
 export class RunStatisticLogsComponent implements OnInit {
 
-  private processingRunRecord: MongooseRunRecord;
+  // NOTE: Public fields are mostly used within DOM. 
+  public logTabs: BasicTab[] = []; 
+  public displayingLog = ''; 
+  public occuredError: any; 
 
-  private displayingLog = ''; 
+  private processingRunRecord: MongooseRunRecord;
   private currentDisplayingTabId = 0; 
-  private logTabs: BasicTab[] = []; 
-  private occuredError: any; 
   private routeParameters: RouteParams; 
 
- 
+  // MARK: - Lifecycle
+
   constructor(private monitoringApiService: MonitoringApiService,
     private router: Router, 
     private route: ActivatedRoute) { }
-
-  // MARK: - Lifecycle
 
   ngOnInit() {
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 

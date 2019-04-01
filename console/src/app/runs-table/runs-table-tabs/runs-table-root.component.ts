@@ -7,19 +7,22 @@ import { slideAnimation } from 'src/app/core/animations';
 import { Observable, Subscription, timer } from 'rxjs';
 
 @Component({
-  selector: 'app-runs-table-tabs',
-  templateUrl: './runs-table-tabs.component.html',
-  styleUrls: ['./runs-table-tabs.component.css'],
+  selector: 'app-runs-table-root',
+  templateUrl: './runs-table-root.component.html',
+  styleUrls: ['./runs-table-root.component.css'],
   animations: [
     slideAnimation
   ]
 })
 
-export class RunsTableTabsComponent implements OnInit {
+export class RunsTableRootComponent implements OnInit {
 
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
-  runTabs: MongooseRunTab[] = [];
-  displayingRunRecords: MongooseRunRecord[] = [];
+  public runTabs: MongooseRunTab[] = [];
+
+  private displayingRunRecords: MongooseRunRecord[] = [];
+  private mongooseRecordsSubscription: Subscription = new Subscription(); 
+  private runTableUpdateTimerSunscription: Subscription = new Subscription(); 
 
   // MARK: - Lifecycle
 
@@ -30,7 +33,12 @@ export class RunsTableTabsComponent implements OnInit {
     this.updateRunRecords();
     this.updateTabs();
     // NOTE: Tab "All" is selected by default. 
-    this.runTabs[0].isSelected = true;
+    this.filterRunsByStatus(this.runTabs[0]);
+  }
+
+  ngOnDestroy() { 
+    this.mongooseRecordsSubscription.unsubscribe(); 
+    this.runTableUpdateTimerSunscription.unsubscribe();
   }
 
   // MARK: - Public 
@@ -53,13 +61,17 @@ export class RunsTableTabsComponent implements OnInit {
     return (this.monitoringApiService.getExistingRunRecords().length > 0);
   }
 
+  public getDisplayingRunRecords() { 
+    return this.displayingRunRecords; 
+  }
+
   // MARK: - Private 
 
   private updateRunRecords() {
-    this.monitoringApiService.getMongooseRunRecords().subscribe(updatedRecords => {
-      // NOTE: If an update has been received = updating the values 
-      let hasReceivedUpdate: boolean = !(updatedRecords.length == this.displayingRunRecords.length);
-      if (hasReceivedUpdate) {
+    this.mongooseRecordsSubscription = this.monitoringApiService.getMongooseRunRecords().subscribe(updatedRecords => {
+      // NOTE: Refreshing page ONLY if amount of Mongoose run records has been changed. 
+      let shouldRefreshPage: boolean = !(updatedRecords.length == this.displayingRunRecords.length);
+      if (shouldRefreshPage) {
         this.displayingRunRecords = updatedRecords;
         this.updateTabs();
       }
@@ -77,8 +89,8 @@ export class RunsTableTabsComponent implements OnInit {
 
   private setUpMongooseRunRecordsUpdateTimer() {
     let initialRunTableUpdateDelay = 0;
-    let runTableUpdatePeriod = 3000;
-    timer(initialRunTableUpdateDelay, runTableUpdatePeriod).subscribe(value => {
+    let runTableUpdatePeriodMs = 10000;
+    this.runTableUpdateTimerSunscription = timer(initialRunTableUpdateDelay, runTableUpdatePeriodMs).subscribe(value => {
       this.monitoringApiService.fetchMongooseRunRecords();
     });
   }

@@ -38,7 +38,14 @@ export class MonitoringApiService {
   }
 
   public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
-    return this.behaviorSubjectRunRecords.asObservable();
+    return this.behaviorSubjectRunRecords.asObservable().pipe(
+      map(records => { 
+        // NOTE: Records are being sorted for order retaining. This ...
+        // ... is useful while updating Run Records table. 
+        records = this.sortMongooseRecordsByStartTime(records);
+        return records; 
+      })
+    );
   }
 
   public getMongooseRunRecordById(id: String): MongooseRunRecord {
@@ -143,13 +150,22 @@ export class MonitoringApiService {
   public fetchMongooseRunRecords() {
     // let mongooseMetricMock = MongooseMetrics.PrometheusM/etrics.DURATION;
     return this.prometheusApiService.getExistingRecordsInfo().subscribe(metricsArray => {
-      console.log("Every fetched record: ", JSON.stringify(metricsArray));
+      // console.log("Every fetched record: ", JSON.stringify(metricsArray));
       var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
       this.behaviorSubjectRunRecords.next(fetchedRunRecords);
     })
   }
 
   // MARK: - Private 
+
+  private sortMongooseRecordsByStartTime(records: MongooseRunRecord[]): MongooseRunRecord[] { 
+    return records.sort((lhs, rhs) => { 
+      let hasLhsStartedEarlier = (Number(lhs.getStartTime()) < Number(rhs.getStartTime()));
+      let valueTrue = 1; 
+      let valueFalse = -1;
+      return hasLhsStartedEarlier ? valueTrue : valueFalse; 
+    });
+  }
 
   private extractRunRecordsFromMetricLabels(rawMongooseRunData: any): MongooseRunRecord[] {
 

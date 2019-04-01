@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -20,21 +22,24 @@ export class ControlApiService {
 
   // MARK: - Public
 
-  runMongoose(jsonConfiguration: Object, javaScriptScenario: String = ""): any {
+  public runMongoose(mongooseJsonConfiguration: Object, javaScriptScenario: String = ""): Observable<any> {
+
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
     javaScriptScenario = JSON.stringify(javaScriptScenario);
 
     let formData = new FormData();
-    formData.append('defaults', jsonConfiguration.toString());
+    formData.append('defaults', JSON.stringify(mongooseJsonConfiguration));
 
-    this.http.post(Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeaderForJsonFile()).subscribe(
-      error => {
-        alert("Unable to run Mongoose. Reason: " + error);
-      });
+    return this.http.post(Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), { observe: "response" }).pipe(
+      map(runResponse => {
+        let runId = runResponse.headers.get(MongooseApi.Headers.ETAG);
+        console.log("runId: ", runId);
+        return runId;
+      }));
   }
 
   // NOTE: Returning Mongoose configuration as JSON 
-  getMongooseConfiguration(mongooseHostIp: string): any {
+  public getMongooseConfiguration(mongooseHostIp: string): any {
     let configEndpoint = MongooseApi.Config.CONFIG;
     return this.http.get(Constants.Http.HTTP_PREFIX + mongooseHostIp + configEndpoint, Constants.Http.JSON_CONTENT_TYPE);
   }
@@ -47,6 +52,13 @@ export class ControlApiService {
     httpHeadersForMongooseRun.append('Accept', 'application/json');
     const eTag = this.getEtagForRun();
     httpHeadersForMongooseRun.append('If-Match', eTag);
+    return httpHeadersForMongooseRun;
+  }
+
+  private getHttpHeadersForMongooseRun(): HttpHeaders {
+    let httpHeadersForMongooseRun = new HttpHeaders();
+    httpHeadersForMongooseRun.append('Content-Type', 'multipart/form-data');
+    httpHeadersForMongooseRun.append('Accept', '*/*');
     return httpHeadersForMongooseRun;
   }
 

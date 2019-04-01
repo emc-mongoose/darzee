@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RunsTableTabsComponent } from './runs-table-tabs.component';
+import { RunsTableRootComponent } from './runs-table-root.component';
 
 describe('RunsTableTabsComponent', () => {
-  let component: RunsTableTabsComponent;
-  let fixture: ComponentFixture<RunsTableTabsComponent>;
+  let component: RunsTableRootComponent;
+  let fixture: ComponentFixture<RunsTableRootComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RunsTableTabsComponent ]
+      declarations: [ RunsTableRootComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RunsTableTabsComponent);
+    fixture = TestBed.createComponent(RunsTableRootComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
