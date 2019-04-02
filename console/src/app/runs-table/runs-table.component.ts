@@ -44,8 +44,6 @@ export class RunsTableComponent implements OnInit {
     });
   }
 
-
-
   ngOnDestroy() {
     this.runRecordsSubscription.unsubscribe();
     this.statusUpdateSubscription.unsubscribe();
@@ -63,14 +61,9 @@ export class RunsTableComponent implements OnInit {
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);
   }
 
+  // MARK: - Private 
 
-  private updateRecordsStatus(runRecords: MongooseRunRecord[]) {
-    runRecords.forEach(record => {
-      this.updateRecordStatus(record);
-    });
-  }
-
-  private updateRecordStatus(runRecord: MongooseRunRecord) {
+  private updateSingleRecordStatus(runRecord: MongooseRunRecord) {
     let recordStatus = runRecord.getStatus();
     if ((recordStatus == MongooseRunStatus.Finished)) {
       return;
@@ -122,7 +115,7 @@ export class RunsTableComponent implements OnInit {
     // NOTE: Initial set up of run records.
     this.mongooseRunRecords = records;
     console.log("Updating status for records..");
-    this.updateRecordsStatus(this.mongooseRunRecords);
+    this.mongooseRunRecords = this.updateStatusForRecords(this.mongooseRunRecords);
   }
 
   private shouldUpdateStatus(runRecord: MongooseRunRecord): boolean {
@@ -138,11 +131,10 @@ export class RunsTableComponent implements OnInit {
   private updateStatusForRecords(records: MongooseRunRecord[]): MongooseRunRecord[] {
     for (var i = 0; i < records.length; i++) {
       let processingRecord = records[i];
-      // NOTE: Updating only unfinished runs 
       if (!this.shouldUpdateStatus(processingRecord)) {
         continue;
       }
-      this.updateRecordStatus(processingRecord);
+      this.updateSingleRecordStatus(processingRecord);
     }
     return records;
   }
@@ -162,7 +154,7 @@ export class RunsTableComponent implements OnInit {
     if (hasDeletedElements) {
       // NOTE: Deleted elements 
       this.mongooseRunRecords = this.innerJoinMongooseRecords(this.mongooseRunRecords, updatedRecords);
-    } else { 
+    } else {
       // NOTE: Added elements 
       this.mongooseRunRecords = this.outerJoinMongooseRecords(this.mongooseRunRecords, updatedRecords);
     }
@@ -195,14 +187,14 @@ export class RunsTableComponent implements OnInit {
     }
     return recordsListAfterErasing;
   }
- 
+
   // NOTE: Merging rhsRecords elements that are not in the lhsRecords list. 
-  private outerJoinMongooseRecords(lhsRecords: MongooseRunRecord[], rhsRecords: MongooseRunRecord[]): MongooseRunRecord[] { 
+  private outerJoinMongooseRecords(lhsRecords: MongooseRunRecord[], rhsRecords: MongooseRunRecord[]): MongooseRunRecord[] {
     // NOTE: Slice is possible since records are sorted by a start time. 
     let addedRecords = rhsRecords.slice(this.mongooseRunRecords.length, rhsRecords.length);
     for (var addedRecord of addedRecords) {
       lhsRecords.push(addedRecord);
     }
-    return lhsRecords; 
+    return lhsRecords;
   }
 }
