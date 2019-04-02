@@ -12,7 +12,7 @@ export class MongooseRunStatusIconComponent implements OnInit {
   // NOTE: We're using bootstrap buttons style. See: https://www.w3schools.com/bootstrap/bootstrap_buttons.asp 
   private readonly BTN_SUCCESS_TAG = 'btn-success';
   private readonly BTN_WARNING_TAG = 'btn-warning';
-  private readonly BTN_UNAVAILABLE_TAG = '';
+  private readonly BTN_UNAVAILABLE_TAG = 'btn-unavailable';
 
   @Input() runStatus: MongooseRunStatus = MongooseRunStatus.Running;
   @ViewChild('resultsTag') resultsTag: ElementRef;
