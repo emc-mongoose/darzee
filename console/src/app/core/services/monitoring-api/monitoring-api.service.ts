@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { MongooseRunRecord } from '../../models/run-record.model';
 import { MongooseRunStatus } from '../../mongoose-run-status';
 import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
-import { Observable, BehaviorSubject, forkJoin } from 'rxjs';
+import { Observable, BehaviorSubject, forkJoin, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseMetrics } from '../mongoose-api-models/MongooseMetrics';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, catchError } from 'rxjs/operators';
 import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
 
 
@@ -126,61 +126,32 @@ export class MonitoringApiService {
     )
   }
 
-  public getStatusForRecord(record: MongooseRunRecord): Observable<MongooseRunStatus> {
+  public getStatusForRecord(record: MongooseRunRecord): Observable<any> {
     let initialMetricsName = "Config";
-
-    let initialMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), initialMetricsName).pipe(
-      map(initialMetricResponse => {
-        return true;
-      },
-        error => {
-          return false;
-        })
-    );
+    let initialMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), initialMetricsName);
 
     let finalMetricsName = "metrics.threshold.FileTotal";
-    let finalMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), finalMetricsName).pipe(
-      map(finalMetricResponse => {
-        return true;
-      },
-        error => {
-          return false;
-        })
-    );
+    let finalMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), finalMetricsName);
 
-    return forkJoin(initialMetricsObservable, finalMetricsObservable).pipe(
-      map(results => { 
-        let hasInitialMetrics: Boolean = results[0]; 
-        let hasFinalMetircs: Boolean = results[1];
-        
-        let isRunningActive: Boolean = (hasInitialMetrics && !hasFinalMetircs);
-        console.log("isRunningActive: ", isRunningActive);
-        return isRunningActive ? MongooseRunStatus.Running : MongooseRunStatus.Finished;
-      })
-    )
 
-    return this.getLog(record.getIdentifier(), finalMetricsName).pipe(
-      map(finalMetricResponse => {
-        // NOTE: If final metrics are available, Mongoose Run has been finished. 
-        console.log("Final metrics response: ", finalMetricResponse);
-        return MongooseRunStatus.Finished;
+    return forkJoin(
+     initialMetricsObservable.pipe(
+      result => { 
+        return result;
       },
-        error => {
-          console.log("Error. ")
-          // NOTE: If file hasn't been found, the file hasn't been finished. 
-          return this.getLog(record.getIdentifier(), initialMetricsName).pipe(
-            map(initialMetricResponse => {
-              console.log("Error initial metrics response.");
-              // NOTE: If initial metric is available, Mongoose Run is still up.
-              return MongooseRunStatus.Running;
-            },
-              error => {
-                console.log("Error-error response.");
-                // NOTE: If initial metric is not available, Mongoose Run is finished. 
-                return MongooseRunStatus.Finished;
-              })
-          )
-        })
+      catchError( () => {
+        console.log("Initial metrics error.");
+       return Observable.throw(false);
+     })),
+
+     finalMetricsObservable.pipe(
+       result => { 
+         return result;
+       },
+       catchError(() => {
+        console.log("Final metrics error.");
+      return Observable.throw(false);
+     }))
     );
   }
 

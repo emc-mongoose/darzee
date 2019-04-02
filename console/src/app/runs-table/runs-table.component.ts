@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { RoutesList } from '../Routing/routes-list';
 import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
 import { timer, Observable, Subscription } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
 import { MongooseRunStatus } from '../core/mongoose-run-status';
 
 @Component({
@@ -23,6 +25,7 @@ export class RunsTableComponent implements OnInit {
     "Duration",
     "Comment"
   ];
+
 
   @Input("mongooseRunRecords") mongooseRunRecordsObservable: Observable<MongooseRunRecord[]>;
   public mongooseRunRecords: MongooseRunRecord[] = [];
@@ -115,11 +118,20 @@ export class RunsTableComponent implements OnInit {
   }
 
   private updateRecordStatus(runRecord: MongooseRunRecord) { 
-    this.statusUpdateSubscription.add(this.monitoringApiService.getStatusForRecord(runRecord).subscribe(status => {
-      console.log("Got status for record:", status);
-      runRecord.setStatus(status);
+    this.statusUpdateSubscription.add(this.monitoringApiService.getStatusForRecord(runRecord).subscribe(
+      status => {
+        let hasReceivedConfiguration = !(status[0] instanceof Boolean);
+        let hasReceivedFinalMetrics = (status[1] instanceof Boolean);
+        
+        let isMongooseRunActive = (hasReceivedConfiguration && !hasReceivedFinalMetrics);
+        let recordStatus = isMongooseRunActive ? MongooseRunStatus.Running : MongooseRunStatus.Finished;
+        runRecord.setStatus(recordStatus);
     },
     error => { 
+      // NOTE: If an error has occured, set status 'Finished'. 
+      // It could be possible that there's still some records about Mongoose ...
+      // ... run in Prometheus, yet Mongoose image could be reloaded and the data ...
+      // ... could be erased. 
       runRecord.setStatus(MongooseRunStatus.Finished);
     },
     () => { 
