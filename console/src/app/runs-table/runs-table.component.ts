@@ -40,64 +40,11 @@ export class RunsTableComponent implements OnInit {
 
   ngOnInit() {
     this.runRecordsSubscription = this.mongooseRunRecordsObservable.subscribe(updatedRecords => {
-
-      if (this.mongooseRunRecords.length == 0) {
-        this.setInitialRecords(updatedRecords);
-        return;
-      }
-
-      for (var i = 0; i < this.mongooseRunRecords.length; i++) {
-
-        // NOTE: Updating only unfinished runs 
-        if (this.shouldUpdateStatus(this.mongooseRunRecords[i])) {
-          continue;
-        }
-
-        this.mongooseRunRecords[i] = updatedRecords[i];
-        this.updateRecordStatus(this.mongooseRunRecords[i]);
-      }
-
-      let shouldUpdateExistingRecords = this.shouldUpdateExistingRecords(updatedRecords);
-      if (!shouldUpdateExistingRecords) {
-        return;
-      }
-
-      let hasDeletedElements = (this.mongooseRunRecords.length < updatedRecords.length);
-      if (hasDeletedElements) {
-        console.log("Updating due to deleted elements.");
-        console.log("this.mongooseRunRecords.length :", this.mongooseRunRecords.length);
-        console.log("updatedRecords.length: ", updatedRecords.length);
-
-        var recordsListAfterErasing: MongooseRunRecord[] = [];
-        // NOTE: Retaining only non-deleted elements. 
-        // It's possible since the order retains. 
-        for (var i = 0; i < this.mongooseRunRecords.length; i++) {
-          var isRecordExist = false;
-          updatedRecords.forEach(updatedRecord => {
-            isRecordExist = (updatedRecord.getIdentifier() == this.mongooseRunRecords[i].getIdentifier());
-            if (isRecordExist) {
-              return;
-            }
-          })
-
-          if (isRecordExist) {
-            // NOTE: Retain element if it hasn't been deleted.
-            recordsListAfterErasing.push(this.mongooseRunRecords[i]);
-          }
-        }
-        this.mongooseRunRecords = recordsListAfterErasing;
-        return;
-      }
-
-      console.log("Updating due to added elements.");
-      // NOTE: Append existing array with added elements. 
-      let addedRecords = updatedRecords.slice(this.mongooseRunRecords.length, updatedRecords.length);
-      for (var addedRecord of addedRecords) {
-        this.mongooseRunRecords.push(addedRecord);
-      }
-    })
-    // this.setUpRecordsUpdateTimer();
+      this.handleRecordsUpdate(updatedRecords);
+    });
   }
+
+
 
   ngOnDestroy() {
     this.runRecordsSubscription.unsubscribe();
@@ -183,9 +130,72 @@ export class RunsTableComponent implements OnInit {
     return ((runRecord.getStatus() != MongooseRunStatus.Finished) && (runRecord.getStatus() != MongooseRunStatus.Unavailable));
   }
 
-  private shouldUpdateExistingRecords(updatedRecords: MongooseRunRecord[]): boolean { 
+  private shouldUpdateExistingRecords(updatedRecords: MongooseRunRecord[]): boolean {
     // NOTE: As for now, update it only if amount of record has been changed. 
-    return (this.mongooseRunRecords.length != updatedRecords.length); 
+    return (this.mongooseRunRecords.length != updatedRecords.length);
   }
 
+  private updateStatusForRecords(records: MongooseRunRecord[]): MongooseRunRecord[] {
+    for (var i = 0; i < records.length; i++) {
+      let processingRecord = records[i];
+      // NOTE: Updating only unfinished runs 
+      if (!this.shouldUpdateStatus(processingRecord)) {
+        continue;
+      }
+      this.updateRecordStatus(processingRecord);
+    }
+    return records;
+  }
+
+  private handleRecordsUpdate(updatedRecords: MongooseRunRecord[]) {
+    if (this.mongooseRunRecords.length == 0) {
+      this.setInitialRecords(updatedRecords);
+      return;
+    }
+
+    let shouldUpdateExistingRecords = this.shouldUpdateExistingRecords(updatedRecords);
+    if (!shouldUpdateExistingRecords) {
+      return;
+    }
+
+    let hasDeletedElements = (this.mongooseRunRecords.length < updatedRecords.length);
+    if (hasDeletedElements) {
+
+      this.mongooseRunRecords = this.innerJoinRecords(this.mongooseRunRecords, updatedRecords);
+      return;
+    }
+
+    console.log("Updating due to added elements.");
+    // NOTE: Append existing array with added elements. 
+    let addedRecords = updatedRecords.slice(this.mongooseRunRecords.length, updatedRecords.length);
+    for (var addedRecord of addedRecords) {
+      this.mongooseRunRecords.push(addedRecord);
+    }
+    this.mongooseRunRecords = this.updateStatusForRecords(this.mongooseRunRecords);
+  }
+
+  private innerJoinRecords(lhsRecords: MongooseRunRecord[], rhsRecords: MongooseRunRecord[]): MongooseRunRecord[] {
+    console.log("Updating due to deleted elements.");
+    console.log("lhsRecords.length :", lhsRecords.length);
+    console.log("rhsRecords.length: ", rhsRecords.length);
+
+    var recordsListAfterErasing: MongooseRunRecord[] = [];
+    // NOTE: Retaining only non-deleted elements. 
+    // It's possible since the order retains. 
+    for (var i = 0; i < lhsRecords.length; i++) {
+      var isRecordExist = false;
+      rhsRecords.forEach(updatedRecord => {
+        isRecordExist = (updatedRecord.getIdentifier() == lhsRecords[i].getIdentifier());
+        if (isRecordExist) {
+          return;
+        }
+      })
+
+      if (isRecordExist) {
+        // NOTE: Retain element if it hasn't been deleted.
+        recordsListAfterErasing.push(lhsRecords[i]);
+      }
+    }
+    return recordsListAfterErasing;
+  }
 }
