@@ -13,7 +13,6 @@
   margin-right: calc(30%);
 }
 
-
 #resultsTag, #detailsTag {
   cursor: pointer;
   display: inline-block;
@@ -48,7 +47,6 @@
   margin-right: calc(7.1%);
   transition: 0.5s;
 }
-
 
 #status-btn:hover #resultsTag:after,
 #status-btn:hover #detailsTag:after,

@@ -65,16 +65,21 @@ export class MongooseRunRecord {
         }
 
         if (targetStatus != this.status) {
+            
             let misleadingMsg = "Collision in Mongoose Run status and availability of its files.";
             let currentRunStatusMsg = "Recorded run status is: " + this.status;
             let determinedRunStatusMsg = "Determined run status is: " + targetStatus;
-            console.error(misleadingMsg + currentRunStatusMsg + determinedRunStatusMsg);
+            // console.error(misleadingMsg + currentRunStatusMsg + determinedRunStatusMsg);
 
             let statusChangeNotification = "Changing load-step " + this.getIdentifier() + " status to " + targetStatus;
-            console.error(statusChangeNotification);
+            // console.error(statusChangeNotification);
             this.status = targetStatus;
         }
 
+        if (this.getDuration() == "linear_20190402.090331.210") { 
+            console.log("linear_20190402.090331.210 hasConfig: ", this.hasConfig);
+            console.log("linear_20190402.090331.210 hasTotalfile: ", this.hasTotalFile);
+        }
         return targetStatus;
     }
 

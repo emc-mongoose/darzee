@@ -42,17 +42,16 @@ export class RunsTableComponent implements OnInit {
     this.runRecordsSubscription = this.mongooseRunRecordsObservable.subscribe(updatedRecords => {
 
       if (this.mongooseRunRecords.length == 0) {
-        // NOTE: Initial set up of run records.
-        this.mongooseRunRecords = updatedRecords;
-        console.log("Updating status for records..");
-        this.updateRecordsStatus(this.mongooseRunRecords);
+        this.setInitialRecords(updatedRecords);
         return;
       }
-      // NOTE: Updating only unfinished runs 
+
       for (var i = 0; i < this.mongooseRunRecords.length; i++) {
-        if (this.mongooseRunRecords[i].getStatus() == MongooseRunStatus.Finished) {
+        // NOTE: Updating only unfinished runs 
+        if (this.shouldUpdateStatus(this.mongooseRunRecords[i])) {
           continue;
         }
+
         this.mongooseRunRecords[i] = updatedRecords[i];
         this.updateRecordStatus(this.mongooseRunRecords[i]);
       }
@@ -107,11 +106,11 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Public 
 
   public onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) {
-    let clickedRunStatus = mongooseRunRecord.getStatus(); 
-    if (clickedRunStatus == MongooseRunStatus.Unavailable) { 
+    let clickedRunStatus = mongooseRunRecord.getStatus();
+    if (clickedRunStatus == MongooseRunStatus.Unavailable) {
       let misleadingMsg = "Selected Mongoose run info (load step id: " + mongooseRunRecord.getIdentifier() + ") couldn't be found.";
       alert(misleadingMsg);
-      return; 
+      return;
     }
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);
   }
@@ -123,51 +122,64 @@ export class RunsTableComponent implements OnInit {
     });
   }
 
-  private updateRecordStatus(runRecord: MongooseRunRecord) { 
+  private updateRecordStatus(runRecord: MongooseRunRecord) {
+    let recordStatus = runRecord.getStatus();
+    if ((recordStatus == MongooseRunStatus.Finished)) {
+      return;
+    }
+
     this.statusUpdateSubscription.add(this.monitoringApiService.getStatusForRecord(runRecord).subscribe(
       status => {
-        let configurationIndex = 0; 
+        let configurationIndex = 0;
         let finalMetricsIndex = 1;
 
-        let hasReceivedConfiguration = status[configurationIndex]; 
-        let hasReceivedFinalMetrics = (status[finalMetricsIndex] instanceof Boolean); 
-        
-        let isMongooseRunActive = (hasReceivedConfiguration && !hasReceivedFinalMetrics);
-        let recordStatus = isMongooseRunActive ? MongooseRunStatus.Running : MongooseRunStatus.Finished;
-        runRecord.setStatus(recordStatus);
-    },
-    error => { 
-      // NOTE: If an error has occured, set status 'Finished'. 
-      // It could be possible that there's still some records about Mongoose ...
-      // ... run in Prometheus, yet Mongoose image could be reloaded and the data ...
-      // ... could be erased. 
-      console.log("Got error: ", error);
-      let stringPrimitiveType = "string";
-      let isErrorContainingMetricName = ((error instanceof String) || (typeof(error) == stringPrimitiveType));
-      if (!isErrorContainingMetricName) { 
-        runRecord.setStatus(MongooseRunStatus.Finished);
-        return; 
-      }
-      let requestedMetricName = error; 
-      let runStatus = MongooseRunStatus.Finished;
-      switch (requestedMetricName) { 
-        case "Config": { 
-          runRecord.hasConfig = false; 
-          return;
-        }
-        case "metrics.threshold.FileTotal": { 
-          console.log("FileTotal error has been received.");
+        let hasReceivedConfiguration = status[configurationIndex] as boolean;
+        runRecord.hasConfig = hasReceivedConfiguration;
 
-          // NOTE: If FileTotal hasn't been found, Mongoose is still running. 
-          runRecord.hasTotalFile = false; 
+        let hasReceivedFinalMetrics = (status[finalMetricsIndex] instanceof Boolean);
+        runRecord.hasTotalFile = hasReceivedFinalMetrics;
+      },
+      error => {
+        // NOTE: If an error has occured, set status 'Finished'. 
+        // It could be possible that there's still some records about Mongoose ...
+        // ... run in Prometheus, yet Mongoose image could be reloaded and the data ...
+        // ... could be erased. 
+        console.log("Got error: ", error);
+        let stringPrimitiveType = "string";
+        let isErrorContainingMetricName = ((error instanceof String) || (typeof (error) == stringPrimitiveType));
+        if (!isErrorContainingMetricName) {
+          runRecord.setStatus(MongooseRunStatus.Finished);
           return;
         }
-      }
-      runRecord.setStatus(runStatus);
-    },
-    () => { 
-      // TODO: Update tabs here 
-    }));
+        let requestedMetricName = error;
+        switch (requestedMetricName) {
+          case "Config": {
+            runRecord.hasConfig = false;
+            return;
+          }
+          case "metrics.threshold.FileTotal": {
+            console.log("FileTotal error has been received.");
+            // NOTE: If FileTotal hasn't been found, Mongoose is still running. 
+            runRecord.hasTotalFile = false;
+            return;
+          }
+        }
+      },
+      () => {
+        // TODO: Update tabs here 
+      }));
+  }
+
+  private setInitialRecords(records: MongooseRunRecord[]) {
+    // NOTE: Initial set up of run records.
+    this.mongooseRunRecords = records;
+    console.log("Updating status for records..");
+    this.updateRecordsStatus(this.mongooseRunRecords);
+  }
+
+  private shouldUpdateStatus(runRecord: MongooseRunRecord): boolean {
+    // NOTE: Updating only available and active mongoose runs. 
+    return ((runRecord.getStatus() != MongooseRunStatus.Finished) && (runRecord.getStatus() != MongooseRunStatus.Unavailable));
   }
 
 }

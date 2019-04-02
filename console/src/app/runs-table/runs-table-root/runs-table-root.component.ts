@@ -21,8 +21,8 @@ export class RunsTableRootComponent implements OnInit {
   public runTabs: MongooseRunTab[] = [];
 
   private displayingRunRecords: MongooseRunRecord[] = [];
-  private mongooseRecordsSubscription: Subscription = new Subscription(); 
-  private runTableUpdateTimerSunscription: Subscription = new Subscription(); 
+  private mongooseRecordsSubscription: Subscription = new Subscription();
+  private runTableUpdateTimerSunscription: Subscription = new Subscription();
 
   // MARK: - Lifecycle
 
@@ -36,14 +36,14 @@ export class RunsTableRootComponent implements OnInit {
     this.filterRunsByStatus(this.runTabs[0]);
   }
 
-  ngOnDestroy() { 
-    this.mongooseRecordsSubscription.unsubscribe(); 
+  ngOnDestroy() {
+    this.mongooseRecordsSubscription.unsubscribe();
     this.runTableUpdateTimerSunscription.unsubscribe();
   }
 
   // MARK: - Public 
 
-  filterRunsByStatus(requiredTab: MongooseRunTab) {
+  public filterRunsByStatus(requiredTab: MongooseRunTab) {
     // NOTE: I haven't found a better way to set custom background color for bootstrap selected button. 
     // ... so I put a selector "isSelected" and if it's set to 'true', the tab button is highlighted.
     this.runTabs.forEach(tab => {
@@ -61,8 +61,8 @@ export class RunsTableRootComponent implements OnInit {
     return (this.monitoringApiService.getExistingRunRecords().length > 0);
   }
 
-  public getDisplayingRunRecords() { 
-    return this.displayingRunRecords; 
+  public getDisplayingRunRecords() {
+    return this.displayingRunRecords;
   }
 
   // MARK: - Private 
