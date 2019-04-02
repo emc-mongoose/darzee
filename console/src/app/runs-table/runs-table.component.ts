@@ -77,8 +77,9 @@ export class RunsTableComponent implements OnInit {
         let hasReceivedConfiguration = status[configurationIndex] as boolean;
         runRecord.hasConfig = hasReceivedConfiguration;
 
-        let hasReceivedFinalMetrics = (status[finalMetricsIndex] instanceof Boolean);
+        let hasReceivedFinalMetrics = (status[finalMetricsIndex] as boolean);
         runRecord.hasTotalFile = hasReceivedFinalMetrics;
+
       },
       error => {
         // NOTE: If an error has occured, set status 'Finished'. 
@@ -96,18 +97,20 @@ export class RunsTableComponent implements OnInit {
         switch (requestedMetricName) {
           case "Config": {
             runRecord.hasConfig = false;
-            return;
+            break;
           }
           case "metrics.threshold.FileTotal": {
             console.log("FileTotal error has been received.");
             // NOTE: If FileTotal hasn't been found, Mongoose is still running. 
             runRecord.hasTotalFile = false;
-            return;
+            break;
           }
         }
+        runRecord.updateStatus();
       },
       () => {
         // TODO: Update tabs here 
+        runRecord.updateStatus();
       }));
   }
 
@@ -120,6 +123,7 @@ export class RunsTableComponent implements OnInit {
 
   private shouldUpdateStatus(runRecord: MongooseRunRecord): boolean {
     // NOTE: Updating only available and active mongoose runs. 
+    console.log("runRecord.getStatus(): ", runRecord.getStatus());
     return ((runRecord.getStatus() != MongooseRunStatus.Finished) && (runRecord.getStatus() != MongooseRunStatus.Unavailable));
   }
 
@@ -132,6 +136,7 @@ export class RunsTableComponent implements OnInit {
     for (var i = 0; i < records.length; i++) {
       let processingRecord = records[i];
       if (!this.shouldUpdateStatus(processingRecord)) {
+        console.log("Record won't be updated.");
         continue;
       }
       this.updateSingleRecordStatus(processingRecord);

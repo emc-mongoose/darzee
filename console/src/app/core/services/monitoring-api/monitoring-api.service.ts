@@ -127,6 +127,7 @@ export class MonitoringApiService {
   }
 
   public getStatusForRecord(record: MongooseRunRecord): Observable<[{}, {}]> {
+    console.log("getStatusForRecord")
     let initialMetricsName: String = "Config";
     let initialMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), initialMetricsName);
 
@@ -199,7 +200,7 @@ export class MonitoringApiService {
       let startTime = this.fetchLabelValue(staticRunData, startTimeTag);
 
       // TODO: get actual status 
-      let statusMock = MongooseRunStatus.Running;
+      let statusMock = MongooseRunStatus.All;
 
       let nodesListTag = "nodes_list";
       let nodesList = this.fetchLabelValue(staticRunData, nodesListTag);

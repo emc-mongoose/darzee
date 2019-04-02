@@ -5,7 +5,7 @@ export class MongooseRunRecord {
 
     readonly DEFAULT_VALUE = "-";
 
-    public status: MongooseRunStatus;
+    public status: MongooseRunStatus = MongooseRunStatus.All;
     public startTime: String;
     public nodes: String[];
     public comment: String;
@@ -50,8 +50,16 @@ export class MongooseRunRecord {
     }
 
     getStatus(): MongooseRunStatus {
-        let targetStatus = MongooseRunStatus.All;
+        return this.status; 
+    }
 
+    setStatus(status: MongooseRunStatus) {
+        this.status = status;
+    }
+
+    updateStatus() { 
+        let targetStatus = MongooseRunStatus.All; 
+    
         if (this.hasConfig && this.hasTotalFile) {
             targetStatus = MongooseRunStatus.Finished;
         }
@@ -63,28 +71,7 @@ export class MongooseRunRecord {
         if (!this.hasConfig) {
             targetStatus = MongooseRunStatus.Unavailable;
         }
-
-        if (targetStatus != this.status) {
-            
-            let misleadingMsg = "Collision in Mongoose Run status and availability of its files.";
-            let currentRunStatusMsg = "Recorded run status is: " + this.status;
-            let determinedRunStatusMsg = "Determined run status is: " + targetStatus;
-            // console.error(misleadingMsg + currentRunStatusMsg + determinedRunStatusMsg);
-
-            let statusChangeNotification = "Changing load-step " + this.getIdentifier() + " status to " + targetStatus;
-            // console.error(statusChangeNotification);
-            this.status = targetStatus;
-        }
-
-        if (this.getDuration() == "linear_20190402.090331.210") { 
-            console.log("linear_20190402.090331.210 hasConfig: ", this.hasConfig);
-            console.log("linear_20190402.090331.210 hasTotalfile: ", this.hasTotalFile);
-        }
-        return targetStatus;
-    }
-
-    setStatus(status: MongooseRunStatus) {
-        this.status = status;
+        this.status = targetStatus; 
     }
 
     getStartTime(): String {
