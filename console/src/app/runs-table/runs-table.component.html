@@ -13,7 +13,7 @@
     <tbody>
       <tr *ngFor="let runRecord of mongooseRunRecords">
         <th scope="row"> 
-          <app-mongoose-run-status-icon [runStatus]="runRecord.status"
+          <app-mongoose-run-status-icon [runStatus]="runRecord.getStatus()"
            (click)="onRunStatusIconClicked(runRecord)">
               {{ runRecord.getStatus() }}
               

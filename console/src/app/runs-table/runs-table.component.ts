@@ -107,6 +107,12 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Public 
 
   public onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) {
+    let clickedRunStatus = mongooseRunRecord.getStatus(); 
+    if (clickedRunStatus == MongooseRunStatus.Unavailable) { 
+      let misleadingMsg = "Selected Mongoose run info (load step id: " + mongooseRunRecord.getIdentifier() + ") couldn't be found.";
+      alert(misleadingMsg);
+      return; 
+    }
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);
   }
 
