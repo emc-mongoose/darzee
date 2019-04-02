@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MongooseRunRecord } from '../../models/run-record.model';
 import { MongooseRunStatus } from '../../mongoose-run-status';
 import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
-import { Observable, BehaviorSubject, forkJoin, of } from 'rxjs';
+import { Observable, BehaviorSubject, forkJoin, of, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseMetrics } from '../mongoose-api-models/MongooseMetrics';
@@ -126,31 +126,31 @@ export class MonitoringApiService {
     )
   }
 
-  public getStatusForRecord(record: MongooseRunRecord): Observable<any> {
+  public getStatusForRecord(record: MongooseRunRecord): Observable<[{}, {}]> {
     let initialMetricsName = "Config";
     let initialMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), initialMetricsName);
 
     let finalMetricsName = "metrics.threshold.FileTotal";
     let finalMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), finalMetricsName);
 
-
     return forkJoin(
      initialMetricsObservable.pipe(
       result => { 
         return result;
       },
-      catchError( () => {
+      catchError(() => {
         console.log("Initial metrics error.");
-       return Observable.throw(false);
+       return throwError(false);
      })),
 
      finalMetricsObservable.pipe(
        result => { 
+        // console.log("FileTotal metrics result: ", result);
          return result;
        },
        catchError(() => {
         console.log("Final metrics error.");
-      return Observable.throw(false);
+      return throwError(false);
      }))
     );
   }

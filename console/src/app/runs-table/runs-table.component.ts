@@ -120,8 +120,11 @@ export class RunsTableComponent implements OnInit {
   private updateRecordStatus(runRecord: MongooseRunRecord) { 
     this.statusUpdateSubscription.add(this.monitoringApiService.getStatusForRecord(runRecord).subscribe(
       status => {
-        let hasReceivedConfiguration = !(status[0] instanceof Boolean);
-        let hasReceivedFinalMetrics = (status[1] instanceof Boolean);
+        let configurationIndex = 0; 
+        let finalMetricsIndex = 1;
+
+        let hasReceivedConfiguration = status[configurationIndex]; 
+        let hasReceivedFinalMetrics = (status[finalMetricsIndex] instanceof Boolean); 
         
         let isMongooseRunActive = (hasReceivedConfiguration && !hasReceivedFinalMetrics);
         let recordStatus = isMongooseRunActive ? MongooseRunStatus.Running : MongooseRunStatus.Finished;
@@ -132,7 +135,9 @@ export class RunsTableComponent implements OnInit {
       // It could be possible that there's still some records about Mongoose ...
       // ... run in Prometheus, yet Mongoose image could be reloaded and the data ...
       // ... could be erased. 
-      runRecord.setStatus(MongooseRunStatus.Finished);
+      let hasFinishedRun = error as Boolean; 
+      let targetStatus = hasFinishedRun ? MongooseRunStatus.Finished : MongooseRunStatus.Running;
+      runRecord.setStatus(targetStatus);
     },
     () => { 
       // TODO: Update tabs here 
