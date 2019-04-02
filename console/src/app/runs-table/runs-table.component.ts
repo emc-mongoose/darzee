@@ -135,9 +135,28 @@ export class RunsTableComponent implements OnInit {
       // It could be possible that there's still some records about Mongoose ...
       // ... run in Prometheus, yet Mongoose image could be reloaded and the data ...
       // ... could be erased. 
-      let hasFinishedRun = error as Boolean; 
-      let targetStatus = hasFinishedRun ? MongooseRunStatus.Finished : MongooseRunStatus.Running;
-      runRecord.setStatus(targetStatus);
+      console.log("Got error: ", error);
+      let stringPrimitiveType = "string";
+      let isErrorContainingMetricName = ((error instanceof String) || (typeof(error) == stringPrimitiveType));
+      if (!isErrorContainingMetricName) { 
+        runRecord.setStatus(MongooseRunStatus.Finished);
+        return; 
+      }
+      let requestedMetricName = error; 
+      let runStatus = MongooseRunStatus.Finished;
+      switch (requestedMetricName) { 
+        case "Config": { 
+          runStatus = MongooseRunStatus.Finished;
+          break;
+        }
+        case "metrics.threshold.FileTotal": { 
+          // NOTE: If FileTotal hasn't been found, Mongoose is still running. 
+          runStatus = MongooseRunStatus.Running;
+          console.log("FileTotal error has been received.");
+          break;
+        }
+      }
+      runRecord.setStatus(runStatus);
     },
     () => { 
       // TODO: Update tabs here 

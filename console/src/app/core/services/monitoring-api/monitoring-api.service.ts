@@ -127,10 +127,10 @@ export class MonitoringApiService {
   }
 
   public getStatusForRecord(record: MongooseRunRecord): Observable<[{}, {}]> {
-    let initialMetricsName = "Config";
+    let initialMetricsName: String = "Config";
     let initialMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), initialMetricsName);
 
-    let finalMetricsName = "metrics.threshold.FileTotal";
+    let finalMetricsName: String = "metrics.threshold.FileTotal";
     let finalMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), finalMetricsName);
 
     return forkJoin(
@@ -139,8 +139,7 @@ export class MonitoringApiService {
         return result;
       },
       catchError(() => {
-        console.log("Initial metrics error.");
-       return throwError(false);
+       return throwError(initialMetricsName);
      })),
 
      finalMetricsObservable.pipe(
@@ -149,8 +148,8 @@ export class MonitoringApiService {
          return result;
        },
        catchError(() => {
-        console.log("Final metrics error.");
-      return throwError(false);
+        
+      return throwError(finalMetricsName);
      }))
     );
   }
