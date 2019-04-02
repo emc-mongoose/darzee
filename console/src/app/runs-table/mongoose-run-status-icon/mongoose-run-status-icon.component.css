@@ -1,6 +1,7 @@
 /* NOTE: There's 2 classes that are responsible for an animation on hover:
   - 'resultsTag' ID applies on finished Mongoose Run icon;
   - 'detailsTag' ID applies on an unfinished Mongoose Run Icon;
+   - 'unavailableTag' ID applies on an uniavailable Mongoose Run Icon; 
  */
 
  #detailsTag {
@@ -15,7 +16,8 @@
 }
 
 #resultsTag:after, 
-#detailsTag:after { 
+#detailsTag:after,
+#unavailableTag:afer { 
   font-size: inherit;
   display: inline-block;
   text-align: center;
@@ -43,7 +45,8 @@
 
 
 #status-btn:hover #resultsTag:after,
-#status-btn:hover #detailsTag:after {
+#status-btn:hover #detailsTag:after,
+#status-btn:hover #unavailableTag:after {
   opacity: 1;
   right: 0;
 }

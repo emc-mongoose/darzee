@@ -15,7 +15,7 @@
         <th scope="row"> 
           <app-mongoose-run-status-icon [runStatus]="runRecord.status"
            (click)="onRunStatusIconClicked(runRecord)">
-              {{ runRecord.status }}
+              {{ runRecord.getStatus() }}
               
           </app-mongoose-run-status-icon>
         </th>

@@ -29,4 +29,25 @@ export class MongooseRunStatusIconComponent implements OnInit {
     onStatusButtonClicked() { 
       console.log("status btn clicked");
     }
+
+    getStatusTag(): String { 
+      let actualTag = 'unavailableTag';
+      switch (this.runStatus) { 
+        case MongooseRunStatus.Unavailable: { 
+          actualTag = 'unavailableTag';
+          break;
+        }
+        case MongooseRunStatus.Running: { 
+          actualTag = 'detailsTag';
+          break;
+        }
+        case MongooseRunStatus.Finished: { 
+          actualTag = 'resultsTag';
+        }
+        default: { 
+          actualTag=  'unavailableTag';
+        }
+      }
+      return actualTag;
+    }
 }
