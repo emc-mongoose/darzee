@@ -47,6 +47,7 @@ export class RunsTableComponent implements OnInit {
       }
 
       for (var i = 0; i < this.mongooseRunRecords.length; i++) {
+
         // NOTE: Updating only unfinished runs 
         if (this.shouldUpdateStatus(this.mongooseRunRecords[i])) {
           continue;
@@ -55,9 +56,9 @@ export class RunsTableComponent implements OnInit {
         this.mongooseRunRecords[i] = updatedRecords[i];
         this.updateRecordStatus(this.mongooseRunRecords[i]);
       }
-      let shouldUpdateExistingRecords = (this.mongooseRunRecords.length != updatedRecords.length);
+
+      let shouldUpdateExistingRecords = this.shouldUpdateExistingRecords(updatedRecords);
       if (!shouldUpdateExistingRecords) {
-        console.log("Shouldn't update records.");
         return;
       }
 
@@ -180,6 +181,11 @@ export class RunsTableComponent implements OnInit {
   private shouldUpdateStatus(runRecord: MongooseRunRecord): boolean {
     // NOTE: Updating only available and active mongoose runs. 
     return ((runRecord.getStatus() != MongooseRunStatus.Finished) && (runRecord.getStatus() != MongooseRunStatus.Unavailable));
+  }
+
+  private shouldUpdateExistingRecords(updatedRecords: MongooseRunRecord[]): boolean { 
+    // NOTE: As for now, update it only if amount of record has been changed. 
+    return (this.mongooseRunRecords.length != updatedRecords.length); 
   }
 
 }
