@@ -160,21 +160,18 @@ export class RunsTableComponent implements OnInit {
 
     let hasDeletedElements = (this.mongooseRunRecords.length < updatedRecords.length);
     if (hasDeletedElements) {
-
-      this.mongooseRunRecords = this.innerJoinRecords(this.mongooseRunRecords, updatedRecords);
-      return;
+      // NOTE: Deleted elements 
+      this.mongooseRunRecords = this.innerJoinMongooseRecords(this.mongooseRunRecords, updatedRecords);
+    } else { 
+      // NOTE: Added elements 
+      this.mongooseRunRecords = this.outerJoinMongooseRecords(this.mongooseRunRecords, updatedRecords);
     }
 
-    console.log("Updating due to added elements.");
-    // NOTE: Append existing array with added elements. 
-    let addedRecords = updatedRecords.slice(this.mongooseRunRecords.length, updatedRecords.length);
-    for (var addedRecord of addedRecords) {
-      this.mongooseRunRecords.push(addedRecord);
-    }
     this.mongooseRunRecords = this.updateStatusForRecords(this.mongooseRunRecords);
   }
 
-  private innerJoinRecords(lhsRecords: MongooseRunRecord[], rhsRecords: MongooseRunRecord[]): MongooseRunRecord[] {
+  // NOTE: Erasing lhsRecords that are not inside rhsRecords list.
+  private innerJoinMongooseRecords(lhsRecords: MongooseRunRecord[], rhsRecords: MongooseRunRecord[]): MongooseRunRecord[] {
     console.log("Updating due to deleted elements.");
     console.log("lhsRecords.length :", lhsRecords.length);
     console.log("rhsRecords.length: ", rhsRecords.length);
@@ -197,5 +194,15 @@ export class RunsTableComponent implements OnInit {
       }
     }
     return recordsListAfterErasing;
+  }
+ 
+  // NOTE: Merging rhsRecords elements that are not in the lhsRecords list. 
+  private outerJoinMongooseRecords(lhsRecords: MongooseRunRecord[], rhsRecords: MongooseRunRecord[]): MongooseRunRecord[] { 
+    // NOTE: Slice is possible since records are sorted by a start time. 
+    let addedRecords = rhsRecords.slice(this.mongooseRunRecords.length, rhsRecords.length);
+    for (var addedRecord of addedRecords) {
+      lhsRecords.push(addedRecord);
+    }
+    return lhsRecords; 
   }
 }
