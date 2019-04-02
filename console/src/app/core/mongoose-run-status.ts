@@ -5,5 +5,6 @@ export enum MongooseRunStatus {
     All = "All",
 
     Finished = "Finished", 
+    Unavailable = "Unavailable",
     Running = "Running",
 }

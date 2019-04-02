@@ -146,14 +146,15 @@ export class RunsTableComponent implements OnInit {
       let runStatus = MongooseRunStatus.Finished;
       switch (requestedMetricName) { 
         case "Config": { 
-          runStatus = MongooseRunStatus.Finished;
-          break;
+          runRecord.hasConfig = false; 
+          return;
         }
         case "metrics.threshold.FileTotal": { 
-          // NOTE: If FileTotal hasn't been found, Mongoose is still running. 
-          runStatus = MongooseRunStatus.Running;
           console.log("FileTotal error has been received.");
-          break;
+
+          // NOTE: If FileTotal hasn't been found, Mongoose is still running. 
+          runRecord.hasTotalFile = false; 
+          return;
         }
       }
       runRecord.setStatus(runStatus);
