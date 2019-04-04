@@ -79,7 +79,6 @@ export class RunsTableComponent implements OnInit {
 
         let hasReceivedFinalMetrics = (status[finalMetricsIndex] as boolean);
         runRecord.hasTotalFile = hasReceivedFinalMetrics;
-
       },
       error => {
         // NOTE: If an error has occured, set status 'Finished'. 
