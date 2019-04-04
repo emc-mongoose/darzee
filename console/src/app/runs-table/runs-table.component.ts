@@ -50,7 +50,7 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Public 
 
   public onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) {
-    if (this.isRunStatisticsReachable(mongooseRunRecord)) {
+    if (!this.isRunStatisticsReachable(mongooseRunRecord)) {
       let misleadingMsg = "Selected Mongoose run info (load step id: " + mongooseRunRecord.getIdentifier() + ") couldn't be found.";
       alert(misleadingMsg);
       return;

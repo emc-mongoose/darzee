@@ -42,7 +42,6 @@ export class MonitoringApiService {
     return configurationFileStatus$.pipe(
       mergeMap(hasConfiguration => resultNetricsStatus$.pipe(
         map(hasResults => {
-          console.log(`hasConfig: ${hasConfiguration} and hasResult: ${hasResults}`);
           if (hasConfiguration && !hasResults) {
             return MongooseRunStatus.Running;
           }
@@ -150,34 +149,6 @@ export class MonitoringApiService {
     )
   }
 
-  public getStatusForRecord(record: MongooseRunRecord): Observable<[{}, {}]> {
-    console.log("getStatusForRecord")
-    let initialMetricsName: String = "Config";
-    let initialMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), initialMetricsName);
-
-    let finalMetricsName: String = "metrics.threshold.FileTotal";
-    let finalMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), finalMetricsName);
-
-    return forkJoin(
-      initialMetricsObservable.pipe(
-        result => {
-          return result;
-        },
-        catchError(() => {
-          return throwError(initialMetricsName);
-        })),
-
-      finalMetricsObservable.pipe(
-        result => {
-          // console.log("FileTotal metrics result: ", result);
-          return result;
-        },
-        catchError(() => {
-
-          return throwError(finalMetricsName);
-        }))
-    );
-  }
 
   public getLog(stepId: String, logName: String): Observable<any> {
     let logsEndpoint = MongooseApi.LogsApi.LOGS;
@@ -276,6 +247,11 @@ export class MonitoringApiService {
   }
 
   private findMongooseRecordByLoadStepId(records: MongooseRunRecord[], id: String): MongooseRunRecord {
+    if (records.length == 0) { 
+      let misleadingMsg = "Records list is empty, thus no record can be found.";
+      throw new Error(misleadingMsg);
+    }
+
     let targerRecord: MongooseRunRecord;
     records.filter(record => {
       if (record.getIdentifier() == id) {

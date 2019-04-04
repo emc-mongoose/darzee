@@ -42,7 +42,7 @@ export class RunStatisticLogsComponent implements OnInit {
         this.initlogTabs();
       } catch (recordNotFoundError) {
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
-        alert("Unable to load requested record.");
+        alert(`Unable to load requested record. Reason: ${recordNotFoundError.message}`);
         console.error(recordNotFoundError);
         this.router.navigate([RoutesList.RUNS]);
       }
