@@ -17,8 +17,8 @@ export class MonitoringApiService {
 
   private readonly MONGOOSE_HTTP_ADDRESS = Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP;
 
-  private mongooseRunRecords: MongooseRunRecord[] = [];
-  private behaviorSubjectRunRecords: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
+  // private currentMongooseRunRecords: MongooseRunRecord[] = [];
+  private currentMongooseRunRecords$: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
 
   // NOTE: availableLogs is a list of logs provided by Mongoose. Key is REST API's endpoint for fetching the log, ...
   // ... value is a displaying name. 
@@ -33,12 +33,12 @@ export class MonitoringApiService {
 
   // MARK: - Public
 
-  public getExistingRunRecords(): MongooseRunRecord[] {
-    return this.mongooseRunRecords;
-  }
+  // public getExistingRunRecords(): MongooseRunRecord[] {
+  //   return this.currentMongooseRunRecords;
+  // }
 
-  public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
-    return this.behaviorSubjectRunRecords.asObservable().pipe(
+  public getcurrentMongooseRunRecords(): Observable<MongooseRunRecord[]> {
+    return this.currentMongooseRunRecords$.asObservable().pipe(
       map(records => {
         // NOTE: Records are being sorted for order retaining. This ...
         // ... is useful while updating Run Records table. 
@@ -48,20 +48,13 @@ export class MonitoringApiService {
     );
   }
 
-  public getMongooseRunRecordById(id: String): MongooseRunRecord {
-    let targerRecord: MongooseRunRecord;
-    this.mongooseRunRecords.filter(record => {
-      if (record.getIdentifier() == id) {
-        targerRecord = record;
-      }
-    });
-
-    if (!targerRecord) {
-      // NOTE: Returning 'False' if record hasn't been found.
-      let misleadingMsg = "Mongoose Run record with ID " + id + " hasn't been found.";
-      throw new Error(misleadingMsg);
-    }
-    return targerRecord;
+  public getMongooseRunRecordByLoadStepId(loadStepId: String): Observable<MongooseRunRecord> { 
+    return this.getcurrentMongooseRunRecords().pipe(
+      map(records => { 
+        let record = this.findMongooseRecordByLoadStepId(records, loadStepId); 
+        return record; 
+      })
+    ); 
   }
 
   // NOTE: Returning hard-coded metrics name in order to test the UI first.
@@ -162,12 +155,12 @@ export class MonitoringApiService {
   }
 
   // NOTE: An initial fetch of Mongoose Run Records.
-  public fetchMongooseRunRecords() {
+  public fetchcurrentMongooseRunRecords() {
     // let mongooseMetricMock = MongooseMetrics.PrometheusM/etrics.DURATION;
     return this.prometheusApiService.getExistingRecordsInfo().subscribe(metricsArray => {
       // console.log("Every fetched record: ", JSON.stringify(metricsArray));
       var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
-      this.behaviorSubjectRunRecords.next(fetchedRunRecords);
+      this.currentMongooseRunRecords$.next(fetchedRunRecords);
     })
   }
 
@@ -233,12 +226,12 @@ export class MonitoringApiService {
 
   // NOTE: Setting up service's observables 
   private setUpService() {
-    this.fetchMongooseRunRecords();
+    this.fetchcurrentMongooseRunRecords();
     this.configurateAvailableLogs();
 
     // NOTE: Adding behavior subject on Mongoose Run Records in order to detect changes within the list. 
-    this.behaviorSubjectRunRecords.subscribe(updatedRecordsList => {
-      this.mongooseRunRecords = updatedRecordsList;
+    this.currentMongooseRunRecords$.subscribe(updatedRecordsList => {
+      this.currentMongooseRunRecords = updatedRecordsList;
     })
   }
 
@@ -257,6 +250,22 @@ export class MonitoringApiService {
 
     this.availableLogs.set("Messages", "Generic messages");
     this.availableLogs.set("Scenario", "Scenario dump");
+  }
+
+  private findMongooseRecordByLoadStepId(records: MongooseRunRecord[], id: String): MongooseRunRecord {
+    let targerRecord: MongooseRunRecord;
+    records.filter(record => {
+      if (record.getIdentifier() == id) {
+        targerRecord = record;
+      }
+    });
+
+    if (!targerRecord) {
+      // NOTE: Returning 'False' if record hasn't been found.
+      let misleadingMsg = "Mongoose Run record with ID " + id + " hasn't been found.";
+      throw new Error(misleadingMsg);
+    }
+    return targerRecord;
   }
 
 }

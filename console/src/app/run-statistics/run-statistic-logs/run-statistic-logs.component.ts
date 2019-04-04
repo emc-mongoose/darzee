@@ -5,6 +5,7 @@ import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteParams } from 'src/app/Routing/params.routes';
 import { RoutesList } from 'src/app/Routing/routes-list';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-run-statistic-logs',
@@ -22,6 +23,9 @@ export class RunStatisticLogsComponent implements OnInit {
   private currentDisplayingTabId = 0; 
   private routeParameters: RouteParams; 
 
+  private mongooseRunRecord$: Observable<MongooseRunRecord>; 
+  private monitoringApiSubscriptions: Subscription; 
+
   // MARK: - Lifecycle
 
   constructor(private monitoringApiService: MonitoringApiService,
@@ -34,7 +38,7 @@ export class RunStatisticLogsComponent implements OnInit {
       console.log("params: ", JSON.stringify(params));
       let targetRecordLoadStepId = params[RouteParams.ID];
       try { 
-        this.processingRunRecord = this.monitoringApiService.getMongooseRunRecordById(targetRecordLoadStepId);
+        this.mongooseRunRecord$ = this.monitoringApiService.getMongooseRunRecordByLoadStepId(targetRecordLoadStepId);
         this.initlogTabs();
       } catch (recordNotFoundError) { 
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
@@ -43,6 +47,14 @@ export class RunStatisticLogsComponent implements OnInit {
         this.router.navigate([RoutesList.RUNS]);
       }
     });
+    
+    this.monitoringApiSubscriptions = this.mongooseRunRecord$.subscribe(record => { 
+      this.processingRunRecord = record; 
+    })
+  }
+
+  ngOnDestroy() { 
+    this.monitoringApiSubscriptions.unsubscribe(); 
   }
 
   // MARK: - Public
