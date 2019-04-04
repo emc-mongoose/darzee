@@ -1,7 +1,9 @@
 import { RunDuration } from '../run-duration';
 import { MongooseRunStatus } from '../mongoose-run-status';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription, MonoTypeOperatorFunction, interval } from 'rxjs';
 import { OnDestroy } from '@angular/core';
+import { tap, merge, mapTo, map } from 'rxjs/operators';
+import { MergeMapOperator } from 'rxjs/internal/operators/mergeMap';
 
 export class MongooseRunRecord implements OnDestroy {
 
@@ -11,14 +13,19 @@ export class MongooseRunRecord implements OnDestroy {
     public nodes: String[];
     public comment: String;
 
-    public hasConfig: boolean = undefined;
-    public hasTotalFile: boolean = undefined;
+    public hasConfig: Boolean = undefined;
+    public hasTotalFile: Boolean = undefined;
 
     private readonly loadStepId: String;
     private duration: string;
-    private status$: BehaviorSubject<MongooseRunStatus> = new BehaviorSubject<MongooseRunStatus>(MongooseRunStatus.Undefined); 
-    private statusSubscription: Subscription; 
+    private status$: BehaviorSubject<MongooseRunStatus> = new BehaviorSubject<MongooseRunStatus>(MongooseRunStatus.Undefined);
+    private statusSubscription: Subscription = new Subscription();
     private currentStatus: MongooseRunStatus = MongooseRunStatus.Undefined;
+
+    private hasConfig$: BehaviorSubject<Boolean> = new BehaviorSubject<Boolean>(false);
+    private hasResultsFile$: BehaviorSubject<Boolean> = new BehaviorSubject<Boolean>(false);
+
+    private statisticsUpdateStream: any;
 
     constructor(loadStepId: String, status: MongooseRunStatus, startTime: String, nodes: String[], duration: string, comment: String) {
         this.loadStepId = loadStepId;
@@ -28,18 +35,11 @@ export class MongooseRunRecord implements OnDestroy {
         this.comment = comment;
 
         this.status$.next(status);
-        this.statusSubscription = this.status$.subscribe(
-            newStatus => { 
-                this.currentStatus = newStatus; 
-            },
-            error => { 
-                console.log(`Unable to update status of record with load-step-id ${this.getIdentifier()}. Reason: ${error.message}`);
-            }
-        )
+        this.configureSubscriptions();
     }
 
-    ngOnDestroy(): void { 
-        this.statusSubscription.unsubscribe(); 
+    ngOnDestroy(): void {
+        this.statusSubscription.unsubscribe();
     }
 
     // MARK: - Public
@@ -111,4 +111,36 @@ export class MongooseRunRecord implements OnDestroy {
 
         return MongooseRunStatus.Undefined;;
     }
+
+    private configureSubscriptions() {
+
+        this.statusSubscription.add(this.status$.subscribe(
+            newStatus => {
+                this.currentStatus = newStatus;
+            },
+            error => {
+                console.log(`Unable to update status of record with load-step-id ${this.getIdentifier()}. Reason: ${error.message}`);
+            }
+        ));
+
+        this.statusSubscription.add(this.hasConfig$.subscribe(
+            hasConfigUpdatedValue => {
+                this.hasConfig = hasConfigUpdatedValue;
+            },
+            error => {
+                console.log(`Couldn't check status of config file: ${error.message}`)
+            }
+        ));
+
+        this.statusSubscription.add(this.hasResultsFile$.subscribe(
+            hasResultsFileUpdatedValue => {
+                this.hasTotalFile = hasResultsFileUpdatedValue;
+            },
+            error => {
+                console.log(`Couldn't check status of results file: ${error.message}`)
+            }
+        ));
+    }
+
+
 }
