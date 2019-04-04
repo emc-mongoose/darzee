@@ -15,21 +15,21 @@ import { Observable, Subscription } from 'rxjs';
 export class RunStatisticLogsComponent implements OnInit {
 
   // NOTE: Public fields are mostly used within DOM. 
-  public logTabs: BasicTab[] = []; 
-  public displayingLog = ''; 
-  public occuredError: any; 
+  public logTabs: BasicTab[] = [];
+  public displayingLog = '';
+  public occuredError: any;
 
   private processingRunRecord: MongooseRunRecord;
-  private currentDisplayingTabId = 0; 
-  private routeParameters: RouteParams; 
+  private currentDisplayingTabId = 0;
+  private routeParameters: RouteParams;
 
-  private mongooseRunRecord$: Observable<MongooseRunRecord>; 
-  private monitoringApiSubscriptions: Subscription; 
+  private mongooseRunRecord$: Observable<MongooseRunRecord>;
+  private monitoringApiSubscriptions: Subscription;
 
   // MARK: - Lifecycle
 
   constructor(private monitoringApiService: MonitoringApiService,
-    private router: Router, 
+    private router: Router,
     private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -37,31 +37,35 @@ export class RunStatisticLogsComponent implements OnInit {
     this.routeParameters = this.route.parent.params.subscribe(params => {
       console.log("params: ", JSON.stringify(params));
       let targetRecordLoadStepId = params[RouteParams.ID];
-      try { 
+      try {
         this.mongooseRunRecord$ = this.monitoringApiService.getMongooseRunRecordByLoadStepId(targetRecordLoadStepId);
         this.initlogTabs();
-      } catch (recordNotFoundError) { 
+      } catch (recordNotFoundError) {
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
         alert("Unable to load requested record.");
         console.error(recordNotFoundError);
         this.router.navigate([RoutesList.RUNS]);
       }
     });
-    
-    this.monitoringApiSubscriptions = this.mongooseRunRecord$.subscribe(record => { 
-      this.processingRunRecord = record; 
-    })
+
+    this.monitoringApiSubscriptions = this.mongooseRunRecord$.subscribe(
+      record => {
+        this.processingRunRecord = record;
+      },
+      error => {
+        console.error(`Something went wront during filtring Mongoose Run Records by laod step ID: ${error.message}`);
+      })
   }
 
-  ngOnDestroy() { 
-    this.monitoringApiSubscriptions.unsubscribe(); 
+  ngOnDestroy() {
+    this.monitoringApiSubscriptions.unsubscribe();
   }
 
   // MARK: - Public
 
-  changeDisplayingLog(selectedTab: BasicTab) { 
+  changeDisplayingLog(selectedTab: BasicTab) {
     // TODO: Change logic of setting 'active' status to a selected tab.
-    this.logTabs.forEach(tab => { 
+    this.logTabs.forEach(tab => {
       let isSelectedTab = (tab.getName() == selectedTab.getName());
 
       tab.isActive = isSelectedTab ? true : false;
@@ -75,10 +79,10 @@ export class RunStatisticLogsComponent implements OnInit {
     this.occuredError = emptyErrorHtmlValue;
 
     this.monitoringApiService.getLog(this.processingRunRecord.getIdentifier(), logApiEndpoint).subscribe(
-      logs => { 
+      logs => {
         this.displayingLog = logs;
       },
-      error => { 
+      error => {
         var misleadingMessage = "Requested target doesn't seem to exist. Details: ";
         this.displayingLog = misleadingMessage;
         this.occuredError = error.error;
@@ -88,15 +92,15 @@ export class RunStatisticLogsComponent implements OnInit {
 
   // MARK: - Private
 
-  private initlogTabs() { 
+  private initlogTabs() {
     let availableLogNames = this.monitoringApiService.getAvailableLogNames();
-    for (let logName of availableLogNames) { 
+    for (let logName of availableLogNames) {
       let TAB_LINK_MOCK = "/";
       let tab = new BasicTab(logName, TAB_LINK_MOCK);
       this.logTabs.push(tab);
     }
     const initialTab = this.logTabs[this.currentDisplayingTabId];
-    initialTab.isActive = true; 
+    initialTab.isActive = true;
     this.changeDisplayingLog(initialTab);
   }
 }

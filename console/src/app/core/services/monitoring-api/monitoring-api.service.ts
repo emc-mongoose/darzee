@@ -229,10 +229,10 @@ export class MonitoringApiService {
     this.fetchcurrentMongooseRunRecords();
     this.configurateAvailableLogs();
 
-    // NOTE: Adding behavior subject on Mongoose Run Records in order to detect changes within the list. 
-    this.currentMongooseRunRecords$.subscribe(updatedRecordsList => {
-      this.currentMongooseRunRecords = updatedRecordsList;
-    })
+    // // NOTE: Adding behavior subject on Mongoose Run Records in order to detect changes within the list. 
+    // this.currentMongooseRunRecords$.subscribe(updatedRecordsList => {
+    //   this.currentMongooseRunRecords = updatedRecordsList;
+    // })
   }
 
   private configurateAvailableLogs() {
