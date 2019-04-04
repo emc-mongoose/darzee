@@ -32,36 +32,21 @@ export class MonitoringApiService {
 
   // MARK: - Public
 
-  public getStatusForMongooseRecord(record: MongooseRunRecord): Observable<MongooseRunStatus> {
-    let targetRecordLoadStepId = record.getIdentifier();
+  public getStatusForMongooseRecord(targetRecordLoadStepId: String): Observable<MongooseRunStatus> {
     let configLogName = "Config";
     let resultsMetricsFileName = "metrics.threshold.FileTotal";
     const resultNetricsStatus$ = this.getLog(targetRecordLoadStepId, resultsMetricsFileName).pipe(
-      map(results => {
-        record.setResultsAvailabilityStatus(true);
-        return of(true);
-      }),
-      catchError(error => {
-        return of(false);
-      }));
+      map(_ => of(true)),
+      catchError(_ => of(false))
+    );
 
     const configurationFileStatus$ = this.getLog(targetRecordLoadStepId, configLogName).pipe(
-      map(
-        results => {
-          // NOTE: Config is available if any response has been received
-          record.setConfigAvailabilityStatus(true);
-          return of(true);
-        }
-      ),
-      catchError(_ => {
-        record.setConfigAvailabilityStatus(false);
-        return of(false);
-      })
+      map( _ => of(true)),
+      catchError(_ => of(false))
     );
 
     return configurationFileStatus$.pipe(
       mergeMap(hasConfiguration => resultNetricsStatus$.pipe(map(hasResults => {
-        // TODO: Return status here
         if (hasConfiguration && !hasResults) { 
           return MongooseRunStatus.Running;
         }
@@ -82,7 +67,6 @@ export class MonitoringApiService {
         // NOTE: Records are being sorted for order retaining. This ...
         // ... is useful while updating Run Records table. 
         records = this.sortMongooseRecordsByStartTime(records);
-        this.updateStatusForRecords(records); // TODO: DELETE IT 
         return records;
       })
     );
@@ -241,9 +225,6 @@ export class MonitoringApiService {
       let startTimeTag = "start_time";
       let startTime = this.fetchLabelValue(staticRunData, startTimeTag);
 
-      // TODO: get actual status 
-      let statusMock = MongooseRunStatus.All;
-
       let nodesListTag = "nodes_list";
       let nodesList = this.fetchLabelValue(staticRunData, nodesListTag);
 
@@ -259,7 +240,9 @@ export class MonitoringApiService {
       let durationIndex = 1;
       let duration = computedRunData[durationIndex];
 
-      let currentRunRecord = new MongooseRunRecord(loadStepId, statusMock, startTime, nodesList, duration, userComment);
+      const runStatus = this.getStatusForMongooseRecord(loadStepId);
+
+      let currentRunRecord = new MongooseRunRecord(loadStepId, runStatus, startTime, nodesList, duration, userComment);
       runRecords.push(currentRunRecord);
     }
 

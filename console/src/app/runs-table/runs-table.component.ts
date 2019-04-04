@@ -63,55 +63,7 @@ export class RunsTableComponent implements OnInit {
 
   // MARK: - Private 
 
-  private updateSingleRecordStatus(runRecord: MongooseRunRecord) {
-    let recordStatus = runRecord.getStatus();
-    if ((recordStatus == MongooseRunStatus.Finished)) {
-      return;
-    }
 
-    this.statusUpdateSubscription.add(this.monitoringApiService.getStatusForRecord(runRecord).subscribe(
-      status => {
-        let configurationIndex = 0;
-        let finalMetricsIndex = 1;
-
-        let hasReceivedConfiguration = status[configurationIndex] as boolean;
-        runRecord.hasConfig = hasReceivedConfiguration;
-
-        let hasReceivedFinalMetrics = (status[finalMetricsIndex] as boolean);
-        runRecord.hasTotalFile = hasReceivedFinalMetrics;
-      },
-      error => {
-        // NOTE: If an error has occured, set status 'Finished'. 
-        // It could be possible that there's still some records about Mongoose ...
-        // ... run in Prometheus, yet Mongoose image could be reloaded and the data ...
-        // ... could be erased. 
-        console.log("Got error: ", error);
-        let stringPrimitiveType = "string";
-        let isErrorContainingMetricName = ((error instanceof String) || (typeof (error) == stringPrimitiveType));
-        if (!isErrorContainingMetricName) {
-          runRecord.setStatus(MongooseRunStatus.Finished);
-          return;
-        }
-        let requestedMetricName = error;
-        switch (requestedMetricName) {
-          case "Config": {
-            runRecord.hasConfig = false;
-            break;
-          }
-          case "metrics.threshold.FileTotal": {
-            console.log("FileTotal error has been received.");
-            // NOTE: If FileTotal hasn't been found, Mongoose is still running. 
-            runRecord.hasTotalFile = false;
-            break;
-          }
-        }
-        runRecord.updateStatus();
-      },
-      () => {
-        // TODO: Update tabs here 
-        runRecord.updateStatus();
-      }));
-  }
 
   private setInitialRecords(records: MongooseRunRecord[]) {
     // NOTE: Initial set up of run records.
@@ -138,7 +90,7 @@ export class RunsTableComponent implements OnInit {
         console.log("Record won't be updated.");
         continue;
       }
-      this.updateSingleRecordStatus(processingRecord);
+      // this.updateSingleRecordStatus(processingRecord);
     }
     return records;
   }

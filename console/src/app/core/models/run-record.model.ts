@@ -1,6 +1,6 @@
 import { RunDuration } from '../run-duration';
 import { MongooseRunStatus } from '../mongoose-run-status';
-import { BehaviorSubject, Subscription, MonoTypeOperatorFunction, interval } from 'rxjs';
+import { BehaviorSubject, Subscription, MonoTypeOperatorFunction, interval, Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
 import { tap, merge, mapTo, map } from 'rxjs/operators';
 import { MergeMapOperator } from 'rxjs/internal/operators/mergeMap';
@@ -25,16 +25,18 @@ export class MongooseRunRecord implements OnDestroy {
     private hasConfig$: BehaviorSubject<Boolean> = new BehaviorSubject<Boolean>(false);
     private hasResultsFile$: BehaviorSubject<Boolean> = new BehaviorSubject<Boolean>(false);
 
-    private statisticsUpdateStream: any;
-
-    constructor(loadStepId: String, status: MongooseRunStatus, startTime: String, nodes: String[], duration: string, comment: String) {
+    constructor(loadStepId: String, mongooseRunStatus$: Observable<MongooseRunStatus>, startTime: String, nodes: String[], duration: string, comment: String) {
         this.loadStepId = loadStepId;
         this.startTime = startTime;
         this.nodes = nodes;
         this.duration = duration;
         this.comment = comment;
 
-        this.status$.next(status);
+        this.statusSubscription.add(mongooseRunStatus$.subscribe(
+            fetchedStatus => {
+                this.status$.next(fetchedStatus);
+            }
+        ))
         this.configureSubscriptions();
     }
 
@@ -66,6 +68,14 @@ export class MongooseRunRecord implements OnDestroy {
         return (isEmpty ? this.DEFAULT_VALUE : this.comment)
     }
 
+    setConfigAvailabilityStatus(isConfigAvailable: Boolean) {
+        this.hasConfig$.next(isConfigAvailable);
+    }
+
+    setResultsAvailabilityStatus(isResultAvailable: Boolean) {
+        this.hasResultsFile$.next(isResultAvailable);
+    }
+
     getStatus(): MongooseRunStatus {
         return this.currentStatus;
     }
@@ -74,9 +84,7 @@ export class MongooseRunRecord implements OnDestroy {
         this.status$.next(status);
     }
 
-    updateStatus() {
-        this.currentStatus = this.getActualStatus();
-    }
+
 
     getStartTime(): String {
         return this.startTime;
@@ -91,26 +99,6 @@ export class MongooseRunRecord implements OnDestroy {
     }
 
     // MARK: - Private 
-
-    private getActualStatus(): MongooseRunStatus {
-        if ((this.hasConfig == undefined) || (this.hasTotalFile == undefined)) {
-            return MongooseRunStatus.Undefined;
-        }
-
-        if (!this.hasConfig) {
-            return MongooseRunStatus.Unavailable;
-        }
-
-        if (this.hasConfig && this.hasTotalFile) {
-            return MongooseRunStatus.Finished;
-        }
-
-        if (this.hasConfig && !this.hasTotalFile) {
-            return MongooseRunStatus.Running;
-        }
-
-        return MongooseRunStatus.Undefined;;
-    }
 
     private configureSubscriptions() {
 
@@ -141,6 +129,5 @@ export class MongooseRunRecord implements OnDestroy {
             }
         ));
     }
-
 
 }
