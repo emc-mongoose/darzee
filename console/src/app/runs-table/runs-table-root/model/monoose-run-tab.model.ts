@@ -8,15 +8,15 @@ import { map } from "rxjs/operators";
 export class MongooseRunTab implements OnInit, OnDestroy { 
 
     public tabTitle: string;
-    public filtredRecords: MongooseRunRecord[] = [];
     public isSelected: boolean = false; 
-
+    private amountOfRecords: number = 0; 
     private monitoringApiSubscriptions: Subscription;
 
     // MARK: - Lifecycle 
 
-    constructor(private monitoringApiService: MonitoringApiService, status: string) { 
+    constructor(amountOfRecords: number, status: string) { 
         this.tabTitle = status;
+        this.amountOfRecords = amountOfRecords;
     }
 
     ngOnInit(): void { 
@@ -32,7 +32,7 @@ export class MongooseRunTab implements OnInit, OnDestroy {
 
     // NOTE: Tab Tag format is: " *tab title* (*amount of matching tabs*) "
     public getTabTag(): string { 
-        let elementsAmountTag = "(" + this.filtredRecords.length + ")";
+        let elementsAmountTag = "(" + this.amountOfRecords + ")";
         let delimiter = " ";
         return (this.tabTitle + delimiter + elementsAmountTag); 
     }

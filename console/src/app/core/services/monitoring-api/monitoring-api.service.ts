@@ -17,7 +17,6 @@ export class MonitoringApiService {
 
   private readonly MONGOOSE_HTTP_ADDRESS = Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP;
 
-  // private currentMongooseRunRecords: MongooseRunRecord[] = [];
   private currentMongooseRunRecords$: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
 
   // NOTE: availableLogs is a list of logs provided by Mongoose. Key is REST API's endpoint for fetching the log, ...
@@ -33,13 +32,10 @@ export class MonitoringApiService {
 
   // MARK: - Public
 
-  // public getExistingRunRecords(): MongooseRunRecord[] {
-  //   return this.currentMongooseRunRecords;
-  // }
-
   public getCurrentMongooseRunRecords(): Observable<MongooseRunRecord[]> {
     return this.currentMongooseRunRecords$.asObservable().pipe(
       map(records => {
+        console.log("getCurrentMongooseRunRecords");
         // NOTE: Records are being sorted for order retaining. This ...
         // ... is useful while updating Run Records table. 
         records = this.sortMongooseRecordsByStartTime(records);
@@ -48,24 +44,24 @@ export class MonitoringApiService {
     );
   }
 
-  public getMongooseRunRecordsFiltredByStatus(status: string): Observable<MongooseRunRecord[]> { 
+  public getMongooseRunRecordsFiltredByStatus(status: string): Observable<MongooseRunRecord[]> {
     return this.getCurrentMongooseRunRecords().pipe(
-      map(records => { 
-        return this.filterRunfiltredRecordsByStatus(records, status); 
+      map(records => {
+        return this.filterRunfiltredRecordsByStatus(records, status);
       })
     )
   }
 
-  public getMongooseRunRecordByLoadStepId(loadStepId: String): Observable<MongooseRunRecord> { 
+  public getMongooseRunRecordByLoadStepId(loadStepId: String): Observable<MongooseRunRecord> {
     return this.getCurrentMongooseRunRecords().pipe(
-      map(records => { 
-        let record = this.findMongooseRecordByLoadStepId(records, loadStepId); 
-        return record; 
+      map(records => {
+        let record = this.findMongooseRecordByLoadStepId(records, loadStepId);
+        return record;
       },
-      error => { 
-        console.error(`Something went wront during filtring records by status: ${error.message}`);
-      })
-    ); 
+        error => {
+          console.error(`Something went wront during filtring records by status: ${error.message}`);
+        })
+    );
   }
 
   // NOTE: Returning hard-coded metrics name in order to test the UI first.
@@ -139,23 +135,23 @@ export class MonitoringApiService {
     let finalMetricsObservable: Observable<Boolean> = this.getLog(record.getIdentifier(), finalMetricsName);
 
     return forkJoin(
-     initialMetricsObservable.pipe(
-      result => { 
-        return result;
-      },
-      catchError(() => {
-       return throwError(initialMetricsName);
-     })),
+      initialMetricsObservable.pipe(
+        result => {
+          return result;
+        },
+        catchError(() => {
+          return throwError(initialMetricsName);
+        })),
 
-     finalMetricsObservable.pipe(
-       result => { 
-        // console.log("FileTotal metrics result: ", result);
-         return result;
-       },
-       catchError(() => {
-        
-      return throwError(finalMetricsName);
-     }))
+      finalMetricsObservable.pipe(
+        result => {
+          // console.log("FileTotal metrics result: ", result);
+          return result;
+        },
+        catchError(() => {
+
+          return throwError(finalMetricsName);
+        }))
     );
   }
 
@@ -166,10 +162,9 @@ export class MonitoringApiService {
   }
 
   // NOTE: An initial fetch of Mongoose Run Records.
-  public fetchcurrentMongooseRunRecords() {
+  public fetchCurrentMongooseRunRecords() {
     // let mongooseMetricMock = MongooseMetrics.PrometheusM/etrics.DURATION;
     return this.prometheusApiService.getExistingRecordsInfo().subscribe(metricsArray => {
-      // console.log("Every fetched record: ", JSON.stringify(metricsArray));
       var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
       this.currentMongooseRunRecords$.next(fetchedRunRecords);
     })
@@ -237,13 +232,8 @@ export class MonitoringApiService {
 
   // NOTE: Setting up service's observables 
   private setUpService() {
-    this.fetchcurrentMongooseRunRecords();
+    this.fetchCurrentMongooseRunRecords();
     this.configurateAvailableLogs();
-
-    // // NOTE: Adding behavior subject on Mongoose Run Records in order to detect changes within the list. 
-    // this.currentMongooseRunRecords$.subscribe(updatedRecordsList => {
-    //   this.currentMongooseRunRecords = updatedRecordsList;
-    // })
   }
 
   private configurateAvailableLogs() {
@@ -280,16 +270,16 @@ export class MonitoringApiService {
   }
 
   private filterRunfiltredRecordsByStatus(records: MongooseRunRecord[], requiredStatus: string): MongooseRunRecord[] {
-    if (requiredStatus.toString() == MongooseRunStatus.All) { 
-        return records;
+    if (requiredStatus.toString() == MongooseRunStatus.All) {
+      return records;
+    }
+    // NOTE: Iterating over existing tabs, filtring them by 'status' property.
+    var requiredfiltredRecords: MongooseRunRecord[] = [];
+    for (var runRecord of records) {
+      if (runRecord.status == requiredStatus) {
+        requiredfiltredRecords.push(runRecord);
       }
-      // NOTE: Iterating over existing tabs, filtring them by 'status' property.
-      var requiredfiltredRecords: MongooseRunRecord[] = [];
-      for (var runRecord of records) { 
-        if (runRecord.status == requiredStatus) { 
-            requiredfiltredRecords.push(runRecord);
-        }
     }
     return requiredfiltredRecords;
-}
+  }
 }

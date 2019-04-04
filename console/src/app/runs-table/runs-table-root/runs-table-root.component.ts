@@ -98,8 +98,12 @@ export class RunsTableRootComponent implements OnInit {
   private getActiveTabs(): MongooseRunTab[] {
     var updatedTabs: MongooseRunTab[] = [];
     for (let runStatus in MongooseRunStatus) {
-      var runsTab = new MongooseRunTab(this.monitoringApiService, runStatus);
-      updatedTabs.push(runsTab);
+      this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(runStatus).subscribe(
+        filtredRecords => { 
+          var runsTab = new MongooseRunTab(filtredRecords.length, runStatus);
+          updatedTabs.push(runsTab);
+        }
+      )
     }
     return updatedTabs;
   }
