@@ -22,9 +22,9 @@ export class RunsTableRootComponent implements OnInit {
 
   private displayingRunRecords: MongooseRunRecord[] = [];
   private mongooseRecordsSubscription: Subscription = new Subscription(); 
-  private runTableUpdateTimerSunscription: Subscription = new Subscription(); 
 
-  private monitoringApiServiceSubscriptions: Subscription; 
+  private monitoringApiServiceSubscriptions: Subscription = new Subscription(); ; 
+  
   // MARK: - Lifecycle
 
   constructor(private monitoringApiService: MonitoringApiService) { }
@@ -47,7 +47,7 @@ export class RunsTableRootComponent implements OnInit {
 
   ngOnDestroy() { 
     this.mongooseRecordsSubscription.unsubscribe(); 
-    this.runTableUpdateTimerSunscription.unsubscribe();
+    this.monitoringApiServiceSubscriptions.unsubscribe(); 
   }
 
   // MARK: - Public 
@@ -64,7 +64,7 @@ export class RunsTableRootComponent implements OnInit {
     })
   }
 
-  hasSavedRunRecords(): boolean {
+  public hasSavedRunRecords(): boolean {
     return (this.displayingRunRecords.length > 0);
   }
 
