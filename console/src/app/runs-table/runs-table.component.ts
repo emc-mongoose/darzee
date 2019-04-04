@@ -86,10 +86,8 @@ export class RunsTableComponent implements OnInit {
     for (var i = 0; i < records.length; i++) {
       let processingRecord = records[i];
       if (!this.shouldUpdateStatus(processingRecord)) {
-        console.log("Record won't be updated.");
         continue;
       }
-      // this.updateSingleRecordStatus(processingRecord);
     }
     return records;
   }

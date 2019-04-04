@@ -35,10 +35,9 @@ export class RunsTableRootComponent implements OnInit {
     this.monitoringApiService.fetchCurrentMongooseRunRecords(); 
     this.runTabs = this.getActiveTabs();
     this.currentActiveTab = this.runTabs[0];
-    console.log("Current active tab tag: ", this.currentActiveTab.getTabTag());
   }
 
-  
+
   ngOnInit() {
     this.mongooseRecordsSubscription = this.monitoringApiService.getCurrentMongooseRunRecords().subscribe(
       updatedRecords => {

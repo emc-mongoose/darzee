@@ -165,7 +165,6 @@ export class MongooseSetUpService {
 
   private getSlaveNodesFromConfiguration(configuration: any): String[] {
     // NOTE: Retrieving existing slave nodes.
-    console.log("target configuration: " + JSON.stringify(configuration));
     if (!this.isSlaveNodesFieldExistInConfiguration(configuration)) {
       let misleadingMsg = "Unable to find slave nodes field within the Mongoose configuration.";
       alert(misleadingMsg);

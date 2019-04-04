@@ -20,7 +20,6 @@ export class MongooseRunTab implements OnInit, OnDestroy {
     ngOnInit(): void {  }
 
     ngOnDestroy(): void { 
-        console.log("Mongoose run tab on destroy.");
         this.monitoringApiSubscriptions.unsubscribe(); 
     }
 

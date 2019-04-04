@@ -52,7 +52,7 @@ export class ConfigurationEditingComponent implements OnInit {
     this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP).subscribe(
       configuration => { 
         // TODO: Add entred nodes into configuration 
-        console.log("Fetched configuration: ", JSON.stringify(configuration));
+        console.log(`Fetched configuration: ${JSON.stringify(configuration)}`);
         this.mongooseSetUpService.setUnprocessedConfiguration(configuration);
         this.jsonEditorData = this.mongooseSetUpService.getUnprocessedConfiguration();
       },
