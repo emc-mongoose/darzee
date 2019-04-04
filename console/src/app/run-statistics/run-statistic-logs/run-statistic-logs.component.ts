@@ -23,8 +23,7 @@ export class RunStatisticLogsComponent implements OnInit {
   private currentDisplayingTabId = 0;
   private routeParameters: RouteParams;
 
-  private mongooseRunRecord$: Observable<MongooseRunRecord>;
-  private monitoringApiSubscriptions: Subscription;
+  private monitoringApiSubscriptions: Subscription = new Subscription();
 
   // MARK: - Lifecycle
 
@@ -33,32 +32,26 @@ export class RunStatisticLogsComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit() {
+
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.parent.params.subscribe(params => {
-      console.log("params: ", JSON.stringify(params));
       let targetRecordLoadStepId = params[RouteParams.ID];
       try {
-        this.mongooseRunRecord$ = this.monitoringApiService.getMongooseRunRecordByLoadStepId(targetRecordLoadStepId);
+        this.monitoringApiSubscriptions.add(this.monitoringApiService.getMongooseRunRecordByLoadStepId(targetRecordLoadStepId).subscribe(foundRecord => { 
+          this.processingRunRecord  = foundRecord;
+        }));
         this.initlogTabs();
       } catch (recordNotFoundError) {
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
-        alert(`Unable to load requested record. Reason: ${recordNotFoundError.message}`);
+        alert(`Unable to load requested record information. Reason: ${recordNotFoundError.message}`);
         console.error(recordNotFoundError);
         this.router.navigate([RoutesList.RUNS]);
       }
     });
-
-    this.monitoringApiSubscriptions = this.mongooseRunRecord$.subscribe(
-      record => {
-        this.processingRunRecord = record;
-      },
-      error => {
-        console.error(`Something went wront during filtring Mongoose Run Records by laod step ID: ${error.message}`);
-      })
   }
 
   ngOnDestroy() {
-    this.monitoringApiSubscriptions.unsubscribe();
+    this.monitoringApiSubscriptions.unsubscribe(); 
   }
 
   // MARK: - Public
