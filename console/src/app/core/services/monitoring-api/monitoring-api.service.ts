@@ -48,6 +48,14 @@ export class MonitoringApiService {
     );
   }
 
+  public getMongooseRunRecordsFiltredByStatus(status: MongooseRunStatus): Observable<MongooseRunRecord[]> { 
+    return this.getCurrentMongooseRunRecords().pipe(
+      map(records => { 
+        return this.filterRunfiltredRecordsByStatus(records, status); 
+      })
+    )
+  }
+
   public getMongooseRunRecordByLoadStepId(loadStepId: String): Observable<MongooseRunRecord> { 
     return this.getCurrentMongooseRunRecords().pipe(
       map(records => { 
@@ -268,4 +276,17 @@ export class MonitoringApiService {
     return targerRecord;
   }
 
+  private filterRunfiltredRecordsByStatus(records: MongooseRunRecord[], requiredStatus: string): MongooseRunRecord[] {
+    if (requiredStatus.toString() == MongooseRunStatus.All) { 
+        return records;
+      }
+      // NOTE: Iterating over existing tabs, filtring them by 'status' property.
+      var requiredfiltredRecords: MongooseRunRecord[] = [];
+      for (var runRecord of records) { 
+        if (runRecord.status == requiredStatus) { 
+            requiredfiltredRecords.push(runRecord);
+        }
+    }
+    return requiredfiltredRecords;
+}
 }
