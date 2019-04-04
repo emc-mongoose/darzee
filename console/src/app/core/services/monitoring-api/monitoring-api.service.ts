@@ -32,13 +32,6 @@ export class MonitoringApiService {
 
   // MARK: - Public
 
-  private isLogFileExist(loadStepId: String, logName: String): Observable<any> {
-    return this.getLog(loadStepId, logName).pipe(
-      map(hasConfig => hasConfig = of(true)),
-      catchError(hasConfig => hasConfig = of(false))
-    );
-  }
-
   public getStatusForMongooseRecord(targetRecordLoadStepId: String): Observable<MongooseRunStatus> {
     let configLogName = "Config";
     const configurationFileStatus$ = this.isLogFileExist(targetRecordLoadStepId, configLogName);
@@ -310,5 +303,12 @@ export class MonitoringApiService {
       }
     }
     return requiredfiltredRecords;
+  }
+
+  private isLogFileExist(loadStepId: String, logName: String): Observable<any> {
+    return this.getLog(loadStepId, logName).pipe(
+      map(hasConfig => hasConfig = of(true)),
+      catchError(hasConfig => hasConfig = of(false))
+    );
   }
 }
