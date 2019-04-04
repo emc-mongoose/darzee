@@ -32,32 +32,35 @@ export class MonitoringApiService {
 
   // MARK: - Public
 
+  private isLogFileExist(loadStepId: String, logName: String): Observable<any> {
+    return this.getLog(loadStepId, logName).pipe(
+      map(hasConfig => hasConfig = of(true)),
+      catchError(hasConfig => hasConfig = of(false))
+    );
+  }
+
   public getStatusForMongooseRecord(targetRecordLoadStepId: String): Observable<MongooseRunStatus> {
     let configLogName = "Config";
-    let resultsMetricsFileName = "metrics.threshold.FileTotal";
-    const resultNetricsStatus$ = this.getLog(targetRecordLoadStepId, resultsMetricsFileName).pipe(
-      map(_ => of(true)),
-      catchError(_ => of(false))
-    );
+    const configurationFileStatus$ = this.isLogFileExist(targetRecordLoadStepId, configLogName);
 
-    const configurationFileStatus$ = this.getLog(targetRecordLoadStepId, configLogName).pipe(
-      map( _ => of(true)),
-      catchError(_ => of(false))
-    );
+    let resultsMetricsFileName = "metrics.threshold.FileTotal";
+    const resultNetricsStatus$ = this.isLogFileExist(targetRecordLoadStepId, resultsMetricsFileName);
 
     return configurationFileStatus$.pipe(
-      mergeMap(hasConfiguration => resultNetricsStatus$.pipe(map(hasResults => {
-        if (hasConfiguration && !hasResults) { 
-          return MongooseRunStatus.Running;
-        }
-        if (hasConfiguration && hasResults) { 
-          return MongooseRunStatus.Finished;
-        }
-        if (!hasConfiguration && !hasResults) { 
-          return MongooseRunStatus.Unavailable;
-        }
-        return MongooseRunStatus.Undefined; 
-      })))
+      mergeMap(hasConfiguration => resultNetricsStatus$.pipe(
+        map(hasResults => {
+          console.log(`hasConfig: ${hasConfiguration} and hasResult: ${hasResults}`);
+          if (hasConfiguration && !hasResults) {
+            return MongooseRunStatus.Running;
+          }
+          if (hasConfiguration && hasResults) {
+            return MongooseRunStatus.Finished;
+          }
+          if (!hasConfiguration && !hasResults) {
+            return MongooseRunStatus.Unavailable;
+          }
+          return MongooseRunStatus.Undefined;
+        })))
     )
   }
 
