@@ -47,6 +47,7 @@ import { RunsTableRootComponent } from './runs-table/runs-table-root/runs-table-
     RunStatisticsComponent,
     RunStatisticLogsComponent,
     RunStatisticsChartsComponent,
+    DateFormatPipe
     
   ],
   imports: [
