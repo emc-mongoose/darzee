@@ -51,7 +51,7 @@ export class RunsTableRootComponent implements OnInit {
     )
    
     // NOTE: Tab "All" is selected by default. 
-    this.filterRunsByStatus(this.currentActiveTab);
+    this.onStatusTabClick(this.currentActiveTab);
   }
 
   ngOnDestroy() { 
@@ -65,7 +65,7 @@ export class RunsTableRootComponent implements OnInit {
     return this.filtredRecords$.asObservable();
   }
 
-  public filterRunsByStatus(requiredTab: MongooseRunTab) {
+  public onStatusTabClick(requiredTab: MongooseRunTab) {
     // NOTE: I haven't found a better way to set custom background color for bootstrap selected button. 
     // ... so I put a selector "isSelected" and if it's set to 'true', the tab button is highlighted.
     this.runTabs.forEach(tab => {
@@ -84,20 +84,6 @@ export class RunsTableRootComponent implements OnInit {
     console.log("currentActiveTab: ", this.currentActiveTab.getTabTag());
   }
 
-
-  private filterRunfiltredRecordsByStatus(records: MongooseRunRecord[], requiredStatus: string): MongooseRunRecord[] {
-    if (requiredStatus.toString() == MongooseRunStatus.All) { 
-        return records;
-      }
-      // NOTE: Iterating over existing tabs, filtring them by 'status' property.
-      var requiredfiltredRecords: MongooseRunRecord[] = [];
-      for (var runRecord of records) { 
-        if (runRecord.status == requiredStatus) { 
-            requiredfiltredRecords.push(runRecord);
-        }
-    }
-    return requiredfiltredRecords;
-}
 
   public hasSavedRunRecords(): boolean {
     return (this.displayingRunRecords.length > 0);
