@@ -14,6 +14,10 @@ export class MongooseRunStatusIconComponent implements OnInit {
   private readonly BTN_WARNING_TAG = 'btn-warning';
   private readonly BTN_UNAVAILABLE_TAG = 'btn-unavailable';
 
+  private readonly TAG_UNAVAILABLE = 'unavailableTag';
+  private readonly TAG_DETAILS = 'detailsTag';
+  private readonly TAG_RESULTS = 'resultsTag';
+
   @Input() runStatus: MongooseRunStatus = MongooseRunStatus.Running;
   @ViewChild('resultsTag') resultsTag: ElementRef;
 
@@ -46,19 +50,18 @@ export class MongooseRunStatusIconComponent implements OnInit {
   public getStatusTag(): String {
     switch (this.runStatus) {
       case MongooseRunStatus.Unavailable: {
-        return 'unavailableTag';
+        return this.TAG_UNAVAILABLE;
       }
       case MongooseRunStatus.Running: {
-        return 'detailsTag';
+        return this.TAG_DETAILS;
       }
       case MongooseRunStatus.Finished: {
-        return 'resultsTag';
+        return this.TAG_RESULTS;
       }
       default: {
-        return 'unavailableTag';
+        return this.TAG_UNAVAILABLE;
       }
     }
-    return 'unavailableTag';
   }
 
   // MARK: - Private
