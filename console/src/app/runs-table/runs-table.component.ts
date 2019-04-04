@@ -69,13 +69,11 @@ export class RunsTableComponent implements OnInit {
   private setInitialRecords(records: MongooseRunRecord[]) {
     // NOTE: Initial set up of run records.
     this.mongooseRunRecords = records;
-    console.log("Updating status for records..");
     this.mongooseRunRecords = this.updateStatusForRecords(this.mongooseRunRecords);
   }
 
   private shouldUpdateStatus(runRecord: MongooseRunRecord): boolean {
     // NOTE: Updating only available and active mongoose runs. 
-    console.log("runRecord.getStatus(): ", runRecord.getStatus());
     return ((runRecord.getStatus() != MongooseRunStatus.Finished) && (runRecord.getStatus() != MongooseRunStatus.Unavailable));
   }
 
