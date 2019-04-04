@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { MongooseRunRecord } from '../../models/run-record.model';
 import { MongooseRunStatus } from '../../mongoose-run-status';
 import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
-import { Observable, BehaviorSubject, forkJoin, of, throwError } from 'rxjs';
+import { Observable, BehaviorSubject, forkJoin, of, throwError, zip } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseMetrics } from '../mongoose-api-models/MongooseMetrics';
-import { filter, map, catchError } from 'rxjs/operators';
+import { filter, map, mergeMap, catchError } from 'rxjs/operators';
 import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
 
 
@@ -32,12 +32,57 @@ export class MonitoringApiService {
 
   // MARK: - Public
 
+  public getStatusForMongooseRecord(record: MongooseRunRecord): Observable<MongooseRunStatus> {
+    let targetRecordLoadStepId = record.getIdentifier();
+    let configLogName = "Config";
+    let resultsMetricsFileName = "metrics.threshold.FileTotal";
+    const resultNetricsStatus$ = this.getLog(targetRecordLoadStepId, resultsMetricsFileName).pipe(
+      map(results => {
+        record.setResultsAvailabilityStatus(true);
+        return of(true);
+      }),
+      catchError(error => {
+        return of(false);
+      }));
+
+    const configurationFileStatus$ = this.getLog(targetRecordLoadStepId, configLogName).pipe(
+      map(
+        results => {
+          // NOTE: Config is available if any response has been received
+          record.setConfigAvailabilityStatus(true);
+          return of(true);
+        }
+      ),
+      catchError(_ => {
+        record.setConfigAvailabilityStatus(false);
+        return of(false);
+      })
+    );
+
+    return configurationFileStatus$.pipe(
+      mergeMap(hasConfiguration => resultNetricsStatus$.pipe(map(hasResults => {
+        // TODO: Return status here
+        if (hasConfiguration && !hasResults) { 
+          return MongooseRunStatus.Running;
+        }
+        if (hasConfiguration && hasResults) { 
+          return MongooseRunStatus.Finished;
+        }
+        if (!hasConfiguration && !hasResults) { 
+          return MongooseRunStatus.Unavailable;
+        }
+        return MongooseRunStatus.Undefined; 
+      })))
+    )
+  }
+
   public getCurrentMongooseRunRecords(): Observable<MongooseRunRecord[]> {
     return this.currentMongooseRunRecords$.asObservable().pipe(
       map(records => {
         // NOTE: Records are being sorted for order retaining. This ...
         // ... is useful while updating Run Records table. 
         records = this.sortMongooseRecordsByStartTime(records);
+        this.updateStatusForRecords(records); // TODO: DELETE IT 
         return records;
       })
     );
