@@ -7,7 +7,6 @@ export class MongooseRunRecord implements OnDestroy {
 
     private readonly DEFAULT_VALUE = "-";
 
-    public currentStatus: MongooseRunStatus = MongooseRunStatus.Undefined;
     public startTime: String;
     public nodes: String[];
     public comment: String;
@@ -19,6 +18,7 @@ export class MongooseRunRecord implements OnDestroy {
     private duration: string;
     private status$: BehaviorSubject<MongooseRunStatus> = new BehaviorSubject<MongooseRunStatus>(MongooseRunStatus.Undefined); 
     private statusSubscription: Subscription; 
+    private currentStatus: MongooseRunStatus = MongooseRunStatus.Undefined;
 
     constructor(loadStepId: String, status: MongooseRunStatus, startTime: String, nodes: String[], duration: string, comment: String) {
         this.loadStepId = loadStepId;

@@ -274,7 +274,7 @@ export class MonitoringApiService {
     // NOTE: Iterating over existing tabs, filtring them by 'status' property.
     var requiredfiltredRecords: MongooseRunRecord[] = [];
     for (var runRecord of records) {
-      if (runRecord.currentStatus == requiredStatus) {
+      if (runRecord.getStatus() == requiredStatus) {
         requiredfiltredRecords.push(runRecord);
       }
     }
