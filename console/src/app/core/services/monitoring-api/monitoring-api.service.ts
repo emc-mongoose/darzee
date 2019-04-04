@@ -17,6 +17,11 @@ export class MonitoringApiService {
 
   private readonly MONGOOSE_HTTP_ADDRESS = Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP;
 
+  // NOTE: Names of logs-files (according to REST API on 04.04) that are being used to check Mongoose ...
+  // ... run status/ 
+  private readonly INITIAL_CREATED_LOG_FILE_NAME = "Config";
+  private readonly FINAL_CREATED_LOG_FILE_NAME = "metrics.FileTotal";
+
   private currentMongooseRunRecords$: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
 
   // NOTE: availableLogs is a list of logs provided by Mongoose. Key is REST API's endpoint for fetching the log, ...
@@ -33,10 +38,10 @@ export class MonitoringApiService {
   // MARK: - Public
 
   public getStatusForMongooseRecord(targetRecordLoadStepId: String): Observable<MongooseRunStatus> {
-    let configLogName = "Config";
+    let configLogName = this.INITIAL_CREATED_LOG_FILE_NAME;
     const configurationFileStatus$ = this.isLogFileExist(targetRecordLoadStepId, configLogName);
 
-    let resultsMetricsFileName = "metrics.threshold.FileTotal";
+    let resultsMetricsFileName = this.FINAL_CREATED_LOG_FILE_NAME;
     const resultNetricsStatus$ = this.isLogFileExist(targetRecordLoadStepId, resultsMetricsFileName);
 
     return configurationFileStatus$.pipe(
