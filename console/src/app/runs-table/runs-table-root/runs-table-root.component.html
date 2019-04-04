@@ -11,7 +11,7 @@
 
 <div *ngIf="hasSavedRunRecords(); else emptyRecordsAlert">
    <!-- NOTE: Table of Mongoose Run Records with actual information. -->
-   <app-runs-table [mongooseRunRecords]="this.currentActiveTab.getFiltredRecords()" [@slide]="this.displayingRunRecords"></app-runs-table>
+   <app-runs-table [mongooseRunRecords]="this.getDesiredRecords()" [@slide]="this.displayingRunRecords"></app-runs-table>
 </div>
 
 

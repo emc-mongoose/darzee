@@ -48,7 +48,7 @@ export class MonitoringApiService {
     );
   }
 
-  public getMongooseRunRecordsFiltredByStatus(status: MongooseRunStatus): Observable<MongooseRunRecord[]> { 
+  public getMongooseRunRecordsFiltredByStatus(status: string): Observable<MongooseRunRecord[]> { 
     return this.getCurrentMongooseRunRecords().pipe(
       map(records => { 
         return this.filterRunfiltredRecordsByStatus(records, status); 
@@ -61,6 +61,9 @@ export class MonitoringApiService {
       map(records => { 
         let record = this.findMongooseRecordByLoadStepId(records, loadStepId); 
         return record; 
+      },
+      error => { 
+        console.error(`Something went wront during filtring records by status: ${error.message}`);
       })
     ); 
   }

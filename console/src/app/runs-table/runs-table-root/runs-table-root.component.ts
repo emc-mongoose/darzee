@@ -4,7 +4,8 @@ import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
 import { MongooseRunTab } from './model/monoose-run-tab.model';
 import { slideAnimation } from 'src/app/core/animations';
-import { Observable, Subscription, timer } from 'rxjs';
+import { Observable, Subscription, timer, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-runs-table-root',
@@ -19,7 +20,9 @@ export class RunsTableRootComponent implements OnInit {
 
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
   public runTabs: MongooseRunTab[] = [];
-  public currentActiveTab: MongooseRunTab; 
+  public currentActiveTab: MongooseRunTab;
+  
+  public filtredRecords$ = new BehaviorSubject<MongooseRunRecord[]>([]);
 
   private displayingRunRecords: MongooseRunRecord[] = [];
   private mongooseRecordsSubscription: Subscription = new Subscription(); 
@@ -58,6 +61,10 @@ export class RunsTableRootComponent implements OnInit {
 
   // MARK: - Public 
 
+  public getDesiredRecords(): Observable<MongooseRunRecord[]> { 
+    return this.filtredRecords$.asObservable();
+  }
+
   public filterRunsByStatus(requiredTab: MongooseRunTab) {
     // NOTE: I haven't found a better way to set custom background color for bootstrap selected button. 
     // ... so I put a selector "isSelected" and if it's set to 'true', the tab button is highlighted.
@@ -69,8 +76,28 @@ export class RunsTableRootComponent implements OnInit {
       tab.isSelected = false;
     })
     this.currentActiveTab = requiredTab; 
+    this.monitoringApiServiceSubscriptions = this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(requiredTab.tabTitle).subscribe(
+      filtedRecords => { 
+        this.filtredRecords$.next(filtedRecords);
+      }
+    )
     console.log("currentActiveTab: ", this.currentActiveTab.getTabTag());
   }
+
+
+  private filterRunfiltredRecordsByStatus(records: MongooseRunRecord[], requiredStatus: string): MongooseRunRecord[] {
+    if (requiredStatus.toString() == MongooseRunStatus.All) { 
+        return records;
+      }
+      // NOTE: Iterating over existing tabs, filtring them by 'status' property.
+      var requiredfiltredRecords: MongooseRunRecord[] = [];
+      for (var runRecord of records) { 
+        if (runRecord.status == requiredStatus) { 
+            requiredfiltredRecords.push(runRecord);
+        }
+    }
+    return requiredfiltredRecords;
+}
 
   public hasSavedRunRecords(): boolean {
     return (this.displayingRunRecords.length > 0);
@@ -84,8 +111,8 @@ export class RunsTableRootComponent implements OnInit {
 
   private getActiveTabs(): MongooseRunTab[] {
     var updatedTabs: MongooseRunTab[] = [];
-    for (var runStatus in MongooseRunStatus) {
-      var runsTab = new MongooseRunTab(this.monitoringApiService, runStatus.toString());
+    for (let runStatus in MongooseRunStatus) {
+      var runsTab = new MongooseRunTab(this.monitoringApiService, runStatus);
       updatedTabs.push(runsTab);
     }
     return updatedTabs;

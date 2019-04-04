@@ -40,6 +40,7 @@ export class RunsTableComponent implements OnInit {
 
   ngOnInit() {
     this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(updatedRecords => {
+      console.log("runs table component subscribe");
       this.handleRecordsUpdate(updatedRecords);
     });
   }

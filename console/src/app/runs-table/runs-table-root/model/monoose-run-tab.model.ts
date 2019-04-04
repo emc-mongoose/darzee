@@ -12,7 +12,6 @@ export class MongooseRunTab implements OnInit, OnDestroy {
     public isSelected: boolean = false; 
 
     private monitoringApiSubscriptions: Subscription;
-    private filtredRecords$: Observable<MongooseRunRecord[]>; 
 
     // MARK: - Lifecycle 
 
@@ -21,52 +20,21 @@ export class MongooseRunTab implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void { 
-        this.filtredRecords$ = this.monitoringApiService.getCurrentMongooseRunRecords().pipe(
-            map(records => { 
-                return this.filterRunfiltredRecordsByStatus(records, status);
-            })
-        )
-
-        this.monitoringApiSubscriptions = this.filtredRecords$.subscribe(
-            result => { 
-                this.filtredRecords = result; 
-            },
-            error => { 
-                console.error(`Something went wront during filtring records by status: ${error.message}`);
-            }
-        )
+        
     }
 
     ngOnDestroy(): void { 
+        console.log("Mongoose run tab on destroy.");
         this.monitoringApiSubscriptions.unsubscribe(); 
     }
 
     // MARK: - Public
 
-    public getFiltredRecords(): Observable<MongooseRunRecord[]> { 
-        return this.filtredRecords$;
-    }
     // NOTE: Tab Tag format is: " *tab title* (*amount of matching tabs*) "
-    getTabTag(): string { 
+    public getTabTag(): string { 
         let elementsAmountTag = "(" + this.filtredRecords.length + ")";
         let delimiter = " ";
         return (this.tabTitle + delimiter + elementsAmountTag); 
-    }
-
-    // MARK: - Private 
-
-    private filterRunfiltredRecordsByStatus(records: MongooseRunRecord[], requiredStatus: string): MongooseRunRecord[] {
-        if (requiredStatus.toString() == MongooseRunStatus.All) { 
-            return records;
-          }
-          // NOTE: Iterating over existing tabs, filtring them by 'status' property.
-          var requiredfiltredRecords: MongooseRunRecord[] = [];
-          for (var runRecord of records) { 
-            if (runRecord.status == requiredStatus) { 
-                requiredfiltredRecords.push(runRecord);
-            }
-        }
-        return requiredfiltredRecords;
     }
 
 }
