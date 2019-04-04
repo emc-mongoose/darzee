@@ -37,7 +37,7 @@ export class MonitoringApiService {
   //   return this.currentMongooseRunRecords;
   // }
 
-  public getcurrentMongooseRunRecords(): Observable<MongooseRunRecord[]> {
+  public getCurrentMongooseRunRecords(): Observable<MongooseRunRecord[]> {
     return this.currentMongooseRunRecords$.asObservable().pipe(
       map(records => {
         // NOTE: Records are being sorted for order retaining. This ...
@@ -49,7 +49,7 @@ export class MonitoringApiService {
   }
 
   public getMongooseRunRecordByLoadStepId(loadStepId: String): Observable<MongooseRunRecord> { 
-    return this.getcurrentMongooseRunRecords().pipe(
+    return this.getCurrentMongooseRunRecords().pipe(
       map(records => { 
         let record = this.findMongooseRecordByLoadStepId(records, loadStepId); 
         return record; 

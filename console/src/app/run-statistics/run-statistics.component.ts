@@ -58,6 +58,7 @@ export class RunStatisticsComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    this.monitoringApiSubscriptions.unsubscribe(); 
     this.routeParameters.unsubscribe();
   }
 
