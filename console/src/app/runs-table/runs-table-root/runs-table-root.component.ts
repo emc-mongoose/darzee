@@ -19,6 +19,7 @@ export class RunsTableRootComponent implements OnInit {
 
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
   public runTabs: MongooseRunTab[] = [];
+  public currentActiveTab: MongooseRunTab; 
 
   private displayingRunRecords: MongooseRunRecord[] = [];
   private mongooseRecordsSubscription: Subscription = new Subscription(); 
@@ -27,7 +28,12 @@ export class RunsTableRootComponent implements OnInit {
   
   // MARK: - Lifecycle
 
-  constructor(private monitoringApiService: MonitoringApiService) { }
+  constructor(private monitoringApiService: MonitoringApiService) { 
+    this.runTabs = this.getActiveTabs(); 
+    this.currentActiveTab = this.runTabs[0];
+    console.log("Current active tab tag: ", this.currentActiveTab.getTabTag());
+
+  }
 
   ngOnInit() {
     this.mongooseRecordsSubscription = this.monitoringApiService.getCurrentMongooseRunRecords().subscribe( 
@@ -35,14 +41,14 @@ export class RunsTableRootComponent implements OnInit {
         let shouldRefreshPage = this.shouldRefreshPage(this.displayingRunRecords, updatedRecords);
         this.displayingRunRecords = updatedRecords;
         if (shouldRefreshPage) { 
-          this.updateTabs(); 
+          this.runTabs = this.getActiveTabs();
         }
 
       }
     )
-    this.updateTabs();
+   
     // NOTE: Tab "All" is selected by default. 
-    this.filterRunsByStatus(this.runTabs[0]);
+    this.filterRunsByStatus(this.currentActiveTab);
   }
 
   ngOnDestroy() { 
@@ -62,6 +68,8 @@ export class RunsTableRootComponent implements OnInit {
       }
       tab.isSelected = false;
     })
+    this.currentActiveTab = requiredTab; 
+    console.log("currentActiveTab: ", this.currentActiveTab.getTabTag());
   }
 
   public hasSavedRunRecords(): boolean {
@@ -74,13 +82,13 @@ export class RunsTableRootComponent implements OnInit {
 
   // MARK: - Private 
 
-  private updateTabs() {
+  private getActiveTabs(): MongooseRunTab[] {
     var updatedTabs: MongooseRunTab[] = [];
     for (var runStatus in MongooseRunStatus) {
       var runsTab = new MongooseRunTab(this.monitoringApiService, runStatus.toString());
       updatedTabs.push(runsTab);
     }
-    this.runTabs = updatedTabs;
+    return updatedTabs;
   }
 
 

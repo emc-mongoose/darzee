@@ -1,8 +1,9 @@
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
 import { MongooseRunStatus } from "src/app/core/mongoose-run-status";
-import { Subscribable, Subscriber, Subscription } from "rxjs";
+import { Subscribable, Subscriber, Subscription, Observable, of } from "rxjs";
 import { OnInit, OnDestroy } from "@angular/core";
+import { map } from "rxjs/operators";
 
 export class MongooseRunTab implements OnInit, OnDestroy { 
 
@@ -11,6 +12,7 @@ export class MongooseRunTab implements OnInit, OnDestroy {
     public isSelected: boolean = false; 
 
     private monitoringApiSubscriptions: Subscription;
+    private filtredRecords$: Observable<MongooseRunRecord[]>; 
 
     // MARK: - Lifecycle 
 
@@ -19,9 +21,15 @@ export class MongooseRunTab implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void { 
-        this.monitoringApiSubscriptions = this.monitoringApiService.getCurrentMongooseRunRecords().subscribe(
+        this.filtredRecords$ = this.monitoringApiService.getCurrentMongooseRunRecords().pipe(
+            map(records => { 
+                return this.filterRunfiltredRecordsByStatus(records, status);
+            })
+        )
+
+        this.monitoringApiSubscriptions = this.filtredRecords$.subscribe(
             result => { 
-                this.filtredRecords = this.filterRunfiltredRecordsByStatus(result, status);
+                this.filtredRecords = result; 
             },
             error => { 
                 console.error(`Something went wront during filtring records by status: ${error.message}`);
@@ -35,6 +43,9 @@ export class MongooseRunTab implements OnInit, OnDestroy {
 
     // MARK: - Public
 
+    public getFiltredRecords(): Observable<MongooseRunRecord[]> { 
+        return this.filtredRecords$;
+    }
     // NOTE: Tab Tag format is: " *tab title* (*amount of matching tabs*) "
     getTabTag(): string { 
         let elementsAmountTag = "(" + this.filtredRecords.length + ")";

@@ -27,7 +27,7 @@ export class RunsTableComponent implements OnInit {
   ];
 
 
-  @Input("mongooseRunRecords") mongooseRunRecordsObservable: Observable<MongooseRunRecord[]>;
+  @Input("mongooseRunRecords") mongooseRunRecords$: Observable<MongooseRunRecord[]>;
   public mongooseRunRecords: MongooseRunRecord[] = [];
 
   private runRecordsSubscription: Subscription = new Subscription();
@@ -39,7 +39,7 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Lifecycle 
 
   ngOnInit() {
-    this.runRecordsSubscription = this.mongooseRunRecordsObservable.subscribe(updatedRecords => {
+    this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(updatedRecords => {
       this.handleRecordsUpdate(updatedRecords);
     });
   }
@@ -144,26 +144,27 @@ export class RunsTableComponent implements OnInit {
   }
 
   private handleRecordsUpdate(updatedRecords: MongooseRunRecord[]) {
-    if (this.mongooseRunRecords.length == 0) {
-      this.setInitialRecords(updatedRecords);
-      return;
-    }
+    this.mongooseRunRecords = updatedRecords;
+    // if (this.mongooseRunRecords.length == 0) {
+    //   this.setInitialRecords(updatedRecords);
+    //   return;
+    // }
 
-    let shouldUpdateExistingRecords = this.shouldUpdateExistingRecords(updatedRecords);
-    if (!shouldUpdateExistingRecords) {
-      return;
-    }
+    // let shouldUpdateExistingRecords = this.shouldUpdateExistingRecords(updatedRecords);
+    // if (!shouldUpdateExistingRecords) {
+    //   return;
+    // }
 
-    let hasDeletedElements = (this.mongooseRunRecords.length < updatedRecords.length);
-    if (hasDeletedElements) {
-      // NOTE: Deleted elements 
-      this.mongooseRunRecords = this.innerJoinMongooseRecords(this.mongooseRunRecords, updatedRecords);
-    } else {
-      // NOTE: Added elements 
-      this.mongooseRunRecords = this.outerJoinMongooseRecords(this.mongooseRunRecords, updatedRecords);
-    }
+    // let hasDeletedElements = (this.mongooseRunRecords.length < updatedRecords.length);
+    // if (hasDeletedElements) {
+    //   // NOTE: Deleted elements 
+    //   this.mongooseRunRecords = this.innerJoinMongooseRecords(this.mongooseRunRecords, updatedRecords);
+    // } else {
+    //   // NOTE: Added elements 
+    //   this.mongooseRunRecords = this.outerJoinMongooseRecords(this.mongooseRunRecords, updatedRecords);
+    // }
 
-    this.mongooseRunRecords = this.updateStatusForRecords(this.mongooseRunRecords);
+    // this.mongooseRunRecords = this.updateStatusForRecords(this.mongooseRunRecords);
   }
 
   // NOTE: Erasing lhsRecords that are not inside rhsRecords list.
