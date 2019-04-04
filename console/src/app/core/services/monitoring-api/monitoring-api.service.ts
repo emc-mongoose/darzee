@@ -35,7 +35,6 @@ export class MonitoringApiService {
   public getCurrentMongooseRunRecords(): Observable<MongooseRunRecord[]> {
     return this.currentMongooseRunRecords$.asObservable().pipe(
       map(records => {
-        console.log("getCurrentMongooseRunRecords");
         // NOTE: Records are being sorted for order retaining. This ...
         // ... is useful while updating Run Records table. 
         records = this.sortMongooseRecordsByStartTime(records);
@@ -163,7 +162,6 @@ export class MonitoringApiService {
 
   // NOTE: An initial fetch of Mongoose Run Records.
   public fetchCurrentMongooseRunRecords() {
-    // let mongooseMetricMock = MongooseMetrics.PrometheusM/etrics.DURATION;
     return this.prometheusApiService.getExistingRecordsInfo().subscribe(metricsArray => {
       var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
       this.currentMongooseRunRecords$.next(fetchedRunRecords);
@@ -276,7 +274,7 @@ export class MonitoringApiService {
     // NOTE: Iterating over existing tabs, filtring them by 'status' property.
     var requiredfiltredRecords: MongooseRunRecord[] = [];
     for (var runRecord of records) {
-      if (runRecord.status == requiredStatus) {
+      if (runRecord.currentStatus == requiredStatus) {
         requiredfiltredRecords.push(runRecord);
       }
     }

@@ -100,6 +100,7 @@ export class RunsTableRootComponent implements OnInit {
     for (let runStatus in MongooseRunStatus) {
       this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(runStatus).subscribe(
         filtredRecords => { 
+          console.log("filtredRecords subscription"); 
           var runsTab = new MongooseRunTab(filtredRecords.length, runStatus);
           updatedTabs.push(runsTab);
         }

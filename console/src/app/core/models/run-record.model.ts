@@ -1,12 +1,13 @@
 import { RunDuration } from '../run-duration';
 import { MongooseRunStatus } from '../mongoose-run-status';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { OnDestroy } from '@angular/core';
 
-export class MongooseRunRecord {
+export class MongooseRunRecord implements OnDestroy {
 
     private readonly DEFAULT_VALUE = "-";
-    private readonly DEFAULT_STATUS = MongooseRunStatus.All;
 
-    public status: MongooseRunStatus = this.DEFAULT_STATUS;
+    public currentStatus: MongooseRunStatus = MongooseRunStatus.Undefined;
     public startTime: String;
     public nodes: String[];
     public comment: String;
@@ -16,14 +17,29 @@ export class MongooseRunRecord {
 
     private readonly loadStepId: String;
     private duration: string;
+    private status$: BehaviorSubject<MongooseRunStatus> = new BehaviorSubject<MongooseRunStatus>(MongooseRunStatus.Undefined); 
+    private statusSubscription: Subscription; 
 
     constructor(loadStepId: String, status: MongooseRunStatus, startTime: String, nodes: String[], duration: string, comment: String) {
         this.loadStepId = loadStepId;
-        this.status = status;
         this.startTime = startTime;
         this.nodes = nodes;
         this.duration = duration;
         this.comment = comment;
+
+        this.status$.next(status);
+        this.statusSubscription = this.status$.subscribe(
+            newStatus => { 
+                this.currentStatus = newStatus; 
+            },
+            error => { 
+                console.log(`Unable to update status of record with load-step-id ${this.getIdentifier()}. Reason: ${error.message}`);
+            }
+        )
+    }
+
+    ngOnDestroy(): void { 
+        this.statusSubscription.unsubscribe(); 
     }
 
     // MARK: - Public
@@ -51,15 +67,15 @@ export class MongooseRunRecord {
     }
 
     getStatus(): MongooseRunStatus {
-        return this.status;
+        return this.currentStatus;
     }
 
     setStatus(status: MongooseRunStatus) {
-        this.status = status;
+        this.status$.next(status);
     }
 
     updateStatus() {
-        this.status = this.getActualStatus();
+        this.currentStatus = this.getActualStatus();
     }
 
     getStartTime(): String {
@@ -77,8 +93,8 @@ export class MongooseRunRecord {
     // MARK: - Private 
 
     private getActualStatus(): MongooseRunStatus {
-        if ((this.hasConfig == undefined) || (this.hasTotalFile == undefined)) { 
-            return this.DEFAULT_STATUS;
+        if ((this.hasConfig == undefined) || (this.hasTotalFile == undefined)) {
+            return MongooseRunStatus.Undefined;
         }
 
         if (!this.hasConfig) {
@@ -93,6 +109,6 @@ export class MongooseRunRecord {
             return MongooseRunStatus.Running;
         }
 
-        return this.DEFAULT_STATUS;
+        return MongooseRunStatus.Undefined;;
     }
 }
