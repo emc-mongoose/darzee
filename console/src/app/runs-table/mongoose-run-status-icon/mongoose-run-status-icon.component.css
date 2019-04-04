@@ -1,7 +1,13 @@
 /* NOTE: There's 2 classes that are responsible for an animation on hover:
   - 'resultsTag' ID applies on finished Mongoose Run icon;
   - 'detailsTag' ID applies on an unfinished Mongoose Run Icon;
+   - 'unavailableTag' ID applies on an uniavailable Mongoose Run Icon; 
  */
+
+ .btn-unavailable { 
+   background-color: lightgray;
+   border: 0.5px solid black; 
+ }
 
  #detailsTag {
   margin-right: calc(30%);
@@ -41,9 +47,9 @@
   transition: 0.5s;
 }
 
-
 #status-btn:hover #resultsTag:after,
-#status-btn:hover #detailsTag:after {
+#status-btn:hover #detailsTag:after,
+#status-btn:hover #unavailableTag:after {
   opacity: 1;
   right: 0;
 }

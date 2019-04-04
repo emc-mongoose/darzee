@@ -1,66 +1,81 @@
-import { RunDuration } from '../run-duration';
 import { MongooseRunStatus } from '../mongoose-run-status';
+import { BehaviorSubject, Subscription, Observable } from 'rxjs';
+import { OnDestroy } from '@angular/core';
 
-export class MongooseRunRecord {
+export class MongooseRunRecord implements OnDestroy {
 
-    readonly DEFAULT_VALUE = "-";
+    private readonly DEFAULT_VALUE = "-";
 
-    private readonly loadStepId: String;
-    public status: MongooseRunStatus;
     public startTime: String;
     public nodes: String[];
     public comment: String;
+
+    private readonly loadStepId: String;
     private duration: string;
+    private statusSubscription: Subscription = new Subscription();
+    private currentStatus: MongooseRunStatus = MongooseRunStatus.Undefined;
 
+    // MARK: - Lifecycle 
 
-    constructor(loadStepId: String, status: MongooseRunStatus,  startTime: String, nodes: String[],  duration: string, comment: String) { 
+    constructor(loadStepId: String, mongooseRunStatus$: Observable<MongooseRunStatus>, startTime: String, nodes: String[], duration: string, comment: String) {
         this.loadStepId = loadStepId;
-        this.status = status;
         this.startTime = startTime;
         this.nodes = nodes;
         this.duration = duration;
         this.comment = comment;
+
+        this.statusSubscription.add(mongooseRunStatus$.subscribe(
+            fetchedStatus => {
+                this.currentStatus = fetchedStatus;
+            }
+        ))
+    }
+
+    ngOnDestroy(): void {
+        this.statusSubscription.unsubscribe();
     }
 
     // MARK: - Public
-    getDuration(): string { 
-        if (this.duration == "") { 
+
+    public getDuration(): string {
+        if (this.duration == "") {
             return this.DEFAULT_VALUE;
         }
         return this.duration;
     }
 
-    getIdentifier(): String { 
+    public getIdentifier(): String {
         return this.loadStepId;
     }
 
-    getNodesList(): String[] { 
-        if (this.nodes.length == 0) { 
+    public getNodesList(): String[] {
+        if (this.nodes.length == 0) {
             return [this.DEFAULT_VALUE];
         }
         return this.nodes;
     }
 
-    getComment(): String { 
+    public getComment(): String {
         let isEmpty: boolean = (this.comment == "");
-        return (isEmpty ? this. DEFAULT_VALUE : this.comment)
+        return (isEmpty ? this.DEFAULT_VALUE : this.comment)
     }
 
-    getStatus(): MongooseRunStatus { 
-        return this.status;
+    public getStatus(): MongooseRunStatus {
+        return this.currentStatus;
     }
 
-    getStartTime(): String { 
+    public  getStartTime(): String {
         return this.startTime;
     }
 
-    getDuraton(): string { 
-        return this.duration; 
+    public getDuraton(): string {
+        return this.duration;
     }
 
-    setDuration(updatedDuration: string) {
+    public setDuration(updatedDuration: string) {
         this.duration = updatedDuration;
-      } 
+    }
 
     // MARK: - Private 
+
 }

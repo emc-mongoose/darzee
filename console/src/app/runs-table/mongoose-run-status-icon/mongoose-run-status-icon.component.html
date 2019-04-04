@@ -1,6 +1,6 @@
 <button id="status-btn" class="btn" type="button" 
-  [ngClass]="this.isRunningCompleted() ? 'btn-success' : 'btn-warning'">    
-    <span #resultsTag [id]="this.isRunningCompleted() ? 'resultsTag' : 'detailsTag'">
+  [ngClass]="this.getMongooseRunIconClass()">    
+    <span #resultsTag [id]="this.getStatusTag()">
         <ng-content></ng-content> 
     </span>
 </button>

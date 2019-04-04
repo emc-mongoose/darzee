@@ -80,8 +80,6 @@ export class PrometheusApiService {
       console.log(misleadingMsg);
       throw new Error(misleadingMsg);
     }
-    // TODO: Probably change this method since there's too much requests performing each second. 
-    // console.log("[extracting] labelsOfMetric: ", labelsOfMetric);
     return labelsOfMetric;
   }
 }

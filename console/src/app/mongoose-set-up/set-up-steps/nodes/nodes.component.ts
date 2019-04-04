@@ -46,7 +46,7 @@ export class NodesComponent implements OnInit {
     entredIpAddress = entredIpAddress.trim();
 
     if (!entredIpAddress) {
-      console.log("IP hasn't been set up.");
+      console.error("IP hasn't been set up.");
     }
 
     const isIpValid = regExpr.test(entredIpAddress);

@@ -25,6 +25,7 @@ export class RunStatisticsComponent implements OnInit {
   public statisticTabs: BasicTab[] = [];
 
   private routeParameters: any;
+  private monitoringApiSubscriptions: Subscription; 
 
   // MARK: - Lifecycle 
 
@@ -36,9 +37,16 @@ export class RunStatisticsComponent implements OnInit {
   ngOnInit() {
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.params.subscribe(params => {
-      let displayingRecordId = params[RouteParams.ID];
+      let targetRecordLoadStepId = params[RouteParams.ID];
       try { 
-        this.runRecord = this.monitoringApiService.getMongooseRunRecordById(displayingRecordId);
+        this.monitoringApiSubscriptions = this.monitoringApiService.getMongooseRunRecordByLoadStepId(targetRecordLoadStepId).subscribe(
+          foundRecord => { 
+            this.runRecord = foundRecord; 
+          },
+          error => { 
+            console.error(`Unable to display statistics for Mongoose run record with ID ${targetRecordLoadStepId}, reason: ${error.message}`);
+          }
+        )
         this.initTabs();
       } catch (recordNotFoundError) { 
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
@@ -50,6 +58,7 @@ export class RunStatisticsComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    this.monitoringApiSubscriptions.unsubscribe(); 
     this.routeParameters.unsubscribe();
   }
 

@@ -62,16 +62,15 @@ export class ScenariosComponent implements OnInit {
 
   processFile(event) { 
     if (event.target.files.length == 0) {
-      console.log("File hasn't been selected.");
+      console.error("File hasn't been selected.");
       return;
    }
    this.processingFile = event.target.files[0];
      const fileReader = new FileReader();
      fileReader.onload = () => {
-      console.log(fileReader.result);
+      console.log(`Read file content: ${fileReader.result}`);
       this.fileContent = fileReader.result;
       this.setValueForEditor(this.fileContent.toString());
-      // this.service.fileContent = fileReader.result;
     };
     fileReader.readAsText(this.processingFile);
   }
@@ -109,7 +108,7 @@ export class ScenariosComponent implements OnInit {
   private changeTextFieldPlaceholder() { 
     const { doc } = this;
     if (!doc) {
-      console.log("Couldn't connect to code editor."); 
+      console.error("Couldn't connect to code editor."); 
       return; 
     }
     const codeEditorText = doc.getValue(); 

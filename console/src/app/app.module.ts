@@ -8,7 +8,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MongooseRunStatusIconComponent } from './runs-table/mongoose-run-status-icon/mongoose-run-status-icon.component';
-import { RunsTableRootComponent } from './runs-table/runs-table-tabs/runs-table-root.component';
 import { NodesComponent } from './mongoose-set-up/set-up-steps/nodes/nodes.component';
 import { ScenariosComponent } from './mongoose-set-up/set-up-steps/scenarios-set-up/scenarios/scenarios.component';
 import { ConfigurationEditingComponent } from './mongoose-set-up/set-up-steps/configuration-set-up/configuration-editing/configuration-editing.component';
@@ -29,6 +28,7 @@ import { RunStatisticLogsComponent } from './run-statistics/run-statistic-logs/r
 import { RunStatisticsChartsComponent } from './run-statistics/run-statistics-charts/run-statistics-charts.component';
 import { DateFormatPipe } from './common/date-format-pipe';
 import { RunsTableComponent } from './runs-table/runs-table.component';
+import { RunsTableRootComponent } from './runs-table/runs-table-root/runs-table-root.component';
 
 
 @NgModule({
