@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MongooseRunRecord } from '../../models/run-record.model';
 import { MongooseRunStatus } from '../../mongoose-run-status';
 import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
-import { Observable, BehaviorSubject, forkJoin, of, throwError, zip } from 'rxjs';
+import { Observable, BehaviorSubject, forkJoin, of, throwError, zip, timer } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseMetrics } from '../mongoose-api-models/MongooseMetrics';
@@ -291,7 +291,7 @@ export class MonitoringApiService {
     return targerRecord;
   }
 
-  private filterRunfiltredRecordsByStatus(records: MongooseRunRecord[], requiredStatus: string): MongooseRunRecord[] {
+  public filterRunfiltredRecordsByStatus(records: MongooseRunRecord[], requiredStatus: string): MongooseRunRecord[] {
     if (requiredStatus.toString() == MongooseRunStatus.All) {
       return records;
     }

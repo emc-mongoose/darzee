@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { RoutesList } from '../Routing/routes-list';
 import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
 import { timer, Observable, Subscription } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 
 import { MongooseRunStatus } from '../core/mongoose-run-status';
 
@@ -25,7 +24,6 @@ export class RunsTableComponent implements OnInit {
     "Duration",
     "Comment"
   ];
-
 
   @Input("mongooseRunRecords") mongooseRunRecords$: Observable<MongooseRunRecord[]>;
   public mongooseRunRecords: MongooseRunRecord[] = [];
@@ -52,8 +50,7 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Public 
 
   public onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) {
-    let clickedRunStatus = mongooseRunRecord.getStatus();
-    if (clickedRunStatus == MongooseRunStatus.Unavailable) {
+    if (this.isRunStatisticsReachable(mongooseRunRecord)) {
       let misleadingMsg = "Selected Mongoose run info (load step id: " + mongooseRunRecord.getIdentifier() + ") couldn't be found.";
       alert(misleadingMsg);
       return;
@@ -64,6 +61,10 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Private 
 
 
+  private isRunStatisticsReachable(mongooseRunRecord: MongooseRunRecord): boolean {
+    let targetRunStatus = mongooseRunRecord.getStatus()
+    return ((targetRunStatus != MongooseRunStatus.Unavailable) && (targetRunStatus != MongooseRunStatus.Undefined));
+  }
 
   private setInitialRecords(records: MongooseRunRecord[]) {
     // NOTE: Initial set up of run records.
@@ -97,34 +98,10 @@ export class RunsTableComponent implements OnInit {
 
   private handleRecordsUpdate(updatedRecords: MongooseRunRecord[]) {
     this.mongooseRunRecords = updatedRecords;
-    // if (this.mongooseRunRecords.length == 0) {
-    //   this.setInitialRecords(updatedRecords);
-    //   return;
-    // }
-
-    // let shouldUpdateExistingRecords = this.shouldUpdateExistingRecords(updatedRecords);
-    // if (!shouldUpdateExistingRecords) {
-    //   return;
-    // }
-
-    // let hasDeletedElements = (this.mongooseRunRecords.length < updatedRecords.length);
-    // if (hasDeletedElements) {
-    //   // NOTE: Deleted elements 
-    //   this.mongooseRunRecords = this.innerJoinMongooseRecords(this.mongooseRunRecords, updatedRecords);
-    // } else {
-    //   // NOTE: Added elements 
-    //   this.mongooseRunRecords = this.outerJoinMongooseRecords(this.mongooseRunRecords, updatedRecords);
-    // }
-
-    // this.mongooseRunRecords = this.updateStatusForRecords(this.mongooseRunRecords);
   }
 
   // NOTE: Erasing lhsRecords that are not inside rhsRecords list.
   private innerJoinMongooseRecords(lhsRecords: MongooseRunRecord[], rhsRecords: MongooseRunRecord[]): MongooseRunRecord[] {
-    console.log("Updating due to deleted elements.");
-    console.log("lhsRecords.length :", lhsRecords.length);
-    console.log("rhsRecords.length: ", rhsRecords.length);
-
     var recordsListAfterErasing: MongooseRunRecord[] = [];
     // NOTE: Retaining only non-deleted elements. 
     // It's possible since the order retains. 

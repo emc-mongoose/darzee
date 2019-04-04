@@ -15,6 +15,7 @@ export class MongooseRunRecord implements OnDestroy {
     private statusSubscription: Subscription = new Subscription();
     private currentStatus: MongooseRunStatus = MongooseRunStatus.Undefined;
 
+    // MARK: - Lifecycle 
 
     constructor(loadStepId: String, mongooseRunStatus$: Observable<MongooseRunStatus>, startTime: String, nodes: String[], duration: string, comment: String) {
         this.loadStepId = loadStepId;
@@ -35,42 +36,43 @@ export class MongooseRunRecord implements OnDestroy {
     }
 
     // MARK: - Public
-    getDuration(): string {
+
+    public getDuration(): string {
         if (this.duration == "") {
             return this.DEFAULT_VALUE;
         }
         return this.duration;
     }
 
-    getIdentifier(): String {
+    public getIdentifier(): String {
         return this.loadStepId;
     }
 
-    getNodesList(): String[] {
+    public getNodesList(): String[] {
         if (this.nodes.length == 0) {
             return [this.DEFAULT_VALUE];
         }
         return this.nodes;
     }
 
-    getComment(): String {
+    public getComment(): String {
         let isEmpty: boolean = (this.comment == "");
         return (isEmpty ? this.DEFAULT_VALUE : this.comment)
     }
 
-    getStatus(): MongooseRunStatus {
+    public getStatus(): MongooseRunStatus {
         return this.currentStatus;
     }
 
-    getStartTime(): String {
+    public  getStartTime(): String {
         return this.startTime;
     }
 
-    getDuraton(): string {
+    public getDuraton(): string {
         return this.duration;
     }
 
-    setDuration(updatedDuration: string) {
+    public setDuration(updatedDuration: string) {
         this.duration = updatedDuration;
     }
 

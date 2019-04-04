@@ -21,8 +21,7 @@
 }
 
 #resultsTag:after, 
-#detailsTag:after,
-#unavailableTag:afer { 
+#detailsTag:after { 
   font-size: inherit;
   display: inline-block;
   text-align: center;

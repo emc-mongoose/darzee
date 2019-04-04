@@ -23,49 +23,42 @@ export class MongooseRunStatusIconComponent implements OnInit {
 
   // MARK: - Public
 
-  updateStatus(newStatus) {
+  public updateStatus(newStatus) {
     this.runStatus = newStatus;
+    this.ngOnInit();
   }
 
-
-
-  public getMongooseRunIconClass(): String { 
-    if (this.isRunningCompleted()) { 
+  public getMongooseRunIconClass(): String {
+    if (this.isRunningCompleted()) {
       return this.BTN_SUCCESS_TAG;
     }
-    switch (this.runStatus) { 
-      case MongooseRunStatus.Running: { 
+    switch (this.runStatus) {
+      case MongooseRunStatus.Running: {
         return this.BTN_WARNING_TAG;
       }
-      case MongooseRunStatus.Unavailable: { 
+      case MongooseRunStatus.Unavailable: {
         return this.BTN_UNAVAILABLE_TAG;
       }
     }
+    return this.BTN_UNAVAILABLE_TAG;
   }
 
-  onStatusButtonClicked() {
-    console.log("status btn clicked");
-  }
-
-  getStatusTag(): String {
-    let actualTag = 'unavailableTag';
+  public getStatusTag(): String {
     switch (this.runStatus) {
       case MongooseRunStatus.Unavailable: {
-        actualTag = 'unavailableTag';
-        break;
+        return 'unavailableTag';
       }
       case MongooseRunStatus.Running: {
-        actualTag = 'detailsTag';
-        break;
+        return 'detailsTag';
       }
       case MongooseRunStatus.Finished: {
-        actualTag = 'resultsTag';
+        return 'resultsTag';
       }
       default: {
-        actualTag = 'unavailableTag';
+        return 'unavailableTag';
       }
     }
-    return actualTag;
+    return 'unavailableTag';
   }
 
   // MARK: - Private
