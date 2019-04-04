@@ -3,15 +3,16 @@ import { MongooseRunStatus } from '../mongoose-run-status';
 
 export class MongooseRunRecord {
 
-    readonly DEFAULT_VALUE = "-";
+    private readonly DEFAULT_VALUE = "-";
+    private readonly DEFAULT_STATUS = MongooseRunStatus.All;
 
-    public status: MongooseRunStatus = MongooseRunStatus.All;
+    public status: MongooseRunStatus = this.DEFAULT_STATUS;
     public startTime: String;
     public nodes: String[];
     public comment: String;
 
-    public hasConfig: boolean = false;
-    public hasTotalFile: boolean = false;
+    public hasConfig: boolean = undefined;
+    public hasTotalFile: boolean = undefined;
 
     private readonly loadStepId: String;
     private duration: string;
@@ -50,28 +51,15 @@ export class MongooseRunRecord {
     }
 
     getStatus(): MongooseRunStatus {
-        return this.status; 
+        return this.status;
     }
 
     setStatus(status: MongooseRunStatus) {
         this.status = status;
     }
 
-    updateStatus() { 
-        let targetStatus = MongooseRunStatus.All; 
-    
-        if (this.hasConfig && this.hasTotalFile) {
-            targetStatus = MongooseRunStatus.Finished;
-        }
-
-        if (this.hasConfig && !this.hasTotalFile) {
-            targetStatus = MongooseRunStatus.Running;
-        }
-
-        if (!this.hasConfig) {
-            targetStatus = MongooseRunStatus.Unavailable;
-        }
-        this.status = targetStatus; 
+    updateStatus() {
+        this.status = this.getActualStatus();
     }
 
     getStartTime(): String {
@@ -87,4 +75,24 @@ export class MongooseRunRecord {
     }
 
     // MARK: - Private 
+
+    private getActualStatus(): MongooseRunStatus {
+        if ((this.hasConfig == undefined) || (this.hasTotalFile == undefined)) { 
+            return this.DEFAULT_STATUS;
+        }
+
+        if (!this.hasConfig) {
+            return MongooseRunStatus.Unavailable;
+        }
+
+        if (this.hasConfig && this.hasTotalFile) {
+            return MongooseRunStatus.Finished;
+        }
+
+        if (this.hasConfig && !this.hasTotalFile) {
+            return MongooseRunStatus.Running;
+        }
+
+        return this.DEFAULT_STATUS;
+    }
 }
