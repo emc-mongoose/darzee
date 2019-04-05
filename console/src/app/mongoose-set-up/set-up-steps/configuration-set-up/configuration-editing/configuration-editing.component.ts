@@ -25,9 +25,6 @@ export class ConfigurationEditingComponent implements OnInit {
   // ... sing to compare edited and current values of JSON 
   public currentJsonEditorData: any; 
   
-  // Component properties 
-
-  public hasJsonEdited: Boolean = false
 
 
   constructor(private controlApiService: ControlApiService,
@@ -82,19 +79,6 @@ export class ConfigurationEditingComponent implements OnInit {
     // ... this.jsonEditorOptions.navigationBar = false;
     // ... this.jsonEditorOptions.search = false;
 
-  }
-
-  // NOTE: Callback which is observing whether the JSON value has been updated from editor
-  public onJsonUpdated(editedJson) { 
-    this.hasJsonEdited = !(editedJson === this.currentJsonEditorData);
-    this.hasJsonEdited ? this.mongooseSetUpService.setUnprocessedConfiguration(editedJson) : console.log("Nothing to be applied.");
-  }
-
-
-  onApplyButtonClicked() { 
-    this.controlApiService.runMongoose(this.currentJsonEditorData);
-    alert("New configuration has been applied.");
-    this.hasJsonEdited = false;
   }
 
 }

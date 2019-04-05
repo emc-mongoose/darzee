@@ -2,12 +2,3 @@
 <div class="scenarios-json-wrapper">
     <json-editor [options]="jsonEditorOptions" [data]="jsonEditorData" (change)="onJsonUpdated($event)"></json-editor>
 </div>
-
-<div *ngIf="hasJsonEdited">
-    <button class="apply-new-value-button" (click)="onApplyButtonClicked()">
-        <div class="apply-button-content-wrppaer">
-            <p class="apply-new-value-title">Apply  </p>
-            <img src="assets/icons/icon-refresh.svg">
-        </div>
-      </button>
-</div>
