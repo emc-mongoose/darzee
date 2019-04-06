@@ -28,7 +28,7 @@ export class NodesComponent implements OnInit {
 
   ngOnInit() {
     this.displayingIpAddresses = this.mongooseSetUpService.getSlaveNodesList();
-    this.slaveNodesSubscription = this.mongooseSetUpService.getObservableSlaveNodes().subscribe(nodes => { 
+    this.slaveNodesSubscription = this.mongooseSetUpService.getSlaveNodes().subscribe(nodes => { 
       this.displayingIpAddresses = nodes;
       console.log("Observable salve nodes: " + nodes);
     })

@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { MongooseSetupInfoModel } from './mongoose-set-up-info.model';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Constants } from 'src/app/common/constants';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, config } from 'rxjs';
 import { DateFormatPipe } from 'src/app/common/date-format-pipe';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -17,18 +19,26 @@ export class MongooseSetUpService {
   // ... Passing them by reference (object-type), the UI will be updated automatically.
   unprocessedScenario: String;
 
-  private observableSlaveNodes: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]);
+  private slaveNodes$: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]);
   private unprocessedConfiguration: Object;
 
-  constructor(private controlApiService: ControlApiService,
-    private dateFormatPipe: DateFormatPipe) {
+  // NOTE: We're using Volume to bind Prometheus configuration within UI container and ...
+  // ... inside the Prometheus container. It's being used to edit targets based on selected run nodes. 
+  private prometheusConfigurationFile: File = null;
 
-    this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.observableSlaveNodes);
+  constructor(private controlApiService: ControlApiService,
+    private http: HttpClient,
+    private dateFormatPipe: DateFormatPipe) {
+      console.log("alalal");
+
+
+    this.getPrometheusConfiguration();
+    this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.slaveNodes$);
     this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
       .subscribe((configuration: any) => {
         this.mongooseSetupInfoModel.configuration = configuration;
         this.mongooseSetupInfoModel.nodesData = this.getSlaveNodesFromConfiguration(configuration);
-        this.observableSlaveNodes.next(this.mongooseSetupInfoModel.nodesData);
+        this.slaveNodes$.next(this.mongooseSetupInfoModel.nodesData);
       });
   }
 
@@ -39,8 +49,8 @@ export class MongooseSetUpService {
     return this.mongooseSetupInfoModel.getTargetRunPort();
   }
 
-  public getObservableSlaveNodes(): Observable<String[]> {
-    return this.observableSlaveNodes.asObservable();
+  public getSlaveNodes(): Observable<String[]> {
+    return this.slaveNodes$.asObservable();
   }
 
   public setConfiguration(configuration: Object) {
@@ -52,7 +62,7 @@ export class MongooseSetUpService {
   }
 
   public setNodesData(data: String[]) {
-    this.observableSlaveNodes.next(data);
+    this.slaveNodes$.next(data);
     this.mongooseSetupInfoModel.nodesData = data;
   }
 
@@ -82,7 +92,7 @@ export class MongooseSetUpService {
   }
 
   public getSlaveNodesList(): String[] {
-    var slaveNodesList: String[] = this.observableSlaveNodes.getValue();
+    var slaveNodesList: String[] = this.slaveNodes$.getValue();
     slaveNodesList.concat(this.mongooseSetupInfoModel.nodesData);
     return slaveNodesList;
   }
@@ -95,17 +105,17 @@ export class MongooseSetUpService {
       alert("IP " + ip + " has already been added to the slave-nodes list.");
       return;
     }
-    const currentSlaveNodesList = this.observableSlaveNodes.getValue();
+    const currentSlaveNodesList = this.slaveNodes$.getValue();
     currentSlaveNodesList.push(ip);
-    this.observableSlaveNodes.next(currentSlaveNodesList);
+    this.slaveNodes$.next(currentSlaveNodesList);
   }
 
   public deleteSlaveNode(nodeAddress: String) {
     // NOTE: Retaining IP addresses that doesn't match deleting IP. 
-    const filtredNodesList = this.observableSlaveNodes.getValue().filter(ipAddress => {
+    const filtredNodesList = this.slaveNodes$.getValue().filter(ipAddress => {
       nodeAddress != ipAddress;
     });
-    this.observableSlaveNodes.next(filtredNodesList);
+    this.slaveNodes$.next(filtredNodesList);
   }
 
   // NOTE: Confirmation methods are used to validate the parameters which were set via "set" methods.
@@ -127,7 +137,7 @@ export class MongooseSetUpService {
   }
 
   public confirmNodeConfiguration() {
-    this.setNodesData(this.observableSlaveNodes.getValue());
+    this.setNodesData(this.slaveNodes$.getValue());
   }
 
   public runMongoose(): Observable<String> {
@@ -157,7 +167,7 @@ export class MongooseSetUpService {
 
   private isIpExist(ip: String): boolean {
     // NOTE: Prevent addition of duplicate IPs
-    const isIpInUnprocessedList: boolean = this.observableSlaveNodes.getValue().includes(ip);
+    const isIpInUnprocessedList: boolean = this.slaveNodes$.getValue().includes(ip);
     const isIpInConfiguration: boolean = this.mongooseSetupInfoModel.nodesData.includes(ip);
     return ((isIpInUnprocessedList) || (isIpInConfiguration));
   }
@@ -184,4 +194,10 @@ export class MongooseSetUpService {
       (configuration.load.step.node.addrs == undefined));
   }
 
+  private getPrometheusConfiguration() {
+    this.http.get(environment.prometheusConfigPath).subscribe(configurationFileContent => {
+      console.log(`File content for configuration on path ${environment.prometheusConfigPath} is : ${JSON.stringify(configurationFileContent)}`);
+    })
+
+  }
 }
