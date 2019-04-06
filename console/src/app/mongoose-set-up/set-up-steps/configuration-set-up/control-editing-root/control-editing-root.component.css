@@ -17,35 +17,3 @@
 .app-configuration-editing { 
     float: left;
 }
-
-.start-button { 
-
-    /* Configuring "Start" button position */
-
-    bottom: 0;
-    display: flex;
-    justify-content: flex-end;
-    float: right;
-
-
-    /* Configuring "Start" button appearence */
-    bottom: 20px;
-    border: none;
-    right: 20px;
-    height: 40px;
-    width: 60px;
-    border-radius: 10px; 
-    text-align: center; 
-    font-style: normal; 
-    font-size: 14px; 
-    outline: none;
-
-    color: #FFFFFF; 
-    font-family: Quicksand; 
-    font-weight: bold; 
-    background: #5CB85C;    
-}
-
-.start-button:hover { 
-    background: rgb(100, 201, 100);    
-}
