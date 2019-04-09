@@ -35,6 +35,7 @@ export class NodesComponent implements OnInit {
   }
 
   ngOnDestroy() { 
+    this.onConfirmNodesConfigurationClicked(); 
     this.slaveNodesSubscription.unsubscribe(); 
   }
 
