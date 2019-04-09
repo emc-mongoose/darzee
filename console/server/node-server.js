@@ -68,8 +68,13 @@ app.post('/savefile', function (req, res) {
             return console.log(error);
         }
         let misleadingMessage = "File has been sccessfully saved.";
-        res.send(misleadingMessage);
         console.log(misleadingMessage);
+        response = {
+            file: fileName,
+            hasSavedSuccessfully: true
+        }
+        res.send(response);
+
     }); 
 });
 
