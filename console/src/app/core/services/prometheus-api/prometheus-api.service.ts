@@ -32,7 +32,7 @@ export class PrometheusApiService {
 
   public reloadPrometheus(): Observable<any> { 
     let reloadEndpoint = "reload"; 
-    return this.httpClient.post(`${this.API_BASE}/-/${reloadEndpoint}`, Constants.Http.EMPTY_POST_REQUEST_HEADERS); 
+    return this.httpClient.post(`${ Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP}/-/${reloadEndpoint}`, Constants.Http.EMPTY_POST_REQUEST_HEADERS); 
   }
 
   public getDataForMetric(metric: String): Observable<any> {

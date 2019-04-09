@@ -213,7 +213,6 @@ export class MongooseSetUpService {
         console.log(`Container server response on file save: ${JSON.stringify(response)}`);
         
         // NOTE: Reloading Prometheus with new configuration.
-        console.log("Prometheus will be reloaded.");
         this.prometheusApiService.reloadPrometheus().subscribe(prometheusReloadResult => { 
           console.log(`Prometheus has been reloaded. Message: ${prometheusReloadResult}`)
         })

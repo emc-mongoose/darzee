@@ -49,7 +49,7 @@ export namespace Constants {
         };
 
         static readonly EMPTY_POST_REQUEST_HEADERS = { 
-            headers: new HttpHeaders({ 'Content-Type': '0' })
+            headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' })
         }
 
         static readonly HTTP_PREFIX = "http://";
