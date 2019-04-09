@@ -1,9 +1,11 @@
 const MONGOOSE_CONSOLE_DEFAULT_PORT = 8080;
+const PROMETHEUS_DEFAULT_PORT = 9090;
+
 const PROMETHEUS_DEFAULT_CONFIGURATION_PATH = '/configuration/prometheus.yml';
 
 const CONFIGURATION_DIRECTORY_NAME = "configuration";
 
-const PROMETHEUS_CONFIGURATION_FILENAME = "prometeus"; 
+const PROMETHEUS_CONFIGURATION_FILENAME = "prometeus";
 const PROMETHEUS_CONFIGURATION_EXTENSION = ".yml";
 
 var express = require('express');
@@ -12,6 +14,7 @@ var fs = require('fs');
 var cors = require('cors');
 // NOTE: ShellJS is being used to create full path directories. 
 var shell = require('shelljs');
+const axios = require('axios') // NOTE: Axios is used to perform HTTP requests 
 
 
 var app = express();
@@ -21,6 +24,7 @@ var path = __dirname + '';
 // NOTE: Fetching environment variables' values 
 var port = process.env.CONSOLE_PORT || MONGOOSE_CONSOLE_DEFAULT_PORT;
 var prometheusConfigurationPath = process.env.PROMETHEUS_CONFIGURATION_PATH || PROMETHEUS_DEFAULT_CONFIGURATION_PATH;
+var prometheusPort = process.env.PROMETHEUS_PORT || PROMETHEUS_DEFAULT_PORT;
 
 app.use(express.static(path));
 app.use(bodyParser.json()); // NOTE: Supporting JSON-encoded bodies 
@@ -31,7 +35,7 @@ app.options('*', cors());
 
 // NOTE: Configurating server to serve index.html since during the production ...
 // build Angular converts its html's to only one file.
-app.get('*', function(req, res) {
+app.get('*', function (req, res) {
     res.sendFile(path + '/index.html');
 });
 
@@ -42,7 +46,7 @@ app.post('/savefile', function (req, res) {
     console.log(`Processing file with path: ${creatingFilePath}`);
 
     // NOTE: Save Prometheus' configuration to its specified path.
-    if (fileName == (PROMETHEUS_CONFIGURATION_FILENAME + PROMETHEUS_CONFIGURATION_EXTENSION)) { 
+    if (fileName == (PROMETHEUS_CONFIGURATION_FILENAME + PROMETHEUS_CONFIGURATION_EXTENSION)) {
         creatingFilePath = prometheusConfigurationPath;
     }
 
@@ -56,13 +60,13 @@ app.post('/savefile', function (req, res) {
         shell.cd(configurationDirectoryPath);
     }
 
-    var fileWriteFlag = ""; 
+    var fileWriteFlag = "";
     if (!fs.existsSync(creatingFilePath)) {
         // NOTE: Creating file if it doesn't exist. 
-        fileWriteFlag = { flag: 'wx' };  
-    } 
+        fileWriteFlag = { flag: 'wx' };
+    }
 
-    fs.writeFile(creatingFilePath, fileContent, fileWriteFlag, function(error) {
+    fs.writeFile(creatingFilePath, fileContent, fileWriteFlag, function (error) {
         if (error) {
             res.send(error);
             return console.log(error);
@@ -75,7 +79,18 @@ app.post('/savefile', function (req, res) {
         }
         res.send(response);
 
-    }); 
+        // NOTE: Reloading Prometheus once new configuration has been created.
+        axios.post(`http://localhost:${prometheusPort}/-/reload`, {})
+        .then((prometheusResponse) => {
+            console.log(`statusCode: ${prometheusResponse.statusCode}`)
+            console.log(prometheusResponse)
+        })
+        .catch((prometheusError) => {
+            console.error(prometheusError)
+        })
+    });
+
+   
 });
 
 app.listen(port);
