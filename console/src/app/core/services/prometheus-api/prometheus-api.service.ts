@@ -30,6 +30,11 @@ export class PrometheusApiService {
     );
   }
 
+  public reloadPrometheus(): Observable<any> { 
+    let reloadEndpoint = "reload"; 
+    return this.httpClient.post(`${Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP}/-/${reloadEndpoint}`, Constants.Http.EMPTY_POST_REQUEST_HEADERS); 
+  }
+
   public getDataForMetric(metric: String): Observable<any> {
     return this.runQuery(metric);
   }
@@ -82,4 +87,5 @@ export class PrometheusApiService {
     }
     return labelsOfMetric;
   }
+
 }

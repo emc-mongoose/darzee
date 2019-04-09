@@ -5,7 +5,8 @@ export namespace Constants {
     // NOTE: Default filenames for files saved via UI
     export class FileNames {
         static readonly SCENARIO_FILE_NAME = "scenario_dummy";
-        static readonly CUSTOM_CONFIGURATION_FILENAME = "aggregated_defaults"
+        static readonly CUSTOM_CONFIGURATION_FILENAME = "aggregated_defaults";
+        static readonly PROMETHEUS_CONFIGURATION = "prometheus";
     }
 
     export class Alerts {
@@ -33,6 +34,8 @@ export namespace Constants {
         // TODO: read port from .env file 
         static readonly PROMETHEUS_PORT = 9090;
         static readonly PROMETHEUS_IP = "localhost:" + Configuration.PROMETHEUS_PORT;
+
+        static readonly CONTAINER_SERVER_PORT = 8080; 
     }
 
     export class Http {
@@ -44,6 +47,10 @@ export namespace Constants {
         static readonly UNSTRUCTURED_DATA_TYPE = {
             headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' })
         };
+
+        static readonly EMPTY_POST_REQUEST_HEADERS = { 
+            headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' })
+        }
 
         static readonly HTTP_PREFIX = "http://";
     }

@@ -3,6 +3,7 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { Constants } from 'src/app/common/constants';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { MongooseSetUpService } from 'src/app/mongoose-set-up/mongoose-set-up-service/mongoose-set-up.service';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -23,11 +24,9 @@ export class ConfigurationEditingComponent implements OnInit {
   public jsonEditorData: any = "";
   // currentJsonEditorData is data which was modified from the UI. It's ...
   // ... sing to compare edited and current values of JSON 
-  public currentJsonEditorData: any; 
-  
-  // Component properties 
+  public currentJsonEditorData: any;
 
-  public hasJsonEdited: Boolean = false
+  private monitoringApiSubscriptions: Subscription = new Subscription();
 
 
   constructor(private controlApiService: ControlApiService,
@@ -37,34 +36,35 @@ export class ConfigurationEditingComponent implements OnInit {
   }
 
   // MARK: - Lifecycle 
-  
-  ngOnInit() {}
 
-  ngOnDestroy() { 
+  ngOnInit() { }
+
+  ngOnDestroy() {
     console.log("Destroying configuration component. Saved configuration: " + JSON.stringify(this.jsonEditorData));
-     // NOTE: Saving up an ubcomfirmed configuration in order to let user edit it later if he'd like to. 
+    // NOTE: Saving up an ubcomfirmed configuration in order to let user edit it later if he'd like to. 
     this.mongooseSetUpService.setUnprocessedConfiguration(this.currentJsonEditorData);
+    this.monitoringApiSubscriptions.unsubscribe(); 
   }
 
   // NOTE: Private methods
 
-  private fetchConfigurationFromMongoose() { 
-    this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP).subscribe(
-      configuration => { 
+  private fetchConfigurationFromMongoose() {
+    this.monitoringApiSubscriptions.add(this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP).subscribe(
+      configuration => {
         // TODO: Add entred nodes into configuration 
         console.log(`Fetched configuration: ${JSON.stringify(configuration)}`);
         this.mongooseSetUpService.setUnprocessedConfiguration(configuration);
         this.jsonEditorData = this.mongooseSetUpService.getUnprocessedConfiguration();
       },
-      error => { 
+      error => {
         // TODO: Hadnel error correctly. Maybe retry fetching the configuration? 
         const misleadingMsg = Constants.Alerts.SERVER_DATA_NOT_AVALIABLE;
         alert(misleadingMsg);
       }
-    )
+    ));
 
   }
-  
+
   private configureJsonEditor() {
     this.jsonEditorOptions = new JsonEditorOptions()
 
@@ -74,27 +74,14 @@ export class ConfigurationEditingComponent implements OnInit {
     // ... this.editorOptions.schema = schema; - it'd customize the displaying of JSON editor 
     this.jsonEditorOptions.modes = ['code', 'text', 'tree', 'view']; // set all allowed modes
 
-    this.currentJsonEditorData = this.jsonEditorData; 
-   
+    this.currentJsonEditorData = this.jsonEditorData;
+
     // NOTE: You could also configure JSON Editor's nav bar tools using the view child's fields.
     // ... example:
     // ... this.jsonEditorOptions.statusBar = false;
     // ... this.jsonEditorOptions.navigationBar = false;
     // ... this.jsonEditorOptions.search = false;
 
-  }
-
-  // NOTE: Callback which is observing whether the JSON value has been updated from editor
-  public onJsonUpdated(editedJson) { 
-    this.hasJsonEdited = !(editedJson === this.currentJsonEditorData);
-    this.hasJsonEdited ? this.mongooseSetUpService.setUnprocessedConfiguration(editedJson) : console.log("Nothing to be applied.");
-  }
-
-
-  onApplyButtonClicked() { 
-    this.controlApiService.runMongoose(this.currentJsonEditorData);
-    alert("New configuration has been applied.");
-    this.hasJsonEdited = false;
   }
 
 }

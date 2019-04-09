@@ -28,7 +28,7 @@ export class MongooseRunRecord implements OnDestroy {
             fetchedStatus => {
                 this.currentStatus = fetchedStatus;
             }
-        ))
+        ));
     }
 
     ngOnDestroy(): void {

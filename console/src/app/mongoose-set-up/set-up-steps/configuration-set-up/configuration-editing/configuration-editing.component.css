@@ -7,6 +7,7 @@
     margin-top: 50px;
     margin-left: 40px;
 }
+
 .scenarios-json-wrapper { 
     position: static;
     width: 100%;
@@ -28,37 +29,4 @@
     max-height: 40vh;
     width: 40vh;
     font-size: 12px;
-}
-
-.apply-new-value-button p { 
-    float: left;
-    font-size: 10px;
-}
-
-.apply-new-value-button img { 
-    float: right;
-}
-
-.apply-button-content-wrppaer { 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-   
-}
-.apply-new-value-button { 
-    background: #BDBDBD;
-    border: none;
-    outline: none;
-    transition: 0.2s;
-
-}
-
-.apply-button-content-wrppaer:focus {
-    background-color: green;
-    transition: 0.2s;
-}
-
-
-.apply-new-value-button:hover { 
-    background: rgb(156, 156, 156);
 }
