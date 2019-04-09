@@ -31,7 +31,7 @@ export class MongooseSetUpService {
     private http: HttpClient,
     private dateFormatPipe: DateFormatPipe) {
 
-    this.getPrometheusConfiguration();
+    this.fetchPrometheusConfiguration();
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.slaveNodes$);
     this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
       .subscribe((configuration: any) => {
@@ -70,6 +70,12 @@ export class MongooseSetUpService {
   }
 
   public getUnprocessedConfiguration(): Object {
+
+    if (!this.isSlaveNodesFieldExistInConfiguration(this.unprocessedConfiguration)) {
+      let misleadingMsg = "Unable to find slave nodes within the confguration ('addrs' field).";
+      throw new Error(misleadingMsg);
+    }
+
     if (this.mongooseSetupInfoModel.nodesData.length == 0) {
       console.log("No additional nodes have been added.");
       return this.unprocessedConfiguration;
@@ -77,10 +83,6 @@ export class MongooseSetUpService {
 
     try {
       let targetConfiguration: any = this.unprocessedConfiguration;
-      if (!this.isSlaveNodesFieldExistInConfiguration(targetConfiguration)) {
-        let misleadingMsg = "Unable to find slave nodes within the confguration ('addrs' field).";
-        throw new Error(misleadingMsg);
-      }
       targetConfiguration.load.step.node.addrs = this.mongooseSetupInfoModel.nodesData;
       this.unprocessedConfiguration = targetConfiguration;
     } catch (error) {
@@ -140,6 +142,8 @@ export class MongooseSetUpService {
   }
 
   public runMongoose(): Observable<String> {
+    console.log(`Nodes data: ${this.mongooseSetupInfoModel.nodesData}`);
+
     try {
       if (!this.mongooseSetupInfoModel.hasLoadStepId()) {
         let generatedLoadStepId = this.getGeneratedLoadStepId();
@@ -193,19 +197,13 @@ export class MongooseSetUpService {
       (configuration.load.step.node.addrs == undefined));
   }
 
-  private getPrometheusConfiguration() {
+  private fetchPrometheusConfiguration() {
+    // NOTE: An initial fetch of Prometheus configuration.
     this.http.get(environment.prometheusConfigPath, { responseType: 'text' }).subscribe((configurationFileContent: Object) => {
       console.log(`File content for configuration on path ${environment.prometheusConfigPath} is : ${configurationFileContent}`);
       let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
-      var UPDATED_TARGETS_MOCK: String[] = [];
-      UPDATED_TARGETS_MOCK.push("localhost:9999");
-      UPDATED_TARGETS_MOCK.push("localhost:1029");
-      UPDATED_TARGETS_MOCK.push("localhost:3029");
-      UPDATED_TARGETS_MOCK.push("localhost:1529");
-
-      console.log(`Nodes data: ${this.mongooseSetupInfoModel.nodesData}`);
-
-      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(UPDATED_TARGETS_MOCK);  
+      
+      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(this.mongooseSetupInfoModel.nodesData);  
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
       this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => { 
