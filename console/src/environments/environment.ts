@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  prometheusConfigPath: 'configuration/prometheus.yml'
+  prometheusConfigPath: '/assets/configuration-examples/prometheus/prometheus.yml'
 };
 
 /*
