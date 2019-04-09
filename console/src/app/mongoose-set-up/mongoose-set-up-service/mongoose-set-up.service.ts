@@ -31,7 +31,7 @@ export class MongooseSetUpService {
     private http: HttpClient,
     private dateFormatPipe: DateFormatPipe) {
 
-    this.fetchPrometheusConfiguration();
+    this.updatePrometheusConfiguration();
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.slaveNodes$);
     this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
       .subscribe((configuration: any) => {
@@ -142,7 +142,9 @@ export class MongooseSetUpService {
   }
 
   public runMongoose(): Observable<String> {
-    console.log(`Nodes data: ${this.mongooseSetupInfoModel.nodesData}`);
+
+    // NOTE: Updating Prometheus configuration with respect to Mongoose Run nodes. 
+    this.updatePrometheusConfiguration(); 
 
     try {
       if (!this.mongooseSetupInfoModel.hasLoadStepId()) {
@@ -197,7 +199,7 @@ export class MongooseSetUpService {
       (configuration.load.step.node.addrs == undefined));
   }
 
-  private fetchPrometheusConfiguration() {
+  private updatePrometheusConfiguration() {
     // NOTE: An initial fetch of Prometheus configuration.
     this.http.get(environment.prometheusConfigPath, { responseType: 'text' }).subscribe((configurationFileContent: Object) => {
       console.log(`File content for configuration on path ${environment.prometheusConfigPath} is : ${configurationFileContent}`);
