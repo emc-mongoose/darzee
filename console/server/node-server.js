@@ -64,9 +64,12 @@ app.post('/savefile', function (req, res) {
 
     fs.writeFile(creatingFilePath, fileContent, fileWriteFlag, function(error) {
         if (error) {
+            res.send(error);
             return console.log(error);
         }
-        console.log("File has been sccessfully saved.");
+        let misleadingMessage = "File has been sccessfully saved.";
+        res.send(misleadingMessage);
+        console.log(misleadingMessage);
     }); 
 });
 
