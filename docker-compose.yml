@@ -20,5 +20,6 @@ services:
             - prometheus-configuration-volume:/etc/prometheus/
         command:
             - '--config.file=/etc/prometheus/prometheus.yml'
+            - '--web.enable-lifecycle'
 volumes:
     prometheus-configuration-volume: 
