@@ -9,6 +9,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PrometheusConfigurationEditor } from 'src/app/common/FileOperations/PrometheusConfigurationEditor';
 import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
+import { ContainerServerService } from 'src/app/core/services/container-server/container-server-service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,7 @@ export class MongooseSetUpService {
   private prometheusConfigurationFile: File = null;
 
   constructor(private controlApiService: ControlApiService,
+    private containerServerService: ContainerServerService,
     private http: HttpClient,
     private dateFormatPipe: DateFormatPipe) {
 
@@ -205,32 +207,11 @@ export class MongooseSetUpService {
       UPDATED_TARGETS_MOCK.push("localhost:3029");
       UPDATED_TARGETS_MOCK.push("localhost:1529");
 
-      let fileSaver: FileOperations = new FileOperations();
-      const filename = Constants.FileNames.PROMETHEUS_CONFIGURATION;
-      let fileFormat = FileFormat.YML;
-      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(UPDATED_TARGETS_MOCK);
-
-      let linesDelimiter = "\n";
-      fileSaver.saveFile(filename, fileFormat, updatedConfiguration, linesDelimiter);
-
-      console.log(`Updated configuration: ${updatedConfiguration}`);
-      let formData = new FormData(); 
-      formData.append("fileName", "prometheus.yml");
-      formData.append("fileContent", updatedConfiguration as string);
-
-      this.http.post("http://localhost:8080/savefile", formData, {headers: this.getHttpHeadersForFileSave(updatedConfiguration as string)}).subscribe(result => { 
-        console.log("POST request result", JSON.stringify(result));
-      })
-
+      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(UPDATED_TARGETS_MOCK);  
+      // NOTE: Saving prometheus configuration in .yml file. 
+      let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
+      this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string)
     });
 
-  }
-
-  private getHttpHeadersForFileSave(content: string): HttpHeaders {
-    let httpHeadersForMongooseRun = new HttpHeaders();
-    httpHeadersForMongooseRun.append('Content-Type', 'multipart/form-data');
-    httpHeadersForMongooseRun.append('Accept', '*/*');
-
-    return httpHeadersForMongooseRun;
   }
 }

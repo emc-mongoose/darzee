@@ -28,11 +28,7 @@ app.post('/savefile', function (req, res) {
     var fileName = req.body.fileName;
     var fileContent = req.body.fileContent;
 
-    // var stream = fs.createWriteStream(fileName);
-    // stream.once('open', function () {
-    //     stream.write(fileContent);
-    //     stream.end();
-    // });
+    console.log(`req: ${req.body.bane}`);
     console.log("File name:", fileName); 
     console.log("File content: ", fileContent);
 

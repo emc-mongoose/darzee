@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Constants } from "src/app/common/constants";
 
 @Injectable({
     providedIn: 'root'
@@ -12,14 +13,13 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 export class ContainerServerService {
 
     private readonly FILE_SAVE_ENDPOINT = "savefile";
-    // TODO: Change port to .env variable. 
-    private readonly CONTAINER_SERVER_ADDRESS = "http://localhost:8080";
+    private readonly CONTAINER_SERVER_ADDRESS = `http://localhost:${Constants.Configuration.CONTAINER_SERVER_PORT}`;
 
     private readonly REQUEST_BODY_FILENAME_PARAM = "fileName";
     private readonly REQUEST_BODY_FILE_CONTENT_PARAM = "fileContent";
     constructor(private http: HttpClient) {}
 
-    public saveFile(fileName: String, fileContent: String) { 
+    public saveFile(fileName: string, fileContent: string) { 
         let requestBody = new FormData(); 
         requestBody.append(this.REQUEST_BODY_FILENAME_PARAM, fileName);
         requestBody.append(this.REQUEST_BODY_FILE_CONTENT_PARAM, fileContent);

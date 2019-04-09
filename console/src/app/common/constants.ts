@@ -34,6 +34,8 @@ export namespace Constants {
         // TODO: read port from .env file 
         static readonly PROMETHEUS_PORT = 9090;
         static readonly PROMETHEUS_IP = "localhost:" + Configuration.PROMETHEUS_PORT;
+
+        static readonly CONTAINER_SERVER_PORT = 8080; 
     }
 
     export class Http {
