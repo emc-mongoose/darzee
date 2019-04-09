@@ -26,10 +26,6 @@ export class MongooseSetUpService {
   private slaveNodes$: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]);
   private unprocessedConfiguration: Object;
 
-  // NOTE: We're using Volume to bind Prometheus configuration within UI container and ...
-  // ... inside the Prometheus container. It's being used to edit targets based on selected run nodes. 
-  private prometheusConfigurationFile: File = null;
-
   constructor(private controlApiService: ControlApiService,
     private containerServerService: ContainerServerService,
     private http: HttpClient,
@@ -206,6 +202,8 @@ export class MongooseSetUpService {
       UPDATED_TARGETS_MOCK.push("localhost:1029");
       UPDATED_TARGETS_MOCK.push("localhost:3029");
       UPDATED_TARGETS_MOCK.push("localhost:1529");
+
+      console.log(`Nodes data: ${this.mongooseSetupInfoModel.nodesData}`);
 
       let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(UPDATED_TARGETS_MOCK);  
       // NOTE: Saving prometheus configuration in .yml file. 
