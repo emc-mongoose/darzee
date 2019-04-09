@@ -14,6 +14,7 @@ import { Observable } from "rxjs";
 export class ContainerServerService {
 
     private readonly FILE_SAVE_ENDPOINT = "savefile";
+    private readonly RELOAD_PROMETHEUS_ENDPOINT = "reloadprometheus";
     private readonly CONTAINER_SERVER_ADDRESS = "http://localhost:" + Constants.Configuration.CONTAINER_SERVER_PORT;
 
     private readonly REQUEST_BODY_FILENAME_PARAM = "fileName";
@@ -26,6 +27,11 @@ export class ContainerServerService {
         requestBody.append(this.REQUEST_BODY_FILE_CONTENT_PARAM, fileContent);
         let targetUrl = `${this.CONTAINER_SERVER_ADDRESS}/${this.FILE_SAVE_ENDPOINT}`;
         return this.http.post(targetUrl, requestBody, {headers: this.getHttpHeadersForFileSave()});
+    }
+
+    public requestPrometheusReload(): Observable<any> { 
+        let targetUrl = `${this.CONTAINER_SERVER_ADDRESS}/${this.RELOAD_PROMETHEUS_ENDPOINT}`;
+        return this.http.post(targetUrl, Constants.Http.EMPTY_POST_REQUEST_HEADERS); 
     }
 
     private getHttpHeadersForFileSave(): HttpHeaders {

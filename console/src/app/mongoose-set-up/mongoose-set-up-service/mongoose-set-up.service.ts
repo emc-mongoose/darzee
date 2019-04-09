@@ -210,8 +210,11 @@ export class MongooseSetUpService {
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
       this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => { 
-        // NOTE: Prometheus reloads itself once configuration is udpated. 
         console.log(`Container server response on file save: ${JSON.stringify(response)}. Prometheus will be eventually reloaded.`);
+        // NOTE: Prometheus reloads itself once configuration is udpated. 
+        this.containerServerService.requestPrometheusReload().subscribe(prometheusReloadResult => { 
+          console.log(`Prometheus reload response: ${JSON.stringify(prometheusReloadResult)}`);
+        })
       })
     });
 
