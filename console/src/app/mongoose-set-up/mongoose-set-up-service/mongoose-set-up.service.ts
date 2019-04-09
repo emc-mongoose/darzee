@@ -6,6 +6,7 @@ import { Observable, BehaviorSubject, config } from 'rxjs';
 import { DateFormatPipe } from 'src/app/common/date-format-pipe';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { PrometheusConfigurationEditor } from 'src/app/common/FileOperations/PrometheusConfigurationEditor';
 
 @Injectable({
   providedIn: 'root'
@@ -197,56 +198,15 @@ export class MongooseSetUpService {
   private getPrometheusConfiguration() {
     this.http.get(environment.prometheusConfigPath, {responseType: 'text'}).subscribe((configurationFileContent: Object) => {
       console.log(`File content for configuration on path ${environment.prometheusConfigPath} is : ${configurationFileContent}`);
-      let targetsSectionProperty = "targets"; 
-
-      var processingConfiguration = configurationFileContent.toString(); 
-      let targetsSectionStartIndex = processingConfiguration.toString().lastIndexOf(targetsSectionProperty); 
-      let isEndOfLine = false; 
-      
-      var endOfTargetsListIndex = targetsSectionStartIndex; 
-      while (!isEndOfLine) { 
-        console.log(`configurationFileContent[endOfTargetsSectionIndex]: ${configurationFileContent[endOfTargetsListIndex]}`);
-        let nextChar = configurationFileContent[endOfTargetsListIndex + 1]; 
-        endOfTargetsListIndex++; 
-        isEndOfLine = (nextChar == "\n"); 
-      }
-
-      let firstPartOfConfiguration = processingConfiguration.substring(0, targetsSectionStartIndex); 
-
+      let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
       var UPDATED_TARGETS_MOCK: String[] = []; 
-      UPDATED_TARGETS_MOCK.push("localhost:9999");
-      UPDATED_TARGETS_MOCK.push("localhost:1029");
-      UPDATED_TARGETS_MOCK.push("localhost:3029");
-      UPDATED_TARGETS_MOCK.push("localhost:1529");
+        UPDATED_TARGETS_MOCK.push("localhost:9999");
+        UPDATED_TARGETS_MOCK.push("localhost:1029");
+        UPDATED_TARGETS_MOCK.push("localhost:3029");
+        UPDATED_TARGETS_MOCK.push("localhost:1529");
 
-     
-
-      UPDATED_TARGETS_MOCK.forEach((target, index) => { 
-        target = target.trim(); 
-        if (target[0] != "'") { 
-          target = `'${target}`;
-        }
-        if (target[target.length] != "'") { 
-          target += "'";
-        }
-        UPDATED_TARGETS_MOCK[index] = target;
-
-        console.log(`Upated target: ${target}`);
-        return target; 
-      })
-
-      
-
-      let updatedTargetsList = `${targetsSectionProperty}:[${UPDATED_TARGETS_MOCK}]`
-      firstPartOfConfiguration += updatedTargetsList.toString(); 
-
-      let secondPartOfConfiguration = processingConfiguration.substring(endOfTargetsListIndex, processingConfiguration.length);
-      
-      let finalConfiguration = firstPartOfConfiguration + secondPartOfConfiguration; 
-
-  
-      console.log(`updated configuration: ${finalConfiguration}`);
-
+      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(UPDATED_TARGETS_MOCK);
+      console.log(`Updated configuration: ${updatedConfiguration}`);
 
       
     })
