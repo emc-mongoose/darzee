@@ -195,8 +195,33 @@ export class MongooseSetUpService {
   }
 
   private getPrometheusConfiguration() {
-    this.http.get(environment.prometheusConfigPath).subscribe(configurationFileContent => {
-      console.log(`File content for configuration on path ${environment.prometheusConfigPath} is : ${JSON.stringify(configurationFileContent)}`);
+    this.http.get(environment.prometheusConfigPath, {responseType: 'text'}).subscribe((configurationFileContent: Object) => {
+      console.log(`File content for configuration on path ${environment.prometheusConfigPath} is : ${configurationFileContent}`);
+      let targetsSectionProperty = "targets"; 
+      // console.log(`Index of 'targets': ${configurationFileContent.toString().lastIndexOf(targetsSectionProperty)}`)
+
+      var processingConfiguration = configurationFileContent.toString(); 
+      let targetsSectionStartIndex = processingConfiguration.toString().lastIndexOf(targetsSectionProperty); 
+      let isEndOfLine = false; 
+      
+      var endOfTargetsListIndex = targetsSectionStartIndex; 
+      while (!isEndOfLine) { 
+        console.log(`configurationFileContent[endOfTargetsSectionIndex]: ${configurationFileContent[endOfTargetsListIndex]}`);
+        let nextChar = configurationFileContent[endOfTargetsListIndex + 1]; 
+        endOfTargetsListIndex++; 
+        isEndOfLine = (nextChar == "\n"); 
+      }
+
+      let firstPartOfConfiguration = processingConfiguration.substring(0, targetsSectionStartIndex); 
+      let secondPartOfConfiguration = processingConfiguration.substring(endOfTargetsListIndex, processingConfiguration.length);
+      
+      let finalConfiguration = firstPartOfConfiguration + secondPartOfConfiguration; 
+
+    
+
+      console.log(`updated configuration: ${finalConfiguration}`);
+
+      
     })
 
   }
