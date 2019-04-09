@@ -55,7 +55,7 @@ app.post('/savefile', function (req, res) {
         shell.cd(configurationDirectoryPath);
     }
 
-    fs.writeFile(creatingFilePath, fileContent, function(error) {
+    fs.writeFile(creatingFilePath, fileContent, { flag: 'wx' }, function(error) {
         if (error) {
             return console.log(error);
         }
