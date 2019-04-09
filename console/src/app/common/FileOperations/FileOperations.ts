@@ -20,7 +20,7 @@ export class FileOperations {
         var textFromFileInLines: string[] = data.split(lineDelimiter);
         let fileTypeTag: string = this.getFileTypeTag(fileType);
         let binaryFileData = new Blob(textFromFileInLines, { type: fileTypeTag});
-        saveAs(binaryFileData, fileName);
+        saveAs(binaryFileData, `${fileName}.yml`);
     }
 
     private getFileTypeTag(fileType: FileFormat): string {
@@ -30,6 +30,6 @@ export class FileOperations {
             case FileFormat.JSON: 
                 return this.TEXT_FILE_TYPE;
         }
-        return this.UNKNOWN_FORMAT; 
+        return this.TEXT_FILE_TYPE; 
     }
 }

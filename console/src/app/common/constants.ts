@@ -5,7 +5,8 @@ export namespace Constants {
     // NOTE: Default filenames for files saved via UI
     export class FileNames {
         static readonly SCENARIO_FILE_NAME = "scenario_dummy";
-        static readonly CUSTOM_CONFIGURATION_FILENAME = "aggregated_defaults"
+        static readonly CUSTOM_CONFIGURATION_FILENAME = "aggregated_defaults";
+        static readonly PROMETHEUS_CONFIGURATION = "prometheus";
     }
 
     export class Alerts {

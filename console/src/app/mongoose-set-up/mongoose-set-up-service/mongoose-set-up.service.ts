@@ -7,6 +7,8 @@ import { DateFormatPipe } from 'src/app/common/date-format-pipe';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { PrometheusConfigurationEditor } from 'src/app/common/FileOperations/PrometheusConfigurationEditor';
+import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
+import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 
 @Injectable({
   providedIn: 'root'
@@ -203,7 +205,14 @@ export class MongooseSetUpService {
       UPDATED_TARGETS_MOCK.push("localhost:3029");
       UPDATED_TARGETS_MOCK.push("localhost:1529");
 
+      let fileSaver: FileOperations = new FileOperations();
+      const filename = Constants.FileNames.PROMETHEUS_CONFIGURATION;
+      let fileFormat = FileFormat.YML;
       let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(UPDATED_TARGETS_MOCK);
+
+      let linesDelimiter = "\n";
+      fileSaver.saveFile(filename, fileFormat, updatedConfiguration, linesDelimiter);
+
       console.log(`Updated configuration: ${updatedConfiguration}`);
     });
 
