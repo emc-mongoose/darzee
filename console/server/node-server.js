@@ -78,19 +78,23 @@ app.post('/savefile', function (req, res) {
             hasSavedSuccessfully: true
         }
         res.send(response);
+    });
+});
 
-        // NOTE: Reloading Prometheus once new configuration has been created.
-        axios.post(`http://localhost:${prometheusPort}/-/reload`, {})
+// NOTE: Reloading Prometheus. Method was implimented because ...
+// ... preflight request from the browser fails. 
+app.post('/reloadprometheus', function (req, res) {
+    axios.post(`http://localhost:${prometheusPort}/-/reload`, {})
         .then((prometheusResponse) => {
             console.log(`statusCode: ${prometheusResponse.statusCode}`)
-            console.log(prometheusResponse)
+            console.log(prometheusResponse);
+            res.send(prometheusResponse);
         })
         .catch((prometheusError) => {
-            console.error(prometheusError)
-        })
-    });
+            console.error(prometheusError);
+            res.send(prometheusError);
 
-   
+        })
 });
 
 app.listen(port);
