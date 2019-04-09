@@ -14,7 +14,7 @@ import { Observable } from "rxjs";
 export class ContainerServerService {
 
     private readonly FILE_SAVE_ENDPOINT = "savefile";
-    private readonly CONTAINER_SERVER_ADDRESS = `http://localhost:${Constants.Configuration.CONTAINER_SERVER_PORT}`;
+    private readonly CONTAINER_SERVER_ADDRESS = "http://localhost:" + Constants.Configuration.CONTAINER_SERVER_PORT;
 
     private readonly REQUEST_BODY_FILENAME_PARAM = "fileName";
     private readonly REQUEST_BODY_FILE_CONTENT_PARAM = "fileContent";
@@ -24,7 +24,8 @@ export class ContainerServerService {
         let requestBody = new FormData(); 
         requestBody.append(this.REQUEST_BODY_FILENAME_PARAM, fileName);
         requestBody.append(this.REQUEST_BODY_FILE_CONTENT_PARAM, fileContent);
-        return this.http.post(`${this.CONTAINER_SERVER_ADDRESS}/${this.FILE_SAVE_ENDPOINT}`, requestBody, {headers: this.getHttpHeadersForFileSave()});
+        let targetUrl = `${this.CONTAINER_SERVER_ADDRESS}/${this.FILE_SAVE_ENDPOINT}`;
+        return this.http.post(targetUrl, requestBody, {headers: this.getHttpHeadersForFileSave()});
     }
 
     private getHttpHeadersForFileSave(): HttpHeaders {
