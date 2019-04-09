@@ -35,6 +35,7 @@ app.get('*', function(req, res) {
     res.sendFile(path + '/index.html');
 });
 
+// NOTE: Saving file on 'CONFIGURATION_DIRECTORY_NAME' folder. 
 app.post('/savefile', function (req, res) {
     let fileName = req.body.fileName;
     var creatingFilePath = `${CONFIGURATION_DIRECTORY_NAME}/${fileName}`;
@@ -57,6 +58,7 @@ app.post('/savefile', function (req, res) {
 
     var fileWriteFlag = ""; 
     if (!fs.existsSync(creatingFilePath)) {
+        // NOTE: Creating file if it doesn't exist. 
         fileWriteFlag = { flag: 'wx' };  
     } 
 
