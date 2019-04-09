@@ -1,5 +1,5 @@
 const MONGOOSE_CONSOLE_DEFAULT_PORT = 8080;
-const PROMETHEUS_CONFIGURATION_PATH = '/configuration/prometheus.yml';
+const PROMETHEUS_DEFAULT_CONFIGURATION_PATH = '/configuration/prometheus.yml';
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -9,7 +9,10 @@ var cors = require('cors')
 var app = express();
 
 var path = __dirname + '';
+
+// NOTE: Fetching environment variables' values 
 var port = process.env.CONSOLE_PORT || MONGOOSE_CONSOLE_DEFAULT_PORT;
+var prometheusConfigurationPath = process.env.PROMETHEUS_CONFIGURATION_PATH || PROMETHEUS_DEFAULT_CONFIGURATION_PATH;
 
 app.use(express.static(path));
 app.use(bodyParser.json()); // NOTE: Supporting JSON-encoded bodies 
@@ -28,15 +31,15 @@ app.post('/savefile', function (req, res) {
     var fileName = req.body.fileName;
     var fileContent = req.body.fileContent;
 
-    console.log(`req: ${req.body.bane}`);
-    console.log("File name:", fileName); 
-    console.log("File content: ", fileContent);
+    // NOTE: Creating directory for Prometheus configuration if not exist. 
+    if (!fs.existsSync(prometheusConfigurationPath)) { 
+        fs.mkdirSync(prometheusConfigurationPath);
+    }
 
-    fs.writeFile(PROMETHEUS_CONFIGURATION_PATH, fileContent, function(err) {
-        if(err) {
-            return console.log(err);
+    fs.writeFile(prometheusConfigurationPath, fileContent, function(error) {
+        if (error) {
+            return console.log(error);
         }
-    
         console.log("Prometheus configuration has been updated.");
     }); 
 });
