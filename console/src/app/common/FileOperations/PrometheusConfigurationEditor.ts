@@ -45,7 +45,7 @@ export class PrometheusConfigurationEditor {
             if (target[0] != character) {
                 target = `${character}${target}`;
             }
-            if (target[target.length] != character) {
+            if (target[target.length - 1] != character) {
                 target = `${target}${character}`;
             }
             list[index] = target;
