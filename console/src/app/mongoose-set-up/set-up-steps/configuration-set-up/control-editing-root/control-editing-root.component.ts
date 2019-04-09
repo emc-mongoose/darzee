@@ -10,9 +10,5 @@ export class ConfigurationEditingRootComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {}
-
-  onStartButtonClicked()  {
-    alert("Mongoose has started.");
-  }
-
+å
 }

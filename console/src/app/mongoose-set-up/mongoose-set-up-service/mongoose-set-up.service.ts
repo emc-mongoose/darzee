@@ -7,9 +7,9 @@ import { DateFormatPipe } from 'src/app/common/date-format-pipe';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PrometheusConfigurationEditor } from 'src/app/common/FileOperations/PrometheusConfigurationEditor';
-import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { ContainerServerService } from 'src/app/core/services/container-server/container-server-service';
+import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prometheus-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +28,7 @@ export class MongooseSetUpService {
 
   constructor(private controlApiService: ControlApiService,
     private containerServerService: ContainerServerService,
+    private prometheusApiService: PrometheusApiService,
     private http: HttpClient,
     private dateFormatPipe: DateFormatPipe) {
 
@@ -210,6 +211,12 @@ export class MongooseSetUpService {
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
       this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => { 
         console.log(`Container server response on file save: ${JSON.stringify(response)}`);
+        
+        // NOTE: Reloading Prometheus with new configuration.
+        console.log("Prometheus will be reloaded.");
+        this.prometheusApiService.reloadPrometheus().subscribe(prometheusReloadResult => { 
+          console.log(`Prometheus has been reloaded. Message: ${prometheusReloadResult}`)
+        })
       })
     });
 
