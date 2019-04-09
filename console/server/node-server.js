@@ -1,6 +1,9 @@
 const MONGOOSE_CONSOLE_DEFAULT_PORT = 8080;
 const PROMETHEUS_DEFAULT_CONFIGURATION_PATH = '/configuration/prometheus.yml';
 
+const PROMETHEUS_CONFIGURATION_FILENAME = "prometeus"; 
+const PROMETHEUS_CONFIGURATION_EXTENSION = ".yml";
+
 var express = require('express');
 var bodyParser = require('body-parser');
 var fs = require('fs');
@@ -29,6 +32,11 @@ app.get('*', function(req, res) {
 
 app.post('/savefile', function (req, res) {
     var fileName = req.body.fileName;
+    // NOTE: As for now, we're handling only saving of Prometheus configuration.
+    if (fileName != (PROMETHEUS_CONFIGURATION_FILENAME + PROMETHEUS_CONFIGURATION_EXTENSION)) { 
+        console.log("File-saving behavior hasn't been defined for file: ", fileName);
+        return; 
+    }
     var fileContent = req.body.fileContent;
 
     // NOTE: Creating directory for Prometheus configuration if not exist. 
@@ -40,7 +48,7 @@ app.post('/savefile', function (req, res) {
         if (error) {
             return console.log(error);
         }
-        console.log("Prometheus configuration has been updated.");
+        console.log("Prometheus' configuration has been updated.");
     }); 
 });
 
