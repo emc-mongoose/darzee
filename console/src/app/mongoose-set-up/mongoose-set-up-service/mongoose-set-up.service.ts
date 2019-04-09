@@ -5,7 +5,7 @@ import { Constants } from 'src/app/common/constants';
 import { Observable, BehaviorSubject, config } from 'rxjs';
 import { DateFormatPipe } from 'src/app/common/date-format-pipe';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PrometheusConfigurationEditor } from 'src/app/common/FileOperations/PrometheusConfigurationEditor';
 import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
@@ -214,7 +214,23 @@ export class MongooseSetUpService {
       fileSaver.saveFile(filename, fileFormat, updatedConfiguration, linesDelimiter);
 
       console.log(`Updated configuration: ${updatedConfiguration}`);
+      let formData = new FormData(); 
+      formData.append("fileName", "prometheus.yml");
+      formData.append("fileContent", updatedConfiguration as string);
+
+      this.http.post("http://localhost:8080/savefile", formData, {headers: this.getHttpHeadersForFileSave(updatedConfiguration as string)}).subscribe(result => { 
+        console.log("POST request result", JSON.stringify(result));
+      })
+
     });
 
+  }
+
+  private getHttpHeadersForFileSave(content: string): HttpHeaders {
+    let httpHeadersForMongooseRun = new HttpHeaders();
+    httpHeadersForMongooseRun.append('Content-Type', 'multipart/form-data');
+    httpHeadersForMongooseRun.append('Accept', '*/*');
+
+    return httpHeadersForMongooseRun;
   }
 }
