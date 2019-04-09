@@ -210,7 +210,9 @@ export class MongooseSetUpService {
       let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(UPDATED_TARGETS_MOCK);  
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
-      this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string)
+      this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => { 
+        console.log(`Container server response on file save: ${JSON.stringify(response)}`);
+      })
     });
 
   }
