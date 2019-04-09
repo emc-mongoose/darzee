@@ -1,6 +1,8 @@
 export class PrometheusConfigurationEditor { 
     
     private readonly TARGETS_PROPERTY_NAME = "targets"; 
+    private readonly TARGET_LIST_ELEMENTS_SURROUNDING_CHARACTERS = "'";
+
     prometheusConfigurationFileContent: Object; 
 
     constructor(prometheusConfigurationFileContent: Object) { 
@@ -30,14 +32,14 @@ export class PrometheusConfigurationEditor {
   
     }
 
-    private addQuotesToList(list: String[]): String[] { 
+    private surroundListItemsWithCharacter(list: String[], character: String): String[] { 
         list.forEach((target, index) => { 
             target = target.trim(); 
-            if (target[0] != "'") { 
-              target = `'${target}`;
+            if (target[0] != character) { 
+              target = `${character}${target}`;
             }
-            if (target[target.length] != "'") { 
-              target += "'";
+            if (target[target.length] != character) { 
+              target = `${target}${character}`;
             }
             list[index] = target;
             return target; 
@@ -47,7 +49,7 @@ export class PrometheusConfigurationEditor {
     }
 
     private getUpdatedTargetsValue(targets: String[]): String { 
-        targets = this.addQuotesToList(targets); 
+        targets = this.surroundListItemsWithCharacter(targets, this.TARGET_LIST_ELEMENTS_SURROUNDING_CHARACTERS); 
         return `${this.TARGETS_PROPERTY_NAME}:[${targets}]`
     }
 }
