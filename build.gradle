@@ -83,6 +83,7 @@ task createDockerfile(type: Dockerfile) {
     instruction "RUN npm install express@'>=3.0.0 <4.0.0' --save"
     instruction "RUN npm install body-parser"
     instruction "RUN npm install cors"
+    instruction "RUN npm install shelljs"
     instruction "EXPOSE " + getConsoleConfiurationParameter(CONSOLE_CONFIGURATION_NAMES.port)
     instruction 'CMD [ "node", "node-server.js" ]' 
 }
