@@ -198,7 +198,6 @@ export class MongooseSetUpService {
     this.http.get(environment.prometheusConfigPath, {responseType: 'text'}).subscribe((configurationFileContent: Object) => {
       console.log(`File content for configuration on path ${environment.prometheusConfigPath} is : ${configurationFileContent}`);
       let targetsSectionProperty = "targets"; 
-      // console.log(`Index of 'targets': ${configurationFileContent.toString().lastIndexOf(targetsSectionProperty)}`)
 
       var processingConfiguration = configurationFileContent.toString(); 
       let targetsSectionStartIndex = processingConfiguration.toString().lastIndexOf(targetsSectionProperty); 
@@ -213,13 +212,41 @@ export class MongooseSetUpService {
       }
 
       let firstPartOfConfiguration = processingConfiguration.substring(0, targetsSectionStartIndex); 
+
+      var UPDATED_TARGETS_MOCK: String[] = []; 
+      UPDATED_TARGETS_MOCK.push("localhost:9999");
+      UPDATED_TARGETS_MOCK.push("localhost:1029");
+      UPDATED_TARGETS_MOCK.push("localhost:3029");
+      UPDATED_TARGETS_MOCK.push("localhost:1529");
+
+     
+
+      UPDATED_TARGETS_MOCK.forEach((target, index) => { 
+        target = target.trim(); 
+        if (target[0] != "'") { 
+          target = `'${target}`;
+        }
+        if (target[target.length] != "'") { 
+          target += "'";
+        }
+        UPDATED_TARGETS_MOCK[index] = target;
+
+        console.log(`Upated target: ${target}`);
+        return target; 
+      })
+
+      
+
+      let updatedTargetsList = `${targetsSectionProperty}:[${UPDATED_TARGETS_MOCK}]`
+      firstPartOfConfiguration += updatedTargetsList.toString(); 
+
       let secondPartOfConfiguration = processingConfiguration.substring(endOfTargetsListIndex, processingConfiguration.length);
       
       let finalConfiguration = firstPartOfConfiguration + secondPartOfConfiguration; 
 
-    
-
+  
       console.log(`updated configuration: ${finalConfiguration}`);
+
 
       
     })
