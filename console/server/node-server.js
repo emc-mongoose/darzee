@@ -1,13 +1,18 @@
 const MONGOOSE_CONSOLE_DEFAULT_PORT = 8080;
 const PROMETHEUS_DEFAULT_CONFIGURATION_PATH = '/configuration/prometheus.yml';
 
+const CONFIGURATION_DIRECTORY_NAME = "configuration";
+
 const PROMETHEUS_CONFIGURATION_FILENAME = "prometeus"; 
 const PROMETHEUS_CONFIGURATION_EXTENSION = ".yml";
 
 var express = require('express');
 var bodyParser = require('body-parser');
 var fs = require('fs');
-var cors = require('cors')
+var cors = require('cors');
+// NOTE: ShellJS is being used to create full path directories. 
+var shell = require('shelljs');
+
 
 var app = express();
 
@@ -31,20 +36,26 @@ app.get('*', function(req, res) {
 });
 
 app.post('/savefile', function (req, res) {
-    var fileName = req.body.fileName;
-    // NOTE: As for now, we're handling only saving of Prometheus configuration.
-    if (fileName != (PROMETHEUS_CONFIGURATION_FILENAME + PROMETHEUS_CONFIGURATION_EXTENSION)) { 
-        console.log("File-saving behavior hasn't been defined for file: ", fileName);
-        return; 
+    let fileName = req.body.fileName;
+    var creatingFilePath = `${CONFIGURATION_DIRECTORY_NAME}/${fileName}`;
+    console.log(`Processing file with path: ${creatingFilePath}`);
+
+    // NOTE: Save Prometheus' configuration to its specified path.
+    if (fileName == (PROMETHEUS_CONFIGURATION_FILENAME + PROMETHEUS_CONFIGURATION_EXTENSION)) { 
+        creatingFilePath = prometheusConfigurationPath;
     }
+
     var fileContent = req.body.fileContent;
 
+    let configurationDirectoryPath = `${CONFIGURATION_DIRECTORY_NAME}`;
     // NOTE: Creating directory for Prometheus configuration if not exist. 
-    if (!fs.existsSync(prometheusConfigurationPath)) { 
-        fs.mkdirSync(prometheusConfigurationPath);
+    if (!fs.existsSync(configurationDirectoryPath)) {
+        // NOTE: Using ShellJS in order to create the full path. 
+        shell.mkdir('-p', configurationDirectoryPath);
+        shell.cd(configurationDirectoryPath);
     }
 
-    fs.writeFile(prometheusConfigurationPath, fileContent, function(error) {
+    fs.writeFile(creatingFilePath, fileContent, function(error) {
         if (error) {
             return console.log(error);
         }
