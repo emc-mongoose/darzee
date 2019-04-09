@@ -30,8 +30,6 @@ export class MongooseSetUpService {
   constructor(private controlApiService: ControlApiService,
     private http: HttpClient,
     private dateFormatPipe: DateFormatPipe) {
-      console.log("alalal");
-
 
     this.getPrometheusConfiguration();
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.slaveNodes$);
@@ -196,20 +194,18 @@ export class MongooseSetUpService {
   }
 
   private getPrometheusConfiguration() {
-    this.http.get(environment.prometheusConfigPath, {responseType: 'text'}).subscribe((configurationFileContent: Object) => {
+    this.http.get(environment.prometheusConfigPath, { responseType: 'text' }).subscribe((configurationFileContent: Object) => {
       console.log(`File content for configuration on path ${environment.prometheusConfigPath} is : ${configurationFileContent}`);
       let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
-      var UPDATED_TARGETS_MOCK: String[] = []; 
-        UPDATED_TARGETS_MOCK.push("localhost:9999");
-        UPDATED_TARGETS_MOCK.push("localhost:1029");
-        UPDATED_TARGETS_MOCK.push("localhost:3029");
-        UPDATED_TARGETS_MOCK.push("localhost:1529");
+      var UPDATED_TARGETS_MOCK: String[] = [];
+      UPDATED_TARGETS_MOCK.push("localhost:9999");
+      UPDATED_TARGETS_MOCK.push("localhost:1029");
+      UPDATED_TARGETS_MOCK.push("localhost:3029");
+      UPDATED_TARGETS_MOCK.push("localhost:1529");
 
       let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(UPDATED_TARGETS_MOCK);
       console.log(`Updated configuration: ${updatedConfiguration}`);
-
-      
-    })
+    });
 
   }
 }
