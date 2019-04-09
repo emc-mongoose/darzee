@@ -55,11 +55,16 @@ app.post('/savefile', function (req, res) {
         shell.cd(configurationDirectoryPath);
     }
 
-    fs.writeFile(creatingFilePath, fileContent, { flag: 'wx' }, function(error) {
+    var fileWriteFlag = ""; 
+    if (!fs.existsSync(creatingFilePath)) {
+        fileWriteFlag = { flag: 'wx' };  
+    } 
+
+    fs.writeFile(creatingFilePath, fileContent, fileWriteFlag, function(error) {
         if (error) {
             return console.log(error);
         }
-        console.log("Prometheus' configuration has been updated.");
+        console.log("File has been sccessfully saved.");
     }); 
 });
 
