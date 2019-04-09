@@ -26,8 +26,6 @@
     "ang-jsoneditor": "^1.7.1",
     "codemirror": "^5.41.0",
     "core-js": "^2.5.4",
-    "cors": "^2.8.5",
-    "express": "^3.21.2",
     "file-saver": "^2.0.0",
     "font-arimo": "^2.0.5",
     "font-awesome": "^4.7.0",
