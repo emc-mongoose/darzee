@@ -5,8 +5,11 @@ import { Constants } from 'src/app/common/constants';
 import { Observable, BehaviorSubject, config } from 'rxjs';
 import { DateFormatPipe } from 'src/app/common/date-format-pipe';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PrometheusConfigurationEditor } from 'src/app/common/FileOperations/PrometheusConfigurationEditor';
+import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
+import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
+import { ContainerServerService } from 'src/app/core/services/container-server/container-server-service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +31,7 @@ export class MongooseSetUpService {
   private prometheusConfigurationFile: File = null;
 
   constructor(private controlApiService: ControlApiService,
+    private containerServerService: ContainerServerService,
     private http: HttpClient,
     private dateFormatPipe: DateFormatPipe) {
 
@@ -203,8 +207,12 @@ export class MongooseSetUpService {
       UPDATED_TARGETS_MOCK.push("localhost:3029");
       UPDATED_TARGETS_MOCK.push("localhost:1529");
 
-      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(UPDATED_TARGETS_MOCK);
-      console.log(`Updated configuration: ${updatedConfiguration}`);
+      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(UPDATED_TARGETS_MOCK);  
+      // NOTE: Saving prometheus configuration in .yml file. 
+      let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
+      this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => { 
+        console.log(`Container server response on file save: ${JSON.stringify(response)}`);
+      })
     });
 
   }
