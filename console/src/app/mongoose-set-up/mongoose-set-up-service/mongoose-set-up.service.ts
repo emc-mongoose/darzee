@@ -10,6 +10,7 @@ import { PrometheusConfigurationEditor } from 'src/app/common/FileOperations/Pro
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { ContainerServerService } from 'src/app/core/services/container-server/container-server-service';
 import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prometheus-api.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -146,7 +147,12 @@ export class MongooseSetUpService {
     // NOTE: Updating Prometheus configuration with respect to Mongoose Run nodes. 
     this.updatePrometheusConfiguration(); 
     // NOTE: you can get related load step ID from mongoose setup model here. 
-    return this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario);
+    return this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario).pipe(
+      map(runId => { 
+        this.mongooseSetupInfoModel.setLoadStepId(runId);
+        return runId;
+      })
+    );
   }
 
   // MARK: - Private
