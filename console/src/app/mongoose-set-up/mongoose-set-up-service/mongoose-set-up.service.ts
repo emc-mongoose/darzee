@@ -143,33 +143,13 @@ export class MongooseSetUpService {
   }
 
   public runMongoose(): Observable<String> {
-
     // NOTE: Updating Prometheus configuration with respect to Mongoose Run nodes. 
     this.updatePrometheusConfiguration(); 
-
-    try {
-      if (!this.mongooseSetupInfoModel.hasLoadStepId()) {
-        let generatedLoadStepId = this.getGeneratedLoadStepId();
-        this.mongooseSetupInfoModel.setLoadStepId(generatedLoadStepId);
-      }
-    } catch (configurationError) {
-      let misleadingMsg = "Unable to apply generated load step id to Mongoose run configuration. Reason: " + configurationError;
-      console.error(misleadingMsg);
-    }
     // NOTE: you can get related load step ID from mongoose setup model here. 
     return this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario);
   }
 
   // MARK: - Private
-
-  private getGeneratedLoadStepId(): String {
-    // NOTE: Load step ID parretn is <STEP_TYPE>-<yyyyMMdd.HHmmss.SSS>
-    let stepTypeMock = "none"; // TODO: get actual step type 
-    let formattedDate = this.dateFormatPipe.transform(new Date());
-    let loadStepId = stepTypeMock + "-" + formattedDate;
-    return loadStepId;
-
-  }
 
   private isIpExist(ip: String): boolean {
     // NOTE: Prevent addition of duplicate IPs
