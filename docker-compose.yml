@@ -7,7 +7,7 @@ services:
         env_file:
             - .env
         volumes:
-            - prometheus-configuration-volume:${PROMETHEUS_CONFIGURATION_PATH}
+            - prometheus-configuration-volume:${PROMETHEUS_CONFIGURATION_FOLDER_PATH}
     grafana:
         image: 'grafana/grafana:${GRAFANA_VER}'
         ports:
