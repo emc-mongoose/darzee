@@ -3,7 +3,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, retry } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,12 +15,29 @@ import { map } from 'rxjs/operators';
 export class ControlApiService {
 
   mongooseSlaveNodes: String[] = [];
+  private mongooseHostIp = Constants.Configuration.MONGOOSE_HOST_IP;
 
   constructor(private http: HttpClient) {
-    this.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP);
+    console.log("Starting mongoose.")
+    this.getMongooseConfiguration(this.mongooseHostIp).subscribe(
+      result => { 
+        console.log(`Mongoose configuration has responded with result: ${result}`);
+      },
+      error => { 
+        console.error(`Mongoose is not reachable. Details: ${JSON.stringify(error)}`)
+        // NOTE: Trying to connect to docker internal network. 
+        // The error will probably occur when "localhost" is not reachable. 
+        this.mongooseHostIp = Constants.Configuration.DOCKER_INTERNAL_NETWORK_ADDRESS + Constants.Configuration.MONGOOSE_PORT;
+        retry(); 
+      }
+    );
   }
 
   // MARK: - Public
+
+  public getMongooseIp(): string { 
+    return this.mongooseHostIp;
+  }
 
   public runMongoose(mongooseJsonConfiguration: Object, javaScriptScenario: String = ""): Observable<any> {
 
@@ -30,7 +47,7 @@ export class ControlApiService {
     let formData = new FormData();
     formData.append('defaults', JSON.stringify(mongooseJsonConfiguration));
 
-    return this.http.post(Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), { observe: "response" }).pipe(
+    return this.http.post(Constants.Http.HTTP_PREFIX + this.mongooseHostIp + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), { observe: "response" }).pipe(
       map(runResponse => {
         let runId = runResponse.headers.get(MongooseApi.Headers.ETAG);
         return runId;
@@ -38,7 +55,7 @@ export class ControlApiService {
   }
 
   // NOTE: Returning Mongoose configuration as JSON 
-  public getMongooseConfiguration(mongooseHostIp: string): any {
+  public getMongooseConfiguration(mongooseHostIp: string): Observable<any> {
     let configEndpoint = MongooseApi.Config.CONFIG;
     return this.http.get(Constants.Http.HTTP_PREFIX + mongooseHostIp + configEndpoint, Constants.Http.JSON_CONTENT_TYPE);
   }

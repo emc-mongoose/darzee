@@ -10,6 +10,7 @@ import { PrometheusConfigurationEditor } from 'src/app/common/FileOperations/Pro
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { ContainerServerService } from 'src/app/core/services/container-server/container-server-service';
 import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prometheus-api.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class MongooseSetUpService {
 
     this.updatePrometheusConfiguration();
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.slaveNodes$);
-    this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
+    this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(this.controlApiService.getMongooseIp())
       .subscribe((configuration: any) => {
         this.mongooseSetupInfoModel.configuration = configuration;
         this.mongooseSetupInfoModel.nodesData = this.getSlaveNodesFromConfiguration(configuration);
@@ -143,33 +144,18 @@ export class MongooseSetUpService {
   }
 
   public runMongoose(): Observable<String> {
-
     // NOTE: Updating Prometheus configuration with respect to Mongoose Run nodes. 
     this.updatePrometheusConfiguration(); 
-
-    try {
-      if (!this.mongooseSetupInfoModel.hasLoadStepId()) {
-        let generatedLoadStepId = this.getGeneratedLoadStepId();
-        this.mongooseSetupInfoModel.setLoadStepId(generatedLoadStepId);
-      }
-    } catch (configurationError) {
-      let misleadingMsg = "Unable to apply generated load step id to Mongoose run configuration. Reason: " + configurationError;
-      console.error(misleadingMsg);
-    }
     // NOTE: you can get related load step ID from mongoose setup model here. 
-    return this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario);
+    return this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario).pipe(
+      map(runId => { 
+        this.mongooseSetupInfoModel.setLoadStepId(runId);
+        return runId;
+      })
+    );
   }
 
   // MARK: - Private
-
-  private getGeneratedLoadStepId(): String {
-    // NOTE: Load step ID parretn is <STEP_TYPE>-<yyyyMMdd.HHmmss.SSS>
-    let stepTypeMock = "none"; // TODO: get actual step type 
-    let formattedDate = this.dateFormatPipe.transform(new Date());
-    let loadStepId = stepTypeMock + "-" + formattedDate;
-    return loadStepId;
-
-  }
 
   private isIpExist(ip: String): boolean {
     // NOTE: Prevent addition of duplicate IPs

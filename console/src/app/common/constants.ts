@@ -1,4 +1,5 @@
 import { HttpHeaders } from "@angular/common/http";
+import { environment } from "src/environments/environment.prod";
 
 export namespace Constants {
 
@@ -27,15 +28,18 @@ export namespace Constants {
 
     export class Configuration {
         // TODO: Fetch Mongoose port from .env file 
-        static readonly MONGOOSE_PORT = 9999;
+        static readonly MONGOOSE_PORT = `${environment.mongoosePort}`
         // TODO: Figure out how to run on multiple nodes 
-        static readonly MONGOOSE_HOST_IP = "localhost:" + Configuration.MONGOOSE_PORT;
+        static MONGOOSE_HOST_IP = `${environment.mongooseIp}:${environment.mongoosePort}`
 
         // TODO: read port from .env file 
-        static readonly PROMETHEUS_PORT = 9090;
-        static readonly PROMETHEUS_IP = "localhost:" + Configuration.PROMETHEUS_PORT;
+        static readonly PROMETHEUS_IP = `${environment.prometheusIp}:${environment.prometheusPort}`
 
-        static readonly CONTAINER_SERVER_PORT = 8080; 
+        static readonly CONTAINER_SERVER_PORT = `${environment.nodeJsServerPort}`; 
+        
+        // NOTE: Docker for MacOS and Windows doesn't support host networking, yet it has docker internal ...
+        // ... network address that points to the host. 
+        static readonly DOCKER_INTERNAL_NETWORK_ADDRESS = "host.docker.internal";
     }
 
     export class Http {

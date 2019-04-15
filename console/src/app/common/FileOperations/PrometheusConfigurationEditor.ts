@@ -56,6 +56,8 @@ export class PrometheusConfigurationEditor {
 
     private getUpdatedTargetsValue(targets: String[]): String {
         targets = this.surroundListItemsWithCharacter(targets, this.TARGET_LIST_ELEMENTS_SURROUNDING_CHARACTERS);
-        return `${this.TARGETS_PROPERTY_NAME}:[${targets}]`
+        let fieldNameAndValueDelimiter = "  "; // NOTE: prometheus.yml file delimiter contains 2 whitesapces
+        // NOTE: Targets property and value must retain delimiter. Prometheus will crash otherwise.
+        return `${this.TARGETS_PROPERTY_NAME}:${fieldNameAndValueDelimiter}[${targets}]`
     }
 }

@@ -96,6 +96,7 @@ export class MongooseSetUpComponent implements OnInit {
         let misleadingMessage = "Mongoose Run has started with ID " + mongooseRunId;
         alert(misleadingMessage);
       }
+      
       this.router.navigate([RoutesList.RUNS]);
     },
     error => { 
