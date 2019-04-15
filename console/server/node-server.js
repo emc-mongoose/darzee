@@ -9,14 +9,13 @@ const CONFIGURATION_DIRECTORY_NAME = "configuration";
 const PROMETHEUS_CONFIGURATION_FILENAME = "prometeus";
 const PROMETHEUS_CONFIGURATION_EXTENSION = ".yml";
 
-var express = require('express');
+const express = require('express');
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var cors = require('cors');
 // NOTE: ShellJS is being used to create full path directories. 
 var shell = require('shelljs');
 const axios = require('axios') // NOTE: Axios is used to perform HTTP requests 
-
 
 var app = express();
 
@@ -34,12 +33,6 @@ app.use(express.multipart()); // NOTE: We're saving Prometheus configuration via
 // NOTE: CORS configuration 
 app.use(cors())
 app.options('*', cors());
-
-// NOTE: Configurating server to serve index.html since during the production ...
-// build Angular converts its html's to only one file.
-app.get('*', function (req, res) {
-    res.sendFile(path + '/index.html');
-});
 
 // NOTE: Saving file on 'CONFIGURATION_DIRECTORY_NAME' folder. 
 app.post('/savefile', function (req, res) {
@@ -95,8 +88,13 @@ app.post('/reloadprometheus', function (req, res) {
         .catch((prometheusError) => {
             console.error(prometheusError);
             res.send(prometheusError);
-
         })
+});
+
+// NOTE: Configurating server to serve index.html since during the production ...
+// build Angular converts its html's to only one file.
+app.get('/*', (req, res) => {
+    res.sendfile('./index.html');
 });
 
 app.listen(port);
