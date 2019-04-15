@@ -1,28 +1,25 @@
 version: '3'
 services:
     mongoose-console:
+        image: 'emcmongoose/mongoose-console:${CONSOLE_VER}'
         network_mode: host
-        image: 'emcmongoose/mongoose-console:${GRAFANA_VER}'
         ports:
             - '${CONSOLE_PORT}:${CONSOLE_PORT}'
         env_file:
             - .env
         volumes:
             - prometheus-configuration-folder-volume:${PROMETHEUS_CONFIGURATION_FOLDER_PATH}
-        depends_on: 
-            - prometheus
     grafana:
         image: 'grafana/grafana:${GRAFANA_VER}'
         ports:
-            - '${PROMETHEUS_PORT}:${PROMETHEUS_PORT}'
+            - '${GRAFANA_PORT}:${GRAFANA_PORT}'
     prometheus:
+        image: 'prom/prometheus:${PROMETHEUS_VER}'
         network_mode: host
         ports:
-            - '${CONSOLE_PORT}:${CONSOLE_PORT}'
-        image: 'prom/prometheus:${PROMETHEUS_VER}'
+            - '${PROMETHEUS_PORT}:${PROMETHEUS_PORT}'
         volumes:
             - prometheus-configuration-folder-volume:/etc/prometheus/
-
         command:
             - '--config.file=/etc/prometheus/prometheus.yml'
             - '--web.enable-lifecycle'
