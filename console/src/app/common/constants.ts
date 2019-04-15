@@ -35,11 +35,7 @@ export namespace Constants {
         // TODO: read port from .env file 
         static readonly PROMETHEUS_IP = `${environment.prometheusIp}:${environment.prometheusPort}`
 
-        static readonly CONTAINER_SERVER_PORT = `${environment.nodeJsServerPort}`; 
-        
-        // NOTE: Docker for MacOS and Windows doesn't support host networking, yet it has docker internal ...
-        // ... network address that points to the host. 
-        static readonly DOCKER_INTERNAL_NETWORK_ADDRESS = "host.docker.internal";
+        static readonly CONTAINER_SERVER_PORT = `${environment.nodeJsServerPort}`;
     }
 
     export class Http {
@@ -52,14 +48,14 @@ export namespace Constants {
             headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' })
         };
 
-        static readonly EMPTY_POST_REQUEST_HEADERS = { 
+        static readonly EMPTY_POST_REQUEST_HEADERS = {
             headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' })
         }
 
         static readonly HTTP_PREFIX = "http://";
     }
 
-    export class HttpStatus { 
-        static readonly CONFLICT = 409; 
+    export class HttpStatus {
+        static readonly CONFLICT = 409;
     }
 }

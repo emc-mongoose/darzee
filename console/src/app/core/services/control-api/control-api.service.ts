@@ -22,13 +22,6 @@ export class ControlApiService {
     this.getMongooseConfiguration(this.mongooseHostIp).subscribe(
       result => { 
         console.log(`Mongoose configuration has responded with result: ${result}`);
-      },
-      error => { 
-        console.error(`Mongoose is not reachable. Details: ${JSON.stringify(error)}`)
-        // NOTE: Trying to connect to docker internal network. 
-        // The error will probably occur when "localhost" is not reachable. 
-        this.mongooseHostIp = Constants.Configuration.DOCKER_INTERNAL_NETWORK_ADDRESS + Constants.Configuration.MONGOOSE_PORT;
-        retry(); 
       }
     );
   }
