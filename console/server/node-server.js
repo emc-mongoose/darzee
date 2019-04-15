@@ -1,5 +1,6 @@
 const MONGOOSE_CONSOLE_DEFAULT_PORT = 8080;
 const PROMETHEUS_DEFAULT_PORT = 9090;
+const PROMETHEUS_DEFAULT_IP = "localhost";
 
 const PROMETHEUS_DEFAULT_CONFIGURATION_PATH = '/configuration/prometheus.yml';
 
@@ -25,6 +26,7 @@ var path = __dirname + '';
 var port = process.env.CONSOLE_PORT || MONGOOSE_CONSOLE_DEFAULT_PORT;
 var prometheusConfigurationPath = process.env.PROMETHEUS_CONFIGURATION_PATH || PROMETHEUS_DEFAULT_CONFIGURATION_PATH;
 var prometheusPort = process.env.PROMETHEUS_PORT || PROMETHEUS_DEFAULT_PORT;
+var prometheusIp = process.env.PROMETHEUS_IMAGE_IP || PROMETHEUS_DEFAULT_IP;
 
 app.use(express.static(path));
 app.use(bodyParser.json()); // NOTE: Supporting JSON-encoded bodies 
@@ -84,7 +86,7 @@ app.post('/savefile', function (req, res) {
 // NOTE: Reloading Prometheus. Method was implimented because ...
 // ... preflight request from the browser fails. 
 app.post('/reloadprometheus', function (req, res) {
-    axios.post(`http://localhost:${prometheusPort}/-/reload`, {})
+    axios.post(`http://${prometheusIp}:${prometheusPort}/-/reload`, {})
         .then((prometheusResponse) => {
             console.log(`statusCode: ${prometheusResponse.statusCode}`)
             console.log(prometheusResponse);

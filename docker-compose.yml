@@ -2,20 +2,26 @@ version: '3'
 services:
     mongoose-console:
         image: 'emcmongoose/mongoose-console:${CONSOLE_VER}'
-        network_mode: host
+        networks: 
+            vpcbr:
+                ipv4_address: ${NODE_SERVER_IMAGE_IP}
         ports:
             - '${CONSOLE_PORT}:${CONSOLE_PORT}'
         env_file:
             - .env
         volumes:
             - prometheus-configuration-folder-volume:${PROMETHEUS_CONFIGURATION_FOLDER_PATH}
+
     grafana:
         image: 'grafana/grafana:${GRAFANA_VER}'
         ports:
             - '${GRAFANA_PORT}:${GRAFANA_PORT}'
+            
     prometheus:
         image: 'prom/prometheus:${PROMETHEUS_VER}'
-        network_mode: host
+        networks: 
+            vpcbr:
+                ipv4_address: ${PROMETHEUS_IMAGE_IP}
         ports:
             - '${PROMETHEUS_PORT}:${PROMETHEUS_PORT}'
         volumes:
@@ -25,3 +31,9 @@ services:
             - '--web.enable-lifecycle'
 volumes:
     prometheus-configuration-folder-volume: 
+networks: 
+    vpcbr:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: ${IMAGES_NETWORK_BRIDGE_BASE_SUBNET}/${IMAGES_NETWORK_BRIDGE_BASE_SUBNET_SLOTS}
