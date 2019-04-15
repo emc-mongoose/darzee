@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Constants } from "src/app/common/constants";
 import { Observable } from "rxjs";
+import { environment } from "src/environments/environment";
 
 @Injectable({
     providedIn: 'root'
@@ -15,10 +16,12 @@ export class ContainerServerService {
 
     private readonly FILE_SAVE_ENDPOINT = "savefile";
     private readonly RELOAD_PROMETHEUS_ENDPOINT = "reloadprometheus";
-    private readonly CONTAINER_SERVER_ADDRESS = "http://localhost:" + Constants.Configuration.CONTAINER_SERVER_PORT;
+    
+    private readonly CONTAINER_SERVER_ADDRESS = `${Constants.Http.HTTP_PREFIX}${environment.nodeJsServerIp}:${environment.nodeJsServerPort}`
 
     private readonly REQUEST_BODY_FILENAME_PARAM = "fileName";
     private readonly REQUEST_BODY_FILE_CONTENT_PARAM = "fileContent";
+
     constructor(private http: HttpClient) { }
 
     public saveFile(fileName: string, fileContent: string): Observable<Object> {
