@@ -35,7 +35,7 @@ export class MongooseSetUpService {
 
     this.updatePrometheusConfiguration();
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.slaveNodes$);
-    this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP)
+    this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(this.controlApiService.getMongooseIp())
       .subscribe((configuration: any) => {
         this.mongooseSetupInfoModel.configuration = configuration;
         this.mongooseSetupInfoModel.nodesData = this.getSlaveNodesFromConfiguration(configuration);

@@ -19,19 +19,19 @@ export class ContainerServerService {
 
     private readonly REQUEST_BODY_FILENAME_PARAM = "fileName";
     private readonly REQUEST_BODY_FILE_CONTENT_PARAM = "fileContent";
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
-    public saveFile(fileName: string, fileContent: string): Observable<Object> { 
-        let requestBody = new FormData(); 
+    public saveFile(fileName: string, fileContent: string): Observable<Object> {
+        let requestBody = new FormData();
         requestBody.append(this.REQUEST_BODY_FILENAME_PARAM, fileName);
         requestBody.append(this.REQUEST_BODY_FILE_CONTENT_PARAM, fileContent);
         let targetUrl = `${this.CONTAINER_SERVER_ADDRESS}/${this.FILE_SAVE_ENDPOINT}`;
-        return this.http.post(targetUrl, requestBody, {headers: this.getHttpHeadersForFileSave()});
+        return this.http.post(targetUrl, requestBody, { headers: this.getHttpHeadersForFileSave() });
     }
 
-    public requestPrometheusReload(): Observable<any> { 
+    public requestPrometheusReload(): Observable<any> {
         let targetUrl = `${this.CONTAINER_SERVER_ADDRESS}/${this.RELOAD_PROMETHEUS_ENDPOINT}`;
-        return this.http.post(targetUrl, Constants.Http.EMPTY_POST_REQUEST_HEADERS); 
+        return this.http.post(targetUrl, Constants.Http.EMPTY_POST_REQUEST_HEADERS);
     }
 
     private getHttpHeadersForFileSave(): HttpHeaders {
@@ -39,5 +39,7 @@ export class ContainerServerService {
         httpHeadersForMongooseRun.append('Content-Type', 'multipart/form-data');
         httpHeadersForMongooseRun.append('Accept', '*/*');
         return httpHeadersForMongooseRun;
-      }
+    }
 }
+
+
