@@ -34,4 +34,6 @@ export const routes: Routes = [
         { path: RoutesList.RUNS, redirectTo: RoutesList.RUNS, pathMatch: 'full'},
         { path: '**', redirectTo: RoutesList.RUNS, pathMatch: 'full'}
       ]},
+
+      { path: "**", component: RunsTableRootComponent }
   ];
