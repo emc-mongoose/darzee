@@ -36,39 +36,27 @@
  -->
 
 
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Type</th>
-      <th scope="col">Address</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>IP</td>
-      <td>127.0.0.1:9999</td>
-    </tr>
-    <tr>
-      <th scope="row">1</th>
-      <td>IP</td>
-      <td>127.0.0.2:2222</td>
-    </tr>
-    <tr>
-      <th scope="row">1</th>
-      <td>IP</td>
-      <td>117.3.0.1:3333</td>
-    </tr>
+<div *ngIf="(savedMongooseNodes$ | async).length; else emptyNodesTable">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Type</th>
+        <th scope="col">Address</th>
+      </tr>
+    </thead>
 
-    <!-- NOTE: Trying to use 'async' -->
-    <tr *ngFor="let savedNode of savedMongooseNodes$ | async">
+    <tbody>
+      <!-- NOTE: Trying to use 'async' -->
+      <tr *ngFor="let savedNode of savedMongooseNodes$ | async">
         <th scope="row">ID</th>
         <td> {{ savedNode.resourceType }} </td>
         <td> {{ savedNode.resourceLocation }} </td>
-    </tr>
-  </tbody>
-</table>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
 
 
 <div class="node-input-table-wrapper">
@@ -79,12 +67,22 @@
     </div>
 
     <div class="node-input elem1">
-      <input #ipAd [(ngModel)]="entredIpAddress" class="form-control mr-sm-2" type="search" placeholder="Enter node IP here..." aria-label="Search">
+      <input #ipAd [(ngModel)]="entredIpAddress" class="form-control mr-sm-2" type="search"
+        placeholder="Enter node IP here..." aria-label="Search">
     </div>
 
     <div class="node-input elem2">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onAddIpButtonClicked(ipAd.textContent)">Add</button>
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
+        (click)="onAddIpButtonClicked(ipAd.textContent)">Add</button>
     </div>
 
   </div>
 </div>
+
+
+<!-- NOTE: Alert if no Mongoose Run records have been found. -->
+<ng-template #emptyNodesTable>
+  <div class="alert alert-secondary" role="alert">
+    Nods haven't been added yet.
+  </div>
+</ng-template>
