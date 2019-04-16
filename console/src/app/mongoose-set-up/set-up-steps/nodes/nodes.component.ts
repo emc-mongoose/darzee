@@ -13,7 +13,7 @@ import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 })
 export class NodesComponent implements OnInit {
 
-  public savedMongooseNodes: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>(); 
+  public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>(); 
 
   displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
 
@@ -28,12 +28,12 @@ export class NodesComponent implements OnInit {
     private mongooseSetUpService: MongooseSetUpService,
     private controlApiService: ControlApiService
     ) { 
-      this.savedMongooseNodes = this.mongooseSetUpService.getSavedMongooseNodes();
-      this.savedMongooseNodes.subscribe(
-        savedNode => { 
-          console.log(`Saved node: ${JSON.stringify(savedNode)}`);
-        }
-      )
+      this.savedMongooseNodes$ = this.mongooseSetUpService.getSavedMongooseNodes();
+      // this.savedMongooseNodes$.subscribe(
+      //   savedNode => { 
+      //     console.log(`Saved node: ${JSON.stringify(savedNode)}`);
+      //   }
+      // )
     }
 
   ngOnInit() {

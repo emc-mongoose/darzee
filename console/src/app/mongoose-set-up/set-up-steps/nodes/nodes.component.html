@@ -60,6 +60,13 @@
       <td>IP</td>
       <td>117.3.0.1:3333</td>
     </tr>
+
+    <!-- NOTE: Trying to use 'async' -->
+    <tr *ngFor="let savedNode of savedMongooseNodes$ | async">
+        <th scope="row">ID</th>
+        <td> {{ savedNode.resourceType }} </td>
+        <td> {{ savedNode.resourceLocation }} </td>
+    </tr>
   </tbody>
 </table>
 
