@@ -29,11 +29,6 @@ export class NodesComponent implements OnInit {
     private controlApiService: ControlApiService
     ) { 
       this.savedMongooseNodes$ = this.mongooseSetUpService.getSavedMongooseNodes();
-      // this.savedMongooseNodes$.subscribe(
-      //   savedNode => { 
-      //     console.log(`Saved node: ${JSON.stringify(savedNode)}`);
-      //   }
-      // )
     }
 
   ngOnInit() {
@@ -92,4 +87,7 @@ export class NodesComponent implements OnInit {
     this.mongooseSetUpService.confirmNodeConfiguration();
   }
 
+  public onRunNodeSelect(selectedNodeAddress: any) { 
+    alert(`Checked ip ${selectedNodeAddress}`);
+  }
 }
