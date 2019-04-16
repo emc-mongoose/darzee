@@ -67,7 +67,7 @@ export class MongooseSetUpService {
   }
 
   public saveMongooseNodes(newNode: MongooseRunNode) { 
-    if (this.savedMongooseNodes.includes(newNode)) { 
+    if (this.isMongooseRunNodeSaved(newNode)) { 
       throw new Error(`Node with address ${newNode.resourceLocation} is already exist.`);
     }
     this.savedMongooseNodes.push(newNode);
@@ -175,6 +175,19 @@ export class MongooseSetUpService {
     return ((isIpInUnprocessedList) || (isIpInConfiguration));
   }
 
+  private isMongooseRunNodeSaved(mongooseRunNode: MongooseRunNode) { 
+    var isNodeSaved = false;
+    this.savedMongooseNodes.forEach(node => {
+      let isLocationSame = (node.resourceLocation == mongooseRunNode.resourceLocation);
+      let isResourceTypeSame = (node.resourceType == mongooseRunNode.resourceType);
+      let isNodeSame = (isLocationSame && isResourceTypeSame);
+      if (isNodeSame) { 
+        isNodeSaved = true; 
+        return; 
+      }
+    });
+    return isNodeSaved;
+  }
 
   private getSlaveNodesFromConfiguration(configuration: any): String[] {
     // NOTE: Retrieving existing slave nodes.
