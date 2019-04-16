@@ -68,7 +68,7 @@ export class MongooseSetUpService {
 
   public saveMongooseNodes(newNode: MongooseRunNode) { 
     if (this.isMongooseRunNodeSaved(newNode)) { 
-      throw new Error(`Node with address "${newNode.resourceLocation}" is already exist.`);
+      throw new Error(`Node with address "${newNode.getResourceLocation()}" is already exist.`);
     }
     this.savedMongooseNodes.push(newNode);
     this.savedMongooseNodes$.next(this.savedMongooseNodes);
@@ -178,8 +178,8 @@ export class MongooseSetUpService {
   private isMongooseRunNodeSaved(mongooseRunNode: MongooseRunNode) { 
     var isNodeSaved = false;
     this.savedMongooseNodes.forEach(node => {
-      let isLocationSame = (node.resourceLocation == mongooseRunNode.resourceLocation);
-      let isResourceTypeSame = (node.resourceType == mongooseRunNode.resourceType);
+      let isLocationSame = (node.getResourceLocation() == mongooseRunNode.getResourceLocation());
+      let isResourceTypeSame = (node.getResourceType() == mongooseRunNode.getResourceType());
       let isNodeSame = (isLocationSame && isResourceTypeSame);
       if (isNodeSame) { 
         isNodeSaved = true; 
