@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MongooseSetupTab } from './mongoose-setup-tab.model';
 import { slideAnimation } from '../core/animations';
-import { MongooseSetUpService } from './mongoose-set-up-service/mongoose-set-up.service';
 import { RoutesList } from '../Routing/routes-list';
 import { Subscription } from 'rxjs';
 import { Constants } from '../common/constants';
+import { MongooseSetUpService } from '../core/services/mongoose-set-up-service/mongoose-set-up.service';
 
 @Component({
   selector: 'app-mongoose-set-up',

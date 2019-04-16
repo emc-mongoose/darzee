@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MongooseSetUpService } from '../../mongoose-set-up-service/mongoose-set-up.service';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Subscription } from 'rxjs';
+import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
 
 @Component({
   selector: 'app-nodes',
