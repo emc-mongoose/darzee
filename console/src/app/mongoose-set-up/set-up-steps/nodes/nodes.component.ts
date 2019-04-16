@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
+import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 
 @Component({
   selector: 'app-nodes',
@@ -11,6 +12,8 @@ import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-serv
   providers: []
 })
 export class NodesComponent implements OnInit {
+
+  public savedMongooseNodes: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>(); 
 
   displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
 
@@ -24,7 +27,14 @@ export class NodesComponent implements OnInit {
   constructor(
     private mongooseSetUpService: MongooseSetUpService,
     private controlApiService: ControlApiService
-    ) { }
+    ) { 
+      this.savedMongooseNodes = this.mongooseSetUpService.getSavedMongooseNodes();
+      this.savedMongooseNodes.subscribe(
+        savedNode => { 
+          console.log(`Saved node: ${JSON.stringify(savedNode)}`);
+        }
+      )
+    }
 
   ngOnInit() {
     this.displayingIpAddresses = this.mongooseSetUpService.getSlaveNodesList();
@@ -37,11 +47,21 @@ export class NodesComponent implements OnInit {
   ngOnDestroy() { 
     this.onConfirmNodesConfigurationClicked(); 
     this.slaveNodesSubscription.unsubscribe(); 
+
   }
 
   // MARK: - Public 
 
   public onAddIpButtonClicked(entredIpAddress: string): void {
+    let savedNode = new MongooseRunNode(this.entredIpAddress);
+    try { 
+      this.mongooseSetUpService.saveMongooseNodes(savedNode);
+    } catch (error) { 
+      console.log(`Requested Mongoose run node won't be saved. Details: ${JSON.stringify(error)}`);
+      alert(`Node won't be saved.`);
+    }
+
+
     console.log(`Enterd IP Address: ${this.entredIpAddress}`)
     const regExpr = new
       RegExp('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\:([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$');

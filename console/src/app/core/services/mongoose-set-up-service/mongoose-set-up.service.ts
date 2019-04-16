@@ -9,6 +9,7 @@ import { PrometheusConfigurationEditor } from 'src/app/common/FileOperations/Pro
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { ContainerServerService } from 'src/app/core/services/container-server/container-server-service';
 import { map } from 'rxjs/operators';
+import { MongooseRunNode } from '../../models/mongoose-run-node.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,10 @@ export class MongooseSetUpService {
   unprocessedScenario: String;
 
   private slaveNodes$: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]);
+  private savedMongooseNodes$: BehaviorSubject<MongooseRunNode[]> = new BehaviorSubject<MongooseRunNode[]>([]);
+
   private unprocessedConfiguration: Object;
+  private savedMongooseNodes: MongooseRunNode[] = []; 
 
   constructor(private controlApiService: ControlApiService,
     private containerServerService: ContainerServerService,
@@ -60,6 +64,18 @@ export class MongooseSetUpService {
   public setNodesData(data: String[]) {
     this.slaveNodes$.next(data);
     this.mongooseSetupInfoModel.nodesData = data;
+  }
+
+  public saveMongooseNodes(newNode: MongooseRunNode) { 
+    if (this.savedMongooseNodes.includes(newNode)) { 
+      throw new Error(`Node with address ${newNode.resourceLocation} is already exist.`);
+    }
+    this.savedMongooseNodes.push(newNode);
+    this.savedMongooseNodes$.next(this.savedMongooseNodes);
+  }
+
+  public getSavedMongooseNodes(): Observable<MongooseRunNode[]> { 
+    return this.savedMongooseNodes$.asObservable(); 
   }
 
   public setUnprocessedConfiguration(configuration: Object) {
