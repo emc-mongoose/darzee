@@ -2,14 +2,12 @@ import { Injectable } from '@angular/core';
 import { MongooseSetupInfoModel } from './mongoose-set-up-info.model';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Constants } from 'src/app/common/constants';
-import { Observable, BehaviorSubject, config } from 'rxjs';
-import { DateFormatPipe } from 'src/app/common/date-format-pipe';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { PrometheusConfigurationEditor } from 'src/app/common/FileOperations/PrometheusConfigurationEditor';
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { ContainerServerService } from 'src/app/core/services/container-server/container-server-service';
-import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prometheus-api.service';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -29,9 +27,7 @@ export class MongooseSetUpService {
 
   constructor(private controlApiService: ControlApiService,
     private containerServerService: ContainerServerService,
-    private prometheusApiService: PrometheusApiService,
-    private http: HttpClient,
-    private dateFormatPipe: DateFormatPipe) {
+    private http: HttpClient) {
 
     this.updatePrometheusConfiguration();
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.slaveNodes$);
@@ -42,7 +38,6 @@ export class MongooseSetUpService {
         this.slaveNodes$.next(this.mongooseSetupInfoModel.nodesData);
       });
   }
-
 
   // MARK: - Getters & Setters 
 
