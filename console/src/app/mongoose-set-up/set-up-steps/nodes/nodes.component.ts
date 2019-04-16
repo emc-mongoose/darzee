@@ -57,8 +57,8 @@ export class NodesComponent implements OnInit {
     try { 
       this.mongooseSetUpService.saveMongooseNodes(savedNode);
     } catch (error) { 
-      console.log(`Requested Mongoose run node won't be saved. Details: ${JSON.stringify(error)}`);
-      alert(`Node won't be saved.`);
+      console.log(`Requested Mongoose run node won't be saved. Details: ${error}`);
+      alert(`Requested Mongoose run node won't be saved. Details: ${error}`);
     }
 
 
