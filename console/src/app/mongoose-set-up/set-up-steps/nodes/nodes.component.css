@@ -1,3 +1,41 @@
+:host { 
+    display: block;
+    margin: calc(1%) calc(5%);
+}
+
+.node-input-table-wrapper { 
+    /* background: black; */
+    /* border: 1px black solid; */
+    background-color: aliceblue;
+    display: table;
+    border-collapse: separate;
+    border-spacing: 30px 0; 
+}
+
+.node-input-elements { 
+    display: table-row;
+}
+
+.node-input-elements { 
+    /* background-color: blue; */
+}
+
+.node-input { 
+    display: table-cell;
+    /* background-color: pink; */
+}
+
+.elem1 { 
+    width: calc(100%);
+    /* background-color: green; */
+}
+
+.elem2 { 
+    width: calc(100%);
+    /* background-color: purple; */
+}
+
+
 .w3-container {
     background: #FFFFFF;
     box-shadow: 0px 0px 40px 0px
@@ -14,6 +52,11 @@
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+
+.node-entring-form { 
+    margin: 10px 10px; 
 }
 
 .column {
