@@ -92,7 +92,7 @@ export class MongooseSetUpService {
 
     try {
       let targetConfiguration: any = this.unprocessedConfiguration;
-      targetConfiguration.load.step.node.addrs = this.savedMongooseNodes;
+      targetConfiguration.load.step.node.addrs = this.mongooseSetupInfoModel.nodesData;
       this.unprocessedConfiguration = targetConfiguration;
     } catch (error) {
       alert("Unable to add additional nodes to set up. Reason: " + error);

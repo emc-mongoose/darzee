@@ -4,6 +4,7 @@ import { Constants } from 'src/app/common/constants';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Subscription } from 'rxjs';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -48,11 +49,13 @@ export class ConfigurationEditingComponent implements OnInit {
   // NOTE: Private methods
 
   private fetchConfigurationFromMongoose() {
-    this.monitoringApiSubscriptions.add(this.controlApiService.getMongooseConfiguration(Constants.Configuration.MONGOOSE_HOST_IP).subscribe(
+    let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:${environment.mongoosePort}`;
+    this.monitoringApiSubscriptions.add(this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).subscribe(
       configuration => {
         // TODO: Add entred nodes into configuration 
         // this.mongooseSetUpService.setUnprocessedConfiguration(configuration);
-        this.jsonEditorData = configuration
+        this.jsonEditorData = configuration;
+        console.log(`Applying Mongoose configuration: ${JSON.stringify(configuration)}`);
       },
       error => {
         // TODO: Hadnel error correctly. Maybe retry fetching the configuration? 
