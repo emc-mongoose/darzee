@@ -42,7 +42,6 @@ export class MongooseSetUpComponent implements OnInit {
     this.initSetUpTabs();
     let defaultTabNumber = 0;
     this.openUpTab(defaultTabNumber);
-    console.log("Set up module is being loaded.");
   }
   
   ngOnInit() { }

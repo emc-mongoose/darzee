@@ -4,6 +4,7 @@ import { Constants } from 'src/app/common/constants';
 import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
 import { Observable } from 'rxjs';
 import { map, retry } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +19,13 @@ export class ControlApiService {
   private mongooseHostIp = Constants.Configuration.MONGOOSE_HOST_IP;
 
   constructor(private http: HttpClient) {
-    console.log("Starting mongoose.")
+    this.mongooseHostIp = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:${environment.mongoosePort}`;
     this.getMongooseConfiguration(this.mongooseHostIp).subscribe(
       result => { 
         console.log(`Mongoose configuration has responded with result: ${result}`);
+      },
+      error => { 
+        console.error(`Unable to get Mongoose configuration from source ${this.mongooseHostIp}. Details: ${JSON.stringify(error)}`);
       }
     );
   }
@@ -48,9 +52,9 @@ export class ControlApiService {
   }
 
   // NOTE: Returning Mongoose configuration as JSON 
-  public getMongooseConfiguration(mongooseHostIp: string): Observable<any> {
+  public getMongooseConfiguration(mongooseAddress: string): Observable<any> {
     let configEndpoint = MongooseApi.Config.CONFIG;
-    return this.http.get(Constants.Http.HTTP_PREFIX + mongooseHostIp + configEndpoint, Constants.Http.JSON_CONTENT_TYPE);
+    return this.http.get(mongooseAddress + configEndpoint, Constants.Http.JSON_CONTENT_TYPE);
   }
 
 

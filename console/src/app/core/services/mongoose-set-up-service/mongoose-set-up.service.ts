@@ -80,7 +80,6 @@ export class MongooseSetUpService {
   }
 
   public getUnprocessedConfiguration(): Object {
-
     if (!this.isSlaveNodesFieldExistInConfiguration(this.unprocessedConfiguration)) {
       let misleadingMsg = "Unable to find slave nodes within the confguration ('addrs' field).";
       throw new Error(misleadingMsg);
@@ -93,7 +92,7 @@ export class MongooseSetUpService {
 
     try {
       let targetConfiguration: any = this.unprocessedConfiguration;
-      targetConfiguration.load.step.node.addrs = this.mongooseSetupInfoModel.nodesData;
+      targetConfiguration.load.step.node.addrs = this.savedMongooseNodes;
       this.unprocessedConfiguration = targetConfiguration;
     } catch (error) {
       alert("Unable to add additional nodes to set up. Reason: " + error);
