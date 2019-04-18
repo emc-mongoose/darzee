@@ -1,4 +1,4 @@
-import { MongooseRunStatus } from '../mongoose-run-status';
+import { MongooseRunStatus } from './mongoose-run-status';
 import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
 

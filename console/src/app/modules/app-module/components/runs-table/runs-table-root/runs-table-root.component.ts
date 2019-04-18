@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MongooseRunStatus } from 'src/app/core/mongoose-run-status';
+import { MongooseRunStatus } from 'src/app/core/models/mongoose-run-status';
 import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
 import { MongooseRunTab } from './model/monoose-run-tab.model';

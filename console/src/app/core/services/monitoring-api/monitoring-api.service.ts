@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { MongooseRunRecord } from '../../models/run-record.model';
-import { MongooseRunStatus } from '../../mongoose-run-status';
-import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
-import { Observable, BehaviorSubject, forkJoin, of, throwError, zip, timer } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Constants } from 'src/app/common/constants';
-import { MongooseMetrics } from '../mongoose-api-models/MongooseMetrics';
-import { filter, map, mergeMap, catchError } from 'rxjs/operators';
-import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
+import { Injectable } from "@angular/core";
+import { Constants } from "src/app/common/constants";
+import { BehaviorSubject, Observable, of } from "rxjs";
+import { MongooseRunRecord } from "../../models/run-record.model";
+import { PrometheusApiService } from "../prometheus-api/prometheus-api.service";
+import { MongooseRunStatus } from "../../models/mongoose-run-status";
+import { mergeMap, map, catchError } from "rxjs/operators";
+import { MongooseMetrics } from "../mongoose-api-models/MongooseMetrics";
+import { MongooseApi } from "../mongoose-api-models/MongooseApi.model";
+import { HttpClient } from "@angular/common/http";
 
 
 @Injectable({

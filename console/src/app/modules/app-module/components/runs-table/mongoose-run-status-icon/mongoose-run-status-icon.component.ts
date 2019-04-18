@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { MongooseRunStatus } from 'src/app/core/mongoose-run-status';
+import { MongooseRunStatus } from 'src/app/core/models/mongoose-run-status';
 
 @Component({
   selector: 'app-mongoose-run-status-icon',
