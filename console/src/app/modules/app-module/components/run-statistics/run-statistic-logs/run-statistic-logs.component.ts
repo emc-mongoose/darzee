@@ -3,8 +3,8 @@ import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monit
 import { BasicTab } from 'src/app/common/BasicTab/BasicTab';
 import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RouteParams } from 'src/app/Routing/params.routes';
-import { RoutesList } from 'src/app/Routing/routes-list';
+import { RouteParams } from 'src/app/modules/app-module/Routing/params.routes';
+import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
