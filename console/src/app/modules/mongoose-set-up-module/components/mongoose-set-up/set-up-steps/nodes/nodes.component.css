@@ -5,13 +5,18 @@
     position: relative;
 }
 
+.table { 
+    overflow-y: scroll;
+    margin-bottom: calc(5%);
+}
+
 .nodes-input-block { 
     display: block;
     margin-bottom: calc(15%);
 }
 .node-input-table-wrapper { 
-    
-    margin-bottom: calc(5%);
+    z-index: 9999;
+    margin-bottom: calc(10vh);
     width: calc(90%);
     position: fixed; 
     bottom: 0%;
