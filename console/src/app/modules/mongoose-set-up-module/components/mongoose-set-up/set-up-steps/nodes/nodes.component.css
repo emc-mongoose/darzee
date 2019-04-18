@@ -4,6 +4,7 @@
 }
 
 .node-input-table-wrapper { 
+    margin-bottom: calc(15%);
     background-color: aliceblue;
     display: table;
     border-collapse: separate;
