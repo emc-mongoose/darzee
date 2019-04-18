@@ -15,12 +15,16 @@
     margin-bottom: calc(15%);
 }
 .node-input-table-wrapper { 
+    padding-bottom: calc(0.5%);
+    padding-top: calc(0.5%);
+
     z-index: 9999;
     margin-bottom: calc(10vh);
     width: calc(90%);
     position: fixed; 
     bottom: 0%;
-    background-color: gainsboro;
+    background-color: rgba(230, 255, 228, 0.5);
+    
     display: table;
     border-collapse: separate;
     border-spacing: 30px 0; 
