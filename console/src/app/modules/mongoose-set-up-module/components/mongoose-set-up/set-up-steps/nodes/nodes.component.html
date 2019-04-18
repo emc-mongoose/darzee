@@ -72,12 +72,12 @@
       <span class="input-group-text" id="basic-addon1">IP:</span>
     </div>
 
-    <div class="node-input elem1">
+    <div class="node-input ip-address-input">
       <input #ipAd [(ngModel)]="entredIpAddress" class="form-control mr-sm-2" type="search"
         placeholder="Enter node IP here..." aria-label="Search">
     </div>
 
-    <div class="node-input elem2">
+    <div class="node-input add-ip-btn">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
         (click)="onAddIpButtonClicked(ipAd.textContent)">Add</button>
     </div>

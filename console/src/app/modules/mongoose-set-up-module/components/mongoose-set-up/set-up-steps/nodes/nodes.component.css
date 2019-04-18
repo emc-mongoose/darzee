@@ -14,23 +14,16 @@
     display: table-row;
 }
 
-.node-input-elements { 
-    /* background-color: blue; */
-}
-
 .node-input { 
     display: table-cell;
-    /* background-color: pink; */
 }
 
-.elem1 { 
+.ip-address-input { 
     width: calc(100%);
-    /* background-color: green; */
 }
 
-.elem2 { 
+.add-ip-btn { 
     width: calc(100%);
-    /* background-color: purple; */
 }
 
 
