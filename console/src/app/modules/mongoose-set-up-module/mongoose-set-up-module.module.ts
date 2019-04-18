@@ -1,5 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { AppRoutingModule } from "../app-module/Routing/app-routing.module";
+import { FormsModule } from "@angular/forms";
 import { NgJsonEditorModule } from "ang-jsoneditor";
 import { CodemirrorModule } from "@ctrl/ngx-codemirror";
 import { MongooseSetUpComponent } from "./mongoose-set-up/mongoose-set-up.component";
@@ -11,8 +13,7 @@ import { SetUpFooterComponent } from "./mongoose-set-up/set-up-footer/set-up-foo
 import { ControlApiService } from "src/app/core/services/control-api/control-api.service";
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
 import { DateFormatPipe } from "src/app/common/date-format-pipe";
-import { AppRoutingModule } from "src/app/modules/app-module/app-routing.module";
-import { FormsModule } from "@angular/forms";
+
 
 @NgModule({
   imports: [

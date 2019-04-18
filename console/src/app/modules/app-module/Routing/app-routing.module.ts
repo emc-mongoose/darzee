@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule} from '@angular/router';
-import { routes } from './Routing/routes';
+import { routes } from './routes';
 
 
 @NgModule({
@@ -12,3 +12,4 @@ import { routes } from './Routing/routes';
   ]
 })
 export class AppRoutingModule { }
+
