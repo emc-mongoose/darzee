@@ -12,4 +12,3 @@ import { routes } from './routes';
   ]
 })
 export class AppRoutingModule { }
-

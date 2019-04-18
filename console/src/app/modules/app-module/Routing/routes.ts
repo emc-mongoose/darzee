@@ -1,8 +1,8 @@
 import { Routes } from "@angular/router";
-import { MongooseSetUpComponent } from '../../mongoose-set-up-module/mongoose-set-up/mongoose-set-up.component';
-import { ConfigurationEditingRootComponent } from '../../mongoose-set-up-module/mongoose-set-up/set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component';
-import { NodesComponent } from '../../mongoose-set-up-module/mongoose-set-up/set-up-steps/nodes/nodes.component';
-import { ScenariosComponent } from '../../mongoose-set-up-module/mongoose-set-up/set-up-steps/scenarios-set-up/scenarios/scenarios.component';
+import { MongooseSetUpComponent } from '../../mongoose-set-up-module/components/mongoose-set-up/mongoose-set-up.component';
+import { ConfigurationEditingRootComponent } from '../../mongoose-set-up-module/components/mongoose-set-up/set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component';
+import { NodesComponent } from '../../mongoose-set-up-module/components/mongoose-set-up/set-up-steps/nodes/nodes.component';
+import { ScenariosComponent } from '../../mongoose-set-up-module/components/mongoose-set-up/set-up-steps/scenarios-set-up/scenarios/scenarios.component';
 import { RunStatisticsComponent } from '../components/run-statistics/run-statistics.component';
 import { RoutesList } from "./routes-list";
 import { RunStatisticLogsComponent } from "../components/run-statistics/run-statistic-logs/run-statistic-logs.component";
