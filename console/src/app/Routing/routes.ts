@@ -9,7 +9,7 @@ import { RunStatisticLogsComponent } from "../run-statistics/run-statistic-logs/
 import { RunStatisticsChartsComponent } from "../run-statistics/run-statistics-charts/run-statistics-charts.component";
 import { RouteParams } from "./params.routes";
 import { RunsTableRootComponent } from "../runs-table/runs-table-root/runs-table-root.component";
-import { SETUP_ROUTES } from "../modules/mongoose-set-up-module/Routing/mongoose-setup.routes";
+import { SETUP_ROUTES } from "../modules/mongoose-set-up-module/set-up-routing/mongoose-setup.routes";
 
 
 export const routes: Routes = [
