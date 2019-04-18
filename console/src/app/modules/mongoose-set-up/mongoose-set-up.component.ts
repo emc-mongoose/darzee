@@ -1,18 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { MongooseSetupTab } from './mongoose-setup-tab.model';
-import { slideAnimation } from '../core/animations';
-import { RoutesList } from '../Routing/routes-list';
-import { Subscription } from 'rxjs';
-import { Constants } from '../common/constants';
-import { MongooseSetUpService } from '../core/services/mongoose-set-up-service/mongoose-set-up.service';
+import { Component, OnInit } from "@angular/core";
+import { RoutesList } from "src/app/Routing/routes-list";
+import { MongooseSetupTab } from "../mongoose-set-up-module/mongoose-set-up/mongoose-setup-tab.model";
+import { Subscription } from "rxjs";
+import { Router } from "@angular/router";
+import { MongooseSetUpService } from "src/app/core/services/mongoose-set-up-service/mongoose-set-up.service";
+import { Constants } from "src/app/common/constants";
 
 @Component({
   selector: 'app-mongoose-set-up',
   templateUrl: './mongoose-set-up.component.html',
   styleUrls: ['./mongoose-set-up.component.css'],
   animations: [
-    slideAnimation
+    // slideAnimation
   ]
 })
 

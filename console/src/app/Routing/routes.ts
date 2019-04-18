@@ -1,8 +1,8 @@
 import { Routes } from "@angular/router";
-import { MongooseSetUpComponent } from '../mongoose-set-up/mongoose-set-up.component';
-import { ConfigurationEditingRootComponent } from '../mongoose-set-up/set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component';
-import { NodesComponent } from '../mongoose-set-up/set-up-steps/nodes/nodes.component';
-import { ScenariosComponent } from '../mongoose-set-up/set-up-steps/scenarios-set-up/scenarios/scenarios.component';
+import { MongooseSetUpComponent } from '../modules/mongoose-set-up-module/mongoose-set-up/mongoose-set-up.component';
+import { ConfigurationEditingRootComponent } from '../modules/mongoose-set-up-module/mongoose-set-up/set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component';
+import { NodesComponent } from '../modules/mongoose-set-up-module/mongoose-set-up/set-up-steps/nodes/nodes.component';
+import { ScenariosComponent } from '../modules/mongoose-set-up-module/mongoose-set-up/set-up-steps/scenarios-set-up/scenarios/scenarios.component';
 import { RunStatisticsComponent } from '../run-statistics/run-statistics.component';
 import { RoutesList } from "./routes-list";
 import { RunStatisticLogsComponent } from "../run-statistics/run-statistic-logs/run-statistic-logs.component";
@@ -25,15 +25,6 @@ export const routes: Routes = [
     { path: "", redirectTo: RoutesList.RUNS, pathMatch: 'full'},
     { path: RoutesList.MONGOOSE_COMFIGURATION, component: ConfigurationEditingRootComponent},
   
-    // MARK: - Mongoose Set Up pagesRunsTableRootComponent
-    { path: RoutesList.MONGOOSE_SETUP, component: MongooseSetUpComponent,
-      children: [
-        { path: RoutesList.NODES, component: NodesComponent },
-        { path: RoutesList.MONGOOSE_COMFIGURATION, component: ConfigurationEditingRootComponent },
-        { path: RoutesList.SCENARIO, component: ScenariosComponent },
-        { path: RoutesList.RUNS, redirectTo: RoutesList.RUNS, pathMatch: 'full'},
-        { path: '**', redirectTo: RoutesList.RUNS, pathMatch: 'full'}
-      ]},
-
+    { path: RoutesList.MONGOOSE_SETUP, component: MongooseSetUpComponent}, 
       { path: "**", component: RunsTableRootComponent }
   ];
