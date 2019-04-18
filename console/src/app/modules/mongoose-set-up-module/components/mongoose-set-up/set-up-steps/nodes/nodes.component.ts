@@ -4,6 +4,8 @@ import { ControlApiService } from 'src/app/core/services/control-api/control-api
 import { Subscription, Observable } from 'rxjs';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
+import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
+import { ResourceLocatorType } from 'src/app/core/models/address-type';
 
 @Component({
   selector: 'app-nodes',
@@ -26,9 +28,11 @@ export class NodesComponent implements OnInit {
   // MARK: - Lifecycle 
   constructor(
     private mongooseSetUpService: MongooseSetUpService,
-    private controlApiService: ControlApiService
+    private controlApiService: ControlApiService,
+    private mongooseDataSharedService: MongooseDataSharedServiceService
     ) { 
-      this.savedMongooseNodes$ = this.mongooseSetUpService.getSavedMongooseNodes();
+      this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes(); 
+      // this.savedMongooseNodes$ = this.mongooseSetUpService.getSavedMongooseNodes();
     }
 
   ngOnInit() {
@@ -72,7 +76,8 @@ export class NodesComponent implements OnInit {
       return;
     } 
 
-    this.mongooseSetUpService.addNode(entredIpAddress);
+    let addedMongooseNode = new MongooseRunNode(entredIpAddress, ResourceLocatorType.IP)
+    this.mongooseSetUpService.addNode(addedMongooseNode);
   }
 
   public deleteIp(targetIp: String): void {
@@ -87,7 +92,7 @@ export class NodesComponent implements OnInit {
     this.mongooseSetUpService.confirmNodeConfiguration();
   }
 
-  public onRunNodeSelect(selectedNodeAddress: any) { 
-    alert(`Checked ip ${selectedNodeAddress}`);
+  public onRunNodeSelect(selectedNode: MongooseRunNode) { 
+    this.mongooseSetUpService.addNode(selectedNode);
   }
 }

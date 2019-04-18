@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MongooseRunNode } from '../../models/mongoose-run-node.model';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 import { ResourceLocatorType } from '../../models/address-type';
 
 @Injectable({
@@ -30,7 +30,7 @@ export class MongooseDataSharedServiceService {
 
    private configureDefaultMongooseRunNodes() { 
      // NOTE: Default Mongoose run node is an IP address. 
-     let defaultMongooseRunNodeResource = `${environment.mongooseIp}:${environment.mongoosePort}`;
+     let defaultMongooseRunNodeResource = `${environment.mongooseIp}:${environment.mongoosePort}`
     let defaultMongooseRunNode = new MongooseRunNode(defaultMongooseRunNodeResource, ResourceLocatorType.IP); 
 
     let defaultMongooseRunNodes = [defaultMongooseRunNode];

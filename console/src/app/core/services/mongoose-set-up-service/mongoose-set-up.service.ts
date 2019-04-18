@@ -10,6 +10,7 @@ import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { ContainerServerService } from 'src/app/core/services/container-server/container-server-service';
 import { map } from 'rxjs/operators';
 import { MongooseRunNode } from '../../models/mongoose-run-node.model';
+import { ResourceLocatorType } from '../../models/address-type';
 
 @Injectable({
   providedIn: 'root'
@@ -21,13 +22,15 @@ export class MongooseSetUpService {
   // NOTE: Unprocessed values are the values that weren't validated via the confirmation button. 
   // Unprocessed parameters are Object types since the UI displays it, yet they could be modified within the service.
   // ... Passing them by reference (object-type), the UI will be updated automatically.
-  unprocessedScenario: String;
+  public unprocessedScenario: String;
 
   private slaveNodes$: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]);
   private savedMongooseNodes$: BehaviorSubject<MongooseRunNode[]> = new BehaviorSubject<MongooseRunNode[]>([]);
 
   private unprocessedConfiguration: Object;
   private savedMongooseNodes: MongooseRunNode[] = []; 
+
+  private selectedMongooseRunNodes: MongooseRunNode[] = [];
 
   constructor(private controlApiService: ControlApiService,
     private containerServerService: ContainerServerService,
@@ -53,6 +56,7 @@ export class MongooseSetUpService {
     return this.slaveNodes$.asObservable();
   }
 
+  
   public setConfiguration(configuration: Object) {
     this.mongooseSetupInfoModel.configuration = configuration;
   }
@@ -114,14 +118,17 @@ export class MongooseSetUpService {
   // MARK: - Public 
 
 
-  public addNode(ip: String) {
-    if (this.isIpExist(ip)) {
-      alert("IP " + ip + " has already been added to the slave-nodes list.");
-      return;
+  public addNode(node: MongooseRunNode) {
+
+    // NOTE: As for now, we're processing only IP addresses.
+    if (node.getResourceType() == ResourceLocatorType.IP) { 
+      let targetIp = node.getResourceLocation();
+      if (this.isIpExist(targetIp)) {
+        alert(`IP ${targetIp} has already been added to the slave-nodes list.`);
+        return;
+      }
+      this.selectedMongooseRunNodes.push(node);
     }
-    const currentSlaveNodesList = this.slaveNodes$.getValue();
-    currentSlaveNodesList.push(ip);
-    this.slaveNodes$.next(currentSlaveNodesList);
   }
 
   public deleteSlaveNode(nodeAddress: String) {

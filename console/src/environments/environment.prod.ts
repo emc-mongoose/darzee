@@ -9,7 +9,7 @@ export const environment = {
   // NOTE: NodeJS Server related configuration. It's used to server .html files ...
   // ... (that's why it's address matches Mongoose Console's address) in production and ...
   // ... to perform POST requests to Prometheus.
-  nodeJsServerIp: '${NODE_SERVER_IMAGE_IP=}',
+  nodeJsServerIp: '${NODE_SERVER_IMAGE_IP}',
   nodeJsServerPort: '${CONSOLE_PORT}',
 
   // NOTE: Mongoose-related configuration 
