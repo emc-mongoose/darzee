@@ -4,7 +4,7 @@ import { Doc } from 'codemirror';
 import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { Constants } from 'src/app/common/constants';
-import { MongooseSetUpService } from 'src/app/mongoose-set-up/mongoose-set-up-service/mongoose-set-up.service';
+import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
 
 
 
