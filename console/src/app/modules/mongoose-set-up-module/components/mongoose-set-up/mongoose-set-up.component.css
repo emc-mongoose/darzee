@@ -11,7 +11,7 @@
 }
 
 .progress, .progress-bar, .progress-bar-displaying { 
-    width: calc(20%);
+    width: calc(25%);
     margin: auto;
     display: inline-block;
     border: 0.5px solid gray;
