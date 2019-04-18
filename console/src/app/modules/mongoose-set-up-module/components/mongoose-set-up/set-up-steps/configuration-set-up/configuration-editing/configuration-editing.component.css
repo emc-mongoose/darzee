@@ -2,12 +2,6 @@
 
 /* NOTE: Configuring content textview */
 
-.scenarios-file-content-header { 
-    position: static;
-    margin-top: 50px;
-    margin-left: 40px;
-}
-
 .scenarios-json-wrapper { 
     position: static;
     width: 100%;

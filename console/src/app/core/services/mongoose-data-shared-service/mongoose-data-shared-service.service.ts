@@ -26,6 +26,10 @@ export class MongooseDataSharedServiceService {
      this.currentAvailableMongooseNodes.push(mongooseRunNode);
      this.availableMongooseNodes$.next(this.currentAvailableMongooseNodes);
    }
+
+   public hasNodeBeenSaved(node: MongooseRunNode) { 
+     return (this.currentAvailableMongooseNodes.indexOf(node) > 0);
+   }
    // MARK: - Private 
 
    private configureDefaultMongooseRunNodes() { 
