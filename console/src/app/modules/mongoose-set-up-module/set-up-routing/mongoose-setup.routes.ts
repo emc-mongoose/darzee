@@ -1,5 +1,5 @@
 import { Routes } from "@angular/router";
-import { RoutesList } from "src/app/Routing/routes-list";
+import { RoutesList } from "src/app/modules/app-module/Routing/routes-list";
 import { MongooseSetUpComponent } from "../mongoose-set-up/mongoose-set-up.component";
 import { NodesComponent } from "../mongoose-set-up/set-up-steps/nodes/nodes.component";
 import { ConfigurationEditingRootComponent } from "../mongoose-set-up/set-up-steps/configuration-set-up/control-editing-root/control-editing-root.component";

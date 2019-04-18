@@ -11,7 +11,7 @@ import { SetUpFooterComponent } from "./mongoose-set-up/set-up-footer/set-up-foo
 import { ControlApiService } from "src/app/core/services/control-api/control-api.service";
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
 import { DateFormatPipe } from "src/app/common/date-format-pipe";
-import { AppRoutingModule } from "src/app/app-routing.module";
+import { AppRoutingModule } from "src/app/modules/app-module/app-routing.module";
 import { FormsModule } from "@angular/forms";
 
 @NgModule({

@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MonitoringApiService } from '../core/services/monitoring-api/monitoring-api.service';
-import { MongooseRunRecord } from '../core/models/run-record.model';
-import { BasicTab } from '../common/BasicTab/BasicTab';
-import { RoutesList } from '../Routing/routes-list';
-import { RouteParams } from '../Routing/params.routes';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from "@angular/core";
+import { RoutesList } from "../Routing/routes-list";
+import { MongooseRunRecord } from "src/app/core/models/run-record.model";
+import { BasicTab } from "src/app/common/BasicTab/BasicTab";
+import { Subscription } from "rxjs";
+import { ActivatedRoute, Router } from "@angular/router";
+import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
+import { RouteParams } from "../Routing/params.routes";
 
 @Component({
   selector: 'app-run-statistics',
