@@ -32,7 +32,6 @@ export class NodesComponent implements OnInit {
     private mongooseDataSharedService: MongooseDataSharedServiceService
     ) { 
       this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes(); 
-      // this.savedMongooseNodes$ = this.mongooseSetUpService.getSavedMongooseNodes();
     }
 
   ngOnInit() {
@@ -52,15 +51,14 @@ export class NodesComponent implements OnInit {
   // MARK: - Public 
 
   public onAddIpButtonClicked(entredIpAddress: string): void {
-    let savedNode = new MongooseRunNode(this.entredIpAddress);
+    let newMongooseNode = new MongooseRunNode(this.entredIpAddress);
     try { 
-      this.mongooseSetUpService.saveMongooseNodes(savedNode);
+      this.mongooseDataSharedService.addMongooseRunNode(newMongooseNode);
     } catch (error) { 
       console.log(`Requested Mongoose run node won't be saved. Details: ${error}`);
       alert(`Requested Mongoose run node won't be saved. Details: ${error}`);
+      return; 
     }
-
-
     console.log(`Enterd IP Address: ${this.entredIpAddress}`)
     const regExpr = new
       RegExp('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\:([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$');

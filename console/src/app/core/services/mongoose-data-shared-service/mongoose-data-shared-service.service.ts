@@ -10,7 +10,7 @@ import { ResourceLocatorType } from '../../models/address-type';
 export class MongooseDataSharedServiceService {
 
   private availableMongooseNodes$: BehaviorSubject<MongooseRunNode[]> = new BehaviorSubject<MongooseRunNode[]>([])
-  private currentAvailableMongooseNodes: MongooseRunNode[] = [];
+  private mongooseRunNodes: MongooseRunNode[] = [];
 
   constructor() {
     this.configureDefaultMongooseRunNodes();
@@ -23,13 +23,14 @@ export class MongooseDataSharedServiceService {
    }
    
    public addMongooseRunNode(mongooseRunNode: MongooseRunNode) { 
-     this.currentAvailableMongooseNodes.push(mongooseRunNode);
-     this.availableMongooseNodes$.next(this.currentAvailableMongooseNodes);
+     if (this.hasMongooseRunNodeBeenSaved(mongooseRunNode)) { 
+      throw new Error(`Node with address "${mongooseRunNode.getResourceLocation()}" is already exist.`);
+     }
+     
+     this.mongooseRunNodes.push(mongooseRunNode);
+     this.availableMongooseNodes$.next(this.mongooseRunNodes);
    }
 
-   public hasNodeBeenSaved(node: MongooseRunNode) { 
-     return (this.currentAvailableMongooseNodes.indexOf(node) > 0);
-   }
    // MARK: - Private 
 
    private configureDefaultMongooseRunNodes() { 
@@ -39,7 +40,21 @@ export class MongooseDataSharedServiceService {
 
     let defaultMongooseRunNodes = [defaultMongooseRunNode];
 
-    this.currentAvailableMongooseNodes = defaultMongooseRunNodes;
+    this.mongooseRunNodes = defaultMongooseRunNodes;
     this.availableMongooseNodes$.next(defaultMongooseRunNodes)
+   }
+
+   private hasMongooseRunNodeBeenSaved(mongooseRunNode: MongooseRunNode): boolean { 
+    var isNodeSaved = false;
+    this.mongooseRunNodes.forEach(node => {
+      let isLocationSame = (node.getResourceLocation() == mongooseRunNode.getResourceLocation());
+      let isResourceTypeSame = (node.getResourceType() == mongooseRunNode.getResourceType());
+      let isNodeSame = (isLocationSame && isResourceTypeSame);
+      if (isNodeSame) { 
+        isNodeSaved = true; 
+        return; 
+      }
+    });
+    return isNodeSaved;
    }
 }

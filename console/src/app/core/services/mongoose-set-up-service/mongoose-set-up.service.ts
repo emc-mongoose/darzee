@@ -70,13 +70,6 @@ export class MongooseSetUpService {
     this.mongooseSetupInfoModel.nodesData = data;
   }
 
-  public saveMongooseNodes(newNode: MongooseRunNode) { 
-    if (this.isMongooseRunNodeSaved(newNode)) { 
-      throw new Error(`Node with address "${newNode.getResourceLocation()}" is already exist.`);
-    }
-    this.savedMongooseNodes.push(newNode);
-    this.savedMongooseNodes$.next(this.savedMongooseNodes);
-  }
 
   public getSavedMongooseNodes(): Observable<MongooseRunNode[]> { 
     return this.savedMongooseNodes$.asObservable(); 
@@ -180,20 +173,6 @@ export class MongooseSetUpService {
     const isIpInUnprocessedList: boolean = this.slaveNodes$.getValue().includes(ip);
     const isIpInConfiguration: boolean = this.mongooseSetupInfoModel.nodesData.includes(ip);
     return ((isIpInUnprocessedList) || (isIpInConfiguration));
-  }
-
-  private isMongooseRunNodeSaved(mongooseRunNode: MongooseRunNode) { 
-    var isNodeSaved = false;
-    this.savedMongooseNodes.forEach(node => {
-      let isLocationSame = (node.getResourceLocation() == mongooseRunNode.getResourceLocation());
-      let isResourceTypeSame = (node.getResourceType() == mongooseRunNode.getResourceType());
-      let isNodeSame = (isLocationSame && isResourceTypeSame);
-      if (isNodeSame) { 
-        isNodeSaved = true; 
-        return; 
-      }
-    });
-    return isNodeSaved;
   }
 
   private getSlaveNodesFromConfiguration(configuration: any): String[] {
