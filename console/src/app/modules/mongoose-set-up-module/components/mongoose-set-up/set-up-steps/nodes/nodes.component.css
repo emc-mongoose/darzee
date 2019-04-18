@@ -36,6 +36,7 @@
 }
 
 
+
 .w3-container {
     background: #FFFFFF;
     box-shadow: 0px 0px 40px 0px
@@ -57,6 +58,20 @@
 
 .node-entring-form { 
     margin: 10px 10px; 
+}
+
+.column-nodes-check { 
+    /* NOTE: Setting minimal width in order to make the column wrap its content */
+    width: calc(1%);
+}
+
+.column-nodes-type { 
+    /* NOTE: Setting minimal width in order to make the column wrap its content */
+    width: calc(1%);
+}
+
+.column-nodes-address { 
+    /* width: calc(1%); */
 }
 
 .column {
