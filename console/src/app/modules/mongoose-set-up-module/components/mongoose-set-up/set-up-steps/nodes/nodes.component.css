@@ -4,8 +4,11 @@
 }
 
 .node-input-table-wrapper { 
-    margin-bottom: calc(15%);
-    background-color: aliceblue;
+    margin-bottom: calc(5%);
+    width: calc(90%);
+    position: fixed; 
+    bottom: 0%;
+    background-color: gainsboro;
     display: table;
     border-collapse: separate;
     border-spacing: 30px 0; 
