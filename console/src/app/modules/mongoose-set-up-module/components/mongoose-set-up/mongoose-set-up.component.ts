@@ -138,6 +138,7 @@ export class MongooseSetUpComponent implements OnInit {
     }
   }
 
+  // NOTE: Function that does open up a specific set up tab. 
   private openUpTab(tabNumber: number) {
     if (tabNumber >= this.setUpTabs.length) {
       console.error("Unable to open tab number ", tabNumber, " since it doesn't exist.");
