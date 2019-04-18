@@ -9,24 +9,13 @@ import { RunStatisticLogsComponent } from "../run-statistics/run-statistic-logs/
 import { RunStatisticsChartsComponent } from "../run-statistics/run-statistics-charts/run-statistics-charts.component";
 import { RouteParams } from "./params.routes";
 import { RunsTableRootComponent } from "../runs-table/runs-table-root/runs-table-root.component";
-import { TestRootComponent } from "../test/test-root/test-root.component";
-import { SetUpRoutingModule } from "../modules/mongoose-set-up-module/Routing/setup-routing.module";
+import { SETUP_ROUTES } from "../modules/mongoose-set-up-module/Routing/mongoose-setup.routes";
 
 
 export const routes: Routes = [
-  // { path: RoutesList.MONGOOSE_SETUP, component: MongooseSetUpComponent}, 
 
-    // { path: RoutesList.NODES, component: NodesComponent },
-
-     // MARK: - Mongoose Set Up pagesRunsTableRootComponent
-     { path: RoutesList.MONGOOSE_SETUP, component: MongooseSetUpComponent,
-      children: [
-        { path: RoutesList.NODES, component: NodesComponent },
-        { path: RoutesList.MONGOOSE_COMFIGURATION, component: ConfigurationEditingRootComponent },
-        { path: RoutesList.SCENARIO, component: ScenariosComponent },
-        { path: RoutesList.RUNS, redirectTo: RoutesList.RUNS, pathMatch: 'full'},
-        { path: '**', redirectTo: RoutesList.RUNS, pathMatch: 'full'}
-      ]},
+     // MARK: - Mongoose Set Up pages
+     { path: RoutesList.MONGOOSE_SETUP, component: MongooseSetUpComponent, children: SETUP_ROUTES},
 
     { path: RoutesList.RUN_STATISTICS + '/:' + RouteParams.ID, component: RunStatisticsComponent,
       children: [

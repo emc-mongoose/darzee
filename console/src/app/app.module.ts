@@ -44,8 +44,8 @@ import { MongooseSetUpModuleModule } from './modules/mongoose-set-up-module/mong
     HttpClientModule,
     AppRoutingModule,
     MongooseSetUpModuleModule,
-    BrowserAnimationsModule,
-  ],
+    BrowserAnimationsModule
+    ],
 
   // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
   // ... since we use it for the set up. 
