@@ -27,6 +27,16 @@ export class MongooseConfigurationParser {
         this.configuration.load.step.node.addrs = existingNodesInConfiguration;
     }
 
+    public getNodesFromConfiguration(configuration: any = this.configuration): string[] { 
+        // NOTE: Returning slave nodes as string array since we're retrieving ...
+        // ... it from JSON. As for now, we don't care about its resource locator ...
+        // ... type.   
+        if (!this.isSlaveNodesFieldExisInConfiguration(configuration)) {
+              throw new Error(`Required nodes field doesn't exist in Mongoose configuration.`)
+          }
+          return configuration.load.step.node.addrs;
+      }
+
     // MARK: - Private 
 
     private isSlaveNodesFieldExisInConfiguration(configuration: any): boolean {
@@ -38,13 +48,5 @@ export class MongooseConfigurationParser {
           (configuration.load.step.node.addrs == undefined));
       }
       
-      private getNodesFromConfiguration(configuration: any): string[] { 
-        // NOTE: Returning slave nodes as string array since we're retrieving ...
-        // ... it from JSON. As for now, we don't care about its resource locator ...
-        // ... type.   
-        if (!this.isSlaveNodesFieldExisInConfiguration(configuration)) {
-              throw new Error(`Required nodes field doesn't exist in Mongoose configuration.`)
-          }
-          return configuration.load.step.node.addrs;
-      }
+      
 }

@@ -95,24 +95,6 @@ export class MongooseSetUpService {
   }
 
   public getUnprocessedConfiguration(): Object {
-    if (!this.isSlaveNodesFieldExistInConfiguration(this.unprocessedConfiguration)) {
-      let misleadingMsg = "Unable to find slave nodes within the confguration ('addrs' field).";
-      throw new Error(misleadingMsg);
-    }
-
-    if (this.mongooseSetupInfoModel.nodesData.length == 0) {
-      console.log("No additional nodes have been added.");
-      return this.unprocessedConfiguration;
-    }
-
-    try {
-      let targetConfiguration: any = this.unprocessedConfiguration;
-      targetConfiguration.load.step.node.addrs = this.mongooseSetupInfoModel.nodesData;
-      this.unprocessedConfiguration = targetConfiguration;
-    } catch (error) {
-      alert("Unable to add additional nodes to set up. Reason: " + error);
-    }
-
     return this.unprocessedConfiguration;
   }
 
@@ -191,24 +173,10 @@ export class MongooseSetUpService {
 
   private getSlaveNodesFromConfiguration(configuration: any): String[] {
     // NOTE: Retrieving existing slave nodes.
-    if (!this.isSlaveNodesFieldExistInConfiguration(configuration)) {
-      let misleadingMsg = "Unable to find slave nodes field within the Mongoose configuration.";
-      alert(misleadingMsg);
-      const emptyList = [];
-      return emptyList;
-    }
-    const slaveNodesList: String[] = configuration.load.step.node.addrs;
-    return slaveNodesList;
+    let mongooseConfigurationParser = new MongooseConfigurationParser(configuration);
+    return mongooseConfigurationParser.getNodesFromConfiguration();
   }
 
-  private isSlaveNodesFieldExistInConfiguration(configuration: any): boolean {
-    // NOTE: Check if 'Address' field exists on received Mongoose JSON configuration. 
-    // As for 04.03.2019, it's located at load -> step -> node -> addrs
-    return !((configuration.load == undefined) &&
-      (configuration.load.step == undefined) &&
-      (configuration.load.step.node == undefined) &&
-      (configuration.load.step.node.addrs == undefined));
-  }
 
   private updatePrometheusConfiguration() {
     // NOTE: An initial fetch of Prometheus configuration.
