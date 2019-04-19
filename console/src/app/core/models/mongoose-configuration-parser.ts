@@ -11,7 +11,7 @@ export class MongooseConfigurationParser {
 
     public getConfigurationWithAdditionalNodes(additionalNodes: MongooseRunNode[]): any { 
         if (additionalNodes.length == 0) { 
-            return additionalNodes; 
+            return this.configuration; 
         }
         if (!this.isSlaveNodesFieldExisInConfiguration(additionalNodes)) { 
             throw new Error(`Invalid Mongoose configuration structure.`);

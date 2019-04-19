@@ -11,6 +11,7 @@ import { ContainerServerService } from 'src/app/core/services/container-server/c
 import { map } from 'rxjs/operators';
 import { MongooseRunNode } from '../../models/mongoose-run-node.model';
 import { ResourceLocatorType } from '../../models/address-type';
+import { MongooseConfigurationParser } from '../../models/mongoose-configuration-parser';
 
 @Injectable({
   providedIn: 'root'
@@ -53,24 +54,9 @@ export class MongooseSetUpService {
     return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
       map(
         (configuration: any) => {
-          if (!this.isSlaveNodesFieldExistInConfiguration(configuration)) {
-            let misleadingMsg = "Unable to find slave nodes within the confguration ('addrs' field).";
-            throw new Error(misleadingMsg);
-          }
-          if (this.savedMongooseNodes.length == 0) {
-            console.log("No additional nodes have been added.");
-            return configuration;
-          }
-
-          try {
-            let savedNodesAsString: string[] = [];
-            this.savedMongooseNodes.forEach(savedNode => {
-              savedNodesAsString.push(savedNode.getResourceLocation());
-            })
-            configuration.load.step.node.addrs = savedNodesAsString;
-          } catch (error) {
-            throw new Error(`Additional nodes couldn't be added to Mpongoose configuration. Details: ${error}`);
-          }
+          let mongooseConfigrationParser: MongooseConfigurationParser = new MongooseConfigurationParser(configuration);
+          configuration = mongooseConfigrationParser.getConfigurationWithAdditionalNodes(this.savedMongooseNodes);
+          console.log(`[Set up service] Configuration with additional nodes: ${JSON.stringify(configuration)}`)
           return configuration;
         }
       )
