@@ -67,7 +67,7 @@ export class ConfigurationEditingComponent implements OnInit {
     this.monitoringApiSubscriptions.add(
       this.mongooseSetUpService.getMongooseConfigurationForSetUp().subscribe(
         configuration => { 
-          console.log(`Fetched configuration (should contain additional nodes): ${configuration}`)
+          console.log(`[Configuraton screen] Fetched configuration (should contain additional nodes): ${JSON.stringify(configuration)}`)
           this.jsonEditorData = configuration;
         },
         error => {

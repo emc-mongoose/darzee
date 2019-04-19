@@ -28,7 +28,7 @@ export class MongooseSetUpService {
   private savedMongooseNodes$: BehaviorSubject<MongooseRunNode[]> = new BehaviorSubject<MongooseRunNode[]>([]);
 
   private unprocessedConfiguration: Object;
-  private savedMongooseNodes: MongooseRunNode[] = []; 
+  private savedMongooseNodes: MongooseRunNode[] = [];
 
   private selectedMongooseRunNodes: MongooseRunNode[] = [];
 
@@ -51,31 +51,30 @@ export class MongooseSetUpService {
   public getMongooseConfigurationForSetUp(): Observable<any> {
     let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:${environment.mongoosePort}`;
     return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
-      (configuration: any) => { 
-        console.log(`[SetUpService] getMongooseConfigurationForSetUp: ${JSON.stringify(configuration)}`)
-        if (!this.isSlaveNodesFieldExistInConfiguration(configuration)) {
-          let misleadingMsg = "Unable to find slave nodes within the confguration ('addrs' field).";
-          throw new Error(misleadingMsg);
-        }
-        console.log(`[Mongoose set up] Fetched configuration: ${JSON.stringify(configuration)}`)
+      map(
+        (configuration: any) => {
+          if (!this.isSlaveNodesFieldExistInConfiguration(configuration)) {
+            let misleadingMsg = "Unable to find slave nodes within the confguration ('addrs' field).";
+            throw new Error(misleadingMsg);
+          }
+          if (this.savedMongooseNodes.length == 0) {
+            console.log("No additional nodes have been added.");
+            return configuration;
+          }
 
-        if (this.savedMongooseNodes.length == 0) {
-          console.log("No additional nodes have been added.");
+          try {
+            let savedNodesAsString: string[] = [];
+            this.savedMongooseNodes.forEach(savedNode => {
+              savedNodesAsString.push(savedNode.getResourceLocation());
+            })
+            configuration.load.step.node.addrs = savedNodesAsString;
+          } catch (error) {
+            throw new Error(`Additional nodes couldn't be added to Mpongoose configuration. Details: ${error}`);
+          }
           return configuration;
         }
-    
-        try {
-          let savedNodesAsString: string[] = []; 
-          this.savedMongooseNodes.forEach(savedNode => { 
-            savedNodesAsString.push(savedNode.getResourceLocation());
-          })
-          configuration.load.step.node.addrs = savedNodesAsString;
-        } catch (error) {
-          alert("Unable to add additional nodes to set up. Reason: " + error);
-        }
-        return configuration;
-      }
-    )
+      )
+    );
   }
 
   public getMongooseRunTargetPort(): String {
@@ -86,7 +85,7 @@ export class MongooseSetUpService {
     return this.slaveNodes$.asObservable();
   }
 
-  
+
   public setConfiguration(configuration: Object) {
     this.mongooseSetupInfoModel.configuration = configuration;
   }
@@ -101,8 +100,8 @@ export class MongooseSetUpService {
   }
 
 
-  public getSavedMongooseNodes(): Observable<MongooseRunNode[]> { 
-    return this.savedMongooseNodes$.asObservable(); 
+  public getSavedMongooseNodes(): Observable<MongooseRunNode[]> {
+    return this.savedMongooseNodes$.asObservable();
   }
 
   public setUnprocessedConfiguration(configuration: Object) {
@@ -143,7 +142,7 @@ export class MongooseSetUpService {
   public addNode(node: MongooseRunNode) {
 
     // NOTE: As for now, we're processing only IP addresses.
-    if (node.getResourceType() == ResourceLocatorType.IP) { 
+    if (node.getResourceType() == ResourceLocatorType.IP) {
       let targetIp = node.getResourceLocation();
       if (this.isIpExist(targetIp)) {
         alert(`IP ${targetIp} has already been added to the slave-nodes list.`);
@@ -185,10 +184,10 @@ export class MongooseSetUpService {
 
   public runMongoose(): Observable<String> {
     // NOTE: Updating Prometheus configuration with respect to Mongoose Run nodes. 
-    this.updatePrometheusConfiguration(); 
+    this.updatePrometheusConfiguration();
     // NOTE: you can get related load step ID from mongoose setup model here. 
     return this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario).pipe(
-      map(runId => { 
+      map(runId => {
         this.mongooseSetupInfoModel.setLoadStepId(runId);
         return runId;
       })
@@ -219,7 +218,6 @@ export class MongooseSetUpService {
   private isSlaveNodesFieldExistInConfiguration(configuration: any): boolean {
     // NOTE: Check if 'Address' field exists on received Mongoose JSON configuration. 
     // As for 04.03.2019, it's located at load -> step -> node -> addrs
-    console.log(`Check availability of step nodes for Object: ${JSON.stringify(configuration)}`);
     return !((configuration.load == undefined) &&
       (configuration.load.step == undefined) &&
       (configuration.load.step.node == undefined) &&
@@ -231,14 +229,14 @@ export class MongooseSetUpService {
     this.http.get(environment.prometheusConfigPath, { responseType: 'text' }).subscribe((configurationFileContent: Object) => {
       console.log(`File content for configuration on path ${environment.prometheusConfigPath} is : ${configurationFileContent}`);
       let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
-      
-      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(this.mongooseSetupInfoModel.nodesData);  
+
+      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(this.mongooseSetupInfoModel.nodesData);
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
-      this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => { 
+      this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => {
         console.log(`Container server response on file save: ${JSON.stringify(response)}. Prometheus will be eventually reloaded.`);
         // NOTE: Prometheus reloads itself once configuration is udpated. 
-        this.containerServerService.requestPrometheusReload().subscribe(prometheusReloadResult => { 
+        this.containerServerService.requestPrometheusReload().subscribe(prometheusReloadResult => {
           console.log(`Prometheus reload response: ${JSON.stringify(prometheusReloadResult)}`);
         })
       })
