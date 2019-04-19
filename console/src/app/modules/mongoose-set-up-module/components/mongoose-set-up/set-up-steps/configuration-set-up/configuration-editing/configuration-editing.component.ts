@@ -22,17 +22,14 @@ export class ConfigurationEditingComponent implements OnInit {
   @ViewChild("apply-button-content-wrppaer") applyNewValueBtn: ElementRef;
   public jsonEditorOptions: JsonEditorOptions;
   // @PARAM jsonEditorData is the data which was originally in JSON 
-
   public jsonEditorData: any = "";
-
-
 
   private monitoringApiSubscriptions: Subscription = new Subscription();
 
 
   constructor(private controlApiService: ControlApiService,
     private mongooseSetUpService: MongooseSetUpService) {
-    this.fetchConfigurationFromMongoose();
+    // this.fetchConfigurationFromMongoose();
     this.configureJsonEditor();
   }
 
@@ -67,6 +64,17 @@ export class ConfigurationEditingComponent implements OnInit {
   }
 
   private configureJsonEditor() {
+    this.monitoringApiSubscriptions.add(
+      this.mongooseSetUpService.getMongooseConfigurationForSetUp().subscribe(
+        configuration => { 
+          console.log(`Fetched configuration (should contain additional nodes): ${configuration}`)
+          this.jsonEditorData = configuration;
+        },
+        error => {
+          alert(`Mongoose's configuration couldn't be loaded. Details: ${error}`);
+        }
+      )
+    )
     this.jsonEditorOptions = new JsonEditorOptions()
 
     // NOTE: JSON Editor could be customized using the following fields: 

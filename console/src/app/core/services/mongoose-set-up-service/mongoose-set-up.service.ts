@@ -48,6 +48,36 @@ export class MongooseSetUpService {
 
   // MARK: - Getters & Setters 
 
+  public getMongooseConfigurationForSetUp(): Observable<any> {
+    let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:${environment.mongoosePort}`;
+    return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
+      (configuration: any) => { 
+        console.log(`[SetUpService] getMongooseConfigurationForSetUp: ${JSON.stringify(configuration)}`)
+        if (!this.isSlaveNodesFieldExistInConfiguration(configuration)) {
+          let misleadingMsg = "Unable to find slave nodes within the confguration ('addrs' field).";
+          throw new Error(misleadingMsg);
+        }
+        console.log(`[Mongoose set up] Fetched configuration: ${JSON.stringify(configuration)}`)
+
+        if (this.savedMongooseNodes.length == 0) {
+          console.log("No additional nodes have been added.");
+          return configuration;
+        }
+    
+        try {
+          let savedNodesAsString: string[] = []; 
+          this.savedMongooseNodes.forEach(savedNode => { 
+            savedNodesAsString.push(savedNode.getResourceLocation());
+          })
+          configuration.load.step.node.addrs = savedNodesAsString;
+        } catch (error) {
+          alert("Unable to add additional nodes to set up. Reason: " + error);
+        }
+        return configuration;
+      }
+    )
+  }
+
   public getMongooseRunTargetPort(): String {
     return this.mongooseSetupInfoModel.getTargetRunPort();
   }
@@ -189,6 +219,7 @@ export class MongooseSetUpService {
   private isSlaveNodesFieldExistInConfiguration(configuration: any): boolean {
     // NOTE: Check if 'Address' field exists on received Mongoose JSON configuration. 
     // As for 04.03.2019, it's located at load -> step -> node -> addrs
+    console.log(`Check availability of step nodes for Object: ${JSON.stringify(configuration)}`);
     return !((configuration.load == undefined) &&
       (configuration.load.step == undefined) &&
       (configuration.load.step.node == undefined) &&

@@ -56,7 +56,11 @@ export class ControlApiService {
   // NOTE: Returning Mongoose configuration as JSON 
   public getMongooseConfiguration(mongooseAddress: string): Observable<any> {
     let configEndpoint = MongooseApi.Config.CONFIG;
-    return this.http.get(mongooseAddress + configEndpoint, Constants.Http.JSON_CONTENT_TYPE);
+
+    var mongooseConfigurationHeaders = new HttpHeaders();
+    mongooseConfigurationHeaders.append('Accept', 'application/json');
+
+    return this.http.get(mongooseAddress + configEndpoint, {headers: mongooseConfigurationHeaders});
   }
 
 
