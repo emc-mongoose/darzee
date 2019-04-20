@@ -34,13 +34,7 @@ export class NodesComponent implements OnInit {
     this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes();
   }
 
-  ngOnInit() {
-    this.displayingIpAddresses = this.mongooseSetUpService.getSlaveNodesList();
-    this.slaveNodesSubscription = this.mongooseSetUpService.getSlaveNodes().subscribe(nodes => {
-      this.displayingIpAddresses = nodes;
-      console.log("Observable salve nodes: " + nodes);
-    })
-  }
+  ngOnInit() { }
 
   ngOnDestroy() {
     // this.onConfirmNodesConfigurationClicked();
@@ -63,17 +57,6 @@ export class NodesComponent implements OnInit {
     this.mongooseSetUpService.addNode(newMongooseNode);
   }
 
-  public deleteIp(targetIp: String): void {
-    this.mongooseSetUpService.deleteSlaveNode(targetIp);
-  }
-
-  // public onConfirmNodesConfigurationClicked() {
-  //   if (this.displayingIpAddresses.length === 0) {
-  //     alert('Please, provide an IP.');
-  //     return;
-  //   }
-  //   this.mongooseSetUpService.confirmNodeConfiguration();
-  // }
 
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
     this.mongooseSetUpService.addNode(selectedNode);
