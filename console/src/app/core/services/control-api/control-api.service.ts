@@ -19,17 +19,7 @@ export class ControlApiService {
   private mongooseHostIp = Constants.Configuration.MONGOOSE_HOST_IP;
 
   constructor(private http: HttpClient) {
-    console.log(`Is environment prod: ${environment.production}`)
-    console.log(`Mongoose address: ${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:${environment.mongoosePort}`)
-    this.mongooseHostIp = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:9999`;
-    this.getMongooseConfiguration(this.mongooseHostIp).subscribe(
-      result => { 
-        console.log(`Mongoose configuration has responded with result: ${JSON.stringify(result)}`);
-      },
-      error => { 
-        console.error(`Unable to get Mongoose configuration from source ${this.mongooseHostIp}. Details: ${JSON.stringify(error)}`);
-      }
-    );
+    this.mongooseHostIp = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:` + `${environment.mongoosePort}`;
   }
 
   // MARK: - Public
