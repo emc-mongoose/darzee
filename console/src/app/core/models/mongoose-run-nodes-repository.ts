@@ -27,6 +27,18 @@ export class MongooseRunNodesRepository {
         this.availableMongooseNodes$.next(this.mongooseRunNodes);
     }
 
+
+    deleteMongooseRunNode(mongooseRunNode: MongooseRunNode) {
+        let filredNodesList = this.availableMongooseNodes$.getValue().filter(node => { 
+            if (node.getResourceType() != mongooseRunNode.getResourceType()) { 
+                // NOTE: No noeed to compare nodes if their resources have different types. 
+                return true; 
+            }
+            return (node.getResourceLocation() != mongooseRunNode.getResourceLocation()); 
+        });
+        this.availableMongooseNodes$.next(filredNodesList);
+      }
+
     // MARK: - Private 
 
     private addMultipleNodes(mongooseNodes: MongooseRunNode[]) { 

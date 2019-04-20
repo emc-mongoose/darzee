@@ -1,11 +1,15 @@
 import { BehaviorSubject } from "rxjs";
+import { MongooseRunNode } from "../../models/mongoose-run-node.model";
+import { ResourceLocatorType } from "../../models/address-type";
 
 export class MongooseSetupInfoModel {
 
 
-    configuration: any; // NOTE: Configuration is represented with JSON 
-    scenario: String; // NOTE: As for 22.02.2019, 'Scenario' is a JavaScript code
-    nodesData: String[]; 
+    private readonly DEFAULT_RESOURCE_TYPE_FOR_NODE: ResourceLocatorType = ResourceLocatorType.IP;
+
+    private runNodes: MongooseRunNode[]; 
+    private configuration: any; // NOTE: Configuration is represented with JSON 
+    private runScenario: String; // NOTE: As for 22.02.2019, 'Scenario' is a JavaScript code
 
     private readonly DEFAULT_CONFIGURATION = "";
     private readonly DEFAULT_SCENARIO = "Load.run();";
@@ -32,16 +36,38 @@ export class MongooseSetupInfoModel {
         return this.configuration.load.step.id;
     }
 
+    public setConfiguration(configuration: any) { 
+        this.configuration = configuration;
+    }
+
+    public setRunScenario(scenario: String) { 
+        this.runScenario = scenario;
+    }
+
+    public setRunNodes(runNodesResourceLocations: string[]) {
+        runNodesResourceLocations.forEach(runNodeResource => { 
+            let retrievedRunNode = new MongooseRunNode(runNodeResource, this.DEFAULT_RESOURCE_TYPE_FOR_NODE);
+            this.runNodes.push(retrievedRunNode);
+        }) 
+    }
+
     // MARK: - Constructor
-    constructor(observableSlaveNodes: BehaviorSubject<String[]>) { 
-        this.configuration = this.DEFAULT_CONFIGURATION;
-        this.scenario = this.DEFAULT_SCENARIO;
-        observableSlaveNodes.subscribe(slaveNodes => { 
-            this.nodesData = slaveNodes;
-        })
+    constructor(runNodes: MongooseRunNode[] = [], configuration: any = undefined, runScenario: String = "") { 
+        this.runNodes = runNodes; 
+        this.configuration = configuration;
+        this.runScenario = runScenario;
+
+        if (this.configuration == undefined) { 
+            this.configuration = this.DEFAULT_CONFIGURATION;
+        }
+
+        if (runScenario = "") { 
+            this.runScenario = this.DEFAULT_SCENARIO;
+        }
     }
 
     // MARK: - Public 
+
     public hasLoadStepId(): boolean { 
         let loadStepId = this.configuration.load.step.id; 
         let emptyValue = ""; 

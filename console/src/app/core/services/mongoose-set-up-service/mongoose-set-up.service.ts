@@ -25,9 +25,6 @@ export class MongooseSetUpService {
   // ... Passing them by reference (object-type), the UI will be updated automatically.
   public unprocessedScenario: String;
 
-  private slaveNodes$: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]);
-  private savedMongooseNodes$: BehaviorSubject<MongooseRunNode[]> = new BehaviorSubject<MongooseRunNode[]>([]);
-
   private unprocessedConfiguration: Object;
   private savedMongooseNodes: MongooseRunNode[] = [];
 
@@ -38,12 +35,12 @@ export class MongooseSetUpService {
     private http: HttpClient) {
 
     this.updatePrometheusConfiguration();
-    this.mongooseSetupInfoModel = new MongooseSetupInfoModel(this.slaveNodes$);
+
+    this.mongooseSetupInfoModel = new MongooseSetupInfoModel();
     this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(this.controlApiService.getMongooseIp())
       .subscribe((configuration: any) => {
-        this.mongooseSetupInfoModel.configuration = configuration;
-        this.mongooseSetupInfoModel.nodesData = this.getSlaveNodesFromConfiguration(configuration);
-        this.slaveNodes$.next(this.mongooseSetupInfoModel.nodesData);
+        this.mongooseSetupInfoModel.setConfiguration(configuration);
+        this.mongooseSetupInfoModel.setRunNodes(this.getSlaveNodesFromConfiguration(configuration));
       });
   }
 
@@ -70,9 +67,6 @@ export class MongooseSetUpService {
     return this.mongooseSetupInfoModel.getTargetRunPort();
   }
 
-  public getSlaveNodes(): Observable<String[]> {
-    return this.slaveNodes$.asObservable();
-  }
 
 
   public setConfiguration(configuration: Object) {
@@ -83,15 +77,6 @@ export class MongooseSetUpService {
     this.mongooseSetupInfoModel.scenario = scenario;
   }
 
-  public setNodesData(data: String[]) {
-    this.slaveNodes$.next(data);
-    this.mongooseSetupInfoModel.nodesData = data;
-  }
-
-
-  public getSavedMongooseNodes(): Observable<MongooseRunNode[]> {
-    return this.savedMongooseNodes$.asObservable();
-  }
 
   public setUnprocessedConfiguration(configuration: Object) {
     this.unprocessedConfiguration = configuration;
@@ -101,34 +86,16 @@ export class MongooseSetUpService {
     return this.unprocessedConfiguration;
   }
 
-  public getSlaveNodesList(): String[] {
-    var slaveNodesList: String[] = this.slaveNodes$.getValue();
-    slaveNodesList.concat(this.mongooseSetupInfoModel.nodesData);
-    return slaveNodesList;
-  }
-
   // MARK: - Public 
 
 
   public addNode(node: MongooseRunNode) {
     // NOTE: As for now, we're processing only IP addresses.
     if (node.getResourceType() == ResourceLocatorType.IP) {
-      let targetIp = node.getResourceLocation();
-      if (this.isIpExist(targetIp)) {
-        alert(`IP ${targetIp} has already been added to the slave-nodes list.`);
-        return;
-      }
       this.selectedMongooseRunNodes.push(node);
     }
   }
 
-  public deleteSlaveNode(nodeAddress: String) {
-    // NOTE: Retaining IP addresses that doesn't match deleting IP. 
-    const filtredNodesList = this.slaveNodes$.getValue().filter(ipAddress => {
-      nodeAddress != ipAddress;
-    });
-    this.slaveNodes$.next(filtredNodesList);
-  }
 
   // NOTE: Confirmation methods are used to validate the parameters which were set via "set" methods.
   // They're separated because of the specific UI. ("confirm" button is placed within the footer, ...
@@ -159,14 +126,7 @@ export class MongooseSetUpService {
 
   // MARK: - Private
 
-  private isIpExist(ip: String): boolean {
-    // NOTE: Prevent addition of duplicate IPs
-    const isIpInUnprocessedList: boolean = this.slaveNodes$.getValue().includes(ip);
-    const isIpInConfiguration: boolean = this.mongooseSetupInfoModel.nodesData.includes(ip);
-    return ((isIpInUnprocessedList) || (isIpInConfiguration));
-  }
-
-  private getSlaveNodesFromConfiguration(configuration: any): String[] {
+  private getSlaveNodesFromConfiguration(configuration: any): dtring[] {
     // NOTE: Retrieving existing slave nodes.
     let mongooseConfigurationParser = new MongooseConfigurationParser(configuration);
     return mongooseConfigurationParser.getNodes();
