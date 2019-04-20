@@ -4,7 +4,6 @@ import { ResourceLocatorType } from "../../models/address-type";
 
 export class MongooseSetupInfoModel {
 
-
     private readonly DEFAULT_RESOURCE_TYPE_FOR_NODE: ResourceLocatorType = ResourceLocatorType.IP;
 
     private runNodes: MongooseRunNode[]; 
@@ -38,6 +37,10 @@ export class MongooseSetupInfoModel {
 
     public setConfiguration(configuration: any) { 
         this.configuration = configuration;
+    }
+
+    public getRunNodes(): MongooseRunNode[] { 
+        return this.runNodes; 
     }
 
     public getConfiguration(): any { 
@@ -88,5 +91,9 @@ export class MongooseSetupInfoModel {
         let loadStepId = this.configuration.load.step.id; 
         let emptyValue = ""; 
         return ((loadStepId != undefined) && (loadStepId != emptyValue));
+    }
+
+    public addRunNode(runNode: MongooseRunNode) { 
+        this.runNodes.push(runNode);
     }
 }

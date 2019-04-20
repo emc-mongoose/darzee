@@ -20,8 +20,6 @@ export class MongooseSetUpService {
 
   private mongooseSetupInfoModel: MongooseSetupInfoModel;
 
-  private selectedMongooseRunNodes: MongooseRunNode[] = [];
-
   constructor(private controlApiService: ControlApiService,
     private containerServerService: ContainerServerService,
     private http: HttpClient) {
@@ -45,7 +43,8 @@ export class MongooseSetUpService {
         (configuration: any) => {
           let mongooseConfigrationParser: MongooseConfigurationParser = new MongooseConfigurationParser(configuration);
           try {
-            configuration = mongooseConfigrationParser.getConfigurationWithAdditionalNodes(this.selectedMongooseRunNodes);
+            let additionalNodes = this.mongooseSetupInfoModel.getRunNodes(); 
+            configuration = mongooseConfigrationParser.getConfigurationWithAdditionalNodes(additionalNodes);
           } catch (error) {
             console.error(`Nodes couldn't be inserted into configuration. Details: ${error}`);
           }
@@ -72,7 +71,7 @@ export class MongooseSetUpService {
   public addNode(node: MongooseRunNode) {
     // NOTE: As for now, we're processing only IP addresses.
     if (node.getResourceType() == ResourceLocatorType.IP) {
-      this.selectedMongooseRunNodes.push(node);
+      this.mongooseSetupInfoModel.addRunNode(node);
     }
   }
 
