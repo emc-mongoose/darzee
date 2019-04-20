@@ -53,7 +53,6 @@ export class NodesComponent implements OnInit {
     }
   }
 
-
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
     this.mongooseSetUpService.addNode(selectedNode);
   }
