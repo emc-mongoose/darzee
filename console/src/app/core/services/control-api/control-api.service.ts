@@ -19,7 +19,7 @@ export class ControlApiService {
   private mongooseHostIp = Constants.Configuration.MONGOOSE_HOST_IP;
 
   constructor(private http: HttpClient) {
-    this.mongooseHostIp = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:` + `9999`;
+    this.mongooseHostIp = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:` + `${environment.mongoosePort}`;
   }
 
   // MARK: - Public
@@ -36,7 +36,7 @@ export class ControlApiService {
     let formData = new FormData();
     formData.append('defaults', JSON.stringify(mongooseJsonConfiguration));
 
-    return this.http.post(Constants.Http.HTTP_PREFIX + this.mongooseHostIp + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), { observe: "response" }).pipe(
+    return this.http.post(this.mongooseHostIp + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), { observe: "response" }).pipe(
       map(runResponse => {
         let runId = runResponse.headers.get(MongooseApi.Headers.ETAG);
         return runId;
