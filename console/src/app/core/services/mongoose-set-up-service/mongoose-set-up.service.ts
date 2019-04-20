@@ -55,8 +55,11 @@ export class MongooseSetUpService {
       map(
         (configuration: any) => {
           let mongooseConfigrationParser: MongooseConfigurationParser = new MongooseConfigurationParser(configuration);
-          configuration = mongooseConfigrationParser.getConfigurationWithAdditionalNodes(this.savedMongooseNodes);
-          console.log(`[Set up service] Configuration with additional nodes: ${JSON.stringify(configuration)}`)
+          try {
+            configuration = mongooseConfigrationParser.getConfigurationWithAdditionalNodes(this.selectedMongooseRunNodes);
+          } catch (error) {
+            console.error(`Nodes couldn't be inserted into configuration. Details: ${error}`);
+          }
           return configuration;
         }
       )
@@ -108,7 +111,6 @@ export class MongooseSetUpService {
 
 
   public addNode(node: MongooseRunNode) {
-
     // NOTE: As for now, we're processing only IP addresses.
     if (node.getResourceType() == ResourceLocatorType.IP) {
       let targetIp = node.getResourceLocation();
@@ -174,7 +176,7 @@ export class MongooseSetUpService {
   private getSlaveNodesFromConfiguration(configuration: any): String[] {
     // NOTE: Retrieving existing slave nodes.
     let mongooseConfigurationParser = new MongooseConfigurationParser(configuration);
-    return mongooseConfigurationParser.getNodesFromConfiguration();
+    return mongooseConfigurationParser.getNodes();
   }
 
 

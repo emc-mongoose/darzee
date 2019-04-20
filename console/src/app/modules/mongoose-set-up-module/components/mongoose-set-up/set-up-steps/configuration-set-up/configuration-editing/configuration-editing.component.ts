@@ -40,7 +40,7 @@ export class ConfigurationEditingComponent implements OnInit {
   ngOnDestroy() {
     console.log("Destroying configuration component. Saved configuration: " + JSON.stringify(this.jsonEditorData));
     // NOTE: Saving up an ubcomfirmed configuration in order to let user edit it later if he'd like to. 
-    this.monitoringApiSubscriptions.unsubscribe(); 
+    this.monitoringApiSubscriptions.unsubscribe();
   }
 
   // NOTE: Private methods
@@ -66,8 +66,7 @@ export class ConfigurationEditingComponent implements OnInit {
   private configureJsonEditor() {
     this.monitoringApiSubscriptions.add(
       this.mongooseSetUpService.getMongooseConfigurationForSetUp().subscribe(
-        configuration => { 
-          console.log(`[Configuraton screen] Fetched configuration (should contain additional nodes): ${JSON.stringify(configuration)}`)
+        configuration => {
           this.jsonEditorData = configuration;
         },
         error => {

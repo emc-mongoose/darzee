@@ -15,7 +15,7 @@ import { ResourceLocatorType } from 'src/app/core/models/address-type';
 })
 export class NodesComponent implements OnInit {
 
-  public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>(); 
+  public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>();
 
   displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
 
@@ -23,28 +23,28 @@ export class NodesComponent implements OnInit {
   nodeConfig: any = null;
   error: HttpErrorResponse = null;
 
-  private slaveNodesSubscription: Subscription = new Subscription(); 
+  private slaveNodesSubscription: Subscription = new Subscription();
 
   // MARK: - Lifecycle 
   constructor(
     private mongooseSetUpService: MongooseSetUpService,
     private controlApiService: ControlApiService,
     private mongooseDataSharedService: MongooseDataSharedServiceService
-    ) { 
-      this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes(); 
-    }
+  ) {
+    this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes();
+  }
 
   ngOnInit() {
     this.displayingIpAddresses = this.mongooseSetUpService.getSlaveNodesList();
-    this.slaveNodesSubscription = this.mongooseSetUpService.getSlaveNodes().subscribe(nodes => { 
+    this.slaveNodesSubscription = this.mongooseSetUpService.getSlaveNodes().subscribe(nodes => {
       this.displayingIpAddresses = nodes;
       console.log("Observable salve nodes: " + nodes);
     })
   }
 
-  ngOnDestroy() { 
-    this.onConfirmNodesConfigurationClicked(); 
-    this.slaveNodesSubscription.unsubscribe(); 
+  ngOnDestroy() {
+    // this.onConfirmNodesConfigurationClicked();
+    this.slaveNodesSubscription.unsubscribe();
 
   }
 
@@ -52,13 +52,34 @@ export class NodesComponent implements OnInit {
 
   public onAddIpButtonClicked(entredIpAddress: string): void {
     let newMongooseNode = new MongooseRunNode(this.entredIpAddress);
-    try { 
+    try {
       this.mongooseDataSharedService.addMongooseRunNode(newMongooseNode);
-    } catch (error) { 
+    } catch (error) {
       console.log(`Requested Mongoose run node won't be saved. Details: ${error}`);
       alert(`Requested Mongoose run node won't be saved. Details: ${error}`);
-      return; 
+      return;
     }
+    // TODO: Add to set ip only selected nodes 
+    this.mongooseSetUpService.addNode(newMongooseNode);
+  }
+
+  public deleteIp(targetIp: String): void {
+    this.mongooseSetUpService.deleteSlaveNode(targetIp);
+  }
+
+  // public onConfirmNodesConfigurationClicked() {
+  //   if (this.displayingIpAddresses.length === 0) {
+  //     alert('Please, provide an IP.');
+  //     return;
+  //   }
+  //   this.mongooseSetUpService.confirmNodeConfiguration();
+  // }
+
+  public onRunNodeSelect(selectedNode: MongooseRunNode) {
+    this.mongooseSetUpService.addNode(selectedNode);
+  }
+
+  private isipValid(entredIpAddress: string) {
     console.log(`Enterd IP Address: ${this.entredIpAddress}`)
     const regExpr = new
       RegExp('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\:([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$');
@@ -69,28 +90,6 @@ export class NodesComponent implements OnInit {
     }
 
     const isIpValid = regExpr.test(entredIpAddress);
-    if (!isIpValid) {
-      alert("IP " + entredIpAddress + " is not valid. Please, provide a valid address.");
-      return;
-    } 
-
-    let addedMongooseNode = new MongooseRunNode(entredIpAddress, ResourceLocatorType.IP)
-    this.mongooseSetUpService.addNode(addedMongooseNode);
-  }
-
-  public deleteIp(targetIp: String): void {
-    this.mongooseSetUpService.deleteSlaveNode(targetIp);
-  }
-
-  public onConfirmNodesConfigurationClicked() {
-    if (this.displayingIpAddresses.length === 0) {
-      alert('Please, provide an IP.');
-      return;
-    }
-    this.mongooseSetUpService.confirmNodeConfiguration();
-  }
-
-  public onRunNodeSelect(selectedNode: MongooseRunNode) { 
-    this.mongooseSetUpService.addNode(selectedNode);
+    return isIpValid;
   }
 }
