@@ -25,9 +25,6 @@ export class MongooseSetUpService {
   // ... Passing them by reference (object-type), the UI will be updated automatically.
   public unprocessedScenario: String;
 
-  private unprocessedConfiguration: Object;
-  private savedMongooseNodes: MongooseRunNode[] = [];
-
   private selectedMongooseRunNodes: MongooseRunNode[] = [];
 
   constructor(private controlApiService: ControlApiService,
@@ -37,7 +34,7 @@ export class MongooseSetUpService {
     this.updatePrometheusConfiguration();
 
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel();
-    this.unprocessedConfiguration = this.controlApiService.getMongooseConfiguration(this.controlApiService.getMongooseIp())
+    this.controlApiService.getMongooseConfiguration(this.controlApiService.getMongooseIp())
       .subscribe((configuration: any) => {
         this.mongooseSetupInfoModel.setConfiguration(configuration);
         this.mongooseSetupInfoModel.setRunNodes(this.getSlaveNodesFromConfiguration(configuration));
@@ -75,15 +72,6 @@ export class MongooseSetUpService {
 
   public setSenario(scenario: String) {
     this.mongooseSetupInfoModel.scenario = scenario;
-  }
-
-
-  public setUnprocessedConfiguration(configuration: Object) {
-    this.unprocessedConfiguration = configuration;
-  }
-
-  public getUnprocessedConfiguration(): Object {
-    return this.unprocessedConfiguration;
   }
 
   // MARK: - Public 
