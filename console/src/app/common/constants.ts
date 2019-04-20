@@ -30,7 +30,7 @@ export namespace Constants {
         // TODO: Fetch Mongoose port from .env file 
         static readonly MONGOOSE_PORT = `${environment.mongoosePort}`
         // TODO: Figure out how to run on multiple nodes 
-        static MONGOOSE_HOST_IP = `${environment.mongooseIp}:${environment.mongoosePort}`
+        static MONGOOSE_HOST_IP = `${environment.mongooseIp}:` + `${environment.mongoosePort}`
 
         // TODO: read port from .env file 
         static readonly PROMETHEUS_IP = `${environment.prometheusIp}:${environment.prometheusPort}`

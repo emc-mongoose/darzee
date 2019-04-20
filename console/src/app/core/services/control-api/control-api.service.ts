@@ -19,7 +19,7 @@ export class ControlApiService {
   private mongooseHostIp = Constants.Configuration.MONGOOSE_HOST_IP;
 
   constructor(private http: HttpClient) {
-    this.mongooseHostIp = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:` + `${environment.mongoosePort}`;
+    this.mongooseHostIp = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:` + `9999`;
   }
 
   // MARK: - Public

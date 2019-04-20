@@ -37,7 +37,7 @@ export class MongooseSetUpService {
   // MARK: - Getters & Setters 
 
   public getMongooseConfigurationForSetUp(): Observable<any> {
-    let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:${environment.mongoosePort}`;
+    let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:` + `${environment.mongoosePort}`;
     return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
       map(
         (configuration: any) => {
@@ -81,6 +81,7 @@ export class MongooseSetUpService {
     // NOTE: Updating Prometheus configuration with respect to Mongoose Run nodes. 
     this.updatePrometheusConfiguration();
     // NOTE: you can get related load step ID from mongoose setup model here. 
+    console.log(`Launching Mongoose with configuration: ${JSON.stringify(this.mongooseSetupInfoModel.getConfiguration())}`)
     return this.controlApiService.runMongoose(this.mongooseSetupInfoModel.getConfiguration(), this.mongooseSetupInfoModel.getRunScenario()).pipe(
       map(runId => {
         this.mongooseSetupInfoModel.setLoadStepId(runId);
