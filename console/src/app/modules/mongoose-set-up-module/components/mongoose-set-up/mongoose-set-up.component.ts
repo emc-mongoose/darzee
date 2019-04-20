@@ -11,9 +11,7 @@ import { MongooseSetUpService } from '../../../../core/services/mongoose-set-up-
   selector: 'app-mongoose-set-up',
   templateUrl: './mongoose-set-up.component.html',
   styleUrls: ['./mongoose-set-up.component.css'],
-  animations: [
-    // slideAnimation
-  ]
+  providers: [MongooseSetUpService]
 })
 
 export class MongooseSetUpComponent implements OnInit {
@@ -164,7 +162,7 @@ export class MongooseSetUpComponent implements OnInit {
 
   private getSetUpTabComplitionStatus(): boolean { 
     // NOTE: Allowing switching set up tab only if target run nodes were selected 
-    let hasMongooseRunNodesSelected = (this.mongooseSetUpService.getTargetRunNodes().length > 1); 
+    let hasMongooseRunNodesSelected = (this.mongooseSetUpService.getTargetRunNodes().length > 0); 
     return hasMongooseRunNodesSelected;
   }
 }
