@@ -20,11 +20,6 @@ export class MongooseSetUpService {
 
   private mongooseSetupInfoModel: MongooseSetupInfoModel;
 
-  // NOTE: Unprocessed values are the values that weren't validated via the confirmation button. 
-  // Unprocessed parameters are Object types since the UI displays it, yet they could be modified within the service.
-  // ... Passing them by reference (object-type), the UI will be updated automatically.
-  public unprocessedScenario: String;
-
   private selectedMongooseRunNodes: MongooseRunNode[] = [];
 
   constructor(private controlApiService: ControlApiService,
@@ -64,18 +59,15 @@ export class MongooseSetUpService {
     return this.mongooseSetupInfoModel.getTargetRunPort();
   }
 
-
-
-  public setConfiguration(configuration: Object) {
-    this.mongooseSetupInfoModel.configuration = configuration;
+  public setConfiguration(mongooseConfiguration: any) {
+    this.mongooseSetupInfoModel.setConfiguration(mongooseConfiguration);
   }
 
-  public setSenario(scenario: String) {
-    this.mongooseSetupInfoModel.scenario = scenario;
+  public setSenario(mongooseRunScenario: String) {
+    this.mongooseSetupInfoModel.setRunScenario(mongooseRunScenario);
   }
 
   // MARK: - Public 
-
 
   public addNode(node: MongooseRunNode) {
     // NOTE: As for now, we're processing only IP addresses.
@@ -85,26 +77,11 @@ export class MongooseSetUpService {
   }
 
 
-  // NOTE: Confirmation methods are used to validate the parameters which were set via "set" methods.
-  // They're separated because of the specific UI. ("confirm" button is placed within the footer, ...
-  // ... and set up pages are isplaying via <router-outler>. If user switches between set-up pages without...
-  // ... confirmation, we could still retain the data inside an "unprocessed" variable (e.g.: unprocessedScenario))
-
- 
-  public confirmScenarioSetup() {
-    const emptyJavascriptCode = "";
-    // NOTE: Retain default scenario stored within mongooseSetupInfoModel. 
-    if ((this.unprocessedScenario == emptyJavascriptCode) || (this.unprocessedScenario == undefined)) {
-      return;
-    }
-    this.setSenario(this.unprocessedScenario);
-  }
-
   public runMongoose(): Observable<String> {
     // NOTE: Updating Prometheus configuration with respect to Mongoose Run nodes. 
     this.updatePrometheusConfiguration();
     // NOTE: you can get related load step ID from mongoose setup model here. 
-    return this.controlApiService.runMongoose(this.mongooseSetupInfoModel.configuration, this.mongooseSetupInfoModel.scenario).pipe(
+    return this.controlApiService.runMongoose(this.mongooseSetupInfoModel.getConfiguration(), this.mongooseSetupInfoModel.getRunScenario()).pipe(
       map(runId => {
         this.mongooseSetupInfoModel.setLoadStepId(runId);
         return runId;
@@ -114,7 +91,7 @@ export class MongooseSetUpService {
 
   // MARK: - Private
 
-  private getSlaveNodesFromConfiguration(configuration: any): dtring[] {
+  private getSlaveNodesFromConfiguration(configuration: any): string[] {
     // NOTE: Retrieving existing slave nodes.
     let mongooseConfigurationParser = new MongooseConfigurationParser(configuration);
     return mongooseConfigurationParser.getNodes();
@@ -127,7 +104,7 @@ export class MongooseSetUpService {
       console.log(`File content for configuration on path ${environment.prometheusConfigPath} is : ${configurationFileContent}`);
       let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
 
-      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(this.mongooseSetupInfoModel.nodesData);
+      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(this.mongooseSetupInfoModel.getStringfiedRunNodes());
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
       this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => {

@@ -40,6 +40,22 @@ export class MongooseSetupInfoModel {
         this.configuration = configuration;
     }
 
+    public getConfiguration(): any { 
+        return this.configuration; 
+    }
+
+    public getRunScenario(): String { 
+        return this.runScenario;
+    }
+
+    public getStringfiedRunNodes(): String[] { 
+        let stringfiedRunNodes: String[] = []; 
+        this.runNodes.forEach(runNode => { 
+            stringfiedRunNodes.push(runNode.toString());
+        })
+        return stringfiedRunNodes; 
+    }
+
     public setRunScenario(scenario: String) { 
         this.runScenario = scenario;
     }

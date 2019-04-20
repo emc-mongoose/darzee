@@ -26,6 +26,10 @@ export class MongooseDataSharedServiceService {
       this.mongooseNodesRepository.addMongooseRunNode(mongooseRunNode);
    }
 
+   public deleteMongooseRunNode(mongooseRunNode: MongooseRunNode) { 
+     this.mongooseNodesRepository.deleteMongooseRunNode(mongooseRunNode);
+       }
+
    // MARK: - Private 
 
    private setupMongooseNodesRepository() { 
