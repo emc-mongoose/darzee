@@ -37,7 +37,7 @@ export class MongooseSetUpService {
   // MARK: - Getters & Setters 
 
   public getMongooseConfigurationForSetUp(): Observable<any> {
-    let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:${environment.mongoosePort}`;
+    let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:` + `${environment.mongoosePort}`;
     return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
       map(
         (configuration: any) => {

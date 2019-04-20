@@ -34,7 +34,7 @@ export class MongooseDataSharedServiceService {
 
    private setupMongooseNodesRepository() { 
      // NOTE: Default Mongoose run node is an IP address. 
-    let defaultMongooseRunNodeResource = `${environment.mongooseIp}:${environment.mongoosePort}`
+    let defaultMongooseRunNodeResource = `${environment.mongooseIp}:` + `${environment.mongoosePort}`
     let defaultMongooseRunNode = new MongooseRunNode(defaultMongooseRunNodeResource, ResourceLocatorType.IP); 
     this.mongooseNodesRepository.addMongooseRunNode(defaultMongooseRunNode);
    }

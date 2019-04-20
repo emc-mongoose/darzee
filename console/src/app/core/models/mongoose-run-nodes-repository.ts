@@ -1,7 +1,5 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import { MongooseRunNode } from "./mongoose-run-node.model";
-import { environment } from "src/environments/environment.prod";
-import { ResourceLocatorType } from "./address-type";
 
 export class MongooseRunNodesRepository {
 
@@ -46,17 +44,6 @@ export class MongooseRunNodesRepository {
             this.mongooseRunNodes.push(mongooseNode);
             this.availableMongooseNodes$.next(this.mongooseRunNodes);
         })
-    }
-
-    private configureDefaultMongooseRunNodes() {
-        // NOTE: Default Mongoose run node is an IP address. 
-        let defaultMongooseRunNodeResource = `${environment.mongooseIp}:${environment.mongoosePort}`
-        let defaultMongooseRunNode = new MongooseRunNode(defaultMongooseRunNodeResource, ResourceLocatorType.IP);
-
-        let defaultMongooseRunNodes = [defaultMongooseRunNode];
-
-        this.mongooseRunNodes = defaultMongooseRunNodes;
-        this.availableMongooseNodes$.next(defaultMongooseRunNodes)
     }
 
     private hasMongooseRunNodeBeenSaved(mongooseRunNode: MongooseRunNode): boolean {
