@@ -21,15 +21,14 @@ export class ConfigurationEditingComponent implements OnInit {
   @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   @ViewChild("apply-button-content-wrppaer") applyNewValueBtn: ElementRef;
   public jsonEditorOptions: JsonEditorOptions;
-  // @PARAM jsonEditorData is the data which was originally in JSON 
-  public jsonEditorData: any = "";
+  // @PARAM jsonEditorConfiguration is the data which was originally in JSON 
+  public jsonEditorConfiguration: any = "";
 
   private monitoringApiSubscriptions: Subscription = new Subscription();
 
 
   constructor(private controlApiService: ControlApiService,
     private mongooseSetUpService: MongooseSetUpService) {
-    // this.fetchConfigurationFromMongoose();
     this.configureJsonEditor();
   }
 
@@ -38,36 +37,19 @@ export class ConfigurationEditingComponent implements OnInit {
   ngOnInit() { }
 
   ngOnDestroy() {
-    console.log("Destroying configuration component. Saved configuration: " + JSON.stringify(this.jsonEditorData));
+    console.log("Destroying configuration component. Saved configuration: " + JSON.stringify(this.jsonEditorConfiguration));
+    this.mongooseSetUpService.setConfiguration(this.jsonEditorConfiguration)
     // NOTE: Saving up an ubcomfirmed configuration in order to let user edit it later if he'd like to. 
     this.monitoringApiSubscriptions.unsubscribe();
   }
 
-  // NOTE: Private methods
-
-  private fetchConfigurationFromMongoose() {
-    let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:${environment.mongoosePort}`;
-    this.monitoringApiSubscriptions.add(this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).subscribe(
-      configuration => {
-        // TODO: Add entred nodes into configuration 
-        // this.mongooseSetUpService.setUnprocessedConfiguration(configuration);
-        this.jsonEditorData = configuration;
-        console.log(`Applying Mongoose configuration: ${JSON.stringify(configuration)}`);
-      },
-      error => {
-        // TODO: Hadnel error correctly. Maybe retry fetching the configuration? 
-        const misleadingMsg = Constants.Alerts.SERVER_DATA_NOT_AVALIABLE;
-        alert(misleadingMsg);
-      }
-    ));
-
-  }
+  // MARK: - Private 
 
   private configureJsonEditor() {
     this.monitoringApiSubscriptions.add(
       this.mongooseSetUpService.getMongooseConfigurationForSetUp().subscribe(
         configuration => {
-          this.jsonEditorData = configuration;
+          this.jsonEditorConfiguration = configuration;
         },
         error => {
           alert(`Mongoose's configuration couldn't be loaded. Details: ${error}`);

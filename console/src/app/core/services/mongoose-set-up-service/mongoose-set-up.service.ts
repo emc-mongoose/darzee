@@ -135,10 +135,7 @@ export class MongooseSetUpService {
   // ... and set up pages are isplaying via <router-outler>. If user switches between set-up pages without...
   // ... confirmation, we could still retain the data inside an "unprocessed" variable (e.g.: unprocessedScenario))
 
-  public confirmConfigurationSetup() {
-    this.setConfiguration(this.unprocessedConfiguration);
-  }
-
+ 
   public confirmScenarioSetup() {
     const emptyJavascriptCode = "";
     // NOTE: Retain default scenario stored within mongooseSetupInfoModel. 
@@ -146,10 +143,6 @@ export class MongooseSetUpService {
       return;
     }
     this.setSenario(this.unprocessedScenario);
-  }
-
-  public confirmNodeConfiguration() {
-    this.setNodesData(this.slaveNodes$.getValue());
   }
 
   public runMongoose(): Observable<String> {

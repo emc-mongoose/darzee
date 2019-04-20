@@ -68,8 +68,6 @@ export class MongooseSetUpComponent implements OnInit {
     processingTab.isCompleted = true;
     let nextTabId = this.processingTabID + 1;
     this.switchTab(nextTabId);
-    // NOTE: Calling the 'Update' method afterwards since the unprocessed value is setting up in compoennts onDestroy() hook. 
-    this.updateSetUpInfoFromSource(processingTab.contentLink);
   }
 
   public isSetupCompleted() {
@@ -158,25 +156,6 @@ export class MongooseSetUpComponent implements OnInit {
     }
     this.setUpTabs[this.processingTabID].isContentDisplaying = false;
     this.openUpTab(nextTabId);
-  }
-
-  // NOTE: Source Link is the link to page from which the set up info will be updated. 
-  private updateSetUpInfoFromSource(sourceLink: string) {
-    // NOTE: Confirming set up data from the **source** page. 
-    switch (sourceLink) {
-      case RoutesList.MONGOOSE_COMFIGURATION: {
-        this.mongooseSetUpService.confirmConfigurationSetup();
-        break;
-      }
-      case RoutesList.SCENARIO: {
-        this.mongooseSetUpService.confirmScenarioSetup();
-        break;
-      }
-      case RoutesList.NODES: {
-        this.mongooseSetUpService.confirmNodeConfiguration();
-        break;
-      }
-    }
   }
 
 }
