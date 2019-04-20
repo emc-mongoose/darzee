@@ -68,6 +68,10 @@ export class MongooseSetUpService {
 
   // MARK: - Public 
 
+  public getTargetRunNodes(): MongooseRunNode[] { 
+    return this.mongooseSetupInfoModel.getRunNodes();
+  }
+  
   public addNode(node: MongooseRunNode) {
     // NOTE: As for now, we're processing only IP addresses.
     if (node.getResourceType() == ResourceLocatorType.IP) {

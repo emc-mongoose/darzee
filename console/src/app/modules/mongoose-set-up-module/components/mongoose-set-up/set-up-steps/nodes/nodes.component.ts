@@ -37,9 +37,7 @@ export class NodesComponent implements OnInit {
   ngOnInit() { }
 
   ngOnDestroy() {
-    // this.onConfirmNodesConfigurationClicked();
     this.slaveNodesSubscription.unsubscribe();
-
   }
 
   // MARK: - Public 
@@ -53,8 +51,6 @@ export class NodesComponent implements OnInit {
       alert(`Requested Mongoose run node won't be saved. Details: ${error}`);
       return;
     }
-    // TODO: Add to set ip only selected nodes 
-    this.mongooseSetUpService.addNode(newMongooseNode);
   }
 
 

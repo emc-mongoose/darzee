@@ -65,7 +65,11 @@ export class MongooseSetUpComponent implements OnInit {
 
   public onConfirmClicked() {
     let processingTab = this.getCurrentSetupTab();
-    processingTab.isCompleted = true;
+    processingTab.isCompleted = this.getSetUpTabComplitionStatus();
+    if (!processingTab.isCompleted) { 
+      alert(`Please, select Mongoose run nodes before continuing.`);
+      return; 
+    }
     let nextTabId = this.processingTabID + 1;
     this.switchTab(nextTabId);
   }
@@ -158,4 +162,9 @@ export class MongooseSetUpComponent implements OnInit {
     this.openUpTab(nextTabId);
   }
 
+  private getSetUpTabComplitionStatus(): boolean { 
+    // NOTE: Allowing switching set up tab only if target run nodes were selected 
+    let hasMongooseRunNodesSelected = (this.mongooseSetUpService.getTargetRunNodes().length > 1); 
+    return hasMongooseRunNodesSelected;
+  }
 }
