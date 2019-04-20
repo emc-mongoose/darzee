@@ -1,3 +1,3 @@
 <div class="scenarios-json-wrapper">
-    <json-editor [options]="jsonEditorOptions" [data]="jsonEditorConfiguration"></json-editor>
+    <json-editor [options]="jsonEditorOptions" [data]="initialJsonEditorConfiguration" (change)="updateJsonEditorConfiguration($event)"></json-editor>
 </div>
