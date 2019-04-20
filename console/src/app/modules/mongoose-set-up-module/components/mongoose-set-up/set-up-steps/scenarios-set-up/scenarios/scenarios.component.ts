@@ -30,29 +30,29 @@ export class ScenariosComponent implements OnInit {
 
   constructor(
     private mongooseSetUpService: MongooseSetUpService
-    ) { 
+  ) {
     this.fileContent = ""
     this.processingFile = null;
   }
 
   // MARK: - Component lifecycle
 
-  ngOnInit() {  }
+  ngOnInit() { }
 
-  ngAfterViewInit() { 
+  ngAfterViewInit() {
     this.setValueForEditor(this.CODE_EDITOR_PLACEHOLDER);
   }
 
   ngOnViewDestroyed() {
-    this.mongooseSetUpService.unprocessedScenario = this.getValueFromEditor().toString();
+    this.setCurrentEditorValueAsScenario()
   }
 
   // MARK: - Public 
 
-  onScenarioEditorFocusChange() { 
+  public onScenarioEditorFocusChange() {
     this.changeTextFieldPlaceholder();
     // NOTE: Saving Scenario as soon as the User stops writing it. 
-    this.mongooseSetUpService.unprocessedScenario = this.getValueFromEditor().toString();
+    this.setCurrentEditorValueAsScenario();
   }
 
   get doc() {
@@ -60,24 +60,24 @@ export class ScenariosComponent implements OnInit {
     return (this.codeEditor.codeMirror as any) as Doc;
   }
 
-  processFile(event) { 
+  public processFile(event) {
     if (event.target.files.length == 0) {
       console.error("File hasn't been selected.");
       return;
-   }
-   this.processingFile = event.target.files[0];
-     const fileReader = new FileReader();
-     fileReader.onload = () => {
+    }
+    this.processingFile = event.target.files[0];
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
       console.log(`Read file content: ${fileReader.result}`);
       this.fileContent = fileReader.result;
       this.setValueForEditor(this.fileContent.toString());
     };
     fileReader.readAsText(this.processingFile);
   }
-  
-  onSaveBtnClicked() {
+
+  public onSaveBtnClicked() {
     const { doc } = this;
-    if (this.isSavingAvaliable()) { 
+    if (this.isSavingAvaliable()) {
       let fileSaver: FileOperations = new FileOperations();
       const filename = Constants.FileNames.SCENARIO_FILE_NAME;
       let fileFormat = FileFormat.JSON;
@@ -86,37 +86,37 @@ export class ScenariosComponent implements OnInit {
       fileSaver.saveFile(filename, fileFormat, savingData, codeLinesDelimiter);
       let misleadingMsg = Constants.Alerts.FILE_SAVED;
       alert(misleadingMsg);
-    } else { 
+    } else {
       let misleadingMsg = Constants.Alerts.FILE_NOT_EDITED;
       alert(misleadingMsg);
     }
-  }  
+  }
 
-    onStartBtnClicked() {
-      let misleadingMsg = Constants.Alerts.MONGOOSE_HAS_STARTED;
-      alert(misleadingMsg);
+  public onStartBtnClicked() {
+    let misleadingMsg = Constants.Alerts.MONGOOSE_HAS_STARTED;
+    alert(misleadingMsg);
   }
 
   // MARK: - Private
 
-  private isSavingAvaliable(): boolean { 
+  private isSavingAvaliable(): boolean {
     const { doc } = this;
     const textFromCodeEditor = this.getValueFromEditor().toString();
-    return ((doc) && (textFromCodeEditor != "") && (textFromCodeEditor!= this.CODE_EDITOR_PLACEHOLDER));
+    return ((doc) && (textFromCodeEditor != "") && (textFromCodeEditor != this.CODE_EDITOR_PLACEHOLDER));
   }
-  
-  private changeTextFieldPlaceholder() { 
+
+  private changeTextFieldPlaceholder() {
     const { doc } = this;
     if (!doc) {
-      console.error("Couldn't connect to code editor."); 
-      return; 
+      console.error("Couldn't connect to code editor.");
+      return;
     }
-    const codeEditorText = doc.getValue(); 
+    const codeEditorText = doc.getValue();
     const emptyString = "";
-    switch (codeEditorText) { 
+    switch (codeEditorText) {
       case this.CODE_EDITOR_PLACEHOLDER: {
         doc.setValue(emptyString);
-        break; 
+        break;
       }
       case emptyString: {
         doc.setValue(this.CODE_EDITOR_PLACEHOLDER);
@@ -125,18 +125,23 @@ export class ScenariosComponent implements OnInit {
     }
   }
 
-  private setValueForEditor(newValue: string) { 
+  private setValueForEditor(newValue: string) {
     const { doc } = this;
-    if (doc) { 
+    if (doc) {
       doc.setValue(newValue);
     }
   }
 
-  private getValueFromEditor(): string | undefined { 
+  private getValueFromEditor(): string | undefined {
     const { doc } = this;
-    if (!doc) { 
+    if (!doc) {
       return null;
     }
-    return doc.getValue(); 
+    return doc.getValue();
+  }
+
+  private setCurrentEditorValueAsScenario() {
+    let mongooseRunScenario = this.getValueFromEditor().toString();;
+    this.mongooseSetUpService.setSenario(mongooseRunScenario);
   }
 }
