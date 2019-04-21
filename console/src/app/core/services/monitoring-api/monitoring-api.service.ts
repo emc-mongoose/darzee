@@ -8,6 +8,7 @@ import { mergeMap, map, catchError } from "rxjs/operators";
 import { MongooseMetrics } from "../mongoose-api-models/MongooseMetrics";
 import { MongooseApi } from "../mongoose-api-models/MongooseApi.model";
 import { HttpClient } from "@angular/common/http";
+import { ControlApiService } from "../control-api/control-api.service";
 
 
 @Injectable({
@@ -16,12 +17,6 @@ import { HttpClient } from "@angular/common/http";
 export class MonitoringApiService {
 
   private readonly MONGOOSE_HTTP_ADDRESS = Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP;
-
-  // NOTE: Names of logs-files (according to REST API on 04.04) that are being used to check Mongoose ...
-  // ... run status/ 
-  private readonly INITIAL_CREATED_LOG_FILE_NAME = "Config";
-  private readonly FINAL_CREATED_LOG_FILE_NAME = "metrics.FileTotal";
-
   private currentMongooseRunRecords$: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
 
   // NOTE: availableLogs is a list of logs provided by Mongoose. Key is REST API's endpoint for fetching the log, ...
@@ -31,34 +26,22 @@ export class MonitoringApiService {
   // MARK: - Lifecycle 
 
   constructor(private prometheusApiService: PrometheusApiService,
+    private controlApiService: ControlApiService,
     private http: HttpClient) {
     this.setUpService();
-    this.fetchCurrentMongooseRunRecords();
   }
 
   // MARK: - Public
 
-  public getStatusForMongooseRecord(targetRecordLoadStepId: String): Observable<MongooseRunStatus> {
-    let configLogName = this.INITIAL_CREATED_LOG_FILE_NAME;
-    const configurationFileStatus$ = this.isLogFileExist(targetRecordLoadStepId, configLogName);
-
-    let resultsMetricsFileName = this.FINAL_CREATED_LOG_FILE_NAME;
-    const resultNetricsStatus$ = this.isLogFileExist(targetRecordLoadStepId, resultsMetricsFileName);
-
-    return configurationFileStatus$.pipe(
-      mergeMap(hasConfiguration => resultNetricsStatus$.pipe(
-        map(hasResults => {
-          if (hasConfiguration && !hasResults) {
-            return MongooseRunStatus.Running;
-          }
-          if (hasConfiguration && hasResults) {
-            return MongooseRunStatus.Finished;
-          }
-          if (!hasConfiguration && !hasResults) {
-            return MongooseRunStatus.Unavailable;
-          }
-          return MongooseRunStatus.Undefined;
-        })))
+  public getStatusForMongooseRecord(targetRecordRunId: string): Observable<MongooseRunStatus> {
+    // NOTE: As for now, we're checking status for Mongoose run overtall, not just Run ID. 
+    return this.controlApiService.isMongooseRunActive(targetRecordRunId).pipe(
+      map(isMongooseRunActive => { 
+        if (isMongooseRunActive) { 
+          return MongooseRunStatus.Running;
+        }
+        return MongooseRunStatus.Finished;
+      })
     )
   }
 
@@ -82,13 +65,16 @@ export class MonitoringApiService {
   }
 
   public getMongooseRunRecordByLoadStepId(loadStepId: String): Observable<MongooseRunRecord> {
+    if (loadStepId = "") { 
+      throw Error("Load step ID hasn't been saved.");
+    }
     return this.getCurrentMongooseRunRecords().pipe(
       map(records => {
         let record = this.findMongooseRecordByLoadStepId(records, loadStepId);
         return record;
       },
         error => {
-          console.error(`Something went wront during filtring records by status: ${error.message}`);
+          console.error(`Something went wrong during filtring records by status: ${error.message}`);
         })
     );
   }
@@ -111,7 +97,7 @@ export class MonitoringApiService {
     let targetMetricLabels = MongooseMetrics.PrometheusMetricLabels.ID;
 
     var targetLabels = new Map<String, String>();
-    targetLabels.set(targetMetricLabels, targetRecord.getIdentifier());
+    targetLabels.set(targetMetricLabels, targetRecord.getLoadStepId());
 
     return this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels).pipe(
       map(runRecordsResponse => {
@@ -143,7 +129,7 @@ export class MonitoringApiService {
     let targetMetricLabels = MongooseMetrics.PrometheusMetricLabels.ID;
 
     var targetLabels = new Map<String, String>();
-    targetLabels.set(targetMetricLabels, targetRecord.getIdentifier());
+    targetLabels.set(targetMetricLabels, targetRecord.getLoadStepId());
 
     return this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels).pipe(
       map(runRecordsResponse => {
@@ -161,35 +147,39 @@ export class MonitoringApiService {
     let targetUrl = "";
     let delimiter = "/";
     let emptyValue = "";
-    if (stepId == emptyValue) { 
+    if (stepId == emptyValue) {
       console.error(`Step ID for required log "${logName}" hasn't been found.`);
       // NOTE: HTTP request on this URL will return error. 
       // The error will be handled and Mongoose's run status would be set to 'unavailable'. 
       // This is done in case Mongoose has been reloaded, but Prometheus still stores its metrics.
       targetUrl = this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + logName;
-    } else { 
+    } else {
       targetUrl = this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName;
     }
     return this.http.get(targetUrl, { responseType: 'text' });
   }
 
-  // NOTE: An initial fetch of Mongoose Run Records.
-  public fetchCurrentMongooseRunRecords() {
-    return this.prometheusApiService.getExistingRecordsInfo().subscribe(
-      metricsArray => {
-        console.log(`[monitoring API] metricsArray: ${JSON.stringify(metricsArray)}`)
-        var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
-        this.currentMongooseRunRecords$.next(fetchedRunRecords);
-      },
-      error => {
-        let misleadingMsg = `Unable to load Mongoose run records. Details: `;
-
-        let errorDetails = JSON.stringify(error);
-        console.error(misleadingMsg + errorDetails);
-
-        let errorCause = error; 
-        alert(misleadingMsg + errorCause);
-      })
+  public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
+    return this.prometheusApiService.getExistingRecordsInfo().pipe(
+      map(
+        metricsArray => {
+          let runRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
+          // NOTE: Records are being sorted for order retaining. This ...
+          // ... is useful while updating Run Records table. 
+          runRecords = this.sortMongooseRecordsByStartTime(runRecords);
+          // NOTE: Using behavior subject object in order to reduce amount of HTTP requests.
+          this.currentMongooseRunRecords$.next(runRecords);
+          return runRecords;
+        },
+        error => {
+          let misleadingMsg = `An error has occured while loading Mongoose run records: ${error}`;
+          console.error(misleadingMsg);
+          alert(misleadingMsg)
+          let emptyRecordsArray: MongooseRunRecord[] = [];
+          return emptyRecordsArray;
+        }
+      )
+    )
   }
 
   // MARK: - Private 
@@ -206,6 +196,7 @@ export class MonitoringApiService {
   private extractRunRecordsFromMetricLabels(rawMongooseRunData: any): MongooseRunRecord[] {
 
     var runRecords: MongooseRunRecord[] = [];
+    console.log(`rawMongooseRunData: ${JSON.stringify(rawMongooseRunData)}`);
 
     // NOTE: Looping throught found Mongoose Run Records 
     for (var processingRunIndex in rawMongooseRunData) {
@@ -214,8 +205,11 @@ export class MonitoringApiService {
       let staticRunData = rawMongooseRunData[processingRunIndex][metricsTag];
 
       // MARK: - Retrieving static data 
-      let idTag = "load_step_id";
-      let loadStepId = this.fetchLabelValue(staticRunData, idTag);
+      let runIdTag = "run_id";
+      let runId = this.fetchLabelValue(staticRunData, runIdTag);
+
+      let loadStepIdTag = "load_step_id";
+      let loadStepId = this.fetchLabelValue(staticRunData, loadStepIdTag);
 
       let startTimeTag = "start_time";
       let startTime = this.fetchLabelValue(staticRunData, startTimeTag);
@@ -235,9 +229,9 @@ export class MonitoringApiService {
       let durationIndex = 1;
       let duration = computedRunData[durationIndex];
 
-      const runStatus = this.getStatusForMongooseRecord(loadStepId);
+      const mongooseRunStatus$ = this.getStatusForMongooseRecord(runId);
 
-      let currentRunRecord = new MongooseRunRecord(loadStepId, runStatus, startTime, nodesList, duration, userComment);
+      let currentRunRecord = new MongooseRunRecord(runId, loadStepId, mongooseRunStatus$, startTime, nodesList, duration, userComment);
       runRecords.push(currentRunRecord);
     }
 
@@ -253,7 +247,6 @@ export class MonitoringApiService {
 
   // NOTE: Setting up service's observables 
   private setUpService() {
-    this.fetchCurrentMongooseRunRecords();
     this.configurateAvailableLogs();
   }
 
@@ -282,7 +275,7 @@ export class MonitoringApiService {
 
     let targerRecord: MongooseRunRecord;
     records.filter(record => {
-      if (record.getIdentifier() == id) {
+      if (record.getLoadStepId() == id) {
         targerRecord = record;
       }
     });

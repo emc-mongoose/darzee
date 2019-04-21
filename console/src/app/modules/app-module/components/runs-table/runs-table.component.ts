@@ -40,6 +40,7 @@ export class RunsTableComponent implements OnInit {
     console.log("Run table initializing.");
     this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(
       updatedRecords => {
+        console.log(`updatedRecords: ${JSON.stringify(updatedRecords)}`);
         this.handleRecordsUpdate(updatedRecords);
       },
       error => {
@@ -56,11 +57,19 @@ export class RunsTableComponent implements OnInit {
 
   public onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) {
     if (!this.isRunStatisticsReachable(mongooseRunRecord)) {
-      let misleadingMsg = "Selected Mongoose run info (load step id: " + mongooseRunRecord.getIdentifier() + ") couldn't be found.";
+      let loadStepId = mongooseRunRecord.getLoadStepId();
+      let isLoadStepIdSaved = (loadStepId != ""); 
+      var misleadingMsg = "";
+      if (!isLoadStepIdSaved) { 
+        misleadingMsg = `Load step ID hasn't been found for scenario within Mongoose Run ${mongooseRunRecord.getRunId()}`;
+      } else { 
+        misleadingMsg = `Details about selected Mongoose run haven't been found.`;
+      }
+  
       alert(misleadingMsg);
       return;
     }
-    this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);
+    this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getLoadStepId()]);
   }
 
   // MARK: - Private 
@@ -68,7 +77,9 @@ export class RunsTableComponent implements OnInit {
 
   private isRunStatisticsReachable(mongooseRunRecord: MongooseRunRecord): boolean {
     let targetRunStatus = mongooseRunRecord.getStatus()
-    return ((targetRunStatus != MongooseRunStatus.Unavailable) && (targetRunStatus != MongooseRunStatus.Undefined));
+    let isLoadStepIdExist = (mongooseRunRecord.getLoadStepId() != "");
+    let isRunReachableByStatus = (targetRunStatus != MongooseRunStatus.Unavailable) && (targetRunStatus != MongooseRunStatus.Undefined);
+    return (isRunReachableByStatus && isLoadStepIdExist);
   }
 
   private setInitialRecords(records: MongooseRunRecord[]) {
@@ -109,7 +120,7 @@ export class RunsTableComponent implements OnInit {
     for (var i = 0; i < lhsRecords.length; i++) {
       var isRecordExist = false;
       rhsRecords.forEach(updatedRecord => {
-        isRecordExist = (updatedRecord.getIdentifier() == lhsRecords[i].getIdentifier());
+        isRecordExist = (updatedRecord.getLoadStepId() == lhsRecords[i].getLoadStepId());
         if (isRecordExist) {
           return;
         }

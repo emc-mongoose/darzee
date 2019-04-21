@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, retry } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
@@ -51,6 +51,32 @@ export class ControlApiService {
     mongooseConfigurationHeaders.append('Accept', 'application/json');
 
     return this.http.get(mongooseAddress + configEndpoint, {headers: mongooseConfigurationHeaders});
+  }
+
+  public isMongooseRunActive(runId: string): Observable<boolean> { 
+    
+    const requestRunStatusHeaders = {
+      // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.
+      'If-Match': `${runId}`
+    }
+
+    const runStatusRequestOptions = { 
+      headers: new HttpHeaders(requestRunStatusHeaders), 
+      observe: 'response' as 'body'
+    }
+
+    return this.http.get(`${this.mongooseHostIp}/run`, runStatusRequestOptions).pipe(
+      map((runStatusResponse: any) => { 
+        let responseStatusCode = runStatusResponse.status;
+
+        if (responseStatusCode == undefined) { 
+          return false; 
+        }
+
+        let isRunActive: boolean = (responseStatusCode == Constants.HttpStatus.OK);
+        return isRunActive;
+      })
+    )
   }
 
 
