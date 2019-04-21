@@ -33,6 +33,7 @@ export class MonitoringApiService {
   constructor(private prometheusApiService: PrometheusApiService,
     private http: HttpClient) {
     this.setUpService();
+    this.fetchCurrentMongooseRunRecords();
   }
 
   // MARK: - Public
@@ -64,6 +65,7 @@ export class MonitoringApiService {
   public getCurrentMongooseRunRecords(): Observable<MongooseRunRecord[]> {
     return this.currentMongooseRunRecords$.asObservable().pipe(
       map(records => {
+        console.log(`[Monitoring API service] records: ${JSON.stringify(records)}`);
         // NOTE: Records are being sorted for order retaining. This ...
         // ... is useful while updating Run Records table. 
         records = this.sortMongooseRecordsByStartTime(records);
@@ -163,10 +165,21 @@ export class MonitoringApiService {
 
   // NOTE: An initial fetch of Mongoose Run Records.
   public fetchCurrentMongooseRunRecords() {
-    return this.prometheusApiService.getExistingRecordsInfo().subscribe(metricsArray => {
-      var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
-      this.currentMongooseRunRecords$.next(fetchedRunRecords);
-    })
+    return this.prometheusApiService.getExistingRecordsInfo().subscribe(
+      metricsArray => {
+        console.log(`[monitoring API] metricsArray: ${JSON.stringify(metricsArray)}`)
+        var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
+        this.currentMongooseRunRecords$.next(fetchedRunRecords);
+      },
+      error => {
+        let misleadingMsg = `Unable to load Mongoose run records. Details: `;
+        
+        let errorDetails = JSON.stringify(error);
+        console.error(misleadingMsg + errorDetails);
+
+        let errorCause = error; 
+        alert(misleadingMsg + errorCause);
+      })
   }
 
   // MARK: - Private 
@@ -252,7 +265,7 @@ export class MonitoringApiService {
   }
 
   private findMongooseRecordByLoadStepId(records: MongooseRunRecord[], id: String): MongooseRunRecord {
-    if (records.length == 0) { 
+    if (records.length == 0) {
       let misleadingMsg = "Records list is empty, thus no record can be found.";
       throw new Error(misleadingMsg);
     }
