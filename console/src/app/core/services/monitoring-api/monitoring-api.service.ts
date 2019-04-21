@@ -196,7 +196,6 @@ export class MonitoringApiService {
   private extractRunRecordsFromMetricLabels(rawMongooseRunData: any): MongooseRunRecord[] {
 
     var runRecords: MongooseRunRecord[] = [];
-    console.log(`rawMongooseRunData: ${JSON.stringify(rawMongooseRunData)}`);
 
     // NOTE: Looping throught found Mongoose Run Records 
     for (var processingRunIndex in rawMongooseRunData) {

@@ -48,18 +48,18 @@ export class RunsTableRootComponent implements OnInit {
           return;
         }
       },
-      error => { 
+      error => {
         let misleadingMsg = `Unable to load Mongoose run records. Details: `;
 
         let errorDetails = JSON.stringify(error);
         console.error(misleadingMsg + errorDetails);
 
-        let errorCause = error; 
+        let errorCause = error;
         alert(misleadingMsg + errorCause);
         alert(`Unable to load Mongoose runs. Details: ${error}`);
       },
-      () => { 
-        this.runTabs.forEach(requiredTab => { 
+      () => {
+        this.runTabs.forEach(requiredTab => {
           this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(requiredTab.tabTitle).subscribe(
             filtedRecords => {
               requiredTab.setAmountOfRecords(filtedRecords.length);
@@ -71,6 +71,7 @@ export class RunsTableRootComponent implements OnInit {
     )
 
     // NOTE: Tab "All" is selected by default. 
+    this.currentActiveTab = this.runTabs[0];
     this.onStatusTabClick(this.currentActiveTab);
   }
 
@@ -86,6 +87,7 @@ export class RunsTableRootComponent implements OnInit {
   }
 
   public onStatusTabClick(requiredTab: MongooseRunTab) {
+    console.log(`Loading tab: ${requiredTab.getTabTag()}`);
     // NOTE: I haven't found a better way to set custom background color for bootstrap selected button. 
     // ... so I put a selector "isSelected" and if it's set to 'true', the tab button is highlighted.
     this.runTabs.forEach(tab => {
@@ -118,9 +120,9 @@ export class RunsTableRootComponent implements OnInit {
   private getActiveTabs(): MongooseRunTab[] {
     var updatedTabs: MongooseRunTab[] = [];
     for (let runStatus in MongooseRunStatus) {
-      if (runStatus == MongooseRunStatus.Undefined) { 
+      if (runStatus == MongooseRunStatus.Undefined) {
         // NOTE: 'Undefined' tab type is beind used only internally. We won't display it.  
-        continue; 
+        continue;
       }
       const amountOfFiltredRecords$ = this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(runStatus).pipe(
         map(filtredRecords => {
