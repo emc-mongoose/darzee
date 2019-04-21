@@ -65,7 +65,6 @@ export class MonitoringApiService {
   public getCurrentMongooseRunRecords(): Observable<MongooseRunRecord[]> {
     return this.currentMongooseRunRecords$.asObservable().pipe(
       map(records => {
-        console.log(`[Monitoring API service] records: ${JSON.stringify(records)}`);
         // NOTE: Records are being sorted for order retaining. This ...
         // ... is useful while updating Run Records table. 
         records = this.sortMongooseRecordsByStartTime(records);
@@ -159,8 +158,19 @@ export class MonitoringApiService {
 
   public getLog(stepId: String, logName: String): Observable<any> {
     let logsEndpoint = MongooseApi.LogsApi.LOGS;
+    let targetUrl = "";
     let delimiter = "/";
-    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName, { responseType: 'text' });
+    let emptyValue = "";
+    if (stepId == emptyValue) { 
+      console.error(`Step ID for required log "${logName}" hasn't been found.`);
+      // NOTE: HTTP request on this URL will return error. 
+      // The error will be handled and Mongoose's run status would be set to 'unavailable'. 
+      // This is done in case Mongoose has been reloaded, but Prometheus still stores its metrics.
+      targetUrl = this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + logName;
+    } else { 
+      targetUrl = this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName;
+    }
+    return this.http.get(targetUrl, { responseType: 'text' });
   }
 
   // NOTE: An initial fetch of Mongoose Run Records.

@@ -5,7 +5,8 @@ import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteParams } from 'src/app/modules/app-module/Routing/params.routes';
 import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-run-statistic-logs',
@@ -60,13 +61,11 @@ export class RunStatisticLogsComponent implements OnInit {
     // TODO: Change logic of setting 'active' status to a selected tab.
     this.logTabs.forEach(tab => {
       let isSelectedTab = (tab.getName() == selectedTab.getName());
-
       tab.isActive = isSelectedTab ? true : false;
     })
 
 
     let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(selectedTab.getName());
-
     // NOTE: Resetting error's inner HTML 
     let emptyErrorHtmlValue = "";
     this.occuredError = emptyErrorHtmlValue;
@@ -76,11 +75,12 @@ export class RunStatisticLogsComponent implements OnInit {
         this.displayingLog = logs;
       },
       error => {
-        var misleadingMessage = "Requested target doesn't seem to exist. Details: ";
+        var misleadingMessage = `Requested target doesn't seem to exist. Details: ${error}`;
         this.displayingLog = misleadingMessage;
         this.occuredError = error.error;
       }
     );
+    
   }
 
   // MARK: - Private
