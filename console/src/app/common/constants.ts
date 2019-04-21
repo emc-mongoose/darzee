@@ -61,6 +61,8 @@ export namespace Constants {
     }
 
     export class HttpStatus {
+        static readonly OK = 200; 
+        static readonly NO_CONTENT = 204; 
         static readonly CONFLICT = 409;
     }
 }
