@@ -33,6 +33,7 @@ export class MonitoringApiService {
   constructor(private prometheusApiService: PrometheusApiService,
     private http: HttpClient) {
     this.setUpService();
+    this.fetchCurrentMongooseRunRecords();
   }
 
   // MARK: - Public
@@ -157,16 +158,38 @@ export class MonitoringApiService {
 
   public getLog(stepId: String, logName: String): Observable<any> {
     let logsEndpoint = MongooseApi.LogsApi.LOGS;
+    let targetUrl = "";
     let delimiter = "/";
-    return this.http.get(this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName, { responseType: 'text' });
+    let emptyValue = "";
+    if (stepId == emptyValue) { 
+      console.error(`Step ID for required log "${logName}" hasn't been found.`);
+      // NOTE: HTTP request on this URL will return error. 
+      // The error will be handled and Mongoose's run status would be set to 'unavailable'. 
+      // This is done in case Mongoose has been reloaded, but Prometheus still stores its metrics.
+      targetUrl = this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + logName;
+    } else { 
+      targetUrl = this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName;
+    }
+    return this.http.get(targetUrl, { responseType: 'text' });
   }
 
   // NOTE: An initial fetch of Mongoose Run Records.
   public fetchCurrentMongooseRunRecords() {
-    return this.prometheusApiService.getExistingRecordsInfo().subscribe(metricsArray => {
-      var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
-      this.currentMongooseRunRecords$.next(fetchedRunRecords);
-    })
+    return this.prometheusApiService.getExistingRecordsInfo().subscribe(
+      metricsArray => {
+        console.log(`[monitoring API] metricsArray: ${JSON.stringify(metricsArray)}`)
+        var fetchedRunRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
+        this.currentMongooseRunRecords$.next(fetchedRunRecords);
+      },
+      error => {
+        let misleadingMsg = `Unable to load Mongoose run records. Details: `;
+
+        let errorDetails = JSON.stringify(error);
+        console.error(misleadingMsg + errorDetails);
+
+        let errorCause = error; 
+        alert(misleadingMsg + errorCause);
+      })
   }
 
   // MARK: - Private 
@@ -252,7 +275,7 @@ export class MonitoringApiService {
   }
 
   private findMongooseRecordByLoadStepId(records: MongooseRunRecord[], id: String): MongooseRunRecord {
-    if (records.length == 0) { 
+    if (records.length == 0) {
       let misleadingMsg = "Records list is empty, thus no record can be found.";
       throw new Error(misleadingMsg);
     }

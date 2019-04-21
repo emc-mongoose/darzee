@@ -1,7 +1,5 @@
-import { BehaviorSubject } from "rxjs";
 import { MongooseRunNode } from "../../models/mongoose-run-node.model";
 import { ResourceLocatorType } from "../../models/address-type";
-import { isNode } from "@angular/animations/browser/src/render/shared";
 
 export class MongooseSetupInfoModel {
 
@@ -101,7 +99,7 @@ export class MongooseSetupInfoModel {
     }
 
     // MARK: - Private 
-    
+
     private isNodeAlreadyExist(node: MongooseRunNode) {
         let isNodeExist = false;
         this.runNodes.forEach(savedNode => {

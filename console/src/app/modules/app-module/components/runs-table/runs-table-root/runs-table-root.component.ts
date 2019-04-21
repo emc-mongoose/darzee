@@ -49,6 +49,9 @@ export class RunsTableRootComponent implements OnInit {
           return;
         }
       },
+      error => { 
+        alert(`Unable to load Mongoose runs. Details: ${JSON.stringify(error)}`);
+      },
       () => { 
         this.runTabs.forEach(requiredTab => { 
           this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(requiredTab.tabTitle).subscribe(

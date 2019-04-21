@@ -37,9 +37,14 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Lifecycle 
 
   ngOnInit() {
-    this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(updatedRecords => {
-      this.handleRecordsUpdate(updatedRecords);
-    });
+    console.log("Run table initializing.");
+    this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(
+      updatedRecords => {
+        this.handleRecordsUpdate(updatedRecords);
+      },
+      error => {
+        alert(`Unable to update Mongoose run records table. Details: ${error}`);
+      });
   }
 
   ngOnDestroy() {
