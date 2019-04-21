@@ -53,6 +53,21 @@ export class ControlApiService {
     return this.http.get(mongooseAddress + configEndpoint, {headers: mongooseConfigurationHeaders});
   }
 
+  public isRunActive(runId: string): Observable<any> { 
+    
+    const requestRunStatusHeaders = {
+      // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.
+      'If-Match': `${runId}`
+    }
+
+    const runStatusRequestOptions = { 
+      headers: new HttpHeaders(requestRunStatusHeaders), 
+      observe: 'response' as 'body'
+    }
+
+    return this.http.get(`${this.mongooseHostIp}/run`, runStatusRequestOptions )
+  }
+
 
   // MARK: - Private
 
