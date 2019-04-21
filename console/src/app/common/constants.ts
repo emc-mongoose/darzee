@@ -1,5 +1,6 @@
 import { HttpHeaders } from "@angular/common/http";
-import { environment } from "src/environments/environment.prod";
+import { environment } from "src/environments/environment"; 
+
 
 export namespace Constants {
 
@@ -30,7 +31,7 @@ export namespace Constants {
         // TODO: Fetch Mongoose port from .env file 
         static readonly MONGOOSE_PORT = `${environment.mongoosePort}`
         // TODO: Figure out how to run on multiple nodes 
-        static MONGOOSE_HOST_IP = `${environment.mongooseIp}:${environment.mongoosePort}`
+        static MONGOOSE_HOST_IP = `${environment.mongooseIp}:` + `${environment.mongoosePort}`
 
         // TODO: read port from .env file 
         static readonly PROMETHEUS_IP = `${environment.prometheusIp}:${environment.prometheusPort}`
@@ -44,6 +45,10 @@ export namespace Constants {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' })
         };
 
+        static readonly HEADER_ACCEPT_JSON = { 
+            headers: new HttpHeaders({'Accept:' : 'application/json' })
+        }
+
         static readonly UNSTRUCTURED_DATA_TYPE = {
             headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' })
         };
@@ -56,6 +61,8 @@ export namespace Constants {
     }
 
     export class HttpStatus {
+        static readonly OK = 200; 
+        static readonly NO_CONTENT = 204; 
         static readonly CONFLICT = 409;
     }
 }

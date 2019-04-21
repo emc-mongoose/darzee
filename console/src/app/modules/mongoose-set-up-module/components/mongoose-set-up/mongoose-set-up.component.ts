@@ -11,9 +11,7 @@ import { MongooseSetUpService } from '../../../../core/services/mongoose-set-up-
   selector: 'app-mongoose-set-up',
   templateUrl: './mongoose-set-up.component.html',
   styleUrls: ['./mongoose-set-up.component.css'],
-  animations: [
-    // slideAnimation
-  ]
+  providers: [MongooseSetUpService]
 })
 
 export class MongooseSetUpComponent implements OnInit {
@@ -42,7 +40,6 @@ export class MongooseSetUpComponent implements OnInit {
     this.initSetUpTabs();
     let defaultTabNumber = 0;
     this.openUpTab(defaultTabNumber);
-    console.log("Set up module is being loaded.");
   }
   
   ngOnInit() { }
@@ -66,11 +63,13 @@ export class MongooseSetUpComponent implements OnInit {
 
   public onConfirmClicked() {
     let processingTab = this.getCurrentSetupTab();
-    processingTab.isCompleted = true;
+    processingTab.isCompleted = this.getSetUpTabComplitionStatus();
+    if (!processingTab.isCompleted) { 
+      alert(`Please, select Mongoose run nodes before continuing.`);
+      return; 
+    }
     let nextTabId = this.processingTabID + 1;
     this.switchTab(nextTabId);
-    // NOTE: Calling the 'Update' method afterwards since the unprocessed value is setting up in compoennts onDestroy() hook. 
-    this.updateSetUpInfoFromSource(processingTab.contentLink);
   }
 
   public isSetupCompleted() {
@@ -82,7 +81,8 @@ export class MongooseSetUpComponent implements OnInit {
   }
 
   public onRunBtnClicked() {
-    this.mongooseRunSubscription = this.mongooseSetUpService.runMongoose().subscribe(mongooseRunId => {
+    this.mongooseRunSubscription = this.mongooseSetUpService.runMongoose().subscribe(
+      mongooseRunId => {
       // NOTE: Updated Metrics will include both run ID and load step ID. In case ...
       // ... it won't be implimented, map them here. If you want to get ...
       // ... load step id, you can do it via mongoose set up service. 
@@ -91,7 +91,7 @@ export class MongooseSetUpComponent implements OnInit {
       // NOTE: If run ID has been returned from the server, Mongoose run has started
       let hasMongooseSuccessfullyStarted = (mongooseRunId != undefined);
       if (!hasMongooseSuccessfullyStarted) {
-        let misleadingMessage = "Unable to start Mongoose Run."
+        let misleadingMessage = `Unable to launch Mongoose - run ID hasn't been generated. Details: ${JSON.stringify(mongooseRunId)}`;
         alert(misleadingMessage);
       } else {
         let misleadingMessage = "Mongoose Run has started with ID " + mongooseRunId;
@@ -107,7 +107,7 @@ export class MongooseSetUpComponent implements OnInit {
           errorReason = "Another Mongoose run has already been launched on port " + this.mongooseSetUpService.getMongooseRunTargetPort() + ".";
         }
       }
-      let misleadingMessage = "Unable to start Mongoose Run.";
+      let misleadingMessage = `Unable to launch Mongoose. Details: ${JSON.stringify(error)}`;
       let emptyString = "";
       if (errorReason != emptyString) { 
         let phrasesDelimiter = " ";
@@ -138,6 +138,7 @@ export class MongooseSetUpComponent implements OnInit {
     }
   }
 
+  // NOTE: Function that does open up a specific set up tab. 
   private openUpTab(tabNumber: number) {
     if (tabNumber >= this.setUpTabs.length) {
       console.error("Unable to open tab number ", tabNumber, " since it doesn't exist.");
@@ -160,23 +161,9 @@ export class MongooseSetUpComponent implements OnInit {
     this.openUpTab(nextTabId);
   }
 
-  // NOTE: Source Link is the link to page from which the set up info will be updated. 
-  private updateSetUpInfoFromSource(sourceLink: string) {
-    // NOTE: Confirming set up data from the **source** page. 
-    switch (sourceLink) {
-      case RoutesList.MONGOOSE_COMFIGURATION: {
-        this.mongooseSetUpService.confirmConfigurationSetup();
-        break;
-      }
-      case RoutesList.SCENARIO: {
-        this.mongooseSetUpService.confirmScenarioSetup();
-        break;
-      }
-      case RoutesList.NODES: {
-        this.mongooseSetUpService.confirmNodeConfiguration();
-        break;
-      }
-    }
+  private getSetUpTabComplitionStatus(): boolean { 
+    // NOTE: Allowing switching set up tab only if target run nodes were selected 
+    let hasMongooseRunNodesSelected = (this.mongooseSetUpService.getTargetRunNodes().length > 0); 
+    return hasMongooseRunNodesSelected;
   }
-
 }

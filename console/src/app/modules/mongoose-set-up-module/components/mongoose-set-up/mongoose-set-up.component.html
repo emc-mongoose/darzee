@@ -5,8 +5,6 @@
 
       <div class="progress"
       *ngFor="let tab of setUpTabs"
-      (click)="onTabClicked(tab.getId())"
-      [style.width.%]="getPercentagePerTab()" 
       [ngClass]="tab.isContentDisplaying ? 'processing-tab' : 'progress'">
     
       <!-- NOTE: Element for tab state when the set up step hasn't been completed yet. -->
@@ -25,9 +23,9 @@
         
     </div> <!--  NOTE: End of class 'progress-bar'. -->
   </div><!--  NOTE: End of class 'progress'. -->
-
   <!-- NOTE: Outlet for actual set up pages.  -->
   <router-outlet (activate)="onRouterComponentActivated($event)" (deactivate)="onRouterComponentDeactivated($event)"></router-outlet>
+
 </div>
 
 

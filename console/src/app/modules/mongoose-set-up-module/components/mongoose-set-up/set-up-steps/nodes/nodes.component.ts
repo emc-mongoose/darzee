@@ -4,6 +4,8 @@ import { ControlApiService } from 'src/app/core/services/control-api/control-api
 import { Subscription, Observable } from 'rxjs';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
+import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
+import { ResourceLocatorType } from 'src/app/core/models/address-type';
 
 @Component({
   selector: 'app-nodes',
@@ -13,7 +15,7 @@ import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 })
 export class NodesComponent implements OnInit {
 
-  public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>(); 
+  public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>();
 
   displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
 
@@ -21,42 +23,41 @@ export class NodesComponent implements OnInit {
   nodeConfig: any = null;
   error: HttpErrorResponse = null;
 
-  private slaveNodesSubscription: Subscription = new Subscription(); 
+  private slaveNodesSubscription: Subscription = new Subscription();
 
   // MARK: - Lifecycle 
   constructor(
     private mongooseSetUpService: MongooseSetUpService,
-    private controlApiService: ControlApiService
-    ) { 
-      this.savedMongooseNodes$ = this.mongooseSetUpService.getSavedMongooseNodes();
-    }
-
-  ngOnInit() {
-    this.displayingIpAddresses = this.mongooseSetUpService.getSlaveNodesList();
-    this.slaveNodesSubscription = this.mongooseSetUpService.getSlaveNodes().subscribe(nodes => { 
-      this.displayingIpAddresses = nodes;
-      console.log("Observable salve nodes: " + nodes);
-    })
+    private controlApiService: ControlApiService,
+    private mongooseDataSharedService: MongooseDataSharedServiceService
+  ) {
+    this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes();
   }
 
-  ngOnDestroy() { 
-    this.onConfirmNodesConfigurationClicked(); 
-    this.slaveNodesSubscription.unsubscribe(); 
+  ngOnInit() { }
 
+  ngOnDestroy() {
+    this.slaveNodesSubscription.unsubscribe();
   }
 
   // MARK: - Public 
 
   public onAddIpButtonClicked(entredIpAddress: string): void {
-    let savedNode = new MongooseRunNode(this.entredIpAddress);
-    try { 
-      this.mongooseSetUpService.saveMongooseNodes(savedNode);
-    } catch (error) { 
+    let newMongooseNode = new MongooseRunNode(this.entredIpAddress);
+    try {
+      this.mongooseDataSharedService.addMongooseRunNode(newMongooseNode);
+    } catch (error) {
       console.log(`Requested Mongoose run node won't be saved. Details: ${error}`);
       alert(`Requested Mongoose run node won't be saved. Details: ${error}`);
+      return;
     }
+  }
 
+  public onRunNodeSelect(selectedNode: MongooseRunNode) {
+    this.mongooseSetUpService.addNode(selectedNode);
+  }
 
+  private isipValid(entredIpAddress: string) {
     console.log(`Enterd IP Address: ${this.entredIpAddress}`)
     const regExpr = new
       RegExp('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\:([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$');
@@ -67,27 +68,6 @@ export class NodesComponent implements OnInit {
     }
 
     const isIpValid = regExpr.test(entredIpAddress);
-    if (!isIpValid) {
-      alert("IP " + entredIpAddress + " is not valid. Please, provide a valid address.");
-      return;
-    } 
-
-    this.mongooseSetUpService.addNode(entredIpAddress);
-  }
-
-  public deleteIp(targetIp: String): void {
-    this.mongooseSetUpService.deleteSlaveNode(targetIp);
-  }
-
-  public onConfirmNodesConfigurationClicked() {
-    if (this.displayingIpAddresses.length === 0) {
-      alert('Please, provide an IP.');
-      return;
-    }
-    this.mongooseSetUpService.confirmNodeConfiguration();
-  }
-
-  public onRunNodeSelect(selectedNodeAddress: any) { 
-    alert(`Checked ip ${selectedNodeAddress}`);
+    return isIpValid;
   }
 }

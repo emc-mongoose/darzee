@@ -1,41 +1,5 @@
-<!-- <div class="w3-container">
-  <div class="row">
-    <div class="column left">
-      <img id="mongoose-logo" src="assets/images/mongoose.png">
-    </div>
 
-    <div class="column middle">
-      <span class="label describing">
-        <br />Mongoose node address:<br />
-      </span>
-        <div class="addIp">
-          <p #ipAd hidden="true"> {{ entredIpAddress }} </p>
-          <input [(ngModel)]="entredIpAddress" placeholder="enter IP here..." />
-    
-          <div class="nodes-action-btns">
-             <button type="button" title="No nodes has been set." class="btn btn-light node-action" (click)="onAddIpButtonClicked(ipAd.textContent)">Add</button>
-             <button type="button" class="btn btn-light node-action" (click)="onConfirmNodesConfigurationClicked()">Confirm nodes list</button>
-          </div>
-
-        </div>
-    </div>
-
-    <div class="column right">
-      <ul class="ipAddresses" style="list-style-type: none">
-        <li *ngFor="let ipAddress of displayingIpAddresses">
-          <span class="ipAddr">{{ ipAddress }}</span>
-          <button class="buttonDel" title="delete IP address" (click)="deleteIp(ipAddress)">&#10005;</button>
-        </li>
-      </ul>
-
-    </div> 
-  </div>
-
-  
-</div>
- -->
-
-
+<!-- NOTE: Table with saved Mongoose Run Nodes.  -->
 <div *ngIf="(savedMongooseNodes$ | async).length; else emptyNodesTable">
   <table class="table table-bordered">
     <thead>
@@ -51,9 +15,12 @@
       <tr *ngFor="let savedNode of savedMongooseNodes$ | async">
         <th scope="row">
           <!-- Default unchecked -->
-          <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="defaultUnchecked" (click)="onRunNodeSelect(savedNode.getResourceLocation())">
-            <label class="custom-control-label" for="defaultUnchecked"></label>
+           <div class="custom-control custom-checkbox">
+              <!-- <input type="checkbox"  
+              (ngModelChange)="onRunNodeSelect(savedNode)"
+              (click)="onRunNodeSelect(savedNode)"> -->
+            <input type="checkbox" class="custom-control-input" id="{{ savedNode.getResourceLocation() }}" (click)="onRunNodeSelect(savedNode)">
+            <label class="custom-control-label" for="{{ savedNode.getResourceLocation() }}" ></label>
           </div>
         </th>
         <td> {{ savedNode.resourceType }} </td>

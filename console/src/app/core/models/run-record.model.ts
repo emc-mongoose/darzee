@@ -10,14 +10,17 @@ export class MongooseRunRecord implements OnDestroy {
     public nodes: String[];
     public comment: String;
 
-    private readonly loadStepId: String;
+    private readonly runId: String;
+    private loadStepId: String = ""; 
+
     private duration: string;
     private statusSubscription: Subscription = new Subscription();
     private currentStatus: MongooseRunStatus = MongooseRunStatus.Undefined;
 
     // MARK: - Lifecycle 
 
-    constructor(loadStepId: String, mongooseRunStatus$: Observable<MongooseRunStatus>, startTime: String, nodes: String[], duration: string, comment: String) {
+    constructor(runId: String, loadStepId: String, mongooseRunStatus$: Observable<MongooseRunStatus>, startTime: String, nodes: String[], duration: string, comment: String) {
+        this.runId = runId;
         this.loadStepId = loadStepId;
         this.startTime = startTime;
         this.nodes = nodes;
@@ -27,6 +30,9 @@ export class MongooseRunRecord implements OnDestroy {
         this.statusSubscription.add(mongooseRunStatus$.subscribe(
             fetchedStatus => {
                 this.currentStatus = fetchedStatus;
+            },
+            error => { 
+                this.currentStatus = MongooseRunStatus.Unavailable;
             }
         ));
     }
@@ -37,6 +43,10 @@ export class MongooseRunRecord implements OnDestroy {
 
     // MARK: - Public
 
+    public getLoadStepId(): String { 
+        return this.loadStepId;
+    }
+
     public getDuration(): string {
         if (this.duration == "") {
             return this.DEFAULT_VALUE;
@@ -44,8 +54,8 @@ export class MongooseRunRecord implements OnDestroy {
         return this.duration;
     }
 
-    public getIdentifier(): String {
-        return this.loadStepId;
+    public getRunId(): String {
+        return this.runId;
     }
 
     public getNodesList(): String[] {

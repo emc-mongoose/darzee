@@ -1,4 +1,3 @@
-<div class="scenarios-file-content-header">Current configuration:</div>
 <div class="scenarios-json-wrapper">
-    <json-editor [options]="jsonEditorOptions" [data]="jsonEditorData"></json-editor>
+    <json-editor [options]="jsonEditorOptions" [data]="initialJsonEditorConfiguration" (change)="updateJsonEditorConfiguration($event)"></json-editor>
 </div>

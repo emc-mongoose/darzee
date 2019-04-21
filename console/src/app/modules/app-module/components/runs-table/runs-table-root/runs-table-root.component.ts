@@ -32,14 +32,13 @@ export class RunsTableRootComponent implements OnInit {
   // MARK: - Lifecycle
 
   constructor(private monitoringApiService: MonitoringApiService) {
-    this.monitoringApiService.fetchCurrentMongooseRunRecords(); 
     this.runTabs = this.getActiveTabs();
     this.currentActiveTab = this.runTabs[0];
   }
 
 
   ngOnInit() {
-    this.mongooseRecordsSubscription = this.monitoringApiService.getCurrentMongooseRunRecords().subscribe(
+    this.mongooseRecordsSubscription = this.monitoringApiService.getMongooseRunRecords().subscribe(
       updatedRecords => {
         let shouldRefreshPage = this.shouldRefreshPage(this.displayingRunRecords, updatedRecords);
         this.displayingRunRecords = updatedRecords;
@@ -48,6 +47,16 @@ export class RunsTableRootComponent implements OnInit {
           this.runTabs = this.getActiveTabs();
           return;
         }
+      },
+      error => { 
+        let misleadingMsg = `Unable to load Mongoose run records. Details: `;
+
+        let errorDetails = JSON.stringify(error);
+        console.error(misleadingMsg + errorDetails);
+
+        let errorCause = error; 
+        alert(misleadingMsg + errorCause);
+        alert(`Unable to load Mongoose runs. Details: ${error}`);
       },
       () => { 
         this.runTabs.forEach(requiredTab => { 

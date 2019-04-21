@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { map, filter, tap } from 'rxjs/operators';
 
 
 @Injectable({
@@ -25,6 +25,7 @@ export class PrometheusApiService {
 
   public runQuery(query: String): Observable<any> {
     let queryRequest = "query?query=";
+    console.log(`Executing query within Prometheus: ${this.API_BASE + queryRequest + query}`);
     return this.httpClient.get(this.API_BASE + queryRequest + query, Constants.Http.JSON_CONTENT_TYPE).pipe(
       map((rawResponse: any) => this.extractResultPayload(rawResponse))
     );
@@ -65,9 +66,16 @@ export class PrometheusApiService {
   }
 
   public getExistingRecordsInfo(): Observable<any> {
-    // TODO: Add function that creates that kind of a query 
-    let targetQuery = "sum without (instance)(rate(mongoose_duration_count[1y]))";
-    return this.runQuery(targetQuery);
+    // TODO: Add function that creates that kind of a query
+    console.log("Fetching Mongoose run from prometheus..."); 
+    let targetQuery = "sum%20without%20(instance)(rate(mongoose_duration_count[1y]))";
+    return this.runQuery(targetQuery).pipe(
+      tap(
+        results => { 
+          console.log(`[Prometheus query] Results are: ${JSON.stringify(results)}`);
+        }
+      )
+    );
   }
 
   // MARK: - Private 

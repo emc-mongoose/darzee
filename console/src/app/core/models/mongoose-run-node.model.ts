@@ -17,4 +17,8 @@ export class MongooseRunNode {
     public getResourceType(): ResourceLocatorType { 
         return this.resourceType; 
     }
+
+    public toString(): String { 
+        return this.resourceLocation; 
+    }
 }

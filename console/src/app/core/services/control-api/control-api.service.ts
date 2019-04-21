@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, retry } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,12 +19,7 @@ export class ControlApiService {
   private mongooseHostIp = Constants.Configuration.MONGOOSE_HOST_IP;
 
   constructor(private http: HttpClient) {
-    console.log("Starting mongoose.")
-    this.getMongooseConfiguration(this.mongooseHostIp).subscribe(
-      result => { 
-        console.log(`Mongoose configuration has responded with result: ${result}`);
-      }
-    );
+    this.mongooseHostIp = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:` + `${environment.mongoosePort}`;
   }
 
   // MARK: - Public
@@ -40,7 +36,7 @@ export class ControlApiService {
     let formData = new FormData();
     formData.append('defaults', JSON.stringify(mongooseJsonConfiguration));
 
-    return this.http.post(Constants.Http.HTTP_PREFIX + this.mongooseHostIp + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), { observe: "response" }).pipe(
+    return this.http.post(this.mongooseHostIp + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), { observe: "response" }).pipe(
       map(runResponse => {
         let runId = runResponse.headers.get(MongooseApi.Headers.ETAG);
         return runId;
@@ -48,9 +44,39 @@ export class ControlApiService {
   }
 
   // NOTE: Returning Mongoose configuration as JSON 
-  public getMongooseConfiguration(mongooseHostIp: string): Observable<any> {
+  public getMongooseConfiguration(mongooseAddress: string): Observable<any> {
     let configEndpoint = MongooseApi.Config.CONFIG;
-    return this.http.get(Constants.Http.HTTP_PREFIX + mongooseHostIp + configEndpoint, Constants.Http.JSON_CONTENT_TYPE);
+
+    var mongooseConfigurationHeaders = new HttpHeaders();
+    mongooseConfigurationHeaders.append('Accept', 'application/json');
+
+    return this.http.get(mongooseAddress + configEndpoint, {headers: mongooseConfigurationHeaders});
+  }
+
+  public isMongooseRunActive(runId: string): Observable<boolean> { 
+    
+    const requestRunStatusHeaders = {
+      // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.
+      'If-Match': `${runId}`
+    }
+
+    const runStatusRequestOptions = { 
+      headers: new HttpHeaders(requestRunStatusHeaders), 
+      observe: 'response' as 'body'
+    }
+
+    return this.http.get(`${this.mongooseHostIp}/run`, runStatusRequestOptions).pipe(
+      map((runStatusResponse: any) => { 
+        let responseStatusCode = runStatusResponse.status;
+
+        if (responseStatusCode == undefined) { 
+          return false; 
+        }
+
+        let isRunActive: boolean = (responseStatusCode == Constants.HttpStatus.OK);
+        return isRunActive;
+      })
+    )
   }
 
 
