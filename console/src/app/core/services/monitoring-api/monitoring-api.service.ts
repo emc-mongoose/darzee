@@ -8,6 +8,7 @@ import { mergeMap, map, catchError } from "rxjs/operators";
 import { MongooseMetrics } from "../mongoose-api-models/MongooseMetrics";
 import { MongooseApi } from "../mongoose-api-models/MongooseApi.model";
 import { HttpClient } from "@angular/common/http";
+import { ControlApiService } from "../control-api/control-api.service";
 
 
 @Injectable({
@@ -31,33 +32,22 @@ export class MonitoringApiService {
   // MARK: - Lifecycle 
 
   constructor(private prometheusApiService: PrometheusApiService,
+    private controlApiService: ControlApiService,
     private http: HttpClient) {
     this.setUpService();
   }
 
   // MARK: - Public
 
-  public getStatusForMongooseRecord(targetRecordLoadStepId: String): Observable<MongooseRunStatus> {
-    let configLogName = this.INITIAL_CREATED_LOG_FILE_NAME;
-    const configurationFileStatus$ = this.isLogFileExist(targetRecordLoadStepId, configLogName);
-
-    let resultsMetricsFileName = this.FINAL_CREATED_LOG_FILE_NAME;
-    const resultNetricsStatus$ = this.isLogFileExist(targetRecordLoadStepId, resultsMetricsFileName);
-
-    return configurationFileStatus$.pipe(
-      mergeMap(hasConfiguration => resultNetricsStatus$.pipe(
-        map(hasResults => {
-          if (hasConfiguration && !hasResults) {
-            return MongooseRunStatus.Running;
-          }
-          if (hasConfiguration && hasResults) {
-            return MongooseRunStatus.Finished;
-          }
-          if (!hasConfiguration && !hasResults) {
-            return MongooseRunStatus.Unavailable;
-          }
-          return MongooseRunStatus.Undefined;
-        })))
+  public getStatusForMongooseRecord(targetRecordRunId: string): Observable<MongooseRunStatus> {
+    // NOTE: As for now, we're checking status for Mongoose run overtall, not just Run ID. 
+    return this.controlApiService.isMongooseRunActive(targetRecordRunId).pipe(
+      map(isMongooseRunActive => { 
+        if (isMongooseRunActive) { 
+          return MongooseRunStatus.Running;
+        }
+        return MongooseRunStatus.Finished;
+      })
     )
   }
 
@@ -181,7 +171,7 @@ export class MonitoringApiService {
           // ... is useful while updating Run Records table. 
           runRecords = this.sortMongooseRecordsByStartTime(runRecords);
           // NOTE: Using behavior subject object in order to reduce amount of HTTP requests.
-          this.currentMongooseRunRecords$.next(runRecords); 
+          this.currentMongooseRunRecords$.next(runRecords);
           return runRecords;
         },
         error => {

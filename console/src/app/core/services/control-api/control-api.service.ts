@@ -53,7 +53,7 @@ export class ControlApiService {
     return this.http.get(mongooseAddress + configEndpoint, {headers: mongooseConfigurationHeaders});
   }
 
-  public isRunActive(runId: string): Observable<boolean> { 
+  public isMongooseRunActive(runId: string): Observable<boolean> { 
     
     const requestRunStatusHeaders = {
       // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.
@@ -68,7 +68,7 @@ export class ControlApiService {
     return this.http.get(`${this.mongooseHostIp}/run`, runStatusRequestOptions).pipe(
       map((runStatusResponse: any) => { 
         let responseStatusCode = runStatusResponse.status;
-        
+
         if (responseStatusCode == undefined) { 
           return false; 
         }
