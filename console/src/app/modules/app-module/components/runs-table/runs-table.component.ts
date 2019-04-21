@@ -40,7 +40,6 @@ export class RunsTableComponent implements OnInit {
     console.log("Run table initializing.");
     this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(
       updatedRecords => {
-        console.log(`updatedRecords: ${JSON.stringify(updatedRecords)}`);
         this.handleRecordsUpdate(updatedRecords);
       },
       error => {
