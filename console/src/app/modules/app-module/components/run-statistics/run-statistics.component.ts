@@ -45,7 +45,10 @@ export class RunStatisticsComponent implements OnInit {
             this.runRecord = foundRecord; 
           },
           error => { 
-            console.error(`Unable to display statistics for Mongoose run record with ID ${targetRecordLoadStepId}, reason: ${error.message}`);
+            let misleadingMsg = `Unable to display statistics for Mongoose run record with ID ${targetRecordLoadStepId}, reason: ${error.message}`;
+            console.error(misleadingMsg);
+            alert(misleadingMsg);
+            return;
           }
         )
         this.initTabs();
@@ -91,7 +94,7 @@ export class RunStatisticsComponent implements OnInit {
   }
 
   private loadTab(selectedTab: BasicTab) {
-    this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.runRecord.getIdentifier()
+    this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.runRecord.getLoadStepId()
       + '/' + selectedTab.getLink()]);
   }
 

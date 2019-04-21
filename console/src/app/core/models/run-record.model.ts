@@ -21,6 +21,7 @@ export class MongooseRunRecord implements OnDestroy {
 
     constructor(runId: String, loadStepId: String, mongooseRunStatus$: Observable<MongooseRunStatus>, startTime: String, nodes: String[], duration: string, comment: String) {
         this.runId = runId;
+        this.loadStepId = loadStepId;
         this.startTime = startTime;
         this.nodes = nodes;
         this.duration = duration;
@@ -42,10 +43,10 @@ export class MongooseRunRecord implements OnDestroy {
 
     // MARK: - Public
 
-    public setLoadStepId(loadStepId: String) { 
-        this.loadStepId = loadStepId; 
+    public getLoadStepId(): String { 
+        return this.loadStepId;
     }
-    
+
     public getDuration(): string {
         if (this.duration == "") {
             return this.DEFAULT_VALUE;
@@ -53,7 +54,7 @@ export class MongooseRunRecord implements OnDestroy {
         return this.duration;
     }
 
-    public getIdentifier(): String {
+    public getRunId(): String {
         return this.runId;
     }
 

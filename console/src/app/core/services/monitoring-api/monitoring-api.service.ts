@@ -65,6 +65,9 @@ export class MonitoringApiService {
   }
 
   public getMongooseRunRecordByLoadStepId(loadStepId: String): Observable<MongooseRunRecord> {
+    if (loadStepId = "") { 
+      throw Error("Load step ID hasn't been saved.");
+    }
     return this.getCurrentMongooseRunRecords().pipe(
       map(records => {
         let record = this.findMongooseRecordByLoadStepId(records, loadStepId);
@@ -94,7 +97,7 @@ export class MonitoringApiService {
     let targetMetricLabels = MongooseMetrics.PrometheusMetricLabels.ID;
 
     var targetLabels = new Map<String, String>();
-    targetLabels.set(targetMetricLabels, targetRecord.getIdentifier());
+    targetLabels.set(targetMetricLabels, targetRecord.getLoadStepId());
 
     return this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels).pipe(
       map(runRecordsResponse => {
@@ -126,7 +129,7 @@ export class MonitoringApiService {
     let targetMetricLabels = MongooseMetrics.PrometheusMetricLabels.ID;
 
     var targetLabels = new Map<String, String>();
-    targetLabels.set(targetMetricLabels, targetRecord.getIdentifier());
+    targetLabels.set(targetMetricLabels, targetRecord.getLoadStepId());
 
     return this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels).pipe(
       map(runRecordsResponse => {
@@ -272,7 +275,7 @@ export class MonitoringApiService {
 
     let targerRecord: MongooseRunRecord;
     records.filter(record => {
-      if (record.getIdentifier() == id) {
+      if (record.getLoadStepId() == id) {
         targerRecord = record;
       }
     });

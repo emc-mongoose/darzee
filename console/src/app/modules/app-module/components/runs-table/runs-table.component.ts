@@ -40,6 +40,7 @@ export class RunsTableComponent implements OnInit {
     console.log("Run table initializing.");
     this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(
       updatedRecords => {
+        console.log(`updatedRecords: ${JSON.stringify(updatedRecords)}`);
         this.handleRecordsUpdate(updatedRecords);
       },
       error => {
@@ -56,11 +57,11 @@ export class RunsTableComponent implements OnInit {
 
   public onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) {
     if (!this.isRunStatisticsReachable(mongooseRunRecord)) {
-      let misleadingMsg = "Selected Mongoose run info (load step id: " + mongooseRunRecord.getIdentifier() + ") couldn't be found.";
+      let misleadingMsg = "Selected Mongoose run info (load step id: " + mongooseRunRecord.getLoadStepId() + ") couldn't be found.";
       alert(misleadingMsg);
       return;
     }
-    this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getIdentifier()]);
+    this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getLoadStepId()]);
   }
 
   // MARK: - Private 
@@ -109,7 +110,7 @@ export class RunsTableComponent implements OnInit {
     for (var i = 0; i < lhsRecords.length; i++) {
       var isRecordExist = false;
       rhsRecords.forEach(updatedRecord => {
-        isRecordExist = (updatedRecord.getIdentifier() == lhsRecords[i].getIdentifier());
+        isRecordExist = (updatedRecord.getLoadStepId() == lhsRecords[i].getLoadStepId());
         if (isRecordExist) {
           return;
         }
