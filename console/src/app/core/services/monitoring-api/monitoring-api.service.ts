@@ -173,7 +173,7 @@ export class MonitoringApiService {
       },
       error => {
         let misleadingMsg = `Unable to load Mongoose run records. Details: `;
-        
+
         let errorDetails = JSON.stringify(error);
         console.error(misleadingMsg + errorDetails);
 

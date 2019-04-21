@@ -41,6 +41,7 @@ export class RunsTableRootComponent implements OnInit {
   ngOnInit() {
     this.mongooseRecordsSubscription = this.monitoringApiService.getCurrentMongooseRunRecords().subscribe(
       updatedRecords => {
+        console.log(`[Run table root] updatedRecords: ${JSON.stringify(updatedRecords)}`);
         let shouldRefreshPage = this.shouldRefreshPage(this.displayingRunRecords, updatedRecords);
         this.displayingRunRecords = updatedRecords;
         this.getActiveTabs();
@@ -48,6 +49,9 @@ export class RunsTableRootComponent implements OnInit {
           this.runTabs = this.getActiveTabs();
           return;
         }
+      },
+      error => { 
+        alert(`Unable to load Mongoose runs. Details: ${JSON.stringify(error)}`);
       },
       () => { 
         this.runTabs.forEach(requiredTab => { 
