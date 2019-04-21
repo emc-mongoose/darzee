@@ -192,6 +192,24 @@ export class MonitoringApiService {
       })
   }
 
+  public getMongooseRunRecords(): Observable<MongooseRunRecord[]> { 
+    return this.prometheusApiService.getExistingRecordsInfo().pipe(
+      map(
+        metricsArray => { 
+          let runRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
+          return runRecords;
+        },
+        error => { 
+          let misleadingMsg = `An error has occured while loading Mongoose run records: ${error}`;
+          console.error(misleadingMsg);
+          alert(misleadingMsg)
+          let emptyRecordsArray: MongooseRunRecord[] = []; 
+          return emptyRecordsArray;
+        }
+      )
+    )
+  }
+
   // MARK: - Private 
 
   private sortMongooseRecordsByStartTime(records: MongooseRunRecord[]): MongooseRunRecord[] {

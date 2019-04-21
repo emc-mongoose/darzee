@@ -57,7 +57,7 @@ export class RunStatisticLogsComponent implements OnInit {
 
   // MARK: - Public
 
-  changeDisplayingLog(selectedTab: BasicTab) {
+  public changeDisplayingLog(selectedTab: BasicTab) {
     // TODO: Change logic of setting 'active' status to a selected tab.
     this.logTabs.forEach(tab => {
       let isSelectedTab = (tab.getName() == selectedTab.getName());
