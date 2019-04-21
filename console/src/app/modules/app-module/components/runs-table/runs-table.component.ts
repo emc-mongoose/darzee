@@ -57,7 +57,15 @@ export class RunsTableComponent implements OnInit {
 
   public onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) {
     if (!this.isRunStatisticsReachable(mongooseRunRecord)) {
-      let misleadingMsg = "Selected Mongoose run info (load step id: " + mongooseRunRecord.getLoadStepId() + ") couldn't be found.";
+      let loadStepId = mongooseRunRecord.getLoadStepId();
+      let isLoadStepIdSaved = (loadStepId != ""); 
+      var misleadingMsg = "";
+      if (!isLoadStepIdSaved) { 
+        misleadingMsg = `Load step ID hasn't been found for scenario within Mongoose Run ${mongooseRunRecord.getRunId()}`;
+      } else { 
+        misleadingMsg = `Details about selected Mongoose run haven't been found.`;
+      }
+  
       alert(misleadingMsg);
       return;
     }
@@ -69,7 +77,9 @@ export class RunsTableComponent implements OnInit {
 
   private isRunStatisticsReachable(mongooseRunRecord: MongooseRunRecord): boolean {
     let targetRunStatus = mongooseRunRecord.getStatus()
-    return ((targetRunStatus != MongooseRunStatus.Unavailable) && (targetRunStatus != MongooseRunStatus.Undefined));
+    let isLoadStepIdExist = (mongooseRunRecord.getLoadStepId() != "");
+    let isRunReachableByStatus = (targetRunStatus != MongooseRunStatus.Unavailable) && (targetRunStatus != MongooseRunStatus.Undefined);
+    return (isRunReachableByStatus && isLoadStepIdExist);
   }
 
   private setInitialRecords(records: MongooseRunRecord[]) {
