@@ -228,9 +228,9 @@ export class MonitoringApiService {
       let durationIndex = 1;
       let duration = computedRunData[durationIndex];
 
-      const runStatus = this.getStatusForMongooseRecord(loadStepId);
+      const mongooseRunStatus$ = this.getStatusForMongooseRecord(loadStepId);
 
-      let currentRunRecord = new MongooseRunRecord(loadStepId, runStatus, startTime, nodesList, duration, userComment);
+      let currentRunRecord = new MongooseRunRecord(loadStepId, mongooseRunStatus$, startTime, nodesList, duration, userComment);
       runRecords.push(currentRunRecord);
     }
 

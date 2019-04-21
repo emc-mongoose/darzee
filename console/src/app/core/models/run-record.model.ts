@@ -27,6 +27,9 @@ export class MongooseRunRecord implements OnDestroy {
         this.statusSubscription.add(mongooseRunStatus$.subscribe(
             fetchedStatus => {
                 this.currentStatus = fetchedStatus;
+            },
+            error => { 
+                this.currentStatus = MongooseRunStatus.Unavailable;
             }
         ));
     }
