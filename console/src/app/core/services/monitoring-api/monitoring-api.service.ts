@@ -202,8 +202,11 @@ export class MonitoringApiService {
       let staticRunData = rawMongooseRunData[processingRunIndex][metricsTag];
 
       // MARK: - Retrieving static data 
-      let idTag = "run_id";
-      let runId = this.fetchLabelValue(staticRunData, idTag);
+      let runIdTag = "run_id";
+      let runId = this.fetchLabelValue(staticRunData, runIdTag);
+
+      let loadStepIdTag = "load_step_id";
+      let loadStepId = this.fetchLabelValue(staticRunData, loadStepIdTag);
 
       let startTimeTag = "start_time";
       let startTime = this.fetchLabelValue(staticRunData, startTimeTag);
@@ -225,7 +228,7 @@ export class MonitoringApiService {
 
       const mongooseRunStatus$ = this.getStatusForMongooseRecord(runId);
 
-      let currentRunRecord = new MongooseRunRecord(runId, mongooseRunStatus$, startTime, nodesList, duration, userComment);
+      let currentRunRecord = new MongooseRunRecord(runId, loadStepId, mongooseRunStatus$, startTime, nodesList, duration, userComment);
       runRecords.push(currentRunRecord);
     }
 

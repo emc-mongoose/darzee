@@ -11,13 +11,15 @@ export class MongooseRunRecord implements OnDestroy {
     public comment: String;
 
     private readonly runId: String;
+    private loadStepId: String = ""; 
+
     private duration: string;
     private statusSubscription: Subscription = new Subscription();
     private currentStatus: MongooseRunStatus = MongooseRunStatus.Undefined;
 
     // MARK: - Lifecycle 
 
-    constructor(runId: String, mongooseRunStatus$: Observable<MongooseRunStatus>, startTime: String, nodes: String[], duration: string, comment: String) {
+    constructor(runId: String, loadStepId: String, mongooseRunStatus$: Observable<MongooseRunStatus>, startTime: String, nodes: String[], duration: string, comment: String) {
         this.runId = runId;
         this.startTime = startTime;
         this.nodes = nodes;
@@ -40,6 +42,10 @@ export class MongooseRunRecord implements OnDestroy {
 
     // MARK: - Public
 
+    public setLoadStepId(loadStepId: String) { 
+        this.loadStepId = loadStepId; 
+    }
+    
     public getDuration(): string {
         if (this.duration == "") {
             return this.DEFAULT_VALUE;
