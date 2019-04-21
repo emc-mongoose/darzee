@@ -17,12 +17,6 @@ import { ControlApiService } from "../control-api/control-api.service";
 export class MonitoringApiService {
 
   private readonly MONGOOSE_HTTP_ADDRESS = Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP;
-
-  // NOTE: Names of logs-files (according to REST API on 04.04) that are being used to check Mongoose ...
-  // ... run status/ 
-  private readonly INITIAL_CREATED_LOG_FILE_NAME = "Config";
-  private readonly FINAL_CREATED_LOG_FILE_NAME = "metrics.FileTotal";
-
   private currentMongooseRunRecords$: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
 
   // NOTE: availableLogs is a list of logs provided by Mongoose. Key is REST API's endpoint for fetching the log, ...
@@ -77,7 +71,7 @@ export class MonitoringApiService {
         return record;
       },
         error => {
-          console.error(`Something went wront during filtring records by status: ${error.message}`);
+          console.error(`Something went wrong during filtring records by status: ${error.message}`);
         })
     );
   }
@@ -199,6 +193,7 @@ export class MonitoringApiService {
   private extractRunRecordsFromMetricLabels(rawMongooseRunData: any): MongooseRunRecord[] {
 
     var runRecords: MongooseRunRecord[] = [];
+    console.log(`rawMongooseRunData: ${JSON.stringify(rawMongooseRunData)}`);
 
     // NOTE: Looping throught found Mongoose Run Records 
     for (var processingRunIndex in rawMongooseRunData) {
@@ -207,8 +202,8 @@ export class MonitoringApiService {
       let staticRunData = rawMongooseRunData[processingRunIndex][metricsTag];
 
       // MARK: - Retrieving static data 
-      let idTag = "load_step_id";
-      let loadStepId = this.fetchLabelValue(staticRunData, idTag);
+      let idTag = "run_id";
+      let runId = this.fetchLabelValue(staticRunData, idTag);
 
       let startTimeTag = "start_time";
       let startTime = this.fetchLabelValue(staticRunData, startTimeTag);
@@ -228,9 +223,9 @@ export class MonitoringApiService {
       let durationIndex = 1;
       let duration = computedRunData[durationIndex];
 
-      const mongooseRunStatus$ = this.getStatusForMongooseRecord(loadStepId);
+      const mongooseRunStatus$ = this.getStatusForMongooseRecord(runId);
 
-      let currentRunRecord = new MongooseRunRecord(loadStepId, mongooseRunStatus$, startTime, nodesList, duration, userComment);
+      let currentRunRecord = new MongooseRunRecord(runId, mongooseRunStatus$, startTime, nodesList, duration, userComment);
       runRecords.push(currentRunRecord);
     }
 
