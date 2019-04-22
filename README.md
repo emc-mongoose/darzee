@@ -43,7 +43,7 @@ There's 3 possible status of Mongoose runs:
 * Unavailable - means info about Mongoose run has been found on the server, but the related data is lost or couldn't be loaded. 
 
 You could see Mongoose run status or run details by pressing the status icon. 
-<img src="screenshots/runs-table/run_table_finished_results.png" width="100" height="100">
+<img src="screenshots/runs-table/run_table_finished_results.png" style="height: 50%; width: 50%;">
 
 ![](screenshots/runs-table/run_table_finished_results.png){:height="50%" width="50%"}
 ![](screenshots/runs-table/run_table_running_details.png){:height="50%" width="50%"}
