@@ -14,7 +14,7 @@ Mongoose launching process is devided in 3 steps:
 
 ### 1.1.1 Nodes selection 
 
-![](screenshots/setup/nodes/nodes-selection.PNG)
+![](screenshots/setup/nodes/nodes-selection.png)
 Mongoose could be launched on multiple nodes. You could add and select nodes on the first step of set up. Added nodes will be remained within the UI. 
 
 ## 1.2 Configuring 
