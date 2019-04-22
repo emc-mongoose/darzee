@@ -14,8 +14,20 @@ Mongoose launching process is devided in 3 steps:
 
 ### 1.1.1 Nodes selection 
 
+![](screenshots/setup/nodes/nodes-selection.PNG)
+Mongoose could be launched on multiple nodes. You could add and select nodes on the first step of set up. Added nodes will be remained within the UI. 
 
+## 1.2 Configuring 
 
+Configuration is being fetched via Mongoose REST API. You could change it via the UI. 
+
+## 1.3 Scenario 
+Mongoose's scenarios are writtign in JavaScript. You could either create, load or save the Scenario via the UI. 
+
+## 1.2 Monitoring runs 
+
+### 1.2.1 Runs table 
+Discovered Mongoose's runs are displayed within the table. 
 
 
 # 2. Configuration 
