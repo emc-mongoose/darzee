@@ -53,94 +53,72 @@ You could see Mongoose run status or run details by pressing the status icon.
 
 # 2. Configuration 
 
+UI's configuration depends on the parameters listen within .env file.
+
+## 2.1 Deploying ports 
+The following parameters are being used to specify deploying ports of the services: 
+ 
+* CONSOLE_PORT - for Mongoose Web UI; 
+* GRAFANA_PORT - for Grafana; 
+* PROMETHEUS_PORT - for Prometheus; 
+* MONGOOSE_PORT - for Mongoose; 
+
+## 2.2 Image versions 
+The following parameters are being used to specify docker image version of a specific service: 
+* CONSOLE_VER - Mongoose Web UI image version; 
+* PROMETHEUS_VER - Prometheus image version; 
+* GRAFANA_VER - Grafana image version; 
+
+
+## 2.3 Container configuration 
+
+### 2.3.1 Network
+The following parameters are being used to organize internal network within the container: 
+
+* IMAGES_NETWORK_BRIDGE_BASE_SUBNET - base subnet of container's network; 
+* IMAGES_NETWORK_BRIDGE_BASE_SUBNET_SLOTS - amount of slots within the network; 
+* PROMETHEUS_IMAGE_IP - *internal (image)* IP of Prometheus within the container; 
+* NODE_SERVER_IMAGE_IP - *internal (image)* IP of Node JS server within the container; 
+
+### 2.3.2 Prometheus 
+Prometheus configuration is being rewritten in a runtime in order to add targets dynamically. 
+To implement this, we're using internal container volume. 
+* PROMETHEUS_CONFIGURATION_PATH - full path for Prometheus configuration; 
+* PROMETHEUS_CONFIGURATION_FOLDER_PATH - path to Prometheus folder; 
+
+## 2.4 Other parameters 
+
+* MONGOOSE_HOST - specifies host of an initially loaded Mongoose; 
+
 # 3. Build and run 
+
+## 3.1 Build 
+
+### 3.1.1 Build docker image 
+
+Docker image is being builted via Gradle. To build Docker image, use: 
+> $ ./gradlew buildImage
+
+### 3.1.2 Build project 
+Mongoose Web UI has been made with Angular 7.0. You could build it just like any Angular app. 
+> $ ng build 
+
+## 3.2 Run 
+
+### 3.2.1 Run via docker-compose 
+Mongoose Web UI could be ran via docker compose. 
+It'd build a container that contains Mongoose Web UI and Prometheus. 
+> $ docker-compose up 
+
+### 3.2.2 Run in development mode 
+Mongoose Web UI has been build with Angular CLI. It could be ran in development mode using the appropriate command: 
+> $ ng serve 
+
 
 # 4. Deploying 
 
+Mongoose image is being loaded into the [docker hub](https://hub.docker.com/r/emcmongoose/mongoose-console)
 
-## Mock Up
-
-Views:
-1. [Start](http://framebox.org/AhASg-vSSdFJ)
-2. [Node Selection](http://framebox.org/AhAtx-jAZPRL)
-3. [Defaults](http://framebox.org/AhATg-tbsaYz)
-4. [Scenario](http://framebox.org/AhAvq-mJfTrb)
-5. [Logs](http://framebox.org/AhAVi-MafEVE)
-6. [Charts](http://framebox.org/AhAwq-XveMZm)
-
-## Screenshots
-
-### Runs page
-
-
-![](screenshots/runs.PNG)
-
-
-### Nodes page
-
-
-![](screenshots/nodes.PNG)
-
-
-### Editing scenarios page
-
-
-![](screenshots/control-page.PNG)
-
-
-### Editing configurations page
-
-
-![](screenshots/control-editing.PNG)
-
-### Downloading SVG page
-
-![](screenshots/svg_page.png)
-
-### Weighted triangles algorithm in Grafana
-
-![](screenshots/WTA.jpg)
-
-## Build
-` ./gradlew clean buildImage`
-
-## Deployment with Docker
-
-#### Build & Push docker image
-As the server on which webapp rises, nginx is used.
-
-To build image
-
-` ./gradlew buildImage`
-
-Before pushing image, please, login to your docker account
-
-` docker login`
-
-To push image to Docker hub
-
-` ./gradlew pushImage`
-
-
-## Clear production files 
-
-` ./gradlew clean`
-
-
-#### Run with docker Compose
-
-To launch the GUI, you will need to pre-install the [Docker Compose](https://docs.docker.com/compose/install/). To start the server using docker-compose:
-
-` docker-compose up`
-
-*For the GUI to work, it is necessary to start Grafana and Prometheus services. The previous command pools the latest versions of the images from DockerHub and runs 3 separate containers.*
-
-Then check using the browser that the GUI is available at http://localhost:8080
-
-## To run in development mode, navigate to 'console' folder and use:
-`ng serve` 
-
-## Configuring container images parameters
-
-Versions and hosts are stored within the environment variables. You're able to change them via .env file inside the root directory. 
-If you rename some of them, make sure you rename it in other files: build.gradle
+* It's possible to push Docker image to docker hub via gradle: 
+> $ docker login
+> $ ./gradlew pushImage 
