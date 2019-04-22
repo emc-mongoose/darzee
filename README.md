@@ -18,16 +18,34 @@ Mongoose launching process is devided in 3 steps:
 Mongoose could be launched on multiple nodes. You could add and select nodes on the first step of set up. Added nodes will be remained within the UI. 
 
 ## 1.2 Configuring 
+![](screenshots/setup/configuration/configuration.png)
 
 Configuration is being fetched via Mongoose REST API. You could change it via the UI. 
+The changed configuration would be passed to Mongoose /run POST request as a parameter. 
 
 ## 1.3 Scenario 
-Mongoose's scenarios are writtign in JavaScript. You could either create, load or save the Scenario via the UI. 
+Mongoose's scenarios are writtign in JavaScript. It's possibl to write JavaScript code in the UI using code editor. 
+![](screenshots/setup/scenario/scenario_general.png)
+
+Scenarios could be both loaded and saved into the file system. 
+![](screenshots/setup/scenario/scenario_buttons.png)
+
 
 ## 1.2 Monitoring runs 
 
 ### 1.2.1 Runs table 
-Discovered Mongoose's runs are displayed within the table. 
+Discovered Mongoose's runs are displayed within the runs table. 
+![](screenshots/runs-table/runs_table_filled.png)
+
+There's 3 possible status of Mongoose runs: 
+* Finished - means Mongoose run has finished and its logs are available; 
+* Running - means Mongoose is still performing the benchmark and results are not yet available. Althought, some of the details are available; 
+* Unavailable - means info about Mongoose run has been found on the server, but the related data is lost or couldn't be loaded. 
+
+You could see Mongoose run status or run details by pressing the status icon. 
+![](screenshots/runs-table/run_table_finished_results.png)
+![](screenshots/runs-table/run_table_running_results.png)
+
 
 
 # 2. Configuration 
