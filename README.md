@@ -7,7 +7,7 @@ Web UI lets you configure, run and monitor Mongoose.
 
 ## 1.1 Launching
 
-Mongoose launching process is devided in 3 steps: 
+Mongoose launching process is divided in 3 steps: 
 * nodes selection; 
 * configuration set up; 
 * scenario set up; 
@@ -35,7 +35,7 @@ Scenarios could be both loaded and saved into the file system.
 
 ### 1.2.1 Runs table 
 Discovered Mongoose's runs are displayed within the runs table. 
-![](screenshots/runs-table/runs_table_filled.png){:height="50%" width="50%"}
+![](screenshots/runs-table/runs_table_filled.png)
 
 There's 3 possible status of Mongoose runs: 
 * Finished - means Mongoose run has finished and its logs are available; 
@@ -46,8 +46,8 @@ You could see Mongoose run status or run details by pressing the status icon.
 <img src="screenshots/runs-table/run_table_finished_results.png" style="width:10%;
     height:auto;">
 
-![](screenshots/runs-table/run_table_finished_results.png){:height="50%" width="50%"}
-![](screenshots/runs-table/run_table_running_details.png){:height="50%" width="50%"}
+![](screenshots/runs-table/run_table_finished_results.png)
+![](screenshots/runs-table/run_table_running_details.png)
 
 
 
