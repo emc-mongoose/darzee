@@ -12,9 +12,14 @@ export class MongooseRunTab implements OnInit, OnDestroy {
 
     // MARK: - Lifecycle 
 
-    constructor(amountOfRecords: Number, status: string) { 
+    constructor(amountOfRecords: Observable<Number>, status: string) { 
         this.tabTitle = status;
-        this.amountOfRecords = amountOfRecords; 
+        amountOfRecords.subscribe(
+            amount => { 
+                this.amountOfRecords = amount; 
+            }
+        )
+       
         // this.monitoringApiSubscriptions = amountOfRecords$.subscribe(amount => { 
         //     this.amountOfRecords = amount;
         //     this.amountOfRecords$.next(amount);
