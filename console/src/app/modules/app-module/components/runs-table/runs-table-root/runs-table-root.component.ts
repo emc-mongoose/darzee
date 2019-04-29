@@ -6,6 +6,7 @@ import { MongooseRunTab } from './model/monoose-run-tab.model';
 import { slideAnimation } from 'src/app/core/animations';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
+import { MongooseRunRecordCounter } from 'src/app/core/models/run-record-counter';
 
 @Component({
   selector: 'app-runs-table-root',
@@ -27,24 +28,32 @@ export class RunsTableRootComponent implements OnInit {
   private displayingRunRecords: MongooseRunRecord[] = [];
   private mongooseRecordsSubscription: Subscription = new Subscription();
 
+  private mongooseRunTabs$: BehaviorSubject<MongooseRunTab[]> = new BehaviorSubject<MongooseRunTab[]>([]);
+
   private monitoringApiServiceSubscriptions: Subscription = new Subscription();;
 
   // MARK: - Lifecycle
 
   constructor(private monitoringApiService: MonitoringApiService) {
-    this.runTabs = this.getActiveTabs();
-    this.currentActiveTab = this.runTabs[0];
+    // this.runTabs = this.getActiveTabs();
+    // this.currentActiveTab = this.runTabs[0];
   }
 
 
   ngOnInit() {
+
+
     this.mongooseRecordsSubscription = this.monitoringApiService.getMongooseRunRecords().subscribe(
-      updatedRecords => {
+      updatedRecords => {        
+        // TODO: Update tabs here
+        console.log(`Records total amount: ${updatedRecords.length}`);
+        this.mongooseRunTabs$.next(this.getTabsForRecords(updatedRecords));
+        
         let shouldRefreshPage = this.shouldRefreshPage(this.displayingRunRecords, updatedRecords);
         this.displayingRunRecords = updatedRecords;
-        this.getActiveTabs();
+        // this.getActiveTabs();
         if (shouldRefreshPage) {
-          this.runTabs = this.getActiveTabs();
+          // this.runTabs = this.getActiveTabs();
           return;
         }
       },
@@ -71,8 +80,8 @@ export class RunsTableRootComponent implements OnInit {
     )
 
     // NOTE: Tab "All" is selected by default. 
-    this.currentActiveTab = this.runTabs[0];
-    this.onStatusTabClick(this.currentActiveTab);
+    // this.currentActiveTab = this.runTabs[0];
+    // this.onStatusTabClick(this.currentActiveTab);
   }
 
   ngOnDestroy() {
@@ -115,25 +124,47 @@ export class RunsTableRootComponent implements OnInit {
     return this.displayingRunRecords;
   }
 
+  public getMongooseRunTabs(): Observable<MongooseRunTab[]> { 
+    return this.mongooseRunTabs$.asObservable();
+  }
+
   // MARK: - Private 
 
-  private getActiveTabs(): MongooseRunTab[] {
-    var updatedTabs: MongooseRunTab[] = [];
-    for (let runStatus in MongooseRunStatus) {
+  private getTabsForRecords(records: MongooseRunRecord[]): MongooseRunTab[] { 
+    let tabs: MongooseRunTab[] = []; 
+    let mongooseRunRecordCounter = new MongooseRunRecordCounter();
+    for (let runStatus in MongooseRunStatus) { 
       if (runStatus == MongooseRunStatus.Undefined) {
         // NOTE: 'Undefined' tab type is beind used only internally. We won't display it.  
         continue;
       }
-      const amountOfFiltredRecords$ = this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(runStatus).pipe(
-        map(filtredRecords => {
-          return filtredRecords.length;
-        })
-      );
-      var runsTab = new MongooseRunTab(amountOfFiltredRecords$, runStatus);
-      updatedTabs.push(runsTab);
+      let amountOfRecordsInTab = mongooseRunRecordCounter.countRecordsByStatus(records, runStatus); 
+      console.log(`Processing status: ${runStatus}. It has ${amountOfRecordsInTab} tabs.`);
+
+      let runTab = new MongooseRunTab(amountOfRecordsInTab, runStatus);
+      tabs.push(runTab);
     }
-    return updatedTabs;
+    return tabs; 
   }
+
+  // private getActiveTabs(): MongooseRunTab[] {
+  //   var updatedTabs: MongooseRunTab[] = [];
+  //   for (let runStatus in MongooseRunStatus) {
+  //     if (runStatus == MongooseRunStatus.Undefined) {
+  //       // NOTE: 'Undefined' tab type is beind used only internally. We won't display it.  
+  //       continue;
+  //     }
+  //     const amountOfFiltredRecords$ = this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(runStatus).pipe(
+  //       map(filtredRecords => {
+  //         return filtredRecords.length;
+  //       })
+  //     );
+  //     var runsTab = new MongooseRunTab(amountOfFiltredRecords$, runStatus);
+  //     updatedTabs.push(runsTab);
+  //   }
+  //   this.mongooseRunTabs$.next(updatedTabs); 
+  //   return updatedTabs;
+  // }
 
 
   private shouldRefreshPage(currentRecords: MongooseRunRecord[], updatedRecords: MongooseRunRecord[]): boolean {

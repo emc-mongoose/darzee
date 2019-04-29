@@ -1,4 +1,4 @@
-import { Subscription, Observable } from "rxjs";
+import { Subscription, Observable, BehaviorSubject } from "rxjs";
 import { OnInit, OnDestroy } from "@angular/core";
 
 export class MongooseRunTab implements OnInit, OnDestroy { 
@@ -8,13 +8,17 @@ export class MongooseRunTab implements OnInit, OnDestroy {
     private amountOfRecords: Number = 0; 
     private monitoringApiSubscriptions: Subscription;
 
+    private amountOfRecords$: BehaviorSubject<Number> = new BehaviorSubject<Number>(0);
+
     // MARK: - Lifecycle 
 
-    constructor(amountOfRecords$: Observable<Number>, status: string) { 
+    constructor(amountOfRecords: Number, status: string) { 
         this.tabTitle = status;
-        this.monitoringApiSubscriptions = amountOfRecords$.subscribe(amount => { 
-            this.amountOfRecords = amount;
-        });
+        this.amountOfRecords = amountOfRecords; 
+        // this.monitoringApiSubscriptions = amountOfRecords$.subscribe(amount => { 
+        //     this.amountOfRecords = amount;
+        //     this.amountOfRecords$.next(amount);
+        // });
     }
 
     ngOnInit(): void {  }
@@ -24,6 +28,14 @@ export class MongooseRunTab implements OnInit, OnDestroy {
     }
 
     // MARK: - Public
+
+    public getAmountOfRecords(): Number { 
+        return this.amountOfRecords;
+    }
+    
+    public getAmountOfRecordsValue(): Number { 
+        return this.amountOfRecords$.getValue(); 
+    }
 
     public setAmountOfRecords(amount: number) { 
         this.amountOfRecords = amount;
