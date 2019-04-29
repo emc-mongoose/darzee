@@ -40,7 +40,6 @@ export class RunsTableComponent implements OnInit {
     console.log("Run table initializing.");
     this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(
       updatedRecords => {
-        console.log(`updatedRecords: ${JSON.stringify(updatedRecords)}`);
         this.handleRecordsUpdate(updatedRecords);
       },
       error => {
@@ -78,7 +77,7 @@ export class RunsTableComponent implements OnInit {
   private isRunStatisticsReachable(mongooseRunRecord: MongooseRunRecord): boolean {
     let targetRunStatus = mongooseRunRecord.getStatus()
     let isLoadStepIdExist = (mongooseRunRecord.getLoadStepId() != "");
-    let isRunReachableByStatus = (targetRunStatus != MongooseRunStatus.Unavailable) && (targetRunStatus != MongooseRunStatus.Undefined);
+    let isRunReachableByStatus = (targetRunStatus != MongooseRunStatus.Unavailable);
     return (isRunReachableByStatus && isLoadStepIdExist);
   }
 
