@@ -23,20 +23,37 @@ export class RunsTableRootComponent implements OnInit {
   public runTabs: MongooseRunTab[] = [];
   public currentActiveTab: MongooseRunTab;
 
-  public filtredRecords$ = new BehaviorSubject<MongooseRunRecord[]>([]);
-
+  private filtredRecords$ = new BehaviorSubject<MongooseRunRecord[]>([]);
   private displayingRunRecords: MongooseRunRecord[] = [];
-  private mongooseRecordsSubscription: Subscription = new Subscription();
 
   private mongooseRunTabs$: BehaviorSubject<MongooseRunTab[]> = new BehaviorSubject<MongooseRunTab[]>([]);
+
+  private currentTab$: BehaviorSubject<MongooseRunTab>;
+
+  private mongooseRecordsSubscription: Subscription = new Subscription();
+
 
   private monitoringApiServiceSubscriptions: Subscription = new Subscription();;
 
   // MARK: - Lifecycle
 
-  constructor(private monitoringApiService: MonitoringApiService) {
-    // this.runTabs = this.getActiveTabs();
-    // this.currentActiveTab = this.runTabs[0];
+  constructor(private monitoringApiService: MonitoringApiService) { 
+    this.setUpInitialTabs();
+    this.currentTab$.subscribe(tab => { 
+      let targetStatus = tab.getStatus();
+      this.monitoringApiServiceSubscriptions.add(
+        this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(targetStatus).subscribe(
+          records => { 
+            console.log("Records have been changed.");
+            this.filtredRecords$.next(records);
+          },
+          error => { 
+            console.error(`Unable to filter records by status "${targetStatus}. Details: ${error}"`);
+            this.displayingRunRecords = [];
+          }
+        )
+      )
+    });
   }
 
 
@@ -66,27 +83,24 @@ export class RunsTableRootComponent implements OnInit {
         let errorCause = error;
         alert(misleadingMsg + errorCause);
         alert(`Unable to load Mongoose runs. Details: ${error}`);
-      },
-      () => {
-        this.runTabs.forEach(requiredTab => {
-          this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(requiredTab.tabTitle).subscribe(
-            filtedRecords => {
-              requiredTab.setAmountOfRecords(filtedRecords.length);
-              this.filtredRecords$.next(filtedRecords);
-            }
-          )
-        })
       }
+      // () => {
+      //   this.runTabs.forEach(requiredTab => {
+      //     this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(requiredTab.tabTitle).subscribe(
+      //       filtedRecords => {
+      //         requiredTab.setAmountOfRecords(filtedRecords.length);
+      //         this.filtredRecords$.next(filtedRecords);
+      //       }
+      //     )
+      //   })
+      // }
     )
-
-    // NOTE: Tab "All" is selected by default. 
-    // this.currentActiveTab = this.runTabs[0];
-    // this.onStatusTabClick(this.currentActiveTab);
   }
 
   ngOnDestroy() {
     this.mongooseRecordsSubscription.unsubscribe();
     this.monitoringApiServiceSubscriptions.unsubscribe();
+    this.mongooseRunTabs$.unsubscribe(); 
   }
 
   // MARK: - Public 
@@ -96,7 +110,6 @@ export class RunsTableRootComponent implements OnInit {
   }
 
   public onStatusTabClick(requiredTab: MongooseRunTab) {
-    console.log(`Loading tab: ${requiredTab.getTabTag()}`);
     // NOTE: I haven't found a better way to set custom background color for bootstrap selected button. 
     // ... so I put a selector "isSelected" and if it's set to 'true', the tab button is highlighted.
     this.runTabs.forEach(tab => {
@@ -147,6 +160,18 @@ export class RunsTableRootComponent implements OnInit {
   private shouldRefreshPage(currentRecords: MongooseRunRecord[], updatedRecords: MongooseRunRecord[]): boolean {
     // NOTE: Refreshing page ONLY if amount of Mongoose run records has been changed. 
     return (currentRecords.length != updatedRecords.length);
+  }
+
+  private setUpInitialTabs() { 
+    let emptyMongooseRunRecords: MongooseRunRecord[] = []; 
+    this.runTabs = this.getTabsForRecords(emptyMongooseRunRecords);
+    if (this.runTabs.length <= 0) { 
+      // TODO: Change logic of displaying records
+      this.displayingRunRecords = [];
+      return; 
+    }
+    let initialTab = this.runTabs[0];
+    this.currentTab$ = new BehaviorSubject<MongooseRunTab>(initialTab);
   }
 
 }
