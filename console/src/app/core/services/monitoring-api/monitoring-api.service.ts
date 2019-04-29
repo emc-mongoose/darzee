@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, of } from "rxjs";
 import { MongooseRunRecord } from "../../models/run-record.model";
 import { PrometheusApiService } from "../prometheus-api/prometheus-api.service";
 import { MongooseRunStatus } from "../../models/mongoose-run-status";
-import { mergeMap, map, catchError } from "rxjs/operators";
+import { mergeMap, map, catchError, share } from "rxjs/operators";
 import { MongooseMetrics } from "../mongoose-api-models/MongooseMetrics";
 import { MongooseApi } from "../mongoose-api-models/MongooseApi.model";
 import { HttpClient } from "@angular/common/http";
@@ -42,6 +42,8 @@ export class MonitoringApiService {
         }
         return MongooseRunStatus.Finished;
       })
+    ).pipe(
+      share()
     )
   }
 
@@ -156,7 +158,7 @@ export class MonitoringApiService {
     } else {
       targetUrl = this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName;
     }
-    return this.http.get(targetUrl, { responseType: 'text' });
+    return this.http.get(targetUrl, { responseType: 'text' }).pipe(share());
   }
 
   public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
