@@ -134,10 +134,6 @@ export class RunsTableRootComponent implements OnInit {
     let tabs: MongooseRunTab[] = []; 
     let mongooseRunRecordCounter = new MongooseRunRecordCounter();
     for (let runStatus in MongooseRunStatus) { 
-      if (runStatus == MongooseRunStatus.Undefined) {
-        // NOTE: 'Undefined' tab type is beind used only internally. We won't display it.  
-        continue;
-      }
       let amountOfRecordsInTab = mongooseRunRecordCounter.countRecordsByStatus(records, runStatus); 
       console.log(`Processing status: ${runStatus}. It has ${amountOfRecordsInTab} tabs.`);
 
@@ -146,25 +142,6 @@ export class RunsTableRootComponent implements OnInit {
     }
     return tabs; 
   }
-
-  // private getActiveTabs(): MongooseRunTab[] {
-  //   var updatedTabs: MongooseRunTab[] = [];
-  //   for (let runStatus in MongooseRunStatus) {
-  //     if (runStatus == MongooseRunStatus.Undefined) {
-  //       // NOTE: 'Undefined' tab type is beind used only internally. We won't display it.  
-  //       continue;
-  //     }
-  //     const amountOfFiltredRecords$ = this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(runStatus).pipe(
-  //       map(filtredRecords => {
-  //         return filtredRecords.length;
-  //       })
-  //     );
-  //     var runsTab = new MongooseRunTab(amountOfFiltredRecords$, runStatus);
-  //     updatedTabs.push(runsTab);
-  //   }
-  //   this.mongooseRunTabs$.next(updatedTabs); 
-  //   return updatedTabs;
-  // }
 
 
   private shouldRefreshPage(currentRecords: MongooseRunRecord[], updatedRecords: MongooseRunRecord[]): boolean {

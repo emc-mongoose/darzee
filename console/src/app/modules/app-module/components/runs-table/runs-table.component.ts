@@ -77,7 +77,7 @@ export class RunsTableComponent implements OnInit {
   private isRunStatisticsReachable(mongooseRunRecord: MongooseRunRecord): boolean {
     let targetRunStatus = mongooseRunRecord.getStatus()
     let isLoadStepIdExist = (mongooseRunRecord.getLoadStepId() != "");
-    let isRunReachableByStatus = (targetRunStatus != MongooseRunStatus.Unavailable) && (targetRunStatus != MongooseRunStatus.Undefined);
+    let isRunReachableByStatus = (targetRunStatus != MongooseRunStatus.Unavailable);
     return (isRunReachableByStatus && isLoadStepIdExist);
   }
 

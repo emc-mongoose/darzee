@@ -15,7 +15,7 @@ export class MongooseRunRecord implements OnDestroy {
 
     private duration: string;
     private statusSubscription: Subscription = new Subscription();
-    private currentStatus: MongooseRunStatus = MongooseRunStatus.Undefined;
+    private currentStatus: MongooseRunStatus = MongooseRunStatus.Unavailable;
 
     // MARK: - Lifecycle 
 
