@@ -3,7 +3,7 @@
    <form class="form-inline">
       <button *ngFor="let tab of this.getMongooseRunTabs() | async" class="btn btn-sm btn-outline-secondary" type="button" (click)="onStatusTabClick(tab)"
          [id]="tab.isSelected ? 'selected-tab' : ''">
-         {{ tab.getAmountOfRecords() }}
+         {{ tab.getTabTag() }}
       </button>
    </form>
 </nav>
