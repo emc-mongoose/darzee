@@ -5,7 +5,6 @@ import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monit
 import { MongooseRunTab } from './model/monoose-run-tab.model';
 import { slideAnimation } from 'src/app/core/animations';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
 import { MongooseRunRecordCounter } from 'src/app/core/models/run-record-counter';
 
 @Component({
