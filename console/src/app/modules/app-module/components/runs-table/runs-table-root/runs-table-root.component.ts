@@ -148,6 +148,11 @@ export class RunsTableRootComponent implements OnInit {
     let mongooseRunRecordCounter = new MongooseRunRecordCounter();
     for (let runStatus in MongooseRunStatus) { 
       let amountOfRecordsInTab = mongooseRunRecordCounter.countRecordsByStatus(records, runStatus); 
+
+      mongooseRunRecordCounter.getAmountOfRecordsWithStatus$(records, runStatus).subscribe(data => { 
+        console.log(`Status contains the following amount of records: ${data}`);
+      })
+
       console.log(`Processing status: ${runStatus}. It has ${amountOfRecordsInTab} tabs.`);
 
       let runTab = new MongooseRunTab(amountOfRecordsInTab, runStatus);

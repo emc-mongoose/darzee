@@ -16,6 +16,7 @@ export class MongooseRunRecord implements OnDestroy {
     private duration: string;
     private statusSubscription: Subscription = new Subscription();
     private currentStatus: MongooseRunStatus = MongooseRunStatus.Unavailable;
+    private status$: Observable<MongooseRunStatus>; 
 
     // MARK: - Lifecycle 
 
@@ -27,6 +28,7 @@ export class MongooseRunRecord implements OnDestroy {
         this.duration = duration;
         this.comment = comment;
 
+        this.status$ = mongooseRunStatus$; 
         this.statusSubscription.add(mongooseRunStatus$.subscribe(
             fetchedStatus => {
                 this.currentStatus = fetchedStatus;
@@ -42,6 +44,11 @@ export class MongooseRunRecord implements OnDestroy {
     }
 
     // MARK: - Public
+
+    public getStatusObs(): Observable<MongooseRunStatus> {
+        return this.status$; 
+    }
+
 
     public getLoadStepId(): String { 
         return this.loadStepId;
