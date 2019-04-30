@@ -76,6 +76,7 @@ export class RunStatisticsComponent implements OnInit {
       }
       section.isActive = false;
     });
+
     this.loadTab(targetTab);
   }
 
@@ -94,8 +95,18 @@ export class RunStatisticsComponent implements OnInit {
   }
 
   private loadTab(selectedTab: BasicTab) {
+    if (!this.canStatisticsBeLoadedForRecord(this.runRecord)) { 
+      console.error(`Unable to load statistics for Mongoose run with id ${this.runRecord.getRunId()} since it doesn't have load step ID.`); 
+      return; 
+    }
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.runRecord.getLoadStepId()
       + '/' + selectedTab.getLink()]);
+  }
+
+  private canStatisticsBeLoadedForRecord(record: MongooseRunRecord) { 
+    let emptyValue = ""; 
+    let hasLoadStepId = (record.getLoadStepId() != emptyValue); 
+    return hasLoadStepId; 
   }
 
 }

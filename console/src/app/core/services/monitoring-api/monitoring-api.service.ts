@@ -67,7 +67,7 @@ export class MonitoringApiService {
   }
 
   public getMongooseRunRecordByLoadStepId(loadStepId: String): Observable<MongooseRunRecord> {
-    if (loadStepId = "") { 
+    if (loadStepId == "") { 
       throw Error("Load step ID hasn't been saved.");
     }
     return this.getCurrentMongooseRunRecords().pipe(
