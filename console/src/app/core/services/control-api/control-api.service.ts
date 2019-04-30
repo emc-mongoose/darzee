@@ -54,7 +54,7 @@ export class ControlApiService {
   }
 
   public isMongooseRunActive(runId: string): Observable<boolean> { 
-    
+
     const requestRunStatusHeaders = {
       // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.
       'If-Match': `${runId}`
@@ -65,7 +65,7 @@ export class ControlApiService {
       observe: 'response' as 'body'
     }
 
-    return this.http.get(`${this.mongooseHostIp}/run`, runStatusRequestOptions).pipe(
+    return this.http.get(`${this.mongooseHostIp}/${MongooseApi.RunApi.RUN_ENDPOINT}`, runStatusRequestOptions).pipe(
       map((runStatusResponse: any) => { 
         let responseStatusCode = runStatusResponse.status;
 

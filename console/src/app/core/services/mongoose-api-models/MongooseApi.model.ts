@@ -11,7 +11,7 @@ export namespace MongooseApi {
 
     // NOTE: API for configuring Mongoose Run. 
     export class RunApi {
-        public static readonly RUN = "/run";
+        public static readonly RUN_ENDPOINT = "run";
     }
 
     // NOTE: API to process Mongoose's Run logs 
