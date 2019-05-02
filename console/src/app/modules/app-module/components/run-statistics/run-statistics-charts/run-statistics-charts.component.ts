@@ -37,16 +37,24 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   constructor(private prometheusApiService: PrometheusApiService,
     private monitoringApiService: MonitoringApiService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private router: Router) { }
 
   ngOnInit() {
     this.subsctiptions.add(this.route.parent.params.subscribe(params => {
       let mongooseRouteParamsParser: MongooseRouteParamsParser = new MongooseRouteParamsParser(this.monitoringApiService);
-      mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
-        foundRecord => {
-          this.processingRecord = foundRecord;
-        }
-      )
+      try { 
+        mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
+          foundRecord => {
+            this.processingRecord = foundRecord;
+          }
+        )
+      } catch (recordNotFoundError) { 
+        // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
+        alert(`Unable to load requested record information. Reason: ${recordNotFoundError.message}`);
+        console.error(recordNotFoundError);
+        this.router.navigate([RoutesList.RUNS]);
+      }
     }))
 
 

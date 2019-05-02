@@ -7,7 +7,6 @@ export class MongooseChartDao {
     private chartDataProvider: MongooseChartDataProvider; 
 
     constructor(dataProvider: MongooseChartDataProvider) {
-        console.log(`dataProvider == undefined: ${dataProvider == undefined}`);
         this.chartDataProvider = dataProvider; 
     }
 
