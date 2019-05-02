@@ -7,6 +7,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
 import { MongooseRouteParamsParser } from 'src/app/core/models/mongoose-route-params-praser';
 import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
+import { Subscription } from 'rxjs';
+import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 
 @Component({
   selector: 'app-run-statistics-charts',
@@ -26,46 +28,46 @@ export class RunStatisticsChartsComponent implements OnInit {
   public barChartType = 'line';
   public barChartLegend = true;
   public barChartData = [
-    {data: [], label: 'Byte per second'},
+    { data: [], label: 'Byte per second' },
   ];
 
-  mongooseChartDao: MongooseChartDao;
-
-  private routeParameters: RouteParams;
+  private mongooseChartDao: MongooseChartDao;
+  private subsctiptions: Subscription = new Subscription();
+  private processingRecord: MongooseRunRecord;
 
   constructor(private prometheusApiService: PrometheusApiService,
     private monitoringApiService: MonitoringApiService,
-    private router: Router,
-    private route: ActivatedRoute) {  }
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.route.parent.params.subscribe(params => {
+    this.subsctiptions.add(this.route.parent.params.subscribe(params => {
       let mongooseRouteParamsParser: MongooseRouteParamsParser = new MongooseRouteParamsParser(this.monitoringApiService);
       mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
-        processingRecord => { 
-          console.log(`Processing record is: ${JSON.stringify(processingRecord)}`);
+        foundRecord => {
+          this.processingRecord = foundRecord;
         }
       )
-    })
-    
-    
+    }))
+
+
     this.mongooseChartDao = new MongooseChartDao(this.prometheusApiService);
     this.configureChartUpdateInterval();
   }
 
-  ngOnDestroy() { 
-    clearInterval(); 
+  ngOnDestroy() {
+    clearInterval();
+    this.subsctiptions.unsubscribe();
   }
 
   drawChart() {
 
     this.mongooseChartDao.getDuration().subscribe((data: any) => {
-      const metricValue = data[0]["value"][1]; 
-      const metricTimestamp = data[0]["value"][0]; 
-      let newValue = {data: [metricValue], label: 'Byte per second'};
+      const metricValue = data[0]["value"][1];
+      const metricTimestamp = data[0]["value"][0];
+      let newValue = { data: [metricValue], label: 'Byte per second' };
       this.barChartData[0].data.push(metricValue);
       this.barChartLabels.push(formatDate(Math.round(metricTimestamp * 1000), 'mediumTime', 'en-US'));
-      if (this.barChartData[0].data.length >= 20){
+      if (this.barChartData[0].data.length >= 20) {
         this.barChartData[0].data.shift();
         this.barChartLabels.shift();
       }
@@ -78,8 +80,8 @@ export class RunStatisticsChartsComponent implements OnInit {
   }
 
   // MARK: - Private 
-  
-  private configureChartUpdateInterval() { 
+
+  private configureChartUpdateInterval() {
     this.drawChart = this.drawChart.bind(this);
     setInterval(this.drawChart, 2000);
   }

@@ -39,7 +39,6 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   public runQuery(query: String): Observable<any> {
     let queryRequest = "query?query=";
-    console.log(`Executing query within Prometheus: ${this.API_BASE + queryRequest + query}`);
     return this.httpClient.get(this.API_BASE + queryRequest + query, Constants.Http.JSON_CONTENT_TYPE).pipe(
       map((rawResponse: any) => this.extractResultPayload(rawResponse))
     );
