@@ -46,9 +46,10 @@ export class RunStatisticsChartsComponent implements OnInit {
 
     this.mongooseChartDao.getDuration().subscribe((data: any) => {
       const metricValue = data[0]["value"][1]; 
+      const metricTimestamp = data[0]["value"][0]; 
       let newValue = {data: [metricValue], label: 'Byte per second'};
       this.barChartData[0].data.push(metricValue);
-      this.barChartLabels.push(formatDate(Math.round(metricValue * 1000), 'mediumTime', 'en-US'));
+      this.barChartLabels.push(formatDate(Math.round(metricTimestamp * 1000), 'mediumTime', 'en-US'));
       if (this.barChartData[0].data.length >= 20){
         this.barChartData[0].data.shift();
         this.barChartLabels.shift();
