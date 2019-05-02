@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MongooseChartDao } from 'src/app/core/models/mongoose-chart-dao.mode';
 import { formatDate } from '@angular/common';
 import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prometheus-api.service';
+import { RouteParams } from '../../../Routing/params.routes';
+import { Router, ActivatedRoute } from '@angular/router';
+import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
+import { MongooseRouteParamsParser } from 'src/app/core/models/mongoose-route-params-praser';
+import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
 
 @Component({
   selector: 'app-run-statistics-charts',
@@ -26,9 +31,24 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   mongooseChartDao: MongooseChartDao;
 
-  constructor(private prometheusApiService: PrometheusApiService) {  }
+  private routeParameters: RouteParams;
+
+  constructor(private prometheusApiService: PrometheusApiService,
+    private monitoringApiService: MonitoringApiService,
+    private router: Router,
+    private route: ActivatedRoute) {  }
 
   ngOnInit() {
+    this.route.parent.params.subscribe(params => {
+      let mongooseRouteParamsParser: MongooseRouteParamsParser = new MongooseRouteParamsParser(this.monitoringApiService);
+      mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
+        processingRecord => { 
+          console.log(`Processing record is: ${JSON.stringify(processingRecord)}`);
+        }
+      )
+    })
+    
+    
     this.mongooseChartDao = new MongooseChartDao(this.prometheusApiService);
     this.configureChartUpdateInterval();
   }
@@ -62,8 +82,6 @@ export class RunStatisticsChartsComponent implements OnInit {
   private configureChartUpdateInterval() { 
     this.drawChart = this.drawChart.bind(this);
     setInterval(this.drawChart, 2000);
-
-
   }
 
 }
