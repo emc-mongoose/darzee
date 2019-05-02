@@ -26,12 +26,7 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   mongooseChartDao: MongooseChartDao;
 
-  constructor(private prometheusApiService: PrometheusApiService) { 
-    console.log(`[constructor] is this.prometheusApiService undefined : ${this.prometheusApiService == undefined}`)
-    console.log(`[function] is this.prometheusApiService undefined: ${this.prometheusApiService == undefined}`)
-
-
-  }
+  constructor(private prometheusApiService: PrometheusApiService) {  }
 
   ngOnInit() {
     this.mongooseChartDao = new MongooseChartDao(this.prometheusApiService);
@@ -42,7 +37,7 @@ export class RunStatisticsChartsComponent implements OnInit {
     clearInterval(); 
   }
 
-  showBandwidth() {
+  drawChart() {
 
     this.mongooseChartDao.getDuration().subscribe((data: any) => {
       const metricValue = data[0]["value"][1]; 
@@ -65,8 +60,8 @@ export class RunStatisticsChartsComponent implements OnInit {
   // MARK: - Private 
   
   private configureChartUpdateInterval() { 
-    this.showBandwidth = this.showBandwidth.bind(this);
-    setInterval(this.showBandwidth, 2000);
+    this.drawChart = this.drawChart.bind(this);
+    setInterval(this.drawChart, 2000);
 
 
   }
