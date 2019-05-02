@@ -79,7 +79,6 @@ export class RunStatisticsChartsComponent implements OnInit {
       if (!this.isDataForChartValid(data)) { 
         // TOOD: Display message on screen here. 
         this.isChartDrawActive = false;
-        alert(`Data for Mongoose chart hasn't been found.`);
         return;
       }
 
