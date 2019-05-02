@@ -34,6 +34,7 @@ export class RunStatisticsChartsComponent implements OnInit {
   private mongooseChartDao: MongooseChartDao;
   private subsctiptions: Subscription = new Subscription();
   private processingRecord: MongooseRunRecord;
+  private isChartDrawActive: boolean = true; 
 
   constructor(private prometheusApiService: PrometheusApiService,
     private monitoringApiService: MonitoringApiService,
@@ -76,10 +77,11 @@ export class RunStatisticsChartsComponent implements OnInit {
     this.mongooseChartDao.getDuration(this.processingRecord.getLoadStepId() as string).subscribe((data: any) => {
 
       if (!this.isDataForChartValid(data)) { 
+        // TOOD: Display message on screen here. 
+        this.isChartDrawActive = false;
         alert(`Data for Mongoose chart hasn't been found.`);
         return;
       }
-      console.log(`Found data for chart: ${JSON.stringify(data)}`)
 
       const metricValue = data[0]["value"][1];
       const metricTimestamp = data[0]["value"][0];
