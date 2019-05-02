@@ -46,7 +46,12 @@ export class RunStatisticsChartsComponent implements OnInit {
       try { 
         mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
           foundRecord => {
+            if (foundRecord == undefined) { 
+              throw new Error(`Requested run record hasn't been found.`);
+            }
             this.processingRecord = foundRecord;
+            this.configureChartUpdateInterval();
+
           }
         )
       } catch (recordNotFoundError) { 
@@ -59,7 +64,6 @@ export class RunStatisticsChartsComponent implements OnInit {
 
 
     this.mongooseChartDao = new MongooseChartDao(this.prometheusApiService);
-    this.configureChartUpdateInterval();
   }
 
   ngOnDestroy() {
@@ -70,6 +74,13 @@ export class RunStatisticsChartsComponent implements OnInit {
   drawChart() {
 
     this.mongooseChartDao.getDuration(this.processingRecord.getLoadStepId() as string).subscribe((data: any) => {
+
+      if (!this.isDataForChartValid(data)) { 
+        alert(`Data for Mongoose chart hasn't been found.`);
+        return;
+      }
+      console.log(`Found data for chart: ${JSON.stringify(data)}`)
+
       const metricValue = data[0]["value"][1];
       const metricTimestamp = data[0]["value"][0];
       let newValue = { data: [metricValue], label: 'Byte per second' };
@@ -91,7 +102,19 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   private configureChartUpdateInterval() {
     this.drawChart = this.drawChart.bind(this);
+    if (!this.shouldDrawChart()) { 
+      alert(`Unable to draw the required chart for load step ID.`);
+      return;
+    }
     setInterval(this.drawChart, 2000);
+  }
+
+  private shouldDrawChart(): boolean { 
+    return (this.processingRecord != undefined);
+  }
+
+  private isDataForChartValid(data: any): boolean { 
+    return ((data != undefined) && (data.length > 0));
   }
 
 }
