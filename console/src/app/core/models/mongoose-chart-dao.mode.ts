@@ -2,12 +2,13 @@ import { Observable } from 'rxjs';
 import { PrometheusApiService } from '../services/prometheus-api/prometheus-api.service';
 import { MongooseChartDataProvider } from './mongoose-chart-data-provider.interface';
 
-export class PrometheusChartDao { 
+export class MongooseChartDao { 
 
     private chartDataProvider: MongooseChartDataProvider; 
 
-    constructor(private prometheusApiService: PrometheusApiService) {
-        this.chartDataProvider = prometheusApiService; 
+    constructor(dataProvider: MongooseChartDataProvider) {
+        console.log(`dataProvider == undefined: ${dataProvider == undefined}`);
+        this.chartDataProvider = dataProvider; 
     }
 
     public getDuration(): Observable<any> {

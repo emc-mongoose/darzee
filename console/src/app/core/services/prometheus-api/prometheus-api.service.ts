@@ -3,12 +3,17 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { Observable } from 'rxjs';
 import { map, filter, tap } from 'rxjs/operators';
+import { MongooseChartDataProvider } from '../../models/mongoose-chart-data-provider.interface';
+import { extend } from 'webdriver-js-extender';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class PrometheusApiService {
+
+
+export class PrometheusApiService implements MongooseChartDataProvider {
+  
 
   readonly API_BASE = Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP + "/api/v1/";
   
@@ -20,6 +25,15 @@ export class PrometheusApiService {
   // MARK: - Lifecycle 
 
   constructor(private httpClient: HttpClient) { }
+
+  // MARK: - MogooseChartDataProvider 
+
+  public getDuration(): Observable<any> {
+    return this.runQuery("mongoose_duration_mean");
+  }
+  public getFailedOperations(period: Number) {
+    return this.runQuery(`mongoose_failed_op_rate_mean[${period}s]`)
+  }
 
   // MARK: - Public 
 

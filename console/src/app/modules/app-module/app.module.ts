@@ -16,6 +16,9 @@ import { ControlApiService } from "src/app/core/services/control-api/control-api
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
+import { ChartsModule } from 'ng2-charts';
+import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
+
 
 @NgModule({
   declarations: [
@@ -38,12 +41,13 @@ import { BrowserModule } from '@angular/platform-browser';
     HttpClientModule,
     AppRoutingModule,
     MongooseSetUpModuleModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ChartsModule
     ],
 
   // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
   // ... since we use it for the set up. 
-  providers: [ControlApiService, MonitoringApiService, DateFormatPipe],
+  providers: [ControlApiService, MonitoringApiService, DateFormatPipe, PrometheusApiService],
   bootstrap: [AppComponent],
   exports: [AppComponent],
 })
