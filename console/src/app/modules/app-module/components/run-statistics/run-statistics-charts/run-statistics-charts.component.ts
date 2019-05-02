@@ -69,7 +69,7 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   drawChart() {
 
-    this.mongooseChartDao.getDuration().subscribe((data: any) => {
+    this.mongooseChartDao.getDuration(this.processingRecord.getLoadStepId() as string).subscribe((data: any) => {
       const metricValue = data[0]["value"][1];
       const metricTimestamp = data[0]["value"][0];
       let newValue = { data: [metricValue], label: 'Byte per second' };

@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
 export interface MongooseChartDataProvider { 
-    getDuration(): Observable<any>; 
-    getFailedOperations(period: Number); 
+    getDuration(loadStepId: string): Observable<any>; 
+    getFailedOperations(loadStepId: string, period: Number); 
 }

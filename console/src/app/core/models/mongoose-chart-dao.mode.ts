@@ -10,8 +10,8 @@ export class MongooseChartDao {
         this.chartDataProvider = dataProvider; 
     }
 
-    public getDuration(): Observable<any> {
-         return this.chartDataProvider.getDuration(); 
+    public getDuration(loadStepId: string): Observable<any> {
+         return this.chartDataProvider.getDuration(loadStepId); 
     }
 
 }

@@ -4,7 +4,6 @@ import { Constants } from 'src/app/common/constants';
 import { Observable } from 'rxjs';
 import { map, filter, tap } from 'rxjs/operators';
 import { MongooseChartDataProvider } from '../../models/mongoose-chart-data-provider.interface';
-import { extend } from 'webdriver-js-extender';
 
 
 @Injectable({
@@ -28,11 +27,11 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   // MARK: - MogooseChartDataProvider 
 
-  public getDuration(): Observable<any> {
-    return this.runQuery("mongoose_duration_mean");
+  public getDuration(loadStepId: string): Observable<any> {
+    return this.runQuery(`mongoose_duration_mean{load_step_id="${loadStepId}"}`);
   }
-  public getFailedOperations(period: Number) {
-    return this.runQuery(`mongoose_failed_op_rate_mean[${period}s]`)
+  public getFailedOperations(loadStepId: string, period: Number) {
+    return this.runQuery(`mongoose_failed_op_rate_mean{load_step_id="${loadStepId}"}[${period}s]`)
   }
 
   // MARK: - Public 
