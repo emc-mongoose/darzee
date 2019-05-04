@@ -4,8 +4,8 @@
 <div *ngIf="(this.isChartDrawActive); else chartsNotAvailable">
   <div class="chart-container">
     <div class="chart">
-      <canvas baseChart [datasets]="this.mongooseDurationChart.chartData" [labels]="this.mongooseDurationChart.chartLabels" [options]="this.mongooseDurationChart.chartOptions"
-        [legend]="this.mongooseDurationChart.chartLegend" [chartType]="this.mongooseDurationChart.chartType">
+      <canvas baseChart [datasets]="this.displayingMongooseChart.chartData" [labels]="this.displayingMongooseChart.chartLabels" [options]="this.displayingMongooseChart.chartOptions"
+        [legend]="this.displayingMongooseChart.chartLegend" [chartType]="this.displayingMongooseChart.chartType">
       </canvas>
     </div>
   </div>  
