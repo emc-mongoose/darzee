@@ -3,6 +3,7 @@ import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.mode";
 import { LatencyType } from "./latency-type";
+import { formatDate } from "@angular/common";
 
 export class MongooseLatencyChart implements MongooseChart {
 
@@ -16,7 +17,7 @@ export class MongooseLatencyChart implements MongooseChart {
     isChartDataValid: boolean;
     mongooseChartDao: MongooseChartDao;
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, chartData: MongooseChartDataset[], mongooseChartDao: MongooseChartDao) {
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
@@ -34,14 +35,26 @@ export class MongooseLatencyChart implements MongooseChart {
         let perdiodOfLatencyUpdate = this.PERIOD_OF_LATENCY_UPDATE_SECONDS;
         this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((maxLatencyResult: any) => {
             this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((minLatencyResult: any) => {
+                console.log(`Latency MIN: ${JSON.stringify(minLatencyResult)}`)
+                console.log(`Latency MAX: ${JSON.stringify(maxLatencyResult)}`)
                 this.processLatencyData(maxLatencyResult, LatencyType.MAX);
                 this.processLatencyData(minLatencyResult, LatencyType.MIN);
-            })
-        })
+
+                this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
+                if (this.chartData.length >= 20) {
+                  this.chartData[0].data.shift();
+                  this.chartData[1].data.shift();
+                  this.chartLabels.shift();
+                }
+            });
+            
+        });
+
+       
     }
 
     shouldDrawChart(): boolean {
-        throw new Error("Method not implemented.");
+        return this.isChartDataValid;
     }
 
     private isDataForChartValid(data: any): boolean {
@@ -64,13 +77,20 @@ export class MongooseLatencyChart implements MongooseChart {
     }
 
     private getActualValueFromData(data: any, latencyType: LatencyType): any {
+
         if (this.isDataForChartValid(data)) {
-            let actualValue = data[0]["value"][1];
+            this.isChartDataValid = true; 
+            let resultValuesIndex = 0; 
+            let actualValueIndex = 1;
+            // NOTE: Data from Prometheus are coming in 2d-array, e.g.: [[timestamp, "value"]]
+            let actualValue = data[0]["values"][resultValuesIndex][actualValueIndex];
+            console.log(`actualValue: ${actualValue}`)
             return actualValue;
         }
 
         switch (latencyType) {
             case LatencyType.MAX: {
+                console.log(`Value for MAX hasn't been found.`);
                 return this.getPreviousValueFromDataset(this.chartData[0]);
             }
             case LatencyType.MIN: {
@@ -81,6 +101,7 @@ export class MongooseLatencyChart implements MongooseChart {
 
 
     private getPreviousValueFromDataset(dataset: MongooseChartDataset) {
+        console.log(`Processing dataset: ${dataset.data}`)
         let previosValueIndex = dataset.data.length - 1;
         let previosValue = dataset.data[previosValueIndex];
         return previosValue;

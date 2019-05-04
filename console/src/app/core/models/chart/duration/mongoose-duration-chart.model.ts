@@ -13,14 +13,18 @@ export class MongooseDurationChart implements MongooseChart {
     mongooseChartDao: MongooseChartDao;
     isChartDataValid: boolean;
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, chartData: MongooseChartDataset[], mongooseChartDao: MongooseChartDao) {
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
         this.chartLegend = chartLegend;
-        this.chartData = chartData;
         this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
+
+        let durationChartDatasetInitialValue = new MongooseChartDataset([], 'Byte per second');
+        var durationChartDataset: MongooseChartDataset[] = []; 
+        durationChartDataset.push(durationChartDatasetInitialValue);
+        this.chartData = durationChartDataset;
     }
 
     updateChart(recordLoadStepId: string) {
