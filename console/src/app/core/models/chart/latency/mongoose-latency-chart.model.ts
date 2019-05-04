@@ -22,9 +22,11 @@ export class MongooseLatencyChart implements MongooseChart {
         this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
     }
-    
+
     updateChart(recordLoadStepId: string) {
-        throw new Error("Method not implemented.");
+        let perdiodOfLatencyUpdate = 2;
+        this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((successOperationResult: any) => { 
+        })
     }
     shouldDrawChart(): boolean {
         throw new Error("Method not implemented.");

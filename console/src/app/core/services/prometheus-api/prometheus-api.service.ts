@@ -14,6 +14,7 @@ import { MongooseChartDataProvider } from '../../models/chart/mongoose-chart-int
 export class PrometheusApiService implements MongooseChartDataProvider {
 
 
+
   readonly API_BASE = Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP + "/api/v1/";
 
   // NOTE: Symbols used for queryting Prometheus for value of metric with specific labels. They ...
@@ -27,27 +28,28 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   // MARK: - MogooseChartDataProvider 
 
+
   public getDuration(loadStepId: string): Observable<any> {
     return this.runQuery(`mongoose_duration_mean{load_step_id="${loadStepId}"}`);
   }
 
-  getAmountOfFailedOperations(loadStepId: string, period: Number): Observable<any> {
-    return this.runQuery(`mongoose_failed_op_rate_mean{load_step_id="${loadStepId}"}[${period}s]`)
-  }
-  
-  getAmountOfSuccessfulOperations(loadStepId: string, period: Number): Observable<any> {
-    return this.runQuery(`mongoose_success_op_rate_mean{load_step_id="${loadStepId}"}[${period}s]`)
+  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<any> {
+    return this.runQuery(`mongoose_failed_op_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
   }
 
-  getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<any> {
+  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<any> {
+    return this.runQuery(`mongoose_success_op_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
+  }
+
+  public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<any> {
     return this.runQuery(`mongoose_latency_max{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
   }
 
-  getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<any> {
+  public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<any> {
     return this.runQuery(`mongoose_latency_min{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
   }
 
-  getBandWidth(periodInSeconds: number, loadStepId: string): Observable<any> {
+  public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<any> {
     return this.runQuery(`mongoose_byte_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
   }
 

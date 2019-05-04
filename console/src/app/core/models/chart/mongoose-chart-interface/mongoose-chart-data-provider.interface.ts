@@ -4,8 +4,8 @@ export interface MongooseChartDataProvider {
 
     getDuration(loadStepId: string): Observable<any>; 
 
-    getAmountOfFailedOperations(loadStepId: string, period: Number): Observable<any>; 
-    getAmountOfSuccessfulOperations(loadStepId: string, period: Number): Observable<any>; 
+    getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<any>; 
+    getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<any>; 
 
     getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<any>; 
     getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<any>; 
