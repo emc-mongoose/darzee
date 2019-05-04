@@ -22,7 +22,7 @@ export class MongooseDurationChart implements MongooseChart {
         this.isChartDataValid = true;
 
         let durationChartDatasetInitialValue = new MongooseChartDataset([], 'Mean duration');
-        var durationChartDataset: MongooseChartDataset[] = []; 
+        var durationChartDataset: MongooseChartDataset[] = [];
         durationChartDataset.push(durationChartDatasetInitialValue);
         this.chartData = durationChartDataset;
     }
@@ -36,7 +36,7 @@ export class MongooseDurationChart implements MongooseChart {
                 this.isChartDataValid = false;
                 return;
             }
-            this.isChartDataValid = true; 
+            this.isChartDataValid = true;
 
             const metricValue = data[0]["value"][1];
             const metricTimestamp = data[0]["value"][0];

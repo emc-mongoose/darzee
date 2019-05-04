@@ -6,10 +6,10 @@ import { formatDate } from "@angular/common";
 
 export class MongooseBandwidthChart implements MongooseChart {
 
-    private readonly PERIOD_OF_DATA_UPDATE_SECONDS = 2; 
+    private readonly PERIOD_OF_DATA_UPDATE_SECONDS = 2;
 
 
-    chartOptions: MongooseChartOptions;    
+    chartOptions: MongooseChartOptions;
     chartLabels: string[];
     chartType: string;
     chartLegend: boolean;
@@ -31,14 +31,14 @@ export class MongooseBandwidthChart implements MongooseChart {
 
 
     updateChart(recordLoadStepId: string) {
-        this.mongooseChartDao.getBandWidth(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((byteRateMean: string) => { 
+        this.mongooseChartDao.getBandWidth(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((byteRateMean: string) => {
             this.chartData[0].appendDatasetWithNewValue(byteRateMean);
 
             this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
-                if (this.shouldScaleChart()) {
-                  this.chartData[0].data.shift();
-                  this.chartLabels.shift();
-                }
+            if (this.shouldScaleChart()) {
+                this.chartData[0].data.shift();
+                this.chartLabels.shift();
+            }
         })
     }
 
@@ -46,10 +46,10 @@ export class MongooseBandwidthChart implements MongooseChart {
         return this.isChartDataValid;
     }
 
-    private shouldScaleChart(): boolean { 
-        const maxAmountOfPointsInGraph = 20; 
-        return (this.chartLabels.length >= maxAmountOfPointsInGraph); 
+    private shouldScaleChart(): boolean {
+        const maxAmountOfPointsInGraph = 20;
+        return (this.chartLabels.length >= maxAmountOfPointsInGraph);
     }
- 
+
 
 }

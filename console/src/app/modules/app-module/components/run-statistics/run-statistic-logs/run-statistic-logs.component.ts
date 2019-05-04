@@ -55,7 +55,7 @@ export class RunStatisticLogsComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.monitoringApiSubscriptions.unsubscribe(); 
+    this.monitoringApiSubscriptions.unsubscribe();
   }
 
   // MARK: - Public
@@ -83,7 +83,7 @@ export class RunStatisticLogsComponent implements OnInit {
         this.occuredError = error.error;
       }
     );
-    
+
   }
 
   // MARK: - Private

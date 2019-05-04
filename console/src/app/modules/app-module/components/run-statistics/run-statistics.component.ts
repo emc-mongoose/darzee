@@ -26,7 +26,7 @@ export class RunStatisticsComponent implements OnInit {
   public statisticTabs: BasicTab[] = [];
 
   private routeParameters: any;
-  private monitoringApiSubscriptions: Subscription; 
+  private monitoringApiSubscriptions: Subscription;
 
   // MARK: - Lifecycle 
 
@@ -39,12 +39,12 @@ export class RunStatisticsComponent implements OnInit {
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.params.subscribe(params => {
       let targetRecordLoadStepId = params[RouteParams.ID];
-      try { 
+      try {
         this.monitoringApiSubscriptions = this.monitoringApiService.getMongooseRunRecordByLoadStepId(targetRecordLoadStepId).subscribe(
-          foundRecord => { 
-            this.runRecord = foundRecord; 
+          foundRecord => {
+            this.runRecord = foundRecord;
           },
-          error => { 
+          error => {
             let misleadingMsg = `Unable to display statistics for Mongoose run record with ID ${targetRecordLoadStepId}, reason: ${error.message}`;
             console.error(misleadingMsg);
             alert(misleadingMsg);
@@ -52,7 +52,7 @@ export class RunStatisticsComponent implements OnInit {
           }
         )
         this.initTabs();
-      } catch (recordNotFoundError) { 
+      } catch (recordNotFoundError) {
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
         alert("Unable to load requested record.");
         console.error(recordNotFoundError);
@@ -62,7 +62,7 @@ export class RunStatisticsComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.monitoringApiSubscriptions.unsubscribe(); 
+    this.monitoringApiSubscriptions.unsubscribe();
     this.routeParameters.unsubscribe();
   }
 
@@ -95,18 +95,18 @@ export class RunStatisticsComponent implements OnInit {
   }
 
   private loadTab(selectedTab: BasicTab) {
-    if (!this.canStatisticsBeLoadedForRecord(this.runRecord)) { 
-      console.error(`Unable to load statistics for Mongoose run with id ${this.runRecord.getRunId()} since it doesn't have load step ID.`); 
-      return; 
+    if (!this.canStatisticsBeLoadedForRecord(this.runRecord)) {
+      console.error(`Unable to load statistics for Mongoose run with id ${this.runRecord.getRunId()} since it doesn't have load step ID.`);
+      return;
     }
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.runRecord.getLoadStepId()
       + '/' + selectedTab.getLink()]);
   }
 
-  private canStatisticsBeLoadedForRecord(record: MongooseRunRecord) { 
-    let emptyValue = ""; 
-    let hasLoadStepId = (record.getLoadStepId() != emptyValue); 
-    return hasLoadStepId; 
+  private canStatisticsBeLoadedForRecord(record: MongooseRunRecord) {
+    let emptyValue = "";
+    let hasLoadStepId = (record.getLoadStepId() != emptyValue);
+    return hasLoadStepId;
   }
 
 }

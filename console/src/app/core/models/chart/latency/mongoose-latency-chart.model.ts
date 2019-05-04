@@ -6,7 +6,7 @@ import { formatDate } from "@angular/common";
 
 export class MongooseLatencyChart implements MongooseChart {
 
-    private readonly PERIOD_OF_LATENCY_UPDATE_SECONDS = 2; 
+    private readonly PERIOD_OF_LATENCY_UPDATE_SECONDS = 2;
 
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
@@ -34,30 +34,30 @@ export class MongooseLatencyChart implements MongooseChart {
         let perdiodOfLatencyUpdate = this.PERIOD_OF_LATENCY_UPDATE_SECONDS;
         this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((maxLatencyResult: string) => {
             this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((minLatencyResult: string) => {
-                
+
                 this.chartData[0].appendDatasetWithNewValue(maxLatencyResult);
                 this.chartData[1].appendDatasetWithNewValue(minLatencyResult);
 
 
                 this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
                 if (this.shouldScaleChart()) {
-                  this.chartData[0].data.shift();
-                  this.chartData[1].data.shift();
-                  this.chartLabels.shift();
+                    this.chartData[0].data.shift();
+                    this.chartData[1].data.shift();
+                    this.chartLabels.shift();
                 }
             });
-            
+
         });
-       
+
     }
 
     shouldDrawChart(): boolean {
         return this.isChartDataValid;
     }
 
-    private shouldScaleChart(): boolean { 
-        const maxAmountOfPointsInGraph = 20; 
-        return (this.chartLabels.length >= maxAmountOfPointsInGraph); 
+    private shouldScaleChart(): boolean {
+        const maxAmountOfPointsInGraph = 20;
+        return (this.chartLabels.length >= maxAmountOfPointsInGraph);
     }
 
 }

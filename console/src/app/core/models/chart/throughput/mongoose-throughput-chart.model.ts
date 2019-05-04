@@ -6,10 +6,10 @@ import { formatDate } from "@angular/common";
 
 export class MongooseThroughputChart implements MongooseChart {
 
-    private readonly PERIOD_OF_DATA_UPDATE_SECONDS = 2; 
+    private readonly PERIOD_OF_DATA_UPDATE_SECONDS = 2;
 
-    chartOptions: MongooseChartOptions;   
-     chartLabels: string[];
+    chartOptions: MongooseChartOptions;
+    chartLabels: string[];
     chartType: string;
     chartLegend: boolean;
     chartData: MongooseChartDataset[];
@@ -31,16 +31,16 @@ export class MongooseThroughputChart implements MongooseChart {
     }
 
     updateChart(recordLoadStepId: string) {
-        this.mongooseChartDao.getAmountOfSuccessfulOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((sucessfulOperationAmount: string) => { 
-            this.mongooseChartDao.getAmountOfFailedOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((failedOperationsAmount: string) => { 
-                this.chartData[0].appendDatasetWithNewValue(sucessfulOperationAmount); 
-                this.chartData[1].appendDatasetWithNewValue(failedOperationsAmount); 
+        this.mongooseChartDao.getAmountOfSuccessfulOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((sucessfulOperationAmount: string) => {
+            this.mongooseChartDao.getAmountOfFailedOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((failedOperationsAmount: string) => {
+                this.chartData[0].appendDatasetWithNewValue(sucessfulOperationAmount);
+                this.chartData[1].appendDatasetWithNewValue(failedOperationsAmount);
 
                 this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
                 if (this.shouldScaleChart()) {
-                  this.chartData[0].data.shift();
-                  this.chartData[1].data.shift();
-                  this.chartLabels.shift();
+                    this.chartData[0].data.shift();
+                    this.chartData[1].data.shift();
+                    this.chartLabels.shift();
                 }
             })
         })
@@ -50,10 +50,10 @@ export class MongooseThroughputChart implements MongooseChart {
         return this.isChartDataValid;
     }
 
-    private shouldScaleChart(): boolean { 
-        const maxAmountOfPointsInGraph = 20; 
-        return (this.chartLabels.length >= maxAmountOfPointsInGraph); 
+    private shouldScaleChart(): boolean {
+        const maxAmountOfPointsInGraph = 20;
+        return (this.chartLabels.length >= maxAmountOfPointsInGraph);
     }
- 
-    
+
+
 }
