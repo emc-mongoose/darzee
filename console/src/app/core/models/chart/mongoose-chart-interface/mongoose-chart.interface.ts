@@ -7,7 +7,7 @@ export interface MongooseChart {
     chartLabels: string[];
     chartType: string;
     chartLegend: boolean;
-    chartData: MongooseChartDataset;
+    chartData: MongooseChartDataset[];
     isChartDataValid: boolean;
 
     mongooseChartDao: MongooseChartDao; 

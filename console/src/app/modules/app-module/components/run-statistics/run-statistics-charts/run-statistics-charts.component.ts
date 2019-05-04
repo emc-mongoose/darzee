@@ -8,6 +8,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MongooseRouteParamsParser } from "src/app/core/models/mongoose-route-params-praser";
 import { RoutesList } from "../../../Routing/routes-list";
 import { formatDate } from "@angular/common";
+import { MongooseDurationChart } from "src/app/core/models/chart/mongoose-duration-chart.model";
+import { MongooseChartOptions } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart-options";
+import { MongooseChartDataset } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart-dataset.model";
 
 @Component({
   selector: 'app-run-statistics-charts',
@@ -18,19 +21,11 @@ import { formatDate } from "@angular/common";
 
 export class RunStatisticsChartsComponent implements OnInit {
 
-  public barChartOptions = {
-    scaleShowVerticalLines: false,
-    responsive: true
-  };
-
-  public barChartLabels = [];
-  public barChartType = 'line';
-  public barChartLegend = true;
-  public barChartData = [
-    { data: [], label: 'Byte per second' },
-  ];
 
   private mongooseChartDao: MongooseChartDao;
+  public mongooseDurationChart: MongooseDurationChart; 
+
+
   private subsctiptions: Subscription = new Subscription();
   private processingRecord: MongooseRunRecord;
 
@@ -40,7 +35,20 @@ export class RunStatisticsChartsComponent implements OnInit {
   constructor(private prometheusApiService: PrometheusApiService,
     private monitoringApiService: MonitoringApiService,
     private route: ActivatedRoute,
-    private router: Router) { }
+    private router: Router) {
+
+      this.mongooseChartDao = new MongooseChartDao(this.prometheusApiService);
+
+      let durationChartOptions = new MongooseChartOptions(); 
+      let durationChartLabels: string[] = []; 
+      let durationChartType = "line";
+      let durationChartLegend = true; 
+
+      let durationChartDatasetInitialValue = new MongooseChartDataset([], 'Byte per second');
+      var durationChartDataset: MongooseChartDataset[] = []; 
+      durationChartDataset.push(durationChartDatasetInitialValue);
+      this.mongooseDurationChart = new MongooseDurationChart(durationChartOptions, durationChartLabels, durationChartType, durationChartLegend, durationChartDataset, this.mongooseChartDao);
+     }
 
   ngOnInit() {
     this.subsctiptions.add(this.route.parent.params.subscribe(params => {
@@ -65,7 +73,6 @@ export class RunStatisticsChartsComponent implements OnInit {
     }))
 
 
-    this.mongooseChartDao = new MongooseChartDao(this.prometheusApiService);
   }
 
   ngOnDestroy() {
@@ -74,30 +81,9 @@ export class RunStatisticsChartsComponent implements OnInit {
   }
 
   drawChart() {
-
-    this.mongooseChartDao.getDuration(this.processingRecord.getLoadStepId() as string).subscribe((data: any) => {
-
-      if (!this.isDataForChartValid(data)) { 
-        // NOTE: Changing behavior of displaying charts. If they're not available, a relative notification ...
-        // ... is being displayed. 
-        this.isChartDrawActive = false;
-        return;
-      }
-
-      const metricValue = data[0]["value"][1];
-      const metricTimestamp = data[0]["value"][0];
-      this.barChartData[0].data.push(metricValue);
-      this.barChartLabels.push(formatDate(Math.round(metricTimestamp * 1000), 'mediumTime', 'en-US'));
-      if (this.barChartData[0].data.length >= 20) {
-        this.barChartData[0].data.shift();
-        this.barChartLabels.shift();
-      }
-
-      if (this.barChartData[0].data.length >= 20) {
-        this.barChartData[0].data.shift();
-        this.barChartLabels.shift();
-      }
-    });
+    
+    this.mongooseDurationChart.updateChart(this.processingRecord.getLoadStepId() as string); 
+    this.isChartDrawActive = this.mongooseDurationChart.shouldDrawChart(); 
   }
 
   // MARK: - Private 
@@ -113,10 +99,6 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   private shouldDrawChart(): boolean { 
     return (this.processingRecord != undefined);
-  }
-
-  private isDataForChartValid(data: any): boolean { 
-    return ((data != undefined) && (data.length > 0));
   }
 
 }

@@ -9,11 +9,11 @@ export class MongooseDurationChart implements MongooseChart {
     chartLabels: string[];
     chartType: string;
     chartLegend: boolean;
-    chartData: MongooseChartDataset;
+    chartData: MongooseChartDataset[];
     mongooseChartDao: MongooseChartDao;
     isChartDataValid: boolean;
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, chartData: MongooseChartDataset, mongooseChartDao: MongooseChartDao) {
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, chartData: MongooseChartDataset[], mongooseChartDao: MongooseChartDao) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
