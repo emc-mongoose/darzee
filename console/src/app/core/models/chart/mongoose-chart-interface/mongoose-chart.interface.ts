@@ -8,7 +8,8 @@ export interface MongooseChart {
     chartType: string;
     chartLegend: boolean;
     chartData: MongooseChartDataset;
+    isChartDataValid: boolean;
 
     mongooseChartDao: MongooseChartDao; 
-    updateChart(); 
+    updateChart(recordLoadStepId: string); 
 }
