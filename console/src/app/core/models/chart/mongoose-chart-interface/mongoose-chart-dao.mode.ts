@@ -25,11 +25,11 @@ export class MongooseChartDao {
         return this.chartDataProvider.getBandWidth(periodInSeconds, loadStepId);
     }
 
-    public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string) : Observable<any> { 
+    public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string) : Observable<string> { 
         return this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId);
     }
 
-    public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<any> { 
+    public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<string> { 
         return this.chartDataProvider.getAmountOfSuccessfulOperations(periodInSeconds, loadStepId);
     }
 
