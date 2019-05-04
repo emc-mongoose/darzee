@@ -13,8 +13,6 @@ import { MongooseChartDataProvider } from '../../models/chart/mongoose-chart-int
 
 export class PrometheusApiService implements MongooseChartDataProvider {
 
-
-
   readonly API_BASE = Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP + "/api/v1/";
 
   // NOTE: Symbols used for queryting Prometheus for value of metric with specific labels. They ...
