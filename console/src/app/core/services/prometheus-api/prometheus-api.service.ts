@@ -4,6 +4,7 @@ import { Constants } from 'src/app/common/constants';
 import { Observable } from 'rxjs';
 import { map, filter, tap } from 'rxjs/operators';
 import { MongooseChartDataProvider } from '../../models/chart/mongoose-chart-interface/mongoose-chart-data-provider.interface';
+import { MongooseMetric } from '../../models/chart/mongoose-metric.model';
 
 
 @Injectable({
@@ -31,17 +32,19 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     return this.runQuery(`mongoose_duration_mean{load_step_id="${loadStepId}"}`);
   }
 
-  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<string> {
+  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
     return this.runQuery(`mongoose_failed_op_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
-      map(rawFailedlOperationsResponse => { 
-        return this.getMetricValueFromRawResponse(rawFailedlOperationsResponse);
+      map(rawFailedlOperationsResponse => {
+        let metricValue = this.getMetricValueFromRawResponse(rawFailedlOperationsResponse);
+        let timestampValue = this.getTimestampValueFromRawResponse(rawFailedlOperationsResponse);
+        return new MongooseMetric(timestampValue, metricValue);
       })
     )
   }
 
   public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<string> {
     return this.runQuery(`mongoose_success_op_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
-      map(rawSuccessfulOperationsResponse => { 
+      map(rawSuccessfulOperationsResponse => {
         return this.getMetricValueFromRawResponse(rawSuccessfulOperationsResponse);
       })
     )
@@ -49,7 +52,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<string> {
     return this.runQuery(`mongoose_latency_max{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
-      map(rawMaxLatencyQueryResponse => { 
+      map(rawMaxLatencyQueryResponse => {
         return this.getMetricValueFromRawResponse(rawMaxLatencyQueryResponse);
       })
     )
@@ -57,7 +60,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<string> {
     return this.runQuery(`mongoose_latency_min{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
-      map(rawMinLatencyQueryResponse => { 
+      map(rawMinLatencyQueryResponse => {
         return this.getMetricValueFromRawResponse(rawMinLatencyQueryResponse);
       })
     )
@@ -65,7 +68,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<any> {
     return this.runQuery(`mongoose_byte_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
-      map(rawByteRateResponse => { 
+      map(rawByteRateResponse => {
         return this.getMetricValueFromRawResponse(rawByteRateResponse);
       })
     )
@@ -139,21 +142,31 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   }
 
 
-  private getMetricValueFromRawResponse(rawResponse: any): string { 
-    const emptyValue = ""; 
+  private getMetricValueFromRawResponse(rawResponse: any): string {
+    let metricValueIndex = 1;
+    return this.getResultValueWithIndex(rawResponse, metricValueIndex);
+  }
 
-    if (rawResponse.length == 0) { 
+  private getTimestampValueFromRawResponse(rawResponse: any): string {
+    let timestampValueIndex = 0;
+    return this.getResultValueWithIndex(rawResponse, timestampValueIndex);
+  }
+
+  private getResultValueWithIndex(rawResponse: any, requiredValueIndex: number): string {
+    const emptyValue = "";
+
+    if (rawResponse.length == 0) {
       return emptyValue;
     }
 
     let firstFoundMetricIndex = 0;
-    let resultValuesIndex = 0; 
-    let actualValueIndex = 1;
+    let resultValuesIndex = 0;
+
     // NOTE: Data from Prometheus are coming in 2d-array, e.g.: [[timestamp, "value"]]
-    let actualValue = rawResponse[firstFoundMetricIndex]["values"][resultValuesIndex][actualValueIndex];
-    if (actualValue == undefined) { 
-      return emptyValue; 
+    let requiredValue = rawResponse[firstFoundMetricIndex]["values"][resultValuesIndex][requiredValueIndex];
+    if (requiredValue == undefined) {
+      return emptyValue;
     }
-    return actualValue;
+    return requiredValue;
   }
 }

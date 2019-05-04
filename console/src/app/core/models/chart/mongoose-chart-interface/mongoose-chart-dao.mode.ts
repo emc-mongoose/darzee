@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import { MongooseChartDataProvider } from './mongoose-chart-data-provider.interface';
+import { MongooseMetric } from '../mongoose-metric.model';
 
 export class MongooseChartDao {
 
@@ -25,7 +26,7 @@ export class MongooseChartDao {
         return this.chartDataProvider.getBandWidth(periodInSeconds, loadStepId);
     }
 
-    public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<string> {
+    public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
         return this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId);
     }
 
