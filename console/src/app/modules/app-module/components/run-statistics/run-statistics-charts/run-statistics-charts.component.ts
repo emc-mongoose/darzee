@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { MongooseChartDao } from 'src/app/core/models/chart/mongoose-chart-dao.mode';
-import { formatDate } from '@angular/common';
-import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prometheus-api.service';
-import { RouteParams } from '../../../Routing/params.routes';
-import { Router, ActivatedRoute } from '@angular/router';
-import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
-import { MongooseRouteParamsParser } from 'src/app/core/models/mongoose-route-params-praser';
-import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
-import { Subscription } from 'rxjs';
-import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
+import { Component, OnInit } from "@angular/core";
+import { MongooseChartDao } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart-dao.mode";
+import { Subscription } from "rxjs";
+import { MongooseRunRecord } from "src/app/core/models/run-record.model";
+import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
+import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { MongooseRouteParamsParser } from "src/app/core/models/mongoose-route-params-praser";
+import { RoutesList } from "../../../Routing/routes-list";
+import { formatDate } from "@angular/common";
 
 @Component({
   selector: 'app-run-statistics-charts',
