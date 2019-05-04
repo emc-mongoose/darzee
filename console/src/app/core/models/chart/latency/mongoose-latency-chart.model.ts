@@ -33,15 +33,15 @@ export class MongooseLatencyChart implements MongooseChart {
 
     updateChart(recordLoadStepId: string) {
         let perdiodOfLatencyUpdate = this.PERIOD_OF_LATENCY_UPDATE_SECONDS;
-        this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((maxLatencyResult: any) => {
-            this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((minLatencyResult: any) => {
-                console.log(`Latency MIN: ${JSON.stringify(minLatencyResult)}`)
-                console.log(`Latency MAX: ${JSON.stringify(maxLatencyResult)}`)
-                this.processLatencyData(maxLatencyResult, LatencyType.MAX);
-                this.processLatencyData(minLatencyResult, LatencyType.MIN);
+        this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((maxLatencyResult: string) => {
+            this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((minLatencyResult: string) => {
+                
+                this.chartData[0] = this.getUpdatedDataset(this.chartData[0], maxLatencyResult);
+                this.chartData[1] = this.getUpdatedDataset(this.chartData[1], minLatencyResult);
+
 
                 this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
-                if (this.chartData.length >= 20) {
+                if (this.shouldScaleChart()) {
                   this.chartData[0].data.shift();
                   this.chartData[1].data.shift();
                   this.chartLabels.shift();
@@ -49,7 +49,6 @@ export class MongooseLatencyChart implements MongooseChart {
             });
             
         });
-
        
     }
 
@@ -61,50 +60,26 @@ export class MongooseLatencyChart implements MongooseChart {
         return ((data != undefined) && (data.length > 0));
     }
 
-    private processLatencyData(data: any, latencyType: LatencyType) {
-        switch (latencyType) {
-            case LatencyType.MAX: {
-                let newValue = this.getActualValueFromData(data, latencyType);
-                this.chartData[0].data.push(newValue);
-                break;
-            }
-            case LatencyType.MIN: {
-                let newValue = this.getActualValueFromData(data, latencyType);
-                this.chartData[1].data.push(newValue);
-                break;
-            }
-        }
-    }
 
-    private getActualValueFromData(data: any, latencyType: LatencyType): any {
-
-        if (this.isDataForChartValid(data)) {
-            this.isChartDataValid = true; 
-            let resultValuesIndex = 0; 
-            let actualValueIndex = 1;
-            // NOTE: Data from Prometheus are coming in 2d-array, e.g.: [[timestamp, "value"]]
-            let actualValue = data[0]["values"][resultValuesIndex][actualValueIndex];
-            console.log(`actualValue: ${actualValue}`)
-            return actualValue;
+    private getUpdatedDataset(dataSet: MongooseChartDataset, newValue: string): MongooseChartDataset { 
+        const emptyValue = "";
+        if (newValue == emptyValue) { 
+            newValue = this.getPreviousValueFromDataset(dataSet);
         }
-
-        switch (latencyType) {
-            case LatencyType.MAX: {
-                console.log(`Value for MAX hasn't been found.`);
-                return this.getPreviousValueFromDataset(this.chartData[0]);
-            }
-            case LatencyType.MIN: {
-                return this.getPreviousValueFromDataset(this.chartData[1]);
-            }
-        }
+        dataSet.data.push(newValue);
+        return dataSet; 
     }
 
 
     private getPreviousValueFromDataset(dataset: MongooseChartDataset) {
-        console.log(`Processing dataset: ${dataset.data}`)
         let previosValueIndex = dataset.data.length - 1;
         let previosValue = dataset.data[previosValueIndex];
         return previosValue;
+    }
+
+    private shouldScaleChart(): boolean { 
+        const maxAmountOfPointsInGraph = 20; 
+        return (this.chartLabels.length >= maxAmountOfPointsInGraph); 
     }
 
 }

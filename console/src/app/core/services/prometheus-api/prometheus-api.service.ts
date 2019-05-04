@@ -39,12 +39,20 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     return this.runQuery(`mongoose_success_op_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
   }
 
-  public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<any> {
-    return this.runQuery(`mongoose_latency_max{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
+  public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<string> {
+    return this.runQuery(`mongoose_latency_max{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+      map(rawMaxLatencyQueryResponse => { 
+        return this.getMetricValueFromRawResponse(rawMaxLatencyQueryResponse);
+      })
+    )
   }
 
-  public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<any> {
-    return this.runQuery(`mongoose_latency_min{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
+  public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<string> {
+    return this.runQuery(`mongoose_latency_min{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+      map(rawMinLatencyQueryResponse => { 
+        return this.getMetricValueFromRawResponse(rawMinLatencyQueryResponse);
+      })
+    )
   }
 
   public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<any> {
@@ -118,4 +126,21 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     return labelsOfMetric;
   }
 
+
+  private getMetricValueFromRawResponse(rawResponse: any): string { 
+    if (rawResponse.length == 0) { 
+      return "";
+    }
+    console.log(`rawResponse: ${JSON.stringify(rawResponse)}`)
+
+    let firstFoundMetricIndex = 0;
+    let resultValuesIndex = 0; 
+    let actualValueIndex = 1;
+    // NOTE: Data from Prometheus are coming in 2d-array, e.g.: [[timestamp, "value"]]
+    let actualValue = rawResponse[firstFoundMetricIndex]["values"][resultValuesIndex][actualValueIndex];
+    if (actualValue == undefined) { 
+      return ""; 
+    }
+    return actualValue;
+  }
 }
