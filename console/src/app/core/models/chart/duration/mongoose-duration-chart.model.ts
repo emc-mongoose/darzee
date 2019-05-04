@@ -36,7 +36,8 @@ export class MongooseDurationChart implements MongooseChart {
                 this.isChartDataValid = false;
                 return;
             }
-
+            this.isChartDataValid = true; 
+            
             const metricValue = data[0]["value"][1];
             const metricTimestamp = data[0]["value"][0];
             this.chartData[0].data.push(metricValue);

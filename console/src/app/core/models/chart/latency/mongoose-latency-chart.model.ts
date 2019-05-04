@@ -2,7 +2,6 @@ import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interf
 import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.mode";
-import { LatencyType } from "./latency-type";
 import { formatDate } from "@angular/common";
 
 export class MongooseLatencyChart implements MongooseChart {

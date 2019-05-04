@@ -128,10 +128,11 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
 
   private getMetricValueFromRawResponse(rawResponse: any): string { 
+    const emptyValue = ""; 
+
     if (rawResponse.length == 0) { 
-      return "";
+      return emptyValue;
     }
-    console.log(`rawResponse: ${JSON.stringify(rawResponse)}`)
 
     let firstFoundMetricIndex = 0;
     let resultValuesIndex = 0; 
@@ -139,7 +140,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     // NOTE: Data from Prometheus are coming in 2d-array, e.g.: [[timestamp, "value"]]
     let actualValue = rawResponse[firstFoundMetricIndex]["values"][resultValuesIndex][actualValueIndex];
     if (actualValue == undefined) { 
-      return ""; 
+      return emptyValue; 
     }
     return actualValue;
   }
