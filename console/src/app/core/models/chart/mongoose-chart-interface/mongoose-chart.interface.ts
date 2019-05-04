@@ -12,4 +12,5 @@ export interface MongooseChart {
 
     mongooseChartDao: MongooseChartDao; 
     updateChart(recordLoadStepId: string); 
+    shouldDrawChart(): boolean; 
 }

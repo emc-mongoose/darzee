@@ -11,6 +11,8 @@ import { formatDate } from "@angular/common";
 import { MongooseDurationChart } from "src/app/core/models/chart/mongoose-duration-chart.model";
 import { MongooseChartOptions } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart-dataset.model";
+import { MongooseChartsRepository } from "src/app/core/models/chart/mongoose-charts-repository";
+import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
 
 @Component({
   selector: 'app-run-statistics-charts',
@@ -23,7 +25,9 @@ export class RunStatisticsChartsComponent implements OnInit {
 
 
   private mongooseChartDao: MongooseChartDao;
-  public mongooseDurationChart: MongooseDurationChart; 
+  private mognooseChartsRepository: MongooseChartsRepository; 
+
+  public mongooseDurationChart: MongooseChart; 
 
 
   private subsctiptions: Subscription = new Subscription();
@@ -38,17 +42,9 @@ export class RunStatisticsChartsComponent implements OnInit {
     private router: Router) {
 
       this.mongooseChartDao = new MongooseChartDao(this.prometheusApiService);
-
-      let durationChartOptions = new MongooseChartOptions(); 
-      let durationChartLabels: string[] = []; 
-      let durationChartType = "line";
-      let durationChartLegend = true; 
-
-      let durationChartDatasetInitialValue = new MongooseChartDataset([], 'Byte per second');
-      var durationChartDataset: MongooseChartDataset[] = []; 
-      durationChartDataset.push(durationChartDatasetInitialValue);
-      this.mongooseDurationChart = new MongooseDurationChart(durationChartOptions, durationChartLabels, durationChartType, durationChartLegend, durationChartDataset, this.mongooseChartDao);
-     }
+      this.mognooseChartsRepository = new MongooseChartsRepository(this.mongooseChartDao); 
+      this.mongooseDurationChart = this.mognooseChartsRepository.getDurationChart(); 
+    }
 
   ngOnInit() {
     this.subsctiptions.add(this.route.parent.params.subscribe(params => {
