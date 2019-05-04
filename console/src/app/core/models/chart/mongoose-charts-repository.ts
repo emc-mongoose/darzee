@@ -4,6 +4,7 @@ import { MongooseChartOptions } from "./mongoose-chart-interface/mongoose-chart-
 import { MongooseChartDataset } from "./mongoose-chart-interface/mongoose-chart-dataset.model";
 import { MongooseLatencyChart } from "./latency/mongoose-latency-chart.model";
 import { MongooseThroughputChart } from "./throughput/mongoose-throughput-chart.model";
+import { MongooseBandwidthChart } from "./bandwidth/mongoose-bandwidth-chart.model";
 
 export class MongooseChartsRepository { 
     private mongooseChartDao: MongooseChartDao;
@@ -11,6 +12,7 @@ export class MongooseChartsRepository {
     private durationChart: MongooseDurationChart; 
     private latencyChart: MongooseLatencyChart; 
     private thoughputChart: MongooseThroughputChart;
+    private bandwidthChart: MongooseBandwidthChart; 
 
     constructor(mongooseChartDao: MongooseChartDao) { 
         this.mongooseChartDao = mongooseChartDao; 
@@ -30,13 +32,18 @@ export class MongooseChartsRepository {
     public getThoughputChart(): MongooseThroughputChart { 
         return this.thoughputChart;
     }
-    
+
+    public getBandwidthChart(): MongooseBandwidthChart { 
+        return this.bandwidthChart; 
+    }
+
     // MARK: - Private 
 
     private setUpCharts() { 
         this.durationChart = this.createMongooseDurationChart(); 
         this.latencyChart = this.createMongooseLatencyChart(); 
         this.thoughputChart = this.createMongooseThroughtputChart(); 
+        this.bandwidthChart = this.createMongooseBandwidthChart();
     
     }
 
@@ -64,5 +71,14 @@ export class MongooseChartsRepository {
         let durationChartType = "line";
         let durationChartLegend = true; 
         return new MongooseThroughputChart(durationChartOptions, durationChartLabels, durationChartType, durationChartLegend, this.mongooseChartDao);
+    }
+
+
+    private createMongooseBandwidthChart(): MongooseBandwidthChart { 
+        let durationChartOptions = new MongooseChartOptions();         
+        let durationChartLabels: string[] = []; 
+        let durationChartType = "line";
+        let durationChartLegend = true; 
+        return new MongooseBandwidthChart(durationChartOptions, durationChartLabels, durationChartType, durationChartLegend, this.mongooseChartDao);
     }
 }
