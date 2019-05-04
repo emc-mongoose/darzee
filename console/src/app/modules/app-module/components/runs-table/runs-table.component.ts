@@ -37,6 +37,7 @@ export class RunsTableComponent implements OnInit {
   // MARK: - Lifecycle 
 
   ngOnInit() {
+
     this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(
       updatedRecords => {
         this.handleRecordsUpdate(updatedRecords);

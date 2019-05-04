@@ -34,6 +34,8 @@ export class RunStatisticsChartsComponent implements OnInit {
   private mongooseChartDao: MongooseChartDao;
   private subsctiptions: Subscription = new Subscription();
   private processingRecord: MongooseRunRecord;
+
+  // NOTE: isChartDrawActive is used to check whether the chart should be dispalyed within the UI.
   private isChartDrawActive: boolean = true; 
 
   constructor(private prometheusApiService: PrometheusApiService,
@@ -77,14 +79,14 @@ export class RunStatisticsChartsComponent implements OnInit {
     this.mongooseChartDao.getDuration(this.processingRecord.getLoadStepId() as string).subscribe((data: any) => {
 
       if (!this.isDataForChartValid(data)) { 
-        // TOOD: Display message on screen here. 
+        // NOTE: Changing behavior of displaying charts. If they're not available, a relative notification ...
+        // ... is being displayed. 
         this.isChartDrawActive = false;
         return;
       }
 
       const metricValue = data[0]["value"][1];
       const metricTimestamp = data[0]["value"][0];
-      let newValue = { data: [metricValue], label: 'Byte per second' };
       this.barChartData[0].data.push(metricValue);
       this.barChartLabels.push(formatDate(Math.round(metricTimestamp * 1000), 'mediumTime', 'en-US'));
       if (this.barChartData[0].data.length >= 20) {
