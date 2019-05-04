@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MongooseChartDao } from 'src/app/core/models/mongoose-chart-dao.mode';
+import { MongooseChartDao } from 'src/app/core/models/chart/mongoose-chart-dao.mode';
 import { formatDate } from '@angular/common';
 import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prometheus-api.service';
 import { RouteParams } from '../../../Routing/params.routes';

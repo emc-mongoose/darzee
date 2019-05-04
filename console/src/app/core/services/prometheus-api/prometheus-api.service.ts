@@ -3,7 +3,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { Observable } from 'rxjs';
 import { map, filter, tap } from 'rxjs/operators';
-import { MongooseChartDataProvider } from '../../models/mongoose-chart-data-provider.interface';
+import { MongooseChartDataProvider } from '../../models/chart/mongoose-chart-data-provider.interface';
 
 
 @Injectable({

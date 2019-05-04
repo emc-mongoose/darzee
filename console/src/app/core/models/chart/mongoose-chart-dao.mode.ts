@@ -1,5 +1,4 @@
 import { Observable } from 'rxjs';
-import { PrometheusApiService } from '../services/prometheus-api/prometheus-api.service';
 import { MongooseChartDataProvider } from './mongoose-chart-data-provider.interface';
 
 export class MongooseChartDao { 
