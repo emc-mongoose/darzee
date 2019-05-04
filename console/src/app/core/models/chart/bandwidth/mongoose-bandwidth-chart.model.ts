@@ -4,12 +4,13 @@ import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.mode";
 import { formatDate } from "@angular/common";
 
-export class MongooseThroughputChart implements MongooseChart {
+export class MongooseBandwidthChart implements MongooseChart {
 
     private readonly PERIOD_OF_DATA_UPDATE_SECONDS = 2; 
 
-    chartOptions: MongooseChartOptions;   
-     chartLabels: string[];
+
+    chartOptions: MongooseChartOptions;    
+    chartLabels: string[];
     chartType: string;
     chartLegend: boolean;
     chartData: MongooseChartDataset[];
@@ -24,25 +25,20 @@ export class MongooseThroughputChart implements MongooseChart {
         this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
 
-        let successfulOperationsDataset = new MongooseChartDataset([], 'Successful operations');
-        let failedOperationsDataset = new MongooseChartDataset([], 'Failed operations');
-
-        this.chartData = [successfulOperationsDataset, failedOperationsDataset];
+        let bandwidthDataset = new MongooseChartDataset([], 'Byte per second');
+        this.chartData = [bandwidthDataset];
     }
 
-    updateChart(recordLoadStepId: string) {
-        this.mongooseChartDao.getAmountOfSuccessfulOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((sucessfulOperationAmount: string) => { 
-            this.mongooseChartDao.getAmountOfFailedOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((failedOperationsAmount: string) => { 
-                this.chartData[0].appendDatasetWithNewValue(sucessfulOperationAmount); 
-                this.chartData[1].appendDatasetWithNewValue(failedOperationsAmount); 
 
-                this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
+    updateChart(recordLoadStepId: string) {
+        this.mongooseChartDao.getBandWidth(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((byteRateMean: string) => { 
+            this.chartData[0].appendDatasetWithNewValue(byteRateMean);
+
+            this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
                 if (this.shouldScaleChart()) {
                   this.chartData[0].data.shift();
-                  this.chartData[1].data.shift();
                   this.chartLabels.shift();
                 }
-            })
         })
     }
 
@@ -55,5 +51,5 @@ export class MongooseThroughputChart implements MongooseChart {
         return (this.chartLabels.length >= maxAmountOfPointsInGraph); 
     }
  
-    
+
 }

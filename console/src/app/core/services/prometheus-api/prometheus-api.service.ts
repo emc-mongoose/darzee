@@ -64,7 +64,11 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   }
 
   public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<any> {
-    return this.runQuery(`mongoose_byte_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
+    return this.runQuery(`mongoose_byte_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+      map(rawByteRateResponse => { 
+        return this.getMetricValueFromRawResponse(rawByteRateResponse);
+      })
+    )
   }
 
   // MARK: - Public 

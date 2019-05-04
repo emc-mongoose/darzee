@@ -21,7 +21,7 @@ export class MongooseDurationChart implements MongooseChart {
         this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
 
-        let durationChartDatasetInitialValue = new MongooseChartDataset([], 'Byte per second');
+        let durationChartDatasetInitialValue = new MongooseChartDataset([], 'Mean duration');
         var durationChartDataset: MongooseChartDataset[] = []; 
         durationChartDataset.push(durationChartDatasetInitialValue);
         this.chartData = durationChartDataset;
@@ -37,7 +37,7 @@ export class MongooseDurationChart implements MongooseChart {
                 return;
             }
             this.isChartDataValid = true; 
-            
+
             const metricValue = data[0]["value"][1];
             const metricTimestamp = data[0]["value"][0];
             this.chartData[0].data.push(metricValue);
