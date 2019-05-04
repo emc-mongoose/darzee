@@ -3,6 +3,7 @@ import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.mode";
 import { formatDate } from "@angular/common";
+import { MongooseMetric } from "../mongoose-metric.model";
 
 export class MongooseDurationChart implements MongooseChart {
 
@@ -31,22 +32,11 @@ export class MongooseDurationChart implements MongooseChart {
     }
 
     updateChart(recordLoadStepId: string) {
-        this.mongooseChartDao.getDuration(recordLoadStepId).subscribe((data: any) => {
+        this.mongooseChartDao.getDuration(recordLoadStepId).subscribe((durationMetric: MongooseMetric) => {
 
-            if (!this.isDataForChartValid(data)) {
-                // NOTE: Changing behavior of displaying charts. If they're not available, a relative notification ...
-                // ... is being displayed. 
-                this.isChartDataValid = false;
-                return;
-            }
-            this.isChartDataValid = true;
+            this.chartData[this.DURATION_DATASET_INDEX].appendDatasetWithNewValue(durationMetric.getValue());
 
-            // NOTE: Data from Prometheus are coming in 2d-array, e.g.: [[timestamp, "value"]]
-            // TODO: Move data retrieving to Prometheus service. 
-            const metricValue = data[0]["value"][1];
-            const metricTimestamp = data[0]["value"][0];
-            this.chartData[0].data.push(metricValue);
-            this.chartLabels.push(formatDate(Math.round(metricTimestamp * 1000), 'mediumTime', 'en-US'));
+            this.chartLabels.push(formatDate(Math.round(durationMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
             if (this.shouldScaleChart()) {
                 this.chartData[this.DURATION_DATASET_INDEX].data.shift();
                 this.chartLabels.shift();
@@ -56,10 +46,6 @@ export class MongooseDurationChart implements MongooseChart {
 
     public shouldDrawChart(): boolean {
         return this.isChartDataValid;
-    }
-
-    private isDataForChartValid(data: any): boolean {
-        return ((data != undefined) && (data.length > 0));
     }
 
     private shouldScaleChart(): boolean {

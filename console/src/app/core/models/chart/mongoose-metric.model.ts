@@ -1,13 +1,13 @@
 export class MongooseMetric { 
-    private timestamp: string; 
+    private timestamp: number; 
     private value: string; 
 
-    constructor(timestamp: string, value: string) { 
+    constructor(timestamp: number, value: string) { 
         this.timestamp = timestamp;
         this.value = value; 
     }
 
-    public getTimestamp(): string { 
+    public getTimestamp(): number { 
         return this.timestamp;
     }
 

@@ -29,7 +29,11 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
 
   public getDuration(loadStepId: string): Observable<any> {
-    return this.runQuery(`mongoose_duration_mean{load_step_id="${loadStepId}"}`);
+    return this.runQuery(`mongoose_duration_mean{load_step_id="${loadStepId}"}`).pipe(
+      map(rawDurationResponse => {
+        return this.createMongooseMetricInstanceFromResponse(rawDurationResponse);
+      })
+    );
   }
 
   public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
@@ -151,9 +155,10 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     return this.getResultValueWithIndex(rawResponse, metricValueIndex);
   }
 
-  private getTimestampValueFromRawResponse(rawResponse: any): string {
+  private getTimestampValueFromRawResponse(rawResponse: any): number {
     let timestampValueIndex = 0;
-    return this.getResultValueWithIndex(rawResponse, timestampValueIndex);
+    let timeStampAsString = this.getResultValueWithIndex(rawResponse, timestampValueIndex);
+    return Number(timeStampAsString);
   }
 
   private getResultValueWithIndex(rawResponse: any, requiredValueIndex: number): string {
@@ -163,14 +168,22 @@ export class PrometheusApiService implements MongooseChartDataProvider {
       return emptyValue;
     }
 
-    let firstFoundMetricIndex = 0;
-    let resultValuesIndex = 0;
+    let singleValuePrometheusResponseTag = "value";
+    let multipleValuesPrometheusResponseTag = "values";
 
+    let firstFoundMetricIndex = 0;
+    var result = rawResponse[firstFoundMetricIndex][singleValuePrometheusResponseTag];
+    if (result != undefined) {
+      // NOTE: If Prometheus has responded with a single value (1d-array), return it. 
+      return result[requiredValueIndex];
+    }
+
+    let resultValuesIndex = 0;
     // NOTE: Data from Prometheus are coming in 2d-array, e.g.: [[timestamp, "value"]]
-    let requiredValue = rawResponse[firstFoundMetricIndex]["values"][resultValuesIndex][requiredValueIndex];
-    if (requiredValue == undefined) {
+    result = rawResponse[firstFoundMetricIndex][multipleValuesPrometheusResponseTag][resultValuesIndex][requiredValueIndex];
+    if (result == undefined) {
       return emptyValue;
     }
-    return requiredValue;
+    return result;
   }
 }
