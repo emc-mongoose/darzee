@@ -8,6 +8,9 @@ export class MongooseLatencyChart implements MongooseChart {
 
     private readonly PERIOD_OF_LATENCY_UPDATE_SECONDS = 2;
 
+    private readonly MAX_LATENCY_DATASET_INDEX = 0; 
+    private readonly MIN_LATENCY_DATASET_INDEX = 1;
+
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
     chartType: string;
@@ -35,14 +38,14 @@ export class MongooseLatencyChart implements MongooseChart {
         this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((maxLatencyResult: string) => {
             this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((minLatencyResult: string) => {
 
-                this.chartData[0].appendDatasetWithNewValue(maxLatencyResult);
-                this.chartData[1].appendDatasetWithNewValue(minLatencyResult);
+                this.chartData[this.MAX_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(maxLatencyResult);
+                this.chartData[this.MIN_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(minLatencyResult);
 
 
                 this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
                 if (this.shouldScaleChart()) {
-                    this.chartData[0].data.shift();
-                    this.chartData[1].data.shift();
+                    this.chartData[this.MAX_LATENCY_DATASET_INDEX].data.shift();
+                    this.chartData[this.MIN_LATENCY_DATASET_INDEX].data.shift();
                     this.chartLabels.shift();
                 }
             });

@@ -8,6 +8,7 @@ export class MongooseBandwidthChart implements MongooseChart {
 
     private readonly PERIOD_OF_DATA_UPDATE_SECONDS = 2;
 
+    private readonly BANDWIDTH_DATASET_INDEX = 0;
 
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
@@ -32,11 +33,11 @@ export class MongooseBandwidthChart implements MongooseChart {
 
     updateChart(recordLoadStepId: string) {
         this.mongooseChartDao.getBandWidth(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((byteRateMean: string) => {
-            this.chartData[0].appendDatasetWithNewValue(byteRateMean);
+            this.chartData[this.BANDWIDTH_DATASET_INDEX].appendDatasetWithNewValue(byteRateMean);
 
             this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
             if (this.shouldScaleChart()) {
-                this.chartData[0].data.shift();
+                this.chartData[this.BANDWIDTH_DATASET_INDEX].data.shift();
                 this.chartLabels.shift();
             }
         })

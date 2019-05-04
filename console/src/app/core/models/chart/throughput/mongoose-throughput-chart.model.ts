@@ -8,6 +8,9 @@ export class MongooseThroughputChart implements MongooseChart {
 
     private readonly PERIOD_OF_DATA_UPDATE_SECONDS = 2;
 
+    private readonly SUCCESSFUL_OPERATIONS_DATASET_INDEX = 0; 
+    private readonly FAILED_OPERATIONS_DATASET_INDEX = 1;
+
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
     chartType: string;
@@ -33,13 +36,13 @@ export class MongooseThroughputChart implements MongooseChart {
     updateChart(recordLoadStepId: string) {
         this.mongooseChartDao.getAmountOfSuccessfulOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((sucessfulOperationAmount: string) => {
             this.mongooseChartDao.getAmountOfFailedOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((failedOperationsAmount: string) => {
-                this.chartData[0].appendDatasetWithNewValue(sucessfulOperationAmount);
-                this.chartData[1].appendDatasetWithNewValue(failedOperationsAmount);
+                this.chartData[this.SUCCESSFUL_OPERATIONS_DATASET_INDEX].appendDatasetWithNewValue(sucessfulOperationAmount);
+                this.chartData[this.FAILED_OPERATIONS_DATASET_INDEX].appendDatasetWithNewValue(failedOperationsAmount);
 
                 this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
                 if (this.shouldScaleChart()) {
-                    this.chartData[0].data.shift();
-                    this.chartData[1].data.shift();
+                    this.chartData[this.SUCCESSFUL_OPERATIONS_DATASET_INDEX].data.shift();
+                    this.chartData[this.FAILED_OPERATIONS_DATASET_INDEX].data.shift();
                     this.chartLabels.shift();
                 }
             })

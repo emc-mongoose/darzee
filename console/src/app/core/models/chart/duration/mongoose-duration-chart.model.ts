@@ -5,6 +5,9 @@ import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao
 import { formatDate } from "@angular/common";
 
 export class MongooseDurationChart implements MongooseChart {
+
+    private readonly DURATION_DATASET_INDEX = 0; 
+
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
     chartType: string;
@@ -38,17 +41,14 @@ export class MongooseDurationChart implements MongooseChart {
             }
             this.isChartDataValid = true;
 
+            // NOTE: Data from Prometheus are coming in 2d-array, e.g.: [[timestamp, "value"]]
+            // TODO: Move data retrieving to Prometheus service. 
             const metricValue = data[0]["value"][1];
             const metricTimestamp = data[0]["value"][0];
             this.chartData[0].data.push(metricValue);
             this.chartLabels.push(formatDate(Math.round(metricTimestamp * 1000), 'mediumTime', 'en-US'));
-            if (this.chartData[0].data.length >= 20) {
-                this.chartData[0].data.shift();
-                this.chartLabels.shift();
-            }
-
-            if (this.chartData[0].data.length >= 20) {
-                this.chartData[0].data.shift();
+            if (this.shouldScaleChart()) {
+                this.chartData[this.DURATION_DATASET_INDEX].data.shift();
                 this.chartLabels.shift();
             }
         });
@@ -60,6 +60,11 @@ export class MongooseDurationChart implements MongooseChart {
 
     private isDataForChartValid(data: any): boolean {
         return ((data != undefined) && (data.length > 0));
+    }
+
+    private shouldScaleChart(): boolean {
+        const maxAmountOfPointsInGraph = 20;
+        return (this.chartLabels.length >= maxAmountOfPointsInGraph);
     }
 
 
