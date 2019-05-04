@@ -12,10 +12,10 @@ import { MongooseChartDataProvider } from '../../models/chart/mongoose-chart-int
 
 
 export class PrometheusApiService implements MongooseChartDataProvider {
-  
+
 
   readonly API_BASE = Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP + "/api/v1/";
-  
+
   // NOTE: Symbols used for queryting Prometheus for value of metric with specific labels. They ...
   // ... are listed within the labels list. 
   readonly METRIC_LABELS_LIST_START_SYMBOL = "{";
@@ -30,8 +30,25 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   public getDuration(loadStepId: string): Observable<any> {
     return this.runQuery(`mongoose_duration_mean{load_step_id="${loadStepId}"}`);
   }
-  public getFailedOperations(loadStepId: string, period: Number) {
+
+  getAmountOfFailedOperations(loadStepId: string, period: Number): Observable<any> {
     return this.runQuery(`mongoose_failed_op_rate_mean{load_step_id="${loadStepId}"}[${period}s]`)
+  }
+  
+  getAmountOfSuccessfulOperations(loadStepId: string, period: Number): Observable<any> {
+    return this.runQuery(`mongoose_success_op_rate_mean{load_step_id="${loadStepId}"}[${period}s]`)
+  }
+
+  getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<any> {
+    return this.runQuery(`mongoose_latency_max{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
+  }
+
+  getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<any> {
+    return this.runQuery(`mongoose_latency_min{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
+  }
+
+  getBandWidth(periodInSeconds: number, loadStepId: string): Observable<any> {
+    return this.runQuery(`mongoose_byte_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
   }
 
   // MARK: - Public 
@@ -43,9 +60,9 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     );
   }
 
-  public reloadPrometheus(): Observable<any> { 
-    let reloadEndpoint = "reload"; 
-    return this.httpClient.post(`${Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP}/-/${reloadEndpoint}`, Constants.Http.EMPTY_POST_REQUEST_HEADERS); 
+  public reloadPrometheus(): Observable<any> {
+    let reloadEndpoint = "reload";
+    return this.httpClient.post(`${Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP}/-/${reloadEndpoint}`, Constants.Http.EMPTY_POST_REQUEST_HEADERS);
   }
 
   public getDataForMetric(metric: String): Observable<any> {

@@ -1,5 +1,5 @@
 import { MongooseChartDao } from "./mongoose-chart-interface/mongoose-chart-dao.mode";
-import { MongooseDurationChart } from "./mongoose-duration-chart.model";
+import { MongooseDurationChart } from "./duration/mongoose-duration-chart.model";
 import { MongooseChartOptions } from "./mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "./mongoose-chart-interface/mongoose-chart-dataset.model";
 
@@ -20,7 +20,7 @@ export class MongooseChartsRepository {
     }
 
     // MARK: - Private 
-    
+
     private setUpCharts() { 
         this.durationChart = this.generateMongooseDurationChart(); 
     
