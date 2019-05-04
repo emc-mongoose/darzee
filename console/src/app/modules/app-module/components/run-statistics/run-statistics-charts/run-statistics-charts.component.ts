@@ -91,6 +91,7 @@ export class RunStatisticsChartsComponent implements OnInit {
   private configureChartUpdateInterval() {
     this.drawChart = this.drawChart.bind(this);
     if (!this.shouldDrawChart()) { 
+      this.isChartDrawActive = false; 
       alert(`Unable to draw the required chart for load step ID.`);
       return;
     }
@@ -101,9 +102,4 @@ export class RunStatisticsChartsComponent implements OnInit {
     return (this.processingRecord != undefined);
   }
 
-}
-
-
-export interface Result {
-  data: any
 }
