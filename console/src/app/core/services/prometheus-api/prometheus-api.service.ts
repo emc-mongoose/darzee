@@ -35,41 +35,39 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
     return this.runQuery(`mongoose_failed_op_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawFailedlOperationsResponse => {
-        let metricValue = this.getMetricValueFromRawResponse(rawFailedlOperationsResponse);
-        let timestampValue = this.getTimestampValueFromRawResponse(rawFailedlOperationsResponse);
-        return new MongooseMetric(timestampValue, metricValue);
+        return this.createMongooseMetricInstanceFromResponse(rawFailedlOperationsResponse);
       })
     )
   }
 
-  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<string> {
+  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
     return this.runQuery(`mongoose_success_op_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawSuccessfulOperationsResponse => {
-        return this.getMetricValueFromRawResponse(rawSuccessfulOperationsResponse);
+        return this.createMongooseMetricInstanceFromResponse(rawSuccessfulOperationsResponse);
       })
     )
   }
 
-  public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<string> {
+  public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
     return this.runQuery(`mongoose_latency_max{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawMaxLatencyQueryResponse => {
-        return this.getMetricValueFromRawResponse(rawMaxLatencyQueryResponse);
+        return this.createMongooseMetricInstanceFromResponse(rawMaxLatencyQueryResponse);
       })
     )
   }
 
-  public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<string> {
+  public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
     return this.runQuery(`mongoose_latency_min{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawMinLatencyQueryResponse => {
-        return this.getMetricValueFromRawResponse(rawMinLatencyQueryResponse);
+        return this.createMongooseMetricInstanceFromResponse(rawMinLatencyQueryResponse);
       })
     )
   }
 
-  public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<any> {
+  public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
     return this.runQuery(`mongoose_byte_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawByteRateResponse => {
-        return this.getMetricValueFromRawResponse(rawByteRateResponse);
+        return this.createMongooseMetricInstanceFromResponse(rawByteRateResponse);
       })
     )
   }
@@ -141,6 +139,12 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     return labelsOfMetric;
   }
 
+
+  private createMongooseMetricInstanceFromResponse(rawResponse: any): MongooseMetric {
+    let metricValue = this.getMetricValueFromRawResponse(rawResponse);
+    let timestampValue = this.getTimestampValueFromRawResponse(rawResponse);
+    return new MongooseMetric(timestampValue, metricValue);
+  }
 
   private getMetricValueFromRawResponse(rawResponse: any): string {
     let metricValueIndex = 1;

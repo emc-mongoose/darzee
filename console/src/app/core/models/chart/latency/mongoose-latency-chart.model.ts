@@ -3,6 +3,7 @@ import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.mode";
 import { formatDate } from "@angular/common";
+import { MongooseMetric } from "../mongoose-metric.model";
 
 export class MongooseLatencyChart implements MongooseChart {
 
@@ -35,11 +36,11 @@ export class MongooseLatencyChart implements MongooseChart {
 
     updateChart(recordLoadStepId: string) {
         let perdiodOfLatencyUpdate = this.PERIOD_OF_LATENCY_UPDATE_SECONDS;
-        this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((maxLatencyResult: string) => {
-            this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((minLatencyResult: string) => {
+        this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((maxLatencyResult: MongooseMetric) => {
+            this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((minLatencyResult: MongooseMetric) => {
 
-                this.chartData[this.MAX_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(maxLatencyResult);
-                this.chartData[this.MIN_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(minLatencyResult);
+                this.chartData[this.MAX_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(maxLatencyResult.getValue());
+                this.chartData[this.MIN_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(minLatencyResult.getValue());
 
 
                 this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));

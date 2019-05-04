@@ -3,6 +3,7 @@ import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.mode";
 import { formatDate } from "@angular/common";
+import { MongooseMetric } from "../mongoose-metric.model";
 
 export class MongooseBandwidthChart implements MongooseChart {
 
@@ -32,8 +33,8 @@ export class MongooseBandwidthChart implements MongooseChart {
 
 
     updateChart(recordLoadStepId: string) {
-        this.mongooseChartDao.getBandWidth(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((byteRateMean: string) => {
-            this.chartData[this.BANDWIDTH_DATASET_INDEX].appendDatasetWithNewValue(byteRateMean);
+        this.mongooseChartDao.getBandWidth(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((byteRateMean: MongooseMetric) => {
+            this.chartData[this.BANDWIDTH_DATASET_INDEX].appendDatasetWithNewValue(byteRateMean.getValue());
 
             this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
             if (this.shouldScaleChart()) {

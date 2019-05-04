@@ -14,15 +14,15 @@ export class MongooseChartDao {
         return this.chartDataProvider.getDuration(loadStepId);
     }
 
-    public getLatencyMax(lastSecondsAmount: number, loadStepId: string): Observable<any> {
+    public getLatencyMax(lastSecondsAmount: number, loadStepId: string): Observable<MongooseMetric> {
         return this.chartDataProvider.getLatencyMax(lastSecondsAmount, loadStepId);
     }
 
-    public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<any> {
+    public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
         return this.chartDataProvider.getLatencyMin(periodInSeconds, loadStepId);
     }
 
-    public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<any> {
+    public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
         return this.chartDataProvider.getBandWidth(periodInSeconds, loadStepId);
     }
 
@@ -30,7 +30,7 @@ export class MongooseChartDao {
         return this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId);
     }
 
-    public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<string> {
+    public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
         return this.chartDataProvider.getAmountOfSuccessfulOperations(periodInSeconds, loadStepId);
     }
 
