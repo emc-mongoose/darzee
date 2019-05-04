@@ -35,8 +35,8 @@ export class MongooseLatencyChart implements MongooseChart {
         this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((maxLatencyResult: string) => {
             this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((minLatencyResult: string) => {
                 
-                this.chartData[0] = this.getUpdatedDataset(this.chartData[0], maxLatencyResult);
-                this.chartData[1] = this.getUpdatedDataset(this.chartData[1], minLatencyResult);
+                this.chartData[0].appendDatasetWithNewValue(maxLatencyResult);
+                this.chartData[1].appendDatasetWithNewValue(minLatencyResult);
 
 
                 this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
@@ -53,27 +53,6 @@ export class MongooseLatencyChart implements MongooseChart {
 
     shouldDrawChart(): boolean {
         return this.isChartDataValid;
-    }
-
-    private isDataForChartValid(data: any): boolean {
-        return ((data != undefined) && (data.length > 0));
-    }
-
-
-    private getUpdatedDataset(dataSet: MongooseChartDataset, newValue: string): MongooseChartDataset { 
-        const emptyValue = "";
-        if (newValue == emptyValue) { 
-            newValue = this.getPreviousValueFromDataset(dataSet);
-        }
-        dataSet.data.push(newValue);
-        return dataSet; 
-    }
-
-
-    private getPreviousValueFromDataset(dataset: MongooseChartDataset) {
-        let previosValueIndex = dataset.data.length - 1;
-        let previosValue = dataset.data[previosValueIndex];
-        return previosValue;
     }
 
     private shouldScaleChart(): boolean { 

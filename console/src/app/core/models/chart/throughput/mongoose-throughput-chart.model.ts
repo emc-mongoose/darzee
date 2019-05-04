@@ -33,8 +33,8 @@ export class MongooseThroughputChart implements MongooseChart {
     updateChart(recordLoadStepId: string) {
         this.mongooseChartDao.getAmountOfSuccessfulOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((sucessfulOperationAmount: string) => { 
             this.mongooseChartDao.getAmountOfFailedOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((failedOperationsAmount: string) => { 
-                this.chartData[0] = this.getUpdatedDataset(this.chartData[0], sucessfulOperationAmount);
-                this.chartData[1] = this.getUpdatedDataset(this.chartData[1], failedOperationsAmount);
+                this.chartData[0].appendDatasetWithNewValue(sucessfulOperationAmount); 
+                this.chartData[1].appendDatasetWithNewValue(failedOperationsAmount); 
 
 
                 this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
@@ -47,21 +47,6 @@ export class MongooseThroughputChart implements MongooseChart {
         })
     }
 
-
-    private getUpdatedDataset(dataSet: MongooseChartDataset, newValue: string): MongooseChartDataset { 
-        const emptyValue = "";
-        if (newValue == emptyValue) { 
-            newValue = this.getPreviousValueFromDataset(dataSet);
-        }
-        dataSet.data.push(newValue);
-        return dataSet; 
-    }
-
-    private getPreviousValueFromDataset(dataset: MongooseChartDataset) {
-        let previosValueIndex = dataset.data.length - 1;
-        let previosValue = dataset.data[previosValueIndex];
-        return previosValue;
-    }
 
     shouldDrawChart(): boolean {
         return this.isChartDataValid;
