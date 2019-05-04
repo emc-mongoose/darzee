@@ -31,12 +31,20 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     return this.runQuery(`mongoose_duration_mean{load_step_id="${loadStepId}"}`);
   }
 
-  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<any> {
-    return this.runQuery(`mongoose_failed_op_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
+  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<string> {
+    return this.runQuery(`mongoose_failed_op_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+      map(rawFailedlOperationsResponse => { 
+        return this.getMetricValueFromRawResponse(rawFailedlOperationsResponse);
+      })
+    )
   }
 
-  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<any> {
-    return this.runQuery(`mongoose_success_op_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`)
+  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<string> {
+    return this.runQuery(`mongoose_success_op_rate_mean{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+      map(rawSuccessfulOperationsResponse => { 
+        return this.getMetricValueFromRawResponse(rawSuccessfulOperationsResponse);
+      })
+    )
   }
 
   public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<string> {

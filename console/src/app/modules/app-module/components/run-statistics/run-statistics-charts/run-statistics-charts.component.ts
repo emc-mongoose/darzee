@@ -77,7 +77,7 @@ export class RunStatisticsChartsComponent implements OnInit {
   private configureChart() {
     let mongooseChartDao = new MongooseChartDao(this.prometheusApiService);
     this.mognooseChartsRepository = new MongooseChartsRepository(mongooseChartDao);
-    this.displayingMongooseChart = this.mognooseChartsRepository.getLarencChart();
+    this.displayingMongooseChart = this.mognooseChartsRepository.getThoughputChart();
   }
 
   private configureChartUpdateInterval() {
