@@ -48,7 +48,7 @@ export class MongooseThroughputChart implements MongooseChart {
         this.chartData[this.SUCCESSFUL_OPERATIONS_DATASET_INDEX].appendDatasetWithNewValue(successfulOperationsMetric.getValue());
         this.chartData[this.FAILED_OPERATIONS_DATASET_INDEX].appendDatasetWithNewValue(failedOperationsMetric.getValue());
 
-        this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
+        this.chartLabels.push(formatDate(Math.round(failedOperationsMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
         if (this.shouldScaleChart()) {
             this.chartData[this.SUCCESSFUL_OPERATIONS_DATASET_INDEX].data.shift();
             this.chartData[this.FAILED_OPERATIONS_DATASET_INDEX].data.shift();

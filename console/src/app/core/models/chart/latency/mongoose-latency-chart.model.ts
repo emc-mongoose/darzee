@@ -53,7 +53,7 @@ export class MongooseLatencyChart implements MongooseChart {
         this.chartData[this.MIN_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(minLatencyMetric.getValue());
 
 
-        this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
+        this.chartLabels.push(formatDate(Math.round(minLatencyMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
         if (this.shouldScaleChart()) {
             this.chartData[this.MAX_LATENCY_DATASET_INDEX].data.shift();
             this.chartData[this.MIN_LATENCY_DATASET_INDEX].data.shift();

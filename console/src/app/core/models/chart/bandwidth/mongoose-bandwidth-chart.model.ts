@@ -41,7 +41,7 @@ export class MongooseBandwidthChart implements MongooseChart {
         }
         this.chartData[this.BANDWIDTH_DATASET_INDEX].appendDatasetWithNewValue(bandwidthMetric.getValue());
 
-        this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
+        this.chartLabels.push(formatDate(Math.round(bandwidthMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
         if (this.shouldScaleChart()) {
             this.chartData[this.BANDWIDTH_DATASET_INDEX].data.shift();
             this.chartLabels.shift();

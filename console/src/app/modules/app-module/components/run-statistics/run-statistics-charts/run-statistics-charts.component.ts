@@ -26,7 +26,6 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   private subsctiptions: Subscription = new Subscription();
   private processingRecord: MongooseRunRecord;
-  private mognooseChartsRepository: MongooseChartsRepository;
 
   private chartTabs: BasicTab[];
 
@@ -34,8 +33,7 @@ export class RunStatisticsChartsComponent implements OnInit {
   private isChartDrawActive: boolean = true;
   private availableCharts: Map<string, MongooseChart>;
 
-  constructor(private prometheusApiService: PrometheusApiService,
-    private monitoringApiService: MonitoringApiService,
+  constructor(private monitoringApiService: MonitoringApiService,
     private chartsProviderService: ChartsProviderService,
     private route: ActivatedRoute,
     private router: Router) {
