@@ -1,15 +1,16 @@
 import { Component, OnInit } from "@angular/core";
-import { MongooseChartDao } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart-dao.mode";
+import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
 import { Subscription } from "rxjs";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
+import { MongooseChartsRepository } from "src/app/core/models/chart/mongoose-charts-repository";
+import { BasicTab } from "src/app/common/BasicTab/BasicTab";
 import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MongooseRouteParamsParser } from "src/app/core/models/mongoose-route-params-praser";
 import { RoutesList } from "../../../Routing/routes-list";
-import { MongooseChartsRepository } from "src/app/core/models/chart/mongoose-charts-repository";
-import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
-import { BasicTab } from "src/app/common/BasicTab/BasicTab";
+import { MongooseChartDao } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart-dao.model";
+
 
 @Component({
   selector: 'app-run-statistics-charts',

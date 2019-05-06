@@ -1,9 +1,9 @@
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
 import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
-import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.mode";
 import { formatDate } from "@angular/common";
 import { MongooseMetric } from "../mongoose-metric.model";
+import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
 
 export class MongooseBandwidthChart implements MongooseChart {
 

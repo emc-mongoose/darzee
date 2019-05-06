@@ -1,9 +1,9 @@
-import { MongooseChartDao } from "./mongoose-chart-interface/mongoose-chart-dao.mode";
 import { MongooseDurationChart } from "./duration/mongoose-duration-chart.model";
 import { MongooseChartOptions } from "./mongoose-chart-interface/mongoose-chart-options";
 import { MongooseLatencyChart } from "./latency/mongoose-latency-chart.model";
 import { MongooseThroughputChart } from "./throughput/mongoose-throughput-chart.model";
 import { MongooseBandwidthChart } from "./bandwidth/mongoose-bandwidth-chart.model";
+import { MongooseChartDao } from "./mongoose-chart-interface/mongoose-chart-dao.model";
 
 export class MongooseChartsRepository {
     private mongooseChartDao: MongooseChartDao;

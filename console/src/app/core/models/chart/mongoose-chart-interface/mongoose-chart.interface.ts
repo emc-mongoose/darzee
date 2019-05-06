@@ -1,6 +1,6 @@
 import { MongooseChartDataset } from "./mongoose-chart-dataset.model";
 import { MongooseChartOptions } from "./mongoose-chart-options";
-import { MongooseChartDao } from "./mongoose-chart-dao.mode";
+import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
 import { MongooseMetric } from "../mongoose-metric.model";
 
 export interface MongooseChart {
