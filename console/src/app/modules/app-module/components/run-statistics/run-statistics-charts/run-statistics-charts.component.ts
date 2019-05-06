@@ -27,13 +27,15 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   // NOTE: isChartDrawActive is used to check whether the chart should be dispalyed within the UI.
   private isChartDrawActive: boolean = true;
+  private availableCharts: Map<MongooseChart, string>;
 
   constructor(private prometheusApiService: PrometheusApiService,
     private monitoringApiService: MonitoringApiService,
     private route: ActivatedRoute,
     private router: Router) {
 
-    this.configureChart();
+    this.configureChartsRepository();
+    this.availableCharts = this.getAvailableCharts();
   }
 
   ngOnInit() {
@@ -72,12 +74,28 @@ export class RunStatisticsChartsComponent implements OnInit {
     this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();
   }
 
+  public getAvailableChartNames(): string[] {
+    if (this.availableCharts == undefined) {
+      throw new Error(`Available charts haven't been set.`);
+    }
+    return Array.from(this.availableCharts.values());
+  }
+
   // MARK: - Private 
 
-  private configureChart() {
+  private configureChartsRepository() {
     let mongooseChartDao = new MongooseChartDao(this.prometheusApiService);
     this.mognooseChartsRepository = new MongooseChartsRepository(mongooseChartDao);
     this.displayingMongooseChart = this.mognooseChartsRepository.getDurationChart();
+  }
+
+  private getAvailableCharts(): Map<MongooseChart, string> {
+    var chartsList = new Map<MongooseChart, string>();
+    chartsList.set(this.mognooseChartsRepository.getDurationChart(), "Duration");
+    chartsList.set(this.mognooseChartsRepository.getBandwidthChart(), "Bandwidth");
+    chartsList.set(this.mognooseChartsRepository.getThoughputChart(), "Throughtput");
+    chartsList.set(this.mognooseChartsRepository.getLatencyChart(), "Latency");
+    return chartsList;
   }
 
   private configureChartUpdateInterval() {

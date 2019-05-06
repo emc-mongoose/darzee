@@ -1,7 +1,6 @@
 import { MongooseChartDao } from "./mongoose-chart-interface/mongoose-chart-dao.mode";
 import { MongooseDurationChart } from "./duration/mongoose-duration-chart.model";
 import { MongooseChartOptions } from "./mongoose-chart-interface/mongoose-chart-options";
-import { MongooseChartDataset } from "./mongoose-chart-interface/mongoose-chart-dataset.model";
 import { MongooseLatencyChart } from "./latency/mongoose-latency-chart.model";
 import { MongooseThroughputChart } from "./throughput/mongoose-throughput-chart.model";
 import { MongooseBandwidthChart } from "./bandwidth/mongoose-bandwidth-chart.model";
@@ -17,7 +16,6 @@ export class MongooseChartsRepository {
     constructor(mongooseChartDao: MongooseChartDao) {
         this.mongooseChartDao = mongooseChartDao;
         this.setUpCharts();
-
     }
 
     // MARK: - Public 
