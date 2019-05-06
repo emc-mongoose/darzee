@@ -1,23 +1,15 @@
-
-import { Component, OnInit, ViewContainerRef, ViewChild, ComponentFactoryResolver } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
 import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
 import { Subscription } from "rxjs";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
-import { MongooseChartsRepository } from "src/app/core/models/chart/mongoose-charts-repository";
 import { BasicTab } from "src/app/common/BasicTab/BasicTab";
-import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
+import { ChartsProviderService } from "src/app/core/services/charts-provider-service/charts-provider.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MongooseRouteParamsParser } from "src/app/core/models/mongoose-route-params-praser";
 import { RoutesList } from "../../../Routing/routes-list";
-
-import { MongooseChartDao } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart-dao.model";
-import { ChartsProviderService } from "src/app/core/services/charts-provider-service/charts-provider.service";
-import { MongooseChartsRepository } from "src/app/core/models/chart/mongoose-charts-repository";
-import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
-import { BasicTab } from "src/app/common/BasicTab/BasicTab";
 import { BasicChartComponent } from "./basic-chart/basic-chart.component";
-import { ComponentRef } from "@angular/core/src/render3";
+
 
 
 @Component({
