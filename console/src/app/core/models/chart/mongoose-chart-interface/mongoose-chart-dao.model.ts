@@ -12,8 +12,8 @@ export class MongooseChartDao {
         this.chartDataProvider = dataProvider;
     }
 
-    public getDuration(loadStepId: string): Observable<any> {
-        return this.chartDataProvider.getDuration(loadStepId).pipe(
+    public getDuration(periodInSeconds: number, loadStepId: string): Observable<any> {
+        return this.chartDataProvider.getDuration(periodInSeconds, loadStepId).pipe(
             map(metric => {
                 metric.setName(InternalMetricNames.DURATION);
                 return metric;
