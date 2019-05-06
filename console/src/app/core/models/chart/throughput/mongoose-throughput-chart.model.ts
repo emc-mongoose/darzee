@@ -34,7 +34,7 @@ export class MongooseThroughputChart implements MongooseChart {
         this.chartData = [successfulOperationsDataset, failedOperationsDataset];
     }
 
-    updateChart(recordLoadStepId: string) {
+    updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
         this.mongooseChartDao.getAmountOfSuccessfulOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((sucessfulOperationAmount: MongooseMetric) => {
             this.mongooseChartDao.getAmountOfFailedOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((failedOperationsMetric: MongooseMetric) => {
                 this.chartData[this.SUCCESSFUL_OPERATIONS_DATASET_INDEX].appendDatasetWithNewValue(sucessfulOperationAmount.getValue());

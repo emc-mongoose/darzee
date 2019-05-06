@@ -78,7 +78,7 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   public drawChart() {
 
-    this.displayingMongooseChart.updateChart(this.processingRecord.getLoadStepId() as string);
+    // this.displayingMongooseChart.updateChart(this.processingRecord.getLoadStepId() as string, );
     this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();
   }
 

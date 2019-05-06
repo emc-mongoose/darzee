@@ -34,7 +34,7 @@ export class MongooseLatencyChart implements MongooseChart {
         this.chartData = [maxLatencyDataset, minLatencyDataset];
     }
 
-    updateChart(recordLoadStepId: string) {
+    updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
         let perdiodOfLatencyUpdate = this.PERIOD_OF_LATENCY_UPDATE_SECONDS;
         this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((maxLatencyResult: MongooseMetric) => {
             this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((minLatencyResult: MongooseMetric) => {

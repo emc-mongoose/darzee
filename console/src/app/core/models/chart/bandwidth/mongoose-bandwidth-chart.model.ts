@@ -32,7 +32,7 @@ export class MongooseBandwidthChart implements MongooseChart {
     }
 
 
-    updateChart(recordLoadStepId: string) {
+    updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
         this.mongooseChartDao.getBandWidth(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((byteRateMean: MongooseMetric) => {
             this.chartData[this.BANDWIDTH_DATASET_INDEX].appendDatasetWithNewValue(byteRateMean.getValue());
 

@@ -31,7 +31,7 @@ export class MongooseDurationChart implements MongooseChart {
         this.chartData = durationChartDataset;
     }
 
-    updateChart(recordLoadStepId: string) {
+    updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
         this.mongooseChartDao.getDuration(recordLoadStepId).subscribe((durationMetric: MongooseMetric) => {
 
             this.chartData[this.DURATION_DATASET_INDEX].appendDatasetWithNewValue(durationMetric.getValue());
