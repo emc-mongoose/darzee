@@ -147,7 +147,8 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   private createMongooseMetricInstanceFromResponse(rawResponse: any): MongooseMetric {
     let metricValue = this.getMetricValueFromRawResponse(rawResponse);
     let timestampValue = this.getTimestampValueFromRawResponse(rawResponse);
-    return new MongooseMetric(timestampValue, metricValue);
+    let metricName = this.getMetricName(rawResponse);
+    return new MongooseMetric(timestampValue, metricValue, metricName);
   }
 
   private getMetricValueFromRawResponse(rawResponse: any): string {
@@ -185,5 +186,31 @@ export class PrometheusApiService implements MongooseChartDataProvider {
       return emptyValue;
     }
     return result;
+  }
+
+  private getMetricName(rawResponse: any): string { 
+    const emptyValue = "";
+
+    if (rawResponse.length == 0) {
+      return emptyValue;
+    }
+
+    const metricTag = "metric";
+    const firstFoundMetricIndex = 0; 
+    const firstFoundResponse = rawResponse[firstFoundMetricIndex][metricTag];
+
+    if (firstFoundResponse == undefined) { 
+      throw new Error(`Unable to get "${metricTag}" field from Prometheus response. Response: ${JSON.stringify(rawResponse)}`);
+    }
+
+    const metricNameTag = "__name__";
+    const metricName = firstFoundResponse[metricNameTag];
+
+    if (metricName == undefined) { 
+      console.error(`Unable to find field ${metricNameTag} within Prometheus first found response. Response: ${firstFoundResponse}`);
+      return emptyValue;
+    }
+
+    return metricName; 
   }
 }
