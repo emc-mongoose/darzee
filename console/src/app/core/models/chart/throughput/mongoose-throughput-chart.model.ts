@@ -40,7 +40,7 @@ export class MongooseThroughputChart implements MongooseChart {
         let successfulOperationsMetric = metrics.find(metric => metric.getName() == successfulOperationsMetricName);
 
         let failedOperationsMetricName = InternalMetricNames.FAILED_OPERATIONS;
-        let failedOperationsMetric = metrics.find(metric => metric.getName() == successfulOperationsMetricName);
+        let failedOperationsMetric = metrics.find(metric => metric.getName() == failedOperationsMetricName);
 
         if ((successfulOperationsMetric == undefined) || (failedOperationsMetric == undefined)) {
             throw new Error(`An error has occured while parsing bandwidth metrics.`);
