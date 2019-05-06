@@ -1,17 +1,16 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, ComponentFactoryResolver } from "@angular/core";
-import { MongooseChartDao } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart-dao.mode";
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
+import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
 import { Subscription } from "rxjs";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
-import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
+import { BasicTab } from "src/app/common/BasicTab/BasicTab";
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
+import { ChartsProviderService } from "src/app/core/services/charts-provider-service/charts-provider.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MongooseRouteParamsParser } from "src/app/core/models/mongoose-route-params-praser";
 import { RoutesList } from "../../../Routing/routes-list";
-import { MongooseChartsRepository } from "src/app/core/models/chart/mongoose-charts-repository";
-import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
-import { BasicTab } from "src/app/common/BasicTab/BasicTab";
 import { BasicChartComponent } from "./basic-chart/basic-chart.component";
-import { ComponentRef } from "@angular/core/src/render3";
+
+
 
 @Component({
   selector: 'app-run-statistics-charts',
@@ -28,25 +27,20 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   private subsctiptions: Subscription = new Subscription();
   private processingRecord: MongooseRunRecord;
-  private mognooseChartsRepository: MongooseChartsRepository;
 
   private chartTabs: BasicTab[];
 
   // NOTE: isChartDrawActive is used to check whether the chart should be dispalyed within the UI.
   private isChartDrawActive: boolean = true;
   private availableCharts: Map<string, MongooseChart>;
+  
 
-  private componentRef: ComponentRef<any>; 
 
-  constructor(private prometheusApiService: PrometheusApiService,
-    private monitoringApiService: MonitoringApiService,
+  constructor(private monitoringApiService: MonitoringApiService,
+    private chartsProviderService: ChartsProviderService,
     private resolver: ComponentFactoryResolver,
     private route: ActivatedRoute,
-    private router: Router) {
-
-  
-    
-  }
+    private router: Router) {  }
 
   // MARK: - Lifecycle 
 
@@ -85,11 +79,9 @@ export class RunStatisticsChartsComponent implements OnInit {
   // MARK: - Public 
 
   public drawChart() {
-    Array.from(this.availableCharts.values()).forEach(chart => { 
-      chart.updateChart(this.processingRecord.getLoadStepId() as string);
-    });
-
-    this.displayingMongooseChart.updateChart(this.processingRecord.getLoadStepId() as string);
+    let updationPeriodSeconds = 2;
+    let loadStepId = this.processingRecord.getLoadStepId() as string; 
+    this.chartsProviderService.updateCharts(updationPeriodSeconds, loadStepId);
     this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();
   }
 
@@ -111,17 +103,15 @@ export class RunStatisticsChartsComponent implements OnInit {
   // MARK: - Private 
 
   private configureChartsRepository() {
-    let mongooseChartDao = new MongooseChartDao(this.prometheusApiService);
-    this.mognooseChartsRepository = new MongooseChartsRepository(mongooseChartDao);
-    this.displayingMongooseChart = this.mognooseChartsRepository.getDurationChart();
+    this.displayingMongooseChart = this.chartsProviderService.getDurationChart();
   }
 
   private getAvailableCharts(): Map<string, MongooseChart> {
     var chartsList = new Map<string, MongooseChart>();
-    chartsList.set("Duration", this.mognooseChartsRepository.getDurationChart());
-    chartsList.set("Bandwidth", this.mognooseChartsRepository.getBandwidthChart());
-    chartsList.set("Throughtput", this.mognooseChartsRepository.getThoughputChart());
-    chartsList.set("Latency", this.mognooseChartsRepository.getLatencyChart());
+    chartsList.set("Duration", this.chartsProviderService.getDurationChart());
+    chartsList.set("Bandwidth", this.chartsProviderService.getBandwidthChart());
+    chartsList.set("Throughtput", this.chartsProviderService.getThoughputChart());
+    chartsList.set("Latency", this.chartsProviderService.getLatencyChart());
     return chartsList;
   }
 
