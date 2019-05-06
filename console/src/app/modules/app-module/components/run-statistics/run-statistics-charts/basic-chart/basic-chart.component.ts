@@ -6,20 +6,12 @@ import { MongooseChart } from 'src/app/core/models/chart/mongoose-chart-interfac
   templateUrl: './basic-chart.component.html',
   styleUrls: ['./basic-chart.component.css']
 })
-export class BasicChartComponent implements OnInit {
+export class BasicChartComponent {
 
 
   @Input() chart: MongooseChart; 
   
   constructor() { }
 
-  ngOnInit() {
-    console.log("Basic chart component has been created.")
-  }
-
-  ngOnDestroy() { 
-    console.log("Basic chart component has been destroyed..")
-
-  }
 
 }

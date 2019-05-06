@@ -36,6 +36,9 @@ import { BasicChartComponent } from './components/run-statistics/run-statistics-
     BasicChartComponent
     
   ],
+  entryComponents: [
+    BasicChartComponent
+  ],
   imports: [
     BrowserModule,
     FormsModule,
