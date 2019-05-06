@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewContainerRef, ViewChild, ComponentFactoryResolver } from "@angular/core";
 import { MongooseChartDao } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart-dao.mode";
 import { Subscription } from "rxjs";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
@@ -10,6 +10,8 @@ import { RoutesList } from "../../../Routing/routes-list";
 import { MongooseChartsRepository } from "src/app/core/models/chart/mongoose-charts-repository";
 import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
 import { BasicTab } from "src/app/common/BasicTab/BasicTab";
+import { BasicChartComponent } from "./basic-chart/basic-chart.component";
+import { ComponentRef } from "@angular/core/src/render3";
 
 @Component({
   selector: 'app-run-statistics-charts',
@@ -19,6 +21,8 @@ import { BasicTab } from "src/app/common/BasicTab/BasicTab";
 
 
 export class RunStatisticsChartsComponent implements OnInit {
+
+  @ViewChild('chartContainer', { read: ViewContainerRef}) chartContainerReference: ViewContainerRef;
 
   public displayingMongooseChart: MongooseChart;
 
@@ -32,13 +36,15 @@ export class RunStatisticsChartsComponent implements OnInit {
   private isChartDrawActive: boolean = true;
   private availableCharts: Map<string, MongooseChart>;
 
+  private componentRef: ComponentRef<any>; 
+
   constructor(private prometheusApiService: PrometheusApiService,
     private monitoringApiService: MonitoringApiService,
+    private resolver: ComponentFactoryResolver,
     private route: ActivatedRoute,
     private router: Router) {
 
-    this.configureChartsRepository();
-    this.configureTabs();
+  
     
   }
 
@@ -53,6 +59,8 @@ export class RunStatisticsChartsComponent implements OnInit {
             if (foundRecord == undefined) {
               throw new Error(`Requested run record hasn't been found.`);
             }
+            this.configureChartsRepository();
+            this.configureTabs();
             this.processingRecord = foundRecord;
             this.configureChartUpdateInterval();
 
@@ -77,6 +85,9 @@ export class RunStatisticsChartsComponent implements OnInit {
   // MARK: - Public 
 
   public drawChart() {
+    Array.from(this.availableCharts.values()).forEach(chart => { 
+      chart.updateChart(this.processingRecord.getLoadStepId() as string);
+    });
 
     this.displayingMongooseChart.updateChart(this.processingRecord.getLoadStepId() as string);
     this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();
@@ -90,6 +101,7 @@ export class RunStatisticsChartsComponent implements OnInit {
 
     const selectedTabName = selectedTab.getName() as string;
     this.displayingMongooseChart = this.availableCharts.get(selectedTabName);
+    this.createChartComponent(this.displayingMongooseChart);
   }
 
   public getAvailableChartTabs(): BasicTab[] {
@@ -157,4 +169,12 @@ export class RunStatisticsChartsComponent implements OnInit {
     let initialTab =  this.chartTabs[initialTabIndex];
     this.switchTab(initialTab);
   }
+
+  private createChartComponent(chart: MongooseChart) { 
+    this.chartContainerReference.clear();
+    const factory = this.resolver.resolveComponentFactory(BasicChartComponent);
+    const chartComponentReference = this.chartContainerReference.createComponent(factory);
+    chartComponentReference.instance.chart = this.displayingMongooseChart;
+  }  
+
 }

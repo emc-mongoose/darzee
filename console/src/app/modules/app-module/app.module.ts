@@ -18,6 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { ChartsModule } from 'ng2-charts';
 import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
+import { BasicChartComponent } from './components/run-statistics/run-statistics-charts/basic-chart/basic-chart.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { PrometheusApiService } from "src/app/core/services/prometheus-api/prome
     RunStatisticsComponent,
     RunStatisticLogsComponent,
     RunStatisticsChartsComponent,
-    DateFormatPipe
+    DateFormatPipe,
+    BasicChartComponent
     
   ],
   imports: [
