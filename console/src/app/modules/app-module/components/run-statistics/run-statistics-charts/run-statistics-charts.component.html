@@ -1,4 +1,26 @@
-<div class="card-body text-center">
-    <h5 class="card-title">Oops</h5>
-    <p class="card-text">Charts are not available yet.</p>
+<ul class="nav" id="metrics-navbar">
+  <!-- TODO: Possible states are 'active' and 'disabled'. Make sure to impliment them. -->
+  <li class="nav-item" *ngFor="let chartTab of this.getAvailableChartTabs()">
+    <p class="nav-link" class="nav-link" (click)="this.switchTab(chartTab)"
+    [ngClass]="chartTab.isActive ? 'selected-metric-item' : 'metric-item'"> {{ chartTab.getName() }} </p>
+  </li>
+</ul>
+
+
+<!-- NOTE: Area for displaying Mongoose charts -->
+<div id="displaying-charts-area" class="card">
+  <div class="card-body">
+    <!-- NOTE: Actual chart -->
+    <template #chartContainer ></template>
   </div>
+</div>
+
+
+<!-- MARK: - Templates -->
+
+<ng-template #chartsNotAvailable>
+  <div class="card-body text-center">
+    <h5 class="card-title">Oops, sorry.</h5>
+    <p class="card-text">Required chart couldn't be drawn, the data for it is missing.</p>
+  </div>
+</ng-template>

@@ -7,6 +7,7 @@ import { RouteParams } from 'src/app/modules/app-module/Routing/params.routes';
 import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
 import { Observable, Subscription, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { MongooseRouteParamsParser } from 'src/app/core/models/mongoose-route-params-praser';
 
 @Component({
   selector: 'app-run-statistic-logs',
@@ -36,11 +37,13 @@ export class RunStatisticLogsComponent implements OnInit {
 
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.parent.params.subscribe(params => {
-      let targetRecordLoadStepId = params[RouteParams.ID];
+      let mongooseRouteParamsParser: MongooseRouteParamsParser = new MongooseRouteParamsParser(this.monitoringApiService);
       try {
-        this.monitoringApiSubscriptions.add(this.monitoringApiService.getMongooseRunRecordByLoadStepId(targetRecordLoadStepId).subscribe(foundRecord => { 
-          this.processingRunRecord  = foundRecord;
-        }));
+        this.monitoringApiSubscriptions.add(mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
+          foundRecord => {
+            this.processingRunRecord = foundRecord;
+          }
+        ));
         this.initlogTabs();
       } catch (recordNotFoundError) {
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
@@ -52,7 +55,7 @@ export class RunStatisticLogsComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.monitoringApiSubscriptions.unsubscribe(); 
+    this.monitoringApiSubscriptions.unsubscribe();
   }
 
   // MARK: - Public
@@ -80,7 +83,7 @@ export class RunStatisticLogsComponent implements OnInit {
         this.occuredError = error.error;
       }
     );
-    
+
   }
 
   // MARK: - Private
