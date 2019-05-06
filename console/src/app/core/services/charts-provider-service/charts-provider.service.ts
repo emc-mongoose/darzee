@@ -37,6 +37,26 @@ export class ChartsProviderService {
   public getDurationChart(): MongooseDurationChart { 
     return this.durationChart; 
   }
+
+  public getBandwidthChart(): MongooseBandwidthChart { 
+    return this.bandwidthChart;
+  }
+  
+  public getThoughputChart(): MongooseThroughputChart { 
+    return this.throughputChart;
+  }
+
+  public getLatencyChart(): MongooseLatencyChart { 
+    return this.latencyChart;
+  }
+
+  public updateCharts(perdiodOfLatencyUpdateMs: number, loadStepId: string) { 
+    this.updateLatencyChart(perdiodOfLatencyUpdateMs, loadStepId);
+    this.updateDurationChart(perdiodOfLatencyUpdateMs, loadStepId);
+    this.updateBandwidthChart(perdiodOfLatencyUpdateMs, loadStepId);
+    this.updateThoughputChart(perdiodOfLatencyUpdateMs, loadStepId);
+
+  }
   // MARK: - Private
 
   private updateLatencyChart(perdiodOfLatencyUpdateMs: number, loadStepId: string) {

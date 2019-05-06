@@ -55,7 +55,6 @@ export class MongooseThroughputChart implements MongooseChart {
             this.chartLabels.shift();
         }
 
-
     }
 
     shouldDrawChart(): boolean {
