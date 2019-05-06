@@ -20,4 +20,8 @@ export class MongooseMetric {
     public getName(): string { 
         return this.name; 
     }
+
+    public setName(name: string) { 
+        this.name = name; 
+    }
 }

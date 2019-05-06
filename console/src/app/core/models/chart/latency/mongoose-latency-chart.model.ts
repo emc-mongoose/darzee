@@ -4,13 +4,14 @@ import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart
 import { formatDate } from "@angular/common";
 import { MongooseMetric } from "../mongoose-metric.model";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
+import { InternalMetricNames } from "../internal-metric-names";
 
 
 export class MongooseLatencyChart implements MongooseChart {
 
     private readonly PERIOD_OF_LATENCY_UPDATE_SECONDS = 2;
 
-    private readonly MAX_LATENCY_DATASET_INDEX = 0; 
+    private readonly MAX_LATENCY_DATASET_INDEX = 0;
     private readonly MIN_LATENCY_DATASET_INDEX = 1;
 
     chartOptions: MongooseChartOptions;
@@ -37,22 +38,33 @@ export class MongooseLatencyChart implements MongooseChart {
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
         let perdiodOfLatencyUpdate = this.PERIOD_OF_LATENCY_UPDATE_SECONDS;
-        this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((maxLatencyResult: MongooseMetric) => {
-            this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((minLatencyResult: MongooseMetric) => {
 
-                this.chartData[this.MAX_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(maxLatencyResult.getValue());
-                this.chartData[this.MIN_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(minLatencyResult.getValue());
+        let maxLatencyMetricName = InternalMetricNames.LATENCY_MAX;
+        let maxLatencyMetric = metrics.find(metric => metric.getName() == maxLatencyMetricName);
+
+        let minLatencyMetricName = InternalMetricNames.LATENCY_MIN;
+        let minLatencyMetric = metrics.find(metric => metric.getName() == minLatencyMetricName);
+
+        if ((minLatencyMetric == undefined) || (maxLatencyMetric == undefined)) { 
+            throw new Error(`An error has occured while parsing latency metrics.`);
+        }
+
+        this.chartData[this.MAX_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(maxLatencyMetric.getValue());
+        this.chartData[this.MIN_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(minLatencyMetric.getValue());
 
 
-                this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
-                if (this.shouldScaleChart()) {
-                    this.chartData[this.MAX_LATENCY_DATASET_INDEX].data.shift();
-                    this.chartData[this.MIN_LATENCY_DATASET_INDEX].data.shift();
-                    this.chartLabels.shift();
-                }
-            });
+        this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
+        if (this.shouldScaleChart()) {
+            this.chartData[this.MAX_LATENCY_DATASET_INDEX].data.shift();
+            this.chartData[this.MIN_LATENCY_DATASET_INDEX].data.shift();
+            this.chartLabels.shift();
+        }
+        // this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((maxLatencyResult: MongooseMetric) => {
+        //     this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((minLatencyResult: MongooseMetric) => {
 
-        });
+
+
+        // });
 
     }
 

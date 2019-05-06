@@ -1,6 +1,8 @@
 import { Observable } from 'rxjs';
 import { MongooseChartDataProvider } from './mongoose-chart-data-provider.interface';
 import { MongooseMetric } from '../mongoose-metric.model';
+import { map } from 'rxjs/operators';
+import { InternalMetricNames } from '../internal-metric-names';
 
 export class MongooseChartDao {
 
@@ -15,11 +17,21 @@ export class MongooseChartDao {
     }
 
     public getLatencyMax(lastSecondsAmount: number, loadStepId: string): Observable<MongooseMetric> {
-        return this.chartDataProvider.getLatencyMax(lastSecondsAmount, loadStepId);
+        return this.chartDataProvider.getLatencyMax(lastSecondsAmount, loadStepId).pipe(
+            map(metric => {
+                metric.setName(InternalMetricNames.LATENCY_MAX);
+                return metric;
+            })
+        );
     }
 
     public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
-        return this.chartDataProvider.getLatencyMin(periodInSeconds, loadStepId);
+        return this.chartDataProvider.getLatencyMin(periodInSeconds, loadStepId).pipe(
+            map(metric => {
+                metric.setName(InternalMetricNames.LATENCY_MIN);
+                return metric;
+            })
+        );
     }
 
     public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
