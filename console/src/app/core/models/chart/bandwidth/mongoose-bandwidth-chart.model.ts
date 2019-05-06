@@ -4,6 +4,7 @@ import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart
 import { formatDate } from "@angular/common";
 import { MongooseMetric } from "../mongoose-metric.model";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
+import { InternalMetricNames } from "../internal-metric-names";
 
 export class MongooseBandwidthChart implements MongooseChart {
 
@@ -33,15 +34,18 @@ export class MongooseBandwidthChart implements MongooseChart {
 
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
-        this.mongooseChartDao.getBandWidth(this.PERIOD_OF_DATA_UPDATE_SECONDS, recordLoadStepId).subscribe((byteRateMean: MongooseMetric) => {
-            this.chartData[this.BANDWIDTH_DATASET_INDEX].appendDatasetWithNewValue(byteRateMean.getValue());
+        let bandwidthMetricName = InternalMetricNames.BANDWIDTH; 
+        let bandwidthMetric = metrics.find(metric => metric.getName() == bandwidthMetricName);
+        if (bandwidthMetric == undefined) {
+            throw new Error(`An error has occured while parsing duration metrics.`);
+        }
+        this.chartData[this.BANDWIDTH_DATASET_INDEX].appendDatasetWithNewValue(bandwidthMetric.getValue());
 
-            this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
-            if (this.shouldScaleChart()) {
-                this.chartData[this.BANDWIDTH_DATASET_INDEX].data.shift();
-                this.chartLabels.shift();
-            }
-        })
+        this.chartLabels.push(formatDate(Date.now(), 'mediumTime', 'en-US'));
+        if (this.shouldScaleChart()) {
+            this.chartData[this.BANDWIDTH_DATASET_INDEX].data.shift();
+            this.chartLabels.shift();
+        }
     }
 
     shouldDrawChart(): boolean {

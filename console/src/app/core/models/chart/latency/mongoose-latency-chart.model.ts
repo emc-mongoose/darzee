@@ -59,13 +59,6 @@ export class MongooseLatencyChart implements MongooseChart {
             this.chartData[this.MIN_LATENCY_DATASET_INDEX].data.shift();
             this.chartLabels.shift();
         }
-        // this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((maxLatencyResult: MongooseMetric) => {
-        //     this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdate, recordLoadStepId).subscribe((minLatencyResult: MongooseMetric) => {
-
-
-
-        // });
-
     }
 
     shouldDrawChart(): boolean {
