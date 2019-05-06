@@ -10,6 +10,7 @@ import { RunStatisticsChartsComponent } from "../components/run-statistics/run-s
 import { RouteParams } from "./params.routes";
 import { RunsTableRootComponent } from "../components/runs-table/runs-table-root/runs-table-root.component";
 import { SETUP_ROUTES } from "../../mongoose-set-up-module/set-up-routing/mongoose-setup.routes";
+import { BasicChartComponent } from "../components/run-statistics/run-statistics-charts/basic-chart/basic-chart.component";
 
 
 export const routes: Routes = [

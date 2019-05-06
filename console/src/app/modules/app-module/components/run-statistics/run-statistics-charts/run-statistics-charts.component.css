@@ -1,16 +1,4 @@
-.chart-container {
-    text-align: center;
-    width: 100%;
-    margin-top: 80px;
-  }
-  
-  .chart {
-    width: 1000px;
-    height: 1000px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
+
   .card { 
     margin: calc(1%) calc(5%);
     color: white;
