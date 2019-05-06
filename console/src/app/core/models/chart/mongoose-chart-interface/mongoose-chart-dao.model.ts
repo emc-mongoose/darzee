@@ -13,7 +13,12 @@ export class MongooseChartDao {
     }
 
     public getDuration(loadStepId: string): Observable<any> {
-        return this.chartDataProvider.getDuration(loadStepId);
+        return this.chartDataProvider.getDuration(loadStepId).pipe(
+            map(metric => {
+                metric.setName(InternalMetricNames.DURATION);
+                return metric;
+            })
+        );
     }
 
     public getLatencyMax(lastSecondsAmount: number, loadStepId: string): Observable<MongooseMetric> {
@@ -35,15 +40,30 @@ export class MongooseChartDao {
     }
 
     public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
-        return this.chartDataProvider.getBandWidth(periodInSeconds, loadStepId);
+        return this.chartDataProvider.getBandWidth(periodInSeconds, loadStepId).pipe(
+            map(metric => {
+                metric.setName(InternalMetricNames.BANDWIDTH);
+                return metric;
+            })
+        );
     }
 
     public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
-        return this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId);
+        return this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId).pipe(
+            map(metric => {
+                metric.setName(InternalMetricNames.FAILED_OPERATIONS);
+                return metric;
+            })
+        );
     }
 
     public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
-        return this.chartDataProvider.getAmountOfSuccessfulOperations(periodInSeconds, loadStepId);
+        return this.chartDataProvider.getAmountOfSuccessfulOperations(periodInSeconds, loadStepId).pipe(
+            map(metric => {
+                metric.setName(InternalMetricNames.SUCCESSFUL_OPERATIONS);
+                return metric;
+            })
+        );
     }
 
 }

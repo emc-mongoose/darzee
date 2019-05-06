@@ -4,10 +4,11 @@ import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
 import { formatDate } from "@angular/common";
 import { MongooseMetric } from "../mongoose-metric.model";
+import { InternalMetricNames } from "../internal-metric-names";
 
 export class MongooseDurationChart implements MongooseChart {
 
-    private readonly DURATION_DATASET_INDEX = 0; 
+    private readonly DURATION_DATASET_INDEX = 0;
 
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
@@ -32,16 +33,19 @@ export class MongooseDurationChart implements MongooseChart {
     }
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
-        this.mongooseChartDao.getDuration(recordLoadStepId).subscribe((durationMetric: MongooseMetric) => {
+        let durationMetricName = InternalMetricNames.DURATION; 
+        let durationMetric = metrics.find(metric => metric.getName() == durationMetricName);
+        if (durationMetric == undefined) {
+            throw new Error(`An error has occured while parsing duration metrics.`);
+        }
 
-            this.chartData[this.DURATION_DATASET_INDEX].appendDatasetWithNewValue(durationMetric.getValue());
+        this.chartData[this.DURATION_DATASET_INDEX].appendDatasetWithNewValue(durationMetric.getValue());
 
-            this.chartLabels.push(formatDate(Math.round(durationMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
-            if (this.shouldScaleChart()) {
-                this.chartData[this.DURATION_DATASET_INDEX].data.shift();
-                this.chartLabels.shift();
-            }
-        });
+        this.chartLabels.push(formatDate(Math.round(durationMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
+        if (this.shouldScaleChart()) {
+            this.chartData[this.DURATION_DATASET_INDEX].data.shift();
+            this.chartLabels.shift();
+        }
     }
 
     public shouldDrawChart(): boolean {
