@@ -57,5 +57,4 @@ export class MongooseDurationChart implements MongooseChart {
         return (this.chartLabels.length >= maxAmountOfPointsInGraph);
     }
 
-
 }

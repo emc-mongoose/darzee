@@ -57,5 +57,4 @@ export class MongooseBandwidthChart implements MongooseChart {
         return (this.chartLabels.length >= maxAmountOfPointsInGraph);
     }
 
-
 }

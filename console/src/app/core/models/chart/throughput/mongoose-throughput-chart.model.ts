@@ -66,5 +66,4 @@ export class MongooseThroughputChart implements MongooseChart {
         return (this.chartLabels.length >= maxAmountOfPointsInGraph);
     }
 
-
 }
