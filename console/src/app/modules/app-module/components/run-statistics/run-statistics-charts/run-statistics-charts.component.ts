@@ -9,6 +9,7 @@ import { MongooseRouteParamsParser } from "src/app/core/models/mongoose-route-pa
 import { RoutesList } from "../../../Routing/routes-list";
 import { MongooseChartsRepository } from "src/app/core/models/chart/mongoose-charts-repository";
 import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
+import { BasicTab } from "src/app/common/BasicTab/BasicTab";
 
 @Component({
   selector: 'app-run-statistics-charts',
@@ -20,6 +21,7 @@ import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interfac
 export class RunStatisticsChartsComponent implements OnInit {
 
   public displayingMongooseChart: MongooseChart;
+  public chartTabs: BasicTab[]; 
 
   private subsctiptions: Subscription = new Subscription();
   private processingRecord: MongooseRunRecord;
@@ -27,7 +29,7 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   // NOTE: isChartDrawActive is used to check whether the chart should be dispalyed within the UI.
   private isChartDrawActive: boolean = true;
-  private availableCharts: Map<MongooseChart, string>;
+  private availableCharts: Map<string, MongooseChart>;
 
   constructor(private prometheusApiService: PrometheusApiService,
     private monitoringApiService: MonitoringApiService,
@@ -36,6 +38,7 @@ export class RunStatisticsChartsComponent implements OnInit {
 
     this.configureChartsRepository();
     this.availableCharts = this.getAvailableCharts();
+    this.chartTabs = this.getAvailableTabs(); 
   }
 
   ngOnInit() {
@@ -68,17 +71,22 @@ export class RunStatisticsChartsComponent implements OnInit {
     this.subsctiptions.unsubscribe();
   }
 
-  drawChart() {
+  public drawChart() {
 
     this.displayingMongooseChart.updateChart(this.processingRecord.getLoadStepId() as string);
     this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();
   }
 
-  public getAvailableChartNames(): string[] {
-    if (this.availableCharts == undefined) {
-      throw new Error(`Available charts haven't been set.`);
-    }
-    return Array.from(this.availableCharts.values());
+  
+
+  public switchTab(selectedTab: BasicTab) { 
+    this.chartTabs.forEach(tab => { 
+      let isMatchingSelectedTab = (tab.getName() == selectedTab.getName());
+      tab.isActive = isMatchingSelectedTab ? true : false;
+    })
+
+    const selectedTabName = selectedTab.getName() as string; 
+    this.displayingMongooseChart = this.availableCharts.get(selectedTabName);
   }
 
   // MARK: - Private 
@@ -89,12 +97,12 @@ export class RunStatisticsChartsComponent implements OnInit {
     this.displayingMongooseChart = this.mognooseChartsRepository.getDurationChart();
   }
 
-  private getAvailableCharts(): Map<MongooseChart, string> {
-    var chartsList = new Map<MongooseChart, string>();
-    chartsList.set(this.mognooseChartsRepository.getDurationChart(), "Duration");
-    chartsList.set(this.mognooseChartsRepository.getBandwidthChart(), "Bandwidth");
-    chartsList.set(this.mognooseChartsRepository.getThoughputChart(), "Throughtput");
-    chartsList.set(this.mognooseChartsRepository.getLatencyChart(), "Latency");
+  private getAvailableCharts(): Map<string, MongooseChart> {
+    var chartsList = new Map<string, MongooseChart>();
+    chartsList.set("Duration", this.mognooseChartsRepository.getDurationChart());
+    chartsList.set("Bandwidth", this.mognooseChartsRepository.getBandwidthChart());
+    chartsList.set("Throughtput", this.mognooseChartsRepository.getThoughputChart());
+    chartsList.set("Latency", this.mognooseChartsRepository.getLatencyChart());
     return chartsList;
   }
 
@@ -112,4 +120,19 @@ export class RunStatisticsChartsComponent implements OnInit {
     return (this.processingRecord != undefined);
   }
 
+  private getAvailableTabs(): BasicTab[] { 
+    var availableTabs: BasicTab[] = [];
+    for (let chartName of this.getAvailableChartNames()) { 
+      let samePageLink = "/"; 
+      let tab = new BasicTab(chartName, samePageLink);
+    }
+    return availableTabs; 
+  }
+
+  private getAvailableChartNames(): string[] {
+    if (this.availableCharts == undefined) {
+      throw new Error(`Available charts haven't been set.`);
+    }
+    return Array.from(this.availableCharts.keys());
+  }
 }
