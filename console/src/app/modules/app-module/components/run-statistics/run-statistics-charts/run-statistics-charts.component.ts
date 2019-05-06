@@ -21,11 +21,12 @@ import { BasicTab } from "src/app/common/BasicTab/BasicTab";
 export class RunStatisticsChartsComponent implements OnInit {
 
   public displayingMongooseChart: MongooseChart;
-  public chartTabs: BasicTab[]; 
 
   private subsctiptions: Subscription = new Subscription();
   private processingRecord: MongooseRunRecord;
   private mognooseChartsRepository: MongooseChartsRepository;
+
+  private chartTabs: BasicTab[];
 
   // NOTE: isChartDrawActive is used to check whether the chart should be dispalyed within the UI.
   private isChartDrawActive: boolean = true;
@@ -37,9 +38,11 @@ export class RunStatisticsChartsComponent implements OnInit {
     private router: Router) {
 
     this.configureChartsRepository();
-    this.availableCharts = this.getAvailableCharts();
-    this.chartTabs = this.getAvailableTabs(); 
+    this.configureTabs();
+    
   }
+
+  // MARK: - Lifecycle 
 
   ngOnInit() {
     this.subsctiptions.add(this.route.parent.params.subscribe(params => {
@@ -71,22 +74,26 @@ export class RunStatisticsChartsComponent implements OnInit {
     this.subsctiptions.unsubscribe();
   }
 
+  // MARK: - Public 
+
   public drawChart() {
 
     this.displayingMongooseChart.updateChart(this.processingRecord.getLoadStepId() as string);
     this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();
   }
 
-  
-
-  public switchTab(selectedTab: BasicTab) { 
-    this.chartTabs.forEach(tab => { 
+  public switchTab(selectedTab: BasicTab) {
+    this.chartTabs.forEach(tab => {
       let isMatchingSelectedTab = (tab.getName() == selectedTab.getName());
       tab.isActive = isMatchingSelectedTab ? true : false;
     })
 
-    const selectedTabName = selectedTab.getName() as string; 
+    const selectedTabName = selectedTab.getName() as string;
     this.displayingMongooseChart = this.availableCharts.get(selectedTabName);
+  }
+
+  public getAvailableChartTabs(): BasicTab[] {
+    return this.chartTabs;
   }
 
   // MARK: - Private 
@@ -120,13 +127,14 @@ export class RunStatisticsChartsComponent implements OnInit {
     return (this.processingRecord != undefined);
   }
 
-  private getAvailableTabs(): BasicTab[] { 
+  private generateChartTabs(): BasicTab[] {
     var availableTabs: BasicTab[] = [];
-    for (let chartName of this.getAvailableChartNames()) { 
-      let samePageLink = "/"; 
+    for (let chartName of this.getAvailableChartNames()) {
+      let samePageLink = "/";
       let tab = new BasicTab(chartName, samePageLink);
+      availableTabs.push(tab);
     }
-    return availableTabs; 
+    return availableTabs;
   }
 
   private getAvailableChartNames(): string[] {
@@ -134,5 +142,19 @@ export class RunStatisticsChartsComponent implements OnInit {
       throw new Error(`Available charts haven't been set.`);
     }
     return Array.from(this.availableCharts.keys());
+  }
+
+  private configureTabs() { 
+    this.availableCharts = this.getAvailableCharts();
+    this.chartTabs = this.generateChartTabs();
+
+    if (this.chartTabs.length < 0) { 
+      console.error(`Tabs haven't been generated.`);
+      return; 
+    }
+    
+    let initialTabIndex = 0; 
+    let initialTab =  this.chartTabs[initialTabIndex];
+    this.switchTab(initialTab);
   }
 }

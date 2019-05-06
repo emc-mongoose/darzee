@@ -11,3 +11,15 @@
     margin-right: auto;
   }
   
+  .card { 
+    margin: calc(1%) calc(5%);
+    color: white;
+}
+
+.metric-item { 
+    color: #040030;
+}
+
+.selected-metric-item { 
+    color: #33b5e5;
+}

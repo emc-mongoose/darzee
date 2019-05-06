@@ -1,7 +1,8 @@
 <ul class="nav" id="metrics-navbar">
   <!-- TODO: Possible states are 'active' and 'disabled'. Make sure to impliment them. -->
-  <li class="nav-item" *ngFor="let chartName of this.getAvailableChartNames()">
-    <p class="nav-link" > {{ chartName }} </p>
+  <li class="nav-item" *ngFor="let chartTab of this.getAvailableChartTabs()">
+    <p class="nav-link" class="nav-link" (click)="this.switchTab(chartTab)"
+    [ngClass]="chartTab.isActive ? 'selected-metric-item' : 'metric-item'"> {{ chartTab.getName() }} </p>
   </li>
 </ul>
 
