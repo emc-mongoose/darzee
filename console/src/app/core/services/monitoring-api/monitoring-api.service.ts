@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
 import { Constants } from "src/app/common/constants";
 import { BehaviorSubject, Observable, of } from "rxjs";
-import { MongooseRunRecord } from "../../models/run-record.model";
+import { MongooseRunRecord } from "../../models/mongoose-run-record/run-record.model";
 import { PrometheusApiService } from "../prometheus-api/prometheus-api.service";
-import { MongooseRunStatus } from "../../models/mongoose-run-status";
-import { mergeMap, map, catchError, share } from "rxjs/operators";
+import { ControlApiService } from "../control-api/control-api.service";
+import { MongooseRunStatus } from "../../models/mongoose-run-record/mongoose-run-status";
+import { map, share, catchError } from "rxjs/operators";
 import { MongooseMetrics } from "../mongoose-api-models/MongooseMetrics";
 import { MongooseApi } from "../mongoose-api-models/MongooseApi.model";
 import { HttpClient } from "@angular/common/http";
-import { ControlApiService } from "../control-api/control-api.service";
 
 
 @Injectable({
@@ -24,7 +24,7 @@ export class MonitoringApiService {
   private availableLogs: Map<String, String> = new Map<String, String>();
 
   // MARK: - Lifecycle 
-
+ 
   constructor(private prometheusApiService: PrometheusApiService,
     private controlApiService: ControlApiService,
     private http: HttpClient) {

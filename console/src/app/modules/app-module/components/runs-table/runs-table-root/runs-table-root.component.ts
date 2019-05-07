@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { MongooseRunStatus } from 'src/app/core/models/mongoose-run-status';
-import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
-import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
-import { MongooseRunTab } from './model/monoose-run-tab.model';
-import { slideAnimation } from 'src/app/core/animations';
-import { Observable, Subscription, BehaviorSubject } from 'rxjs';
-import { MongooseRunRecordCounter } from 'src/app/core/models/run-record-counter';
+import { Component, OnInit } from "@angular/core";
+import { slideAnimation } from "src/app/core/animations";
+import { MongooseRunTab } from "./model/monoose-run-tab.model";
+import { MongooseRunRecord } from "src/app/core/models/mongoose-run-record/run-record.model";
+import { BehaviorSubject, Subscription, Observable } from "rxjs";
+import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
+import { MongooseRunRecordCounter } from "src/app/core/models/mongoose-run-record/run-record-counter";
+import { MongooseRunStatus } from "src/app/core/models/mongoose-run-record/mongoose-run-status";
 
 @Component({
   selector: 'app-runs-table-root',

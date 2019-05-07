@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
 import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
 import { Subscription } from "rxjs";
-import { MongooseRunRecord } from "src/app/core/models/run-record.model";
+import { MongooseRunRecord } from "src/app/core/models/mongoose-run-record/run-record.model";
 import { BasicTab } from "src/app/common/BasicTab/BasicTab";
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
 import { ChartsProviderService } from "src/app/core/services/charts-provider-service/charts-provider.service";

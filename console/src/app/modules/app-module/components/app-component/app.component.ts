@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { RunDuration } from '../../../../core/models/run-duration';
+import { Component } from "@angular/core";
 
 @Component({
   selector: 'app-root',

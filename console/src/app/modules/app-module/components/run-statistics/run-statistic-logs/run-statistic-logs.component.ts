@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
 import { BasicTab } from 'src/app/common/BasicTab/BasicTab';
-import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
+import { MongooseRunRecord } from 'src/app/core/models/mongoose-run-record/run-record.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteParams } from 'src/app/modules/app-module/Routing/params.routes';
 import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';

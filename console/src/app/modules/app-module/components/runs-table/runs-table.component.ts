@@ -1,11 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { MongooseRunRecord } from '../../../../core/models/run-record.model';
-import { Router } from '@angular/router';
-import { RoutesList } from '../../Routing/routes-list';
-import { MonitoringApiService } from '../../../../core/services/monitoring-api/monitoring-api.service';
-import { timer, Observable, Subscription } from 'rxjs';
-
-import { MongooseRunStatus } from '../../../../core/models/mongoose-run-status';
+import { Component, OnInit, Input } from "@angular/core";
+import { Observable, Subscription } from "rxjs";
+import { MongooseRunRecord } from "src/app/core/models/mongoose-run-record/run-record.model";
+import { Router } from "@angular/router";
+import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
+import { RoutesList } from "../../Routing/routes-list";
+import { MongooseRunStatus } from "src/app/core/models/mongoose-run-record/mongoose-run-status";
 
 @Component({
   selector: 'app-runs-table',

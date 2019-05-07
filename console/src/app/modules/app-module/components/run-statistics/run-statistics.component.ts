@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { RoutesList } from "../../Routing/routes-list";
-import { MongooseRunRecord } from "src/app/core/models/run-record.model";
+import { MongooseRunRecord } from "src/app/core/models/mongoose-run-record/run-record.model";
 import { BasicTab } from "src/app/common/BasicTab/BasicTab";
 import { Subscription } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";

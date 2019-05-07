@@ -1,8 +1,8 @@
-import { ActivatedRoute, Params } from "@angular/router";
-import { Observable } from "rxjs";
-import { RouteParams } from "src/app/modules/app-module/Routing/params.routes";
 import { MonitoringApiService } from "../services/monitoring-api/monitoring-api.service";
-import { MongooseRunRecord } from "./run-record.model";
+import { Params } from "@angular/router";
+import { Observable } from "rxjs";
+import { MongooseRunRecord } from "./mongoose-run-record/run-record.model";
+import { RouteParams } from "src/app/modules/app-module/Routing/params.routes";
 
 export class MongooseRouteParamsParser {
 
