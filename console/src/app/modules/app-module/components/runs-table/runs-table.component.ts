@@ -73,7 +73,6 @@ export class RunsTableComponent implements OnInit {
 
   // MARK: - Private 
 
-
   private isRunStatisticsReachable(mongooseRunRecord: MongooseRunRecord): boolean {
     let targetRunStatus = mongooseRunRecord.getStatus()
     let isLoadStepIdExist = (mongooseRunRecord.getLoadStepId() != "");
@@ -81,65 +80,8 @@ export class RunsTableComponent implements OnInit {
     return (isRunReachableByStatus && isLoadStepIdExist);
   }
 
-  private setInitialRecords(records: MongooseRunRecord[]) {
-    // NOTE: Initial set up of run records.
-    this.mongooseRunRecords = records;
-    this.mongooseRunRecords = this.updateStatusForRecords(this.mongooseRunRecords);
-  }
-
-  private shouldUpdateStatus(runRecord: MongooseRunRecord): boolean {
-    // NOTE: Updating only available and active mongoose runs. 
-    return ((runRecord.getStatus() != MongooseRunStatus.Finished) && (runRecord.getStatus() != MongooseRunStatus.Unavailable));
-  }
-
-  private shouldUpdateExistingRecords(updatedRecords: MongooseRunRecord[]): boolean {
-    // NOTE: As for now, update it only if amount of record has been changed. 
-    return (this.mongooseRunRecords.length != updatedRecords.length);
-  }
-
-  private updateStatusForRecords(records: MongooseRunRecord[]): MongooseRunRecord[] {
-    for (var i = 0; i < records.length; i++) {
-      let processingRecord = records[i];
-      if (!this.shouldUpdateStatus(processingRecord)) {
-        continue;
-      }
-    }
-    return records;
-  }
 
   private handleRecordsUpdate(updatedRecords: MongooseRunRecord[]) {
     this.mongooseRunRecords = updatedRecords;
-  }
-
-  // NOTE: Erasing lhsRecords that are not inside rhsRecords list.
-  private innerJoinMongooseRecords(lhsRecords: MongooseRunRecord[], rhsRecords: MongooseRunRecord[]): MongooseRunRecord[] {
-    var recordsListAfterErasing: MongooseRunRecord[] = [];
-    // NOTE: Retaining only non-deleted elements. 
-    // It's possible since the order retains. 
-    for (var i = 0; i < lhsRecords.length; i++) {
-      var isRecordExist = false;
-      rhsRecords.forEach(updatedRecord => {
-        isRecordExist = (updatedRecord.getLoadStepId() == lhsRecords[i].getLoadStepId());
-        if (isRecordExist) {
-          return;
-        }
-      })
-
-      if (isRecordExist) {
-        // NOTE: Retain element if it hasn't been deleted.
-        recordsListAfterErasing.push(lhsRecords[i]);
-      }
-    }
-    return recordsListAfterErasing;
-  }
-
-  // NOTE: Merging rhsRecords elements that are not in the lhsRecords list. 
-  private outerJoinMongooseRecords(lhsRecords: MongooseRunRecord[], rhsRecords: MongooseRunRecord[]): MongooseRunRecord[] {
-    // NOTE: Slice is possible since records are sorted by a start time. 
-    let addedRecords = rhsRecords.slice(this.mongooseRunRecords.length, rhsRecords.length);
-    for (var addedRecord of addedRecords) {
-      lhsRecords.push(addedRecord);
-    }
-    return lhsRecords;
   }
 }
