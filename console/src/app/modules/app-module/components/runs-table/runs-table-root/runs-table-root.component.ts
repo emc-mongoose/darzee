@@ -44,25 +44,7 @@ export class RunsTableRootComponent implements OnInit {
 
   ngOnInit() {
 
-    this.mongooseRecordsSubscription.add(this.monitoringApiService.getMongooseRunRecords().subscribe(
-      updatedRecords => {
-        // NOTE: Updating tabs here 
-        let updatedTabs = this.getTabsForRecords(updatedRecords)
-        this.mongooseRunTabs$.next(updatedTabs);
-        this.displayingRunRecords = updatedRecords;
-
-      },
-      error => {
-        let misleadingMsg = `Unable to load Mongoose run records. Details: `;
-
-        let errorDetails = JSON.stringify(error);
-        console.error(misleadingMsg + errorDetails);
-
-        let errorCause = error;
-        alert(misleadingMsg + errorCause);
-        alert(`Unable to load Mongoose runs. Details: ${error}`);
-      }
-    ))
+    this.mongooseRecordsSubscription.add(this.getRecordsUpdateSusbcription())
   }
 
   ngOnDestroy() {
@@ -157,5 +139,27 @@ export class RunsTableRootComponent implements OnInit {
         )
       )
     });
+  }
+
+  private getRecordsUpdateSusbcription(): Subscription {
+    return this.monitoringApiService.getMongooseRunRecords().subscribe(
+      updatedRecords => {
+        // NOTE: Updating tabs here 
+        let updatedTabs = this.getTabsForRecords(updatedRecords)
+        this.mongooseRunTabs$.next(updatedTabs);
+        this.displayingRunRecords = updatedRecords;
+
+      },
+      error => {
+        let misleadingMsg = `Unable to load Mongoose run records. Details: `;
+
+        let errorDetails = JSON.stringify(error);
+        console.error(misleadingMsg + errorDetails);
+
+        let errorCause = error;
+        alert(misleadingMsg + errorCause);
+        alert(`Unable to load Mongoose runs. Details: ${error}`);
+      }
+    )
   }
 }
