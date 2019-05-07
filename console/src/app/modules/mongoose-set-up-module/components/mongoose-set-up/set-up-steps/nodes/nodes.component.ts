@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Subscription, Observable } from 'rxjs';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
-import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
+import { MongooseRunNode } from 'src/app/core/models/node/mongoose-run-node.model';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 import { ResourceLocatorType } from 'src/app/core/models/address-type';
 

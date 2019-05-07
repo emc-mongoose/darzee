@@ -1,4 +1,4 @@
-import { MongooseRunNode } from "./mongoose-run-node.model";
+import { MongooseRunNode } from "./node/mongoose-run-node.model";
 
 export class MongooseConfigurationParser {
     private configuration: any;

@@ -9,7 +9,7 @@ import { PrometheusConfigurationEditor } from 'src/app/common/FileOperations/Pro
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { ContainerServerService } from 'src/app/core/services/container-server/container-server-service';
 import { map } from 'rxjs/operators';
-import { MongooseRunNode } from '../../models/mongoose-run-node.model';
+import { MongooseRunNode } from '../../models/node/mongoose-run-node.model';
 import { ResourceLocatorType } from '../../models/address-type';
 import { MongooseConfigurationParser } from '../../models/mongoose-configuration-parser';
 

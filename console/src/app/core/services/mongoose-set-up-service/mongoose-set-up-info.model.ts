@@ -1,4 +1,4 @@
-import { MongooseRunNode } from "../../models/mongoose-run-node.model";
+import { MongooseRunNode } from "../../models/node/mongoose-run-node.model";
 import { ResourceLocatorType } from "../../models/address-type";
 
 export class MongooseSetupInfoModel {

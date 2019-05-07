@@ -1,4 +1,4 @@
-import { ResourceLocatorType } from "./address-type";
+import { ResourceLocatorType } from "../address-type";
 
 export class MongooseRunNode { 
    

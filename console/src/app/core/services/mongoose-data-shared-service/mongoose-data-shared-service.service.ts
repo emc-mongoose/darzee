@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { MongooseRunNode } from '../../models/mongoose-run-node.model';
+import { MongooseRunNode } from '../../models/node/mongoose-run-node.model';
 import { environment } from 'src/environments/environment';
 import { ResourceLocatorType } from '../../models/address-type';
-import { MongooseRunNodesRepository } from '../../models/mongoose-run-nodes-repository';
+import { MongooseRunNodesRepository } from '../../models/node/mongoose-run-nodes-repository';
 
 @Injectable({
   providedIn: 'root'
