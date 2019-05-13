@@ -22,7 +22,7 @@ import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
 
 export class RunStatisticsChartsComponent implements OnInit {
 
-  @ViewChild('chartContainer', { read: ViewContainerRef}) chartContainerReference: ViewContainerRef;
+  @ViewChild('chartContainer', { read: ViewContainerRef }) chartContainerReference: ViewContainerRef;
 
   public displayingMongooseChart: MongooseChart;
 
@@ -34,14 +34,14 @@ export class RunStatisticsChartsComponent implements OnInit {
   // NOTE: isChartDrawActive is used to check whether the chart should be dispalyed within the UI.
   private isChartDrawActive: boolean = true;
   private availableCharts: Map<string, MongooseChart>;
-  
+
 
 
   constructor(private monitoringApiService: MonitoringApiService,
     private chartsProviderService: ChartsProviderService,
     private resolver: ComponentFactoryResolver,
     private route: ActivatedRoute,
-    private router: Router) {  }
+    private router: Router) { }
 
   // MARK: - Lifecycle 
 
@@ -80,16 +80,16 @@ export class RunStatisticsChartsComponent implements OnInit {
   // MARK: - Public 
 
   public drawChart(record: MongooseRunRecord = this.processingRecord) {
-    if (record == undefined) { 
+    if (record == undefined) {
       console.error(`Unable to draw chart for an undefined record.`);
       return;
     }
-    switch(record.getStatus()) { 
-      case MongooseRunStatus.Running: { 
+    switch (record.getStatus()) {
+      case MongooseRunStatus.Running: {
         this.drawDynamicChart(record);
         break;
       }
-      default: { 
+      default: {
         this.drawStaticChart(record);
         break;
       }
@@ -133,14 +133,14 @@ export class RunStatisticsChartsComponent implements OnInit {
       alert(`Unable to draw the required chart for load step ID.`);
       return;
     }
-    if (this.shouldUpdateChart()) { 
+    if (this.shouldUpdateChart()) {
       setInterval(this.drawChart, 2000);
       return;
     }
     this.drawChart(this.processingRecord);
   }
 
-  private shouldUpdateChart(): boolean { 
+  private shouldUpdateChart(): boolean {
     return (this.processingRecord.getStatus() == MongooseRunStatus.Running);
   }
   private shouldDrawChart(): boolean {
@@ -164,36 +164,46 @@ export class RunStatisticsChartsComponent implements OnInit {
     return Array.from(this.availableCharts.keys());
   }
 
-  private configureTabs() { 
+  private configureTabs() {
     this.availableCharts = this.getAvailableCharts();
     this.chartTabs = this.generateChartTabs();
 
-    if (this.chartTabs.length < 0) { 
+    if (this.chartTabs.length < 0) {
       console.error(`Tabs haven't been generated.`);
-      return; 
+      return;
     }
-    
-    let initialTabIndex = 0; 
-    let initialTab =  this.chartTabs[initialTabIndex];
+
+    let initialTabIndex = 0;
+    let initialTab = this.chartTabs[initialTabIndex];
     this.switchTab(initialTab);
   }
 
-  private createChartComponent(chart: MongooseChart) { 
+  private createChartComponent(chart: MongooseChart) {
     this.chartContainerReference.clear();
     const factory = this.resolver.resolveComponentFactory(BasicChartComponent);
     const chartComponentReference = this.chartContainerReference.createComponent(factory);
     chartComponentReference.instance.chart = this.displayingMongooseChart;
-  }  
+  }
 
-  private drawDynamicChart(record: MongooseRunRecord) { 
+  private drawDynamicChart(record: MongooseRunRecord) {
     let updationPeriodSeconds = 2;
-    let loadStepId = record.getLoadStepId() as string; 
+    let loadStepId = record.getLoadStepId() as string;
     this.chartsProviderService.updateCharts(updationPeriodSeconds, loadStepId);
     this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();
   }
 
-  private drawStaticChart(record: MongooseRunRecord) { 
+  private drawStaticChart(record: MongooseRunRecord) {
     // TODO: Impiment function
+    let mongooseRunStartTime = record.getStartTime();
+    let mongooseStartTimeAsNumber = Number.parseInt(mongooseRunStartTime as string);
+
+    var runStartDate = new Date(mongooseStartTimeAsNumber);
+    let currentDate = new Date(Date.now());
+
+    const differenceInSeconds = Math.abs(currentDate.getTime() - runStartDate.getTime());
+    const differenceInDays = Math.ceil(differenceInSeconds / (1000 * 3600 * 24)); // milliseconds power * seconds in our * hours in a day 
+
+    console.log(`Difference in days: ${differenceInDays}`)
   }
 
 }
