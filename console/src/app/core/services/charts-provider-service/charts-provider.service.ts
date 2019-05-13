@@ -16,7 +16,6 @@ import { MongooseRunStatus } from '../../models/mongoose-run-status';
 })
 export class ChartsProviderService {
 
-  private readonly PERIOD_OF_DATA_UPDATE_SECONDS = 2;
 
   private mongooseChartDao: MongooseChartDao;
 
@@ -98,9 +97,10 @@ export class ChartsProviderService {
   }
 
   private updateThoughputChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getAmountOfSuccessfulOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, loadStepId).subscribe((sucessfulOperationAmount: MongooseMetric[]) => {
-      this.mongooseChartDao.getAmountOfFailedOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, loadStepId).subscribe((failedOperationsMetric: MongooseMetric[]) => {
-        let concatenatedThoughtputRelatedMetrics = sucessfulOperationAmount.concat(failedOperationsMetric);
+    this.mongooseChartDao.getAmountOfSuccessfulOperations(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((sucessfulOperationsMetrics: MongooseMetric[]) => {
+      this.mongooseChartDao.getAmountOfFailedOperations(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((failedOperationsMetrics: MongooseMetric[]) => {
+        console.log(`failedOperationsMetrics length: ${failedOperationsMetrics.length}`)
+        let concatenatedThoughtputRelatedMetrics = sucessfulOperationsMetrics.concat(failedOperationsMetrics);
         this.throughputChart.updateChart(loadStepId, concatenatedThoughtputRelatedMetrics);
       })
     })

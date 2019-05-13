@@ -71,6 +71,7 @@ export class MongooseChartDao {
     public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId).pipe(
             map(metrics => {
+                console.log(`[failed operations] metrics length: ${metrics.length}`)
                 metrics.forEach(metric => {
                     metric.setName(InternalMetricNames.FAILED_OPERATIONS);
                 })

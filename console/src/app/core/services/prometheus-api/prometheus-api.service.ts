@@ -58,6 +58,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.FAILED_OPERATIONS_RATE_MEAN_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawFailedlOperationsResponse => {
+        console.log(`rawFailedlOperationsResponse: ${JSON.stringify(rawFailedlOperationsResponse)} for loadStepId: ${loadStepId} for the last seconds: ${periodInSeconds}`)
         return this.getMongooseMetricsArray(rawFailedlOperationsResponse, this.FAILED_OPERATIONS_RATE_MEAN_METRIC_NAME);
       })
     )
