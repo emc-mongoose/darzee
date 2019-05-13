@@ -13,21 +13,21 @@
     <tbody>
       <tr *ngFor="let runRecord of mongooseRunRecords">
         <th scope="row"> 
-          <app-mongoose-run-status-icon [runStatus]="runRecord.getStatus() | async"
+          <app-mongoose-run-status-icon [runStatus]="runRecord.getStatus() "
            (click)="onRunStatusIconClicked(runRecord)">
-              {{ runRecord.getStatus() | async}}
-              
+              {{ runRecord.getStatus()  }}
+            
           </app-mongoose-run-status-icon>
         </th>
 
-        <td> {{ runRecord.startTime | async}} </td>
+        <td> {{ runRecord.startTime }} </td>
         <td> 
-          <a *ngFor="let node of runRecord.getNodesList() | async">
+          <a *ngFor="let node of runRecord.getNodesList()">
             {{ node }}
           </a>
         </td>
-        <td> {{ runRecord.getDuration() | async }} </td>
-        <td> {{ runRecord.getComment() | async }} </td>
+        <td> {{ runRecord.getDuration() }} </td>
+        <td> {{ runRecord.getComment() }} </td>
       </tr>
     </tbody>
   </table>

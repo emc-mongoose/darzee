@@ -25,8 +25,10 @@ export class RunsTableComponent implements OnInit {
   ];
 
   @Input("mongooseRunRecords") mongooseRunRecords$: Observable<Observable<MongooseRunRecord>[]>;
-  public mongooseRunRecords: Observable<MongooseRunRecord>[] = [];
+  
+  public mongooseRunRecords: MongooseRunRecord[] = [];
 
+  private obsMongooseRunRecordsArray: Observable<MongooseRunRecord>[] = []; 
   private runRecordsSubscription: Subscription = new Subscription();
   private statusUpdateSubscription: Subscription = new Subscription();
 
@@ -39,12 +41,28 @@ export class RunsTableComponent implements OnInit {
 
     this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(
       updatedRecords => {
-        console.log(`[runs ACTUAL table] Records length: ${updatedRecords.length}`)
-        this.handleRecordsUpdate(updatedRecords);
+        console.log(`[ACTUAL TABLE ngOnInit subcription] updatedRecrds length: ${updatedRecords.length}`)
+        var newRecordsArray: Observable<MongooseRunRecord>[] = [];
+        for (var record of updatedRecords) { 
+          newRecordsArray.push(record);
+        }
+        this.obsMongooseRunRecordsArray = newRecordsArray;
+        for (var record$ of this.obsMongooseRunRecordsArray) { 
+          record$.subscribe(
+            record => { 
+              console.log(`[ACTUAL TABLE] obsMongooseRunRecordsArray subscription`)
+              this.mongooseRunRecords.push(record);
+            }
+          )
+        }
+        // console.log(`[runs ACTUAL table] Records length: ${updatedRecords.length}`)
+        // this.handleRecordsUpdate(updatedRecords);
       },
       error => {
         alert(`Unable to update Mongoose run records table. Details: ${error}`);
       });
+
+     
   }
 
   ngOnDestroy() {
@@ -82,6 +100,6 @@ export class RunsTableComponent implements OnInit {
 
 
   private handleRecordsUpdate(updatedRecords: Observable<MongooseRunRecord>[]) {
-    this.mongooseRunRecords = updatedRecords;
+    // this.mongooseRunRecords = updatedRecords;
   }
 }

@@ -53,7 +53,7 @@ export class RunsTableRootComponent implements OnInit {
     this.mongooseRecordsSubscription.add(this.getRecordsUpdateSusbcription())
     this.mongooseRunRecordsDao.updateRecords().subscribe(
       updatedRecordsData => { 
-        console.log(`[Run table root] updated records data: ${updatedRecordsData.length}`)
+        console.log(`[Run table root] updated records data: ${updatedRecordsData}`)
       }
     );
   }
@@ -72,6 +72,11 @@ export class RunsTableRootComponent implements OnInit {
   }
 
   public onStatusTabClick(requiredTab: MongooseRunTab) {
+    this.mongooseRunRecordsDao.updateRecords().subscribe(
+      updatedRecordsData => { 
+        console.log(`[Run table root] updated records data: ${updatedRecordsData}`)
+      }
+    );
     // NOTE: I haven't found a better way to set custom background color for bootstrap selected button. 
     // ... so I put a selector "isSelected" and if it's set to 'true', the tab button is highlighted.
     this.runTabs.forEach(tab => {
