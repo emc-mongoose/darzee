@@ -200,10 +200,13 @@ export class RunStatisticsChartsComponent implements OnInit {
     var runStartDate = new Date(mongooseStartTimeAsNumber);
     let currentDate = new Date(Date.now());
 
-    const differenceInSeconds = Math.abs(currentDate.getTime() - runStartDate.getTime());
-    const differenceInDays = Math.ceil(differenceInSeconds / (1000 * 3600 * 24)); // milliseconds power * seconds in our * hours in a day 
 
-    console.log(`Difference in days: ${differenceInDays}`)
+    const differenceInSeconds = Math.abs(currentDate.getTime() - runStartDate.getTime()) / 1000;
+
+    const targetLoadStepId = record.getLoadStepId() as string;
+    console.log(`Run has started at ${runStartDate}, Difference in seconds with the current date: ${differenceInSeconds}`)
+    this.chartsProviderService.drawStatisCharts(differenceInSeconds, targetLoadStepId);
+    // this.chartsProviderService.updateCharts(d;
   }
 
 }

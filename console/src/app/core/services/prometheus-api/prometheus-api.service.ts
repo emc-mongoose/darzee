@@ -40,9 +40,17 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
 
   public getDuration(periodInSeconds: number, loadStepId: string): Observable<any> {
-    return this.runQuery(`${this.MEAN_DURATION_METRIC_NAME}{load_step_id="${loadStepId}"}`).pipe(
+    return this.runQuery(`${this.MEAN_DURATION_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawDurationResponse => {
         return this.createMongooseMetricInstanceFromResponse(rawDurationResponse);
+      })
+    );
+  }
+
+  public getDurationValuesArray(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
+    return this.runQuery(`${this.MEAN_DURATION_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+      map(rawDurationResponse => {
+        return this.getMongooseMetricsArray(rawDurationResponse, this.MEAN_DURATION_METRIC_NAME);
       })
     );
   }
@@ -162,6 +170,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     return new MongooseMetric(timestampValue, metricValue, metricName);
   }
 
+
   private getMetricValueFromRawResponse(rawResponse: any): string {
     let metricValueIndex = 1;
     return this.getResultValueWithIndex(rawResponse, metricValueIndex);
@@ -173,6 +182,55 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     return Number(timeStampAsString);
   }
 
+  private getMongooseMetricsArray(rawResponse: any, metricName: string): MongooseMetric[] { 
+    const emptyValue = [];
+
+    if (rawResponse.length == 0) {
+      return emptyValue;
+    }
+
+    var resultMetrics: MongooseMetric[] = [];
+    let firstFoundMetricIndex = 0;
+
+  
+    console.log(`Mongoose metric array [Prometheus]. Raw response length: ${rawResponse.length}. Raw response: ${JSON.stringify(rawResponse)}`)
+
+    let singleValuePrometheusResponseTag = "value";
+    let multipleValuesPrometheusResponseTag = "values";
+
+    var currentMetricValue = rawResponse[firstFoundMetricIndex][singleValuePrometheusResponseTag];
+    if (currentMetricValue != undefined) {
+      // NOTE: If Prometheus has responded with a single value (1d-array), return it. 
+      return currentMetricValue[firstFoundMetricIndex];
+    }
+
+    let resultValuesIndex = 0;
+    // NOTE: Data from Prometheus are coming in 2d-array, e.g.: [[timestamp, "value"]]
+    const values = rawResponse[0][multipleValuesPrometheusResponseTag]; 
+
+
+    for (var metricIndex = 0; metricIndex < values.length; metricIndex++) { 
+
+
+      console.log(`Amount of fetchd values: ${values.length}`)
+      const timestampValueIndex = 0;
+      const currentMetricTimestamp = values[metricIndex][timestampValueIndex];
+      const metricValueIndex = 1;
+
+      currentMetricValue = values[metricIndex][metricValueIndex];
+
+      if (currentMetricValue == undefined) {
+        return emptyValue;
+      }
+
+      let mongooseMetric: MongooseMetric = new MongooseMetric(currentMetricTimestamp, currentMetricValue, metricName);
+      resultMetrics.push(mongooseMetric);
+    }
+
+    return resultMetrics;
+  }
+
+  // NOTE: requiredValueIndex points at Prometheus' response index (e.g.: timestamp is at index 0, value is at index 0);
   private getResultValueWithIndex(rawResponse: any, requiredValueIndex: number): string {
     const emptyValue = "";
 

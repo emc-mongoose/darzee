@@ -47,11 +47,19 @@ export class ChartsProviderService {
     return this.latencyChart;
   }
 
-  public updateCharts(perdiodOfLatencyUpdateMs: number, loadStepId: string) {
-    this.updateLatencyChart(perdiodOfLatencyUpdateMs, loadStepId);
-    this.updateDurationChart(perdiodOfLatencyUpdateMs, loadStepId);
-    this.updateBandwidthChart(perdiodOfLatencyUpdateMs, loadStepId);
-    this.updateThoughputChart(perdiodOfLatencyUpdateMs, loadStepId);
+  public updateCharts(perdiodOfLatencyUpdateSeconds: number, loadStepId: string) {
+    this.updateLatencyChart(perdiodOfLatencyUpdateSeconds, loadStepId);
+    this.updateDurationChart(perdiodOfLatencyUpdateSeconds, loadStepId);
+    this.updateBandwidthChart(perdiodOfLatencyUpdateSeconds, loadStepId);
+    this.updateThoughputChart(perdiodOfLatencyUpdateSeconds, loadStepId);
+  }
+
+  public drawStatisCharts(secondsSinceCurrentDate: number, loadStepId: string) { 
+
+    secondsSinceCurrentDate = Math.round(secondsSinceCurrentDate);
+    console.log(`Update static charts for loadStepId ${loadStepId} for the past ${secondsSinceCurrentDate} seconds.`);
+    this.updateStaticDurationChart(secondsSinceCurrentDate, loadStepId);
+
   }
 
   // MARK: - Private
@@ -70,6 +78,16 @@ export class ChartsProviderService {
       let durationRelatedMetrics = [duration];
       this.durationChart.updateChart(loadStepId, durationRelatedMetrics);
     }));
+  }
+
+  private updateStaticDurationChart(periodOfDataRequestSeconds: number, loadStepId: string) { 
+    this.mongooseChartDao.getDurationArray(periodOfDataRequestSeconds, loadStepId).subscribe(
+      (metrics: MongooseMetric[]) => { 
+        this.durationChart.updateChart(loadStepId, metrics);
+
+      }
+    )
+
   }
 
   private updateBandwidthChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {

@@ -21,6 +21,18 @@ export class MongooseChartDao {
         );
     }
 
+    public getDurationArray(periodInSeconds: number, loadStepId: string): Observable<any> {
+        return this.chartDataProvider.getDurationValuesArray(periodInSeconds, loadStepId).pipe(
+            map((metrics: MongooseMetric[]) => {
+                console.log(`charts DAO, length of duration array: ${metrics.length}`);
+                metrics.forEach(metric => {
+                    metric.setName(InternalMetricNames.DURATION);
+                })
+                return metrics;
+            })
+        )
+    }
+
     public getLatencyMax(lastSecondsAmount: number, loadStepId: string): Observable<MongooseMetric> {
         return this.chartDataProvider.getLatencyMax(lastSecondsAmount, loadStepId).pipe(
             map(metric => {
