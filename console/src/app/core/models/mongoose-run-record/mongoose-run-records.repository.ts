@@ -16,8 +16,12 @@ export class MongooseRunRecordsRepository {
     // MARK: - Public
 
 
+    public getMongooseRunRecords$(): Observable<Observable<MongooseRunRecord>[]> { 
+        return this.runRecords$.asObservable(); 
+    }
+    
     public updateRecords() { 
-        this.getMongooseRunRecords$().pipe(
+        this.getConstructedMongooseRunRecords$().pipe(
             map(updatedRecords => { 
                 var records: Observable<MongooseRunRecord>[] = []; 
                 for (let record of updatedRecords) { 
@@ -27,8 +31,8 @@ export class MongooseRunRecordsRepository {
             })
         )
     }
-    
-    private getMongooseRunRecords$(): Observable<MongooseRunRecord[]> { 
+
+    private getConstructedMongooseRunRecords$(): Observable<MongooseRunRecord[]> { 
         return this.prometheusApiService.getExistingRecordsInfo().pipe(
           map(
             metricsArray => {

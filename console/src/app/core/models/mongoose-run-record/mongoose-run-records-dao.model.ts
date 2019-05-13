@@ -6,6 +6,7 @@ import { MonitoringApiService } from "../../services/monitoring-api/monitoring-a
 import { MongooseRunRecordsRepository } from "./mongoose-run-records.repository";
 import { MongooseRunRecord } from "./run-record.model";
 import { PrometheusApiService } from "../../services/prometheus-api/prometheus-api.service";
+import { ReturnStatement } from "@angular/compiler";
 
 
 export class MongooseRunRecordsDao {
@@ -18,6 +19,10 @@ export class MongooseRunRecordsDao {
         private prometheusApiService: PrometheusApiService) {
         this.dataProvider = controlApiService;
         this.mongooseRunRecordsRepository = new MongooseRunRecordsRepository(monitoringApiService, prometheusApiService);
+    }
+
+    public getMongooseRunRecords(): Observable<Observable<MongooseRunRecord>[]> { 
+        return this.mongooseRunRecordsRepository.getMongooseRunRecords$();
     }
 
     public getStatusForRecord(loadStepId: string): Observable<MongooseRunStatus> {
