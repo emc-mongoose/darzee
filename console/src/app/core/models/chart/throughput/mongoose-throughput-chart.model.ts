@@ -19,14 +19,17 @@ export class MongooseThroughputChart implements MongooseChart {
     chartData: MongooseChartDataset[];
     isChartDataValid: boolean;
     mongooseChartDao: MongooseChartDao;
+    shouldShiftChart: boolean;
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao) {
+
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao, shouldShiftChart: boolean = false) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
         this.chartLegend = chartLegend;
         this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
+        this.shouldShiftChart = shouldShiftChart; 
 
         let successfulOperationsDataset = new MongooseChartDataset([], 'Successful operations');
         let failedOperationsDataset = new MongooseChartDataset([], 'Failed operations');
@@ -49,7 +52,7 @@ export class MongooseThroughputChart implements MongooseChart {
         this.chartData[this.FAILED_OPERATIONS_DATASET_INDEX].appendDatasetWithNewValue(failedOperationsMetric.getValue());
 
         this.chartLabels.push(formatDate(Math.round(failedOperationsMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
-        if (this.shouldScaleChart()) {
+        if (this.shouldShift()) {
             this.chartData[this.SUCCESSFUL_OPERATIONS_DATASET_INDEX].data.shift();
             this.chartData[this.FAILED_OPERATIONS_DATASET_INDEX].data.shift();
             this.chartLabels.shift();
@@ -61,7 +64,7 @@ export class MongooseThroughputChart implements MongooseChart {
         return this.isChartDataValid;
     }
 
-    private shouldScaleChart(): boolean {
+    private shouldShift(): boolean {
         const maxAmountOfPointsInGraph = 20;
         return (this.chartLabels.length >= maxAmountOfPointsInGraph);
     }

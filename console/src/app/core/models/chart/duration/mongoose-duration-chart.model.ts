@@ -17,14 +17,17 @@ export class MongooseDurationChart implements MongooseChart {
     chartData: MongooseChartDataset[];
     mongooseChartDao: MongooseChartDao;
     isChartDataValid: boolean;
+    shouldShiftChart: boolean;
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao) {
+
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao, shouldShiftChart: boolean = false) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
         this.chartLegend = chartLegend;
         this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
+        this.shouldShiftChart = shouldShiftChart;
 
         let durationChartDatasetInitialValue = new MongooseChartDataset([], 'Mean duration');
         var durationChartDataset: MongooseChartDataset[] = [];
@@ -34,7 +37,6 @@ export class MongooseDurationChart implements MongooseChart {
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
         let durationMetricName = InternalMetricNames.DURATION; 
-        console.log(`Update duration chart with array length: ${metrics.length}`);
         metrics.forEach(durationMetric => {
             if (durationMetric.getName() != durationMetricName) { 
                 return; 
@@ -43,9 +45,9 @@ export class MongooseDurationChart implements MongooseChart {
     
             this.chartLabels.push(formatDate(Math.round(durationMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
             if (this.shouldScaleChart()) {
-                this.chartData[this.DURATION_DATASET_INDEX].data.shift();
-                this.chartLabels.shift();
-            }
+                 this.chartData[this.DURATION_DATASET_INDEX].data.shift();
+                 this.chartLabels.shift();
+             }
         })
 
     }
@@ -56,7 +58,7 @@ export class MongooseDurationChart implements MongooseChart {
 
     private shouldScaleChart(): boolean {
         const maxAmountOfPointsInGraph = 20;
-        return (this.chartLabels.length >= maxAmountOfPointsInGraph);
+        return ((this.chartLabels.length >= maxAmountOfPointsInGraph) && this.shouldShiftChart);
     }
 
 }

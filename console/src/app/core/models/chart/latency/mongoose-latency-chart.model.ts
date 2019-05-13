@@ -21,14 +21,16 @@ export class MongooseLatencyChart implements MongooseChart {
     chartData: MongooseChartDataset[];
     isChartDataValid: boolean;
     mongooseChartDao: MongooseChartDao;
+    shouldShiftChart: boolean; 
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao) {
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao, shouldShiftChart: boolean = false) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
         this.chartLegend = chartLegend;
         this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
+        this.shouldShiftChart = shouldShiftChart;
 
         let maxLatencyDataset = new MongooseChartDataset([], 'Larency max');
         let minLatencyDataset = new MongooseChartDataset([], 'Larency min');

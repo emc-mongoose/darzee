@@ -7,6 +7,9 @@ import { MongooseDurationChart } from '../../models/chart/duration/mongoose-dura
 import { MongooseLatencyChart } from '../../models/chart/latency/mongoose-latency-chart.model';
 import { MongooseBandwidthChart } from '../../models/chart/bandwidth/mongoose-bandwidth-chart.model';
 import { MongooseThroughputChart } from '../../models/chart/throughput/mongoose-throughput-chart.model';
+import { MongooseChart } from '../../models/chart/mongoose-chart-interface/mongoose-chart.interface';
+import { MongooseRunRecord } from '../../models/run-record.model';
+import { MongooseRunStatus } from '../../models/mongoose-run-status';
 
 @Injectable({
   providedIn: 'root'
@@ -54,12 +57,10 @@ export class ChartsProviderService {
     this.updateThoughputChart(perdiodOfLatencyUpdateSeconds, loadStepId);
   }
 
-  public drawStatisCharts(secondsSinceCurrentDate: number, loadStepId: string) { 
-
+  public drawStatisCharts(secondsSinceCurrentDate: number, loadStepId: string) {
     secondsSinceCurrentDate = Math.round(secondsSinceCurrentDate);
     console.log(`Update static charts for loadStepId ${loadStepId} for the past ${secondsSinceCurrentDate} seconds.`);
     this.updateStaticDurationChart(secondsSinceCurrentDate, loadStepId);
-
   }
 
   // MARK: - Private
@@ -80,11 +81,10 @@ export class ChartsProviderService {
     }));
   }
 
-  private updateStaticDurationChart(periodOfDataRequestSeconds: number, loadStepId: string) { 
+  private updateStaticDurationChart(periodOfDataRequestSeconds: number, loadStepId: string) {
     this.mongooseChartDao.getDurationArray(periodOfDataRequestSeconds, loadStepId).subscribe(
-      (metrics: MongooseMetric[]) => { 
+      (metrics: MongooseMetric[]) => {
         this.durationChart.updateChart(loadStepId, metrics);
-
       }
     )
 
@@ -108,6 +108,7 @@ export class ChartsProviderService {
 
   private configureMongooseCharts() {
     let mongooseChartRepository = new MongooseChartsRepository(this.mongooseChartDao);
+    
     this.durationChart = mongooseChartRepository.getDurationChart();
     this.latencyChart = mongooseChartRepository.getLatencyChart();
     this.bandwidthChart = mongooseChartRepository.getBandwidthChart();

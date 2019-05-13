@@ -8,6 +8,7 @@ import { InternalMetricNames } from "../internal-metric-names";
 
 export class MongooseBandwidthChart implements MongooseChart {
 
+
     private readonly PERIOD_OF_DATA_UPDATE_SECONDS = 2;
 
     private readonly BANDWIDTH_DATASET_INDEX = 0;
@@ -19,14 +20,16 @@ export class MongooseBandwidthChart implements MongooseChart {
     chartData: MongooseChartDataset[];
     isChartDataValid: boolean;
     mongooseChartDao: MongooseChartDao;
+    shouldShiftChart: boolean; 
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao) {
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao, shouldShiftChart: boolean = false) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
         this.chartLegend = chartLegend;
         this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
+        this.shouldShiftChart = shouldShiftChart; 
 
         let bandwidthDataset = new MongooseChartDataset([], 'Byte per second');
         this.chartData = [bandwidthDataset];
@@ -47,6 +50,7 @@ export class MongooseBandwidthChart implements MongooseChart {
             this.chartLabels.shift();
         }
     }
+
 
     shouldDrawChart(): boolean {
         return this.isChartDataValid;

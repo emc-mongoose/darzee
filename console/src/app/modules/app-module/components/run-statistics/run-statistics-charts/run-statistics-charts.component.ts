@@ -55,8 +55,8 @@ export class RunStatisticsChartsComponent implements OnInit {
               throw new Error(`Requested run record hasn't been found.`);
             }
             this.configureChartsRepository();
-            this.configureTabs();
             this.processingRecord = foundRecord;
+            this.configureTabs();
             this.configureChartUpdateInterval();
 
           }
@@ -123,6 +123,14 @@ export class RunStatisticsChartsComponent implements OnInit {
     chartsList.set("Bandwidth", this.chartsProviderService.getBandwidthChart());
     chartsList.set("Throughtput", this.chartsProviderService.getThoughputChart());
     chartsList.set("Latency", this.chartsProviderService.getLatencyChart());
+
+    // NOTE: Chart is being shifted after specific amount of values if Mongoose run is ...
+    // ... still in process.
+    if (this.shouldUpdateChart()) { 
+      Array.from(chartsList.values()).forEach(chart => { 
+        chart.shouldShiftChart = true; 
+      });
+    }
     return chartsList;
   }
 
@@ -193,7 +201,6 @@ export class RunStatisticsChartsComponent implements OnInit {
   }
 
   private drawStaticChart(record: MongooseRunRecord) {
-    // TODO: Impiment function
     let mongooseRunStartTime = record.getStartTime();
     let mongooseStartTimeAsNumber = Number.parseInt(mongooseRunStartTime as string);
 
@@ -206,7 +213,6 @@ export class RunStatisticsChartsComponent implements OnInit {
     const targetLoadStepId = record.getLoadStepId() as string;
     console.log(`Run has started at ${runStartDate}, Difference in seconds with the current date: ${differenceInSeconds}`)
     this.chartsProviderService.drawStatisCharts(differenceInSeconds, targetLoadStepId);
-    // this.chartsProviderService.updateCharts(d;
   }
 
 }
