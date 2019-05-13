@@ -44,12 +44,16 @@ export class MongooseLatencyChart implements MongooseChart {
         var maxLatencyMetricValues = [];
         var minLatencyMetricValues = [];
 
+        var latencyChartTimestamps: string[] = [];
+
         let maxLatencyMetricName = InternalMetricNames.LATENCY_MAX;
         let minLatencyMetricName = InternalMetricNames.LATENCY_MIN;
         metrics.forEach(metric => {
             switch (metric.getName()) {
                 case maxLatencyMetricName: {
                     maxLatencyMetricValues.push(metric.getValue());
+                    latencyChartTimestamps.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
+
                     break;
                 }
                 case minLatencyMetricName: {
@@ -57,8 +61,8 @@ export class MongooseLatencyChart implements MongooseChart {
                     break;
                 }
             }
-            this.chartLabels.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
         })
+        this.chartLabels = latencyChartTimestamps; 
         this.chartData[this.MAX_LATENCY_DATASET_INDEX].setChartData(maxLatencyMetricValues);
         this.chartData[this.MIN_LATENCY_DATASET_INDEX].setChartData(minLatencyMetricValues);
     }
