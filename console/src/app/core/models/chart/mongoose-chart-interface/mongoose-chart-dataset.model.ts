@@ -37,6 +37,10 @@ export class MongooseChartDataset {
         this.data.push(newValue);
     }
 
+    public setChartData(data: any[]) { 
+        this.data = data;
+    }
+
     private getPreviousValueFromDataset(dataset: MongooseChartDataset): string {
         let previosValueIndex = dataset.data.length - 1;
         let previosValue = dataset.data[previosValueIndex];

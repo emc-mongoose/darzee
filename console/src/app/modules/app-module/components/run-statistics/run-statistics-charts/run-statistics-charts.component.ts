@@ -194,7 +194,7 @@ export class RunStatisticsChartsComponent implements OnInit {
   }
 
   private drawDynamicChart(record: MongooseRunRecord) {
-    let updationPeriodSeconds = 2;
+    let updationPeriodSeconds = 200;
     let loadStepId = record.getLoadStepId() as string;
     this.chartsProviderService.updateCharts(updationPeriodSeconds, loadStepId);
     this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();

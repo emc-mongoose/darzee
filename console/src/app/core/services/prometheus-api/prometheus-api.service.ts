@@ -39,10 +39,10 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   // MARK: - MogooseChartDataProvider 
 
 
-  public getDuration(periodInSeconds: number, loadStepId: string): Observable<any> {
+  public getDuration(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.MEAN_DURATION_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawDurationResponse => {
-        return this.createMongooseMetricInstanceFromResponse(rawDurationResponse);
+        return this.getMongooseMetricsArray(rawDurationResponse, this.MEAN_DURATION_METRIC_NAME);
       })
     );
   }

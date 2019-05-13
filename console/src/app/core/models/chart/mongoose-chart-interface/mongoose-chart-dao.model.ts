@@ -12,11 +12,14 @@ export class MongooseChartDao {
         this.chartDataProvider = dataProvider;
     }
 
-    public getDuration(periodInSeconds: number, loadStepId: string): Observable<any> {
+    public getDuration(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getDuration(periodInSeconds, loadStepId).pipe(
-            map(metric => {
-                metric.setName(InternalMetricNames.DURATION);
-                return metric;
+            map((durationMetrics: MongooseMetric[]) => {
+                durationMetrics.forEach(metric => {
+                    metric.setName(InternalMetricNames.DURATION);
+
+                });
+                return durationMetrics;
             })
         );
     }

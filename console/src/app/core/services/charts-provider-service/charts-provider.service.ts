@@ -75,9 +75,9 @@ export class ChartsProviderService {
   }
 
   private updateDurationChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getDuration(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((duration => {
-      let durationRelatedMetrics = [duration];
-      this.durationChart.updateChart(loadStepId, durationRelatedMetrics);
+    this.mongooseChartDao.getDuration(perdiodOfLatencyUpdateSecs, loadStepId).subscribe(
+      ((durationMetrics: MongooseMetric[]) => {
+      this.durationChart.updateChart(loadStepId, durationMetrics);
     }));
   }
 
