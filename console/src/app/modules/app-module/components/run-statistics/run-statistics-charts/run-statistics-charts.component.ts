@@ -84,10 +84,16 @@ export class RunStatisticsChartsComponent implements OnInit {
       console.error(`Unable to draw chart for an undefined record.`);
       return;
     }
-    let updationPeriodSeconds = 2;
-    let loadStepId = record.getLoadStepId() as string; 
-    this.chartsProviderService.updateCharts(updationPeriodSeconds, loadStepId);
-    this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();
+    switch(record.getStatus()) { 
+      case MongooseRunStatus.Running: { 
+        this.drawDynamicChart(record);
+        break;
+      }
+      default: { 
+        this.drawStaticChart(record);
+        break;
+      }
+    }
   }
 
   public switchTab(selectedTab: BasicTab) {
@@ -178,5 +184,16 @@ export class RunStatisticsChartsComponent implements OnInit {
     const chartComponentReference = this.chartContainerReference.createComponent(factory);
     chartComponentReference.instance.chart = this.displayingMongooseChart;
   }  
+
+  private drawDynamicChart(record: MongooseRunRecord) { 
+    let updationPeriodSeconds = 2;
+    let loadStepId = record.getLoadStepId() as string; 
+    this.chartsProviderService.updateCharts(updationPeriodSeconds, loadStepId);
+    this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();
+  }
+
+  private drawStaticChart(record: MongooseRunRecord) { 
+    // TODO: Impiment function
+  }
 
 }
