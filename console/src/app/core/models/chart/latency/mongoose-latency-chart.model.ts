@@ -21,7 +21,7 @@ export class MongooseLatencyChart implements MongooseChart {
     chartData: MongooseChartDataset[];
     isChartDataValid: boolean;
     mongooseChartDao: MongooseChartDao;
-    shouldShiftChart: boolean; 
+    shouldShiftChart: boolean;
 
     constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao, shouldShiftChart: boolean = false) {
         this.chartOptions = chartOptions;
@@ -41,27 +41,35 @@ export class MongooseLatencyChart implements MongooseChart {
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
         let perdiodOfLatencyUpdate = this.PERIOD_OF_LATENCY_UPDATE_SECONDS;
 
+        var maxLatencyMetricValues = [];
+        var minLatencyMetricValues = [];
+
         let maxLatencyMetricName = InternalMetricNames.LATENCY_MAX;
-        let maxLatencyMetric = metrics.find(metric => metric.getName() == maxLatencyMetricName);
-
         let minLatencyMetricName = InternalMetricNames.LATENCY_MIN;
-        let minLatencyMetric = metrics.find(metric => metric.getName() == minLatencyMetricName);
-
-        if ((minLatencyMetric == undefined) || (maxLatencyMetric == undefined)) { 
-            throw new Error(`An error has occured while parsing latency metrics.`);
-        }
-
-        this.chartData[this.MAX_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(maxLatencyMetric.getValue());
-        this.chartData[this.MIN_LATENCY_DATASET_INDEX].appendDatasetWithNewValue(minLatencyMetric.getValue());
-
-
-        this.chartLabels.push(formatDate(Math.round(minLatencyMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
-        if (this.shouldScaleChart()) {
-            this.chartData[this.MAX_LATENCY_DATASET_INDEX].data.shift();
-            this.chartData[this.MIN_LATENCY_DATASET_INDEX].data.shift();
-            this.chartLabels.shift();
-        }
+        metrics.forEach(metric => {
+            switch (metric.getName()) {
+                case maxLatencyMetricName: {
+                    maxLatencyMetricValues.push(metric.getValue());
+                    break;
+                }
+                case minLatencyMetricName: {
+                    minLatencyMetricValues.push(metric.getValue());
+                    break;
+                }
+            }
+            this.chartLabels.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
+        })
+        this.chartData[this.MAX_LATENCY_DATASET_INDEX].setChartData(maxLatencyMetricValues);
+        this.chartData[this.MIN_LATENCY_DATASET_INDEX].setChartData(minLatencyMetricValues);
     }
+
+    //     this.chartLabels.push(formatDate(Math.round(minLatencyMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
+    //     if (this.shouldScaleChart()) {
+    //         this.chartData[this.MAX_LATENCY_DATASET_INDEX].data.shift();
+    //         this.chartData[this.MIN_LATENCY_DATASET_INDEX].data.shift();
+    //         this.chartLabels.shift();
+    //     }
+    // }
 
     shouldDrawChart(): boolean {
         return this.isChartDataValid;

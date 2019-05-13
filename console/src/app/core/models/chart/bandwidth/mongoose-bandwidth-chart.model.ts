@@ -38,17 +38,22 @@ export class MongooseBandwidthChart implements MongooseChart {
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
         let bandwidthMetricName = InternalMetricNames.BANDWIDTH; 
-        let bandwidthMetric = metrics.find(metric => metric.getName() == bandwidthMetricName);
-        if (bandwidthMetric == undefined) {
-            throw new Error(`An error has occured while parsing duration metrics.`);
-        }
-        this.chartData[this.BANDWIDTH_DATASET_INDEX].appendDatasetWithNewValue(bandwidthMetric.getValue());
+        var bandwidthChartValues: string[] = [];
+        var bandwidthChartTimeLabels: string[] = []
+        metrics.forEach((metric: MongooseMetric) => { 
+            if (metric.getName() != bandwidthMetricName) { 
+                return; 
+            }
+            bandwidthChartValues.push(metric.getValue());
+            bandwidthChartTimeLabels.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
+        });
+        this.chartData[this.BANDWIDTH_DATASET_INDEX].setChartData(bandwidthChartValues);
 
-        this.chartLabels.push(formatDate(Math.round(bandwidthMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
-        if (this.shouldScaleChart()) {
-            this.chartData[this.BANDWIDTH_DATASET_INDEX].data.shift();
-            this.chartLabels.shift();
-        }
+        this.chartLabels = bandwidthChartTimeLabels;
+        // if (this.shouldScaleChart()) {
+        //     this.chartData[this.BANDWIDTH_DATASET_INDEX].data.shift();
+        //     this.chartLabels.shift();
+        // }
     }
 
 

@@ -55,42 +55,42 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     );
   }
 
-  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.FAILED_OPERATIONS_RATE_MEAN_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawFailedlOperationsResponse => {
-        return this.createMongooseMetricInstanceFromResponse(rawFailedlOperationsResponse);
+        return this.getMongooseMetricsArray(rawFailedlOperationsResponse, this.FAILED_OPERATIONS_RATE_MEAN_METRIC_NAME);
       })
     )
   }
 
-  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.SUCCESS_OPERATIONS_RATE_MEAN_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawSuccessfulOperationsResponse => {
-        return this.createMongooseMetricInstanceFromResponse(rawSuccessfulOperationsResponse);
+        return this.getMongooseMetricsArray(rawSuccessfulOperationsResponse, this.SUCCESS_OPERATIONS_RATE_MEAN_METRIC_NAME);
       })
     )
   }
 
-  public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+  public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.MAX_LATENCY_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawMaxLatencyQueryResponse => {
-        return this.createMongooseMetricInstanceFromResponse(rawMaxLatencyQueryResponse);
+        return this.getMongooseMetricsArray(rawMaxLatencyQueryResponse, this.MAX_LATENCY_METRIC_NAME);
       })
     )
   }
 
-  public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+  public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.MIN_LATENCY_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawMinLatencyQueryResponse => {
-        return this.createMongooseMetricInstanceFromResponse(rawMinLatencyQueryResponse);
+        return this.getMongooseMetricsArray(rawMinLatencyQueryResponse, this.MIN_LATENCY_METRIC_NAME);
       })
     )
   }
 
-  public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+  public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.BYTE_RATE_MEAN_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawByteRateResponse => {
-        return this.createMongooseMetricInstanceFromResponse(rawByteRateResponse);
+        return this.getMongooseMetricsArray(rawByteRateResponse, this.BYTE_RATE_MEAN_METRIC_NAME);
       })
     )
   }

@@ -60,16 +60,17 @@ export class ChartsProviderService {
   public drawStatisCharts(secondsSinceCurrentDate: number, loadStepId: string) {
     secondsSinceCurrentDate = Math.round(secondsSinceCurrentDate);
     console.log(`Update static charts for loadStepId ${loadStepId} for the past ${secondsSinceCurrentDate} seconds.`);
-    this.updateStaticDurationChart(secondsSinceCurrentDate, loadStepId);
+    this.updateCharts(secondsSinceCurrentDate, loadStepId);
   }
 
   // MARK: - Private
 
   private updateLatencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((maxLatencyResult: MongooseMetric) => {
-      this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((minLatencyResult: MongooseMetric) => {
-        let latencyRelatedMetrics = [maxLatencyResult, minLatencyResult];
-        this.latencyChart.updateChart(loadStepId, latencyRelatedMetrics);
+    this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((maxLatencyResult: MongooseMetric[]) => {
+      this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((minLatencyResult: MongooseMetric[]) => {
+        // NOTE: Concadentation of the arrays due tothe specific logic of updating (based on the internal names)
+        let concatenatedMetrics = maxLatencyResult.concat(minLatencyResult);
+        this.latencyChart.updateChart(loadStepId, concatenatedMetrics);
       });
     });
   }
@@ -91,17 +92,16 @@ export class ChartsProviderService {
   }
 
   private updateBandwidthChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getBandWidth(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((byteRateMean: MongooseMetric) => {
-      let bandwidthRelatedMetrics = [byteRateMean];
-      this.bandwidthChart.updateChart(loadStepId, bandwidthRelatedMetrics);
+    this.mongooseChartDao.getBandWidth(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((byteRateMean: MongooseMetric[]) => {
+      this.bandwidthChart.updateChart(loadStepId, byteRateMean);
     });
   }
 
   private updateThoughputChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getAmountOfSuccessfulOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, loadStepId).subscribe((sucessfulOperationAmount: MongooseMetric) => {
-      this.mongooseChartDao.getAmountOfFailedOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, loadStepId).subscribe((failedOperationsMetric: MongooseMetric) => {
-        let thoughtputRelatedMetrics = [sucessfulOperationAmount, failedOperationsMetric];
-        this.throughputChart.updateChart(loadStepId, thoughtputRelatedMetrics);
+    this.mongooseChartDao.getAmountOfSuccessfulOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, loadStepId).subscribe((sucessfulOperationAmount: MongooseMetric[]) => {
+      this.mongooseChartDao.getAmountOfFailedOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, loadStepId).subscribe((failedOperationsMetric: MongooseMetric[]) => {
+        let concatenatedThoughtputRelatedMetrics = sucessfulOperationAmount.concat(failedOperationsMetric);
+        this.throughputChart.updateChart(loadStepId, concatenatedThoughtputRelatedMetrics);
       })
     })
   }
