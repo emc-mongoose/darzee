@@ -4,6 +4,10 @@ export class MongooseChartOptions {
     // link: https://github.com/valor-software/ng2-charts
     public scaleShowVerticalLines: boolean = false;
     public responsive: boolean = true;
+    public responsiveAnimationDuration: number = 0;
+    public animation: any = {
+        duration: 0
+    }
 
     constructor(shouldScaleShowVerticalLines: boolean = false, isResponsive: boolean = true) {
         this.scaleShowVerticalLines = shouldScaleShowVerticalLines;
