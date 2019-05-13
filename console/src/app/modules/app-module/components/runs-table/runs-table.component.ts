@@ -24,8 +24,8 @@ export class RunsTableComponent implements OnInit {
     "Comment"
   ];
 
-  @Input("mongooseRunRecords") mongooseRunRecords$: Observable<MongooseRunRecord[]>;
-  public mongooseRunRecords: MongooseRunRecord[] = [];
+  @Input("mongooseRunRecords") mongooseRunRecords$: Observable<Observable<MongooseRunRecord>[]>;
+  public mongooseRunRecords: Observable<MongooseRunRecord>[] = [];
 
   private runRecordsSubscription: Subscription = new Subscription();
   private statusUpdateSubscription: Subscription = new Subscription();
@@ -39,6 +39,7 @@ export class RunsTableComponent implements OnInit {
 
     this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(
       updatedRecords => {
+        console.log(`[runs ACTUAL table] Records length: ${updatedRecords.length}`)
         this.handleRecordsUpdate(updatedRecords);
       },
       error => {
@@ -80,7 +81,7 @@ export class RunsTableComponent implements OnInit {
   }
 
 
-  private handleRecordsUpdate(updatedRecords: MongooseRunRecord[]) {
+  private handleRecordsUpdate(updatedRecords: Observable<MongooseRunRecord>[]) {
     this.mongooseRunRecords = updatedRecords;
   }
 }

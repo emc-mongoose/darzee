@@ -10,7 +10,8 @@ export class MongooseRunRecordsRepository {
     private runRecords$: BehaviorSubject<Observable<MongooseRunRecord>[]> = new BehaviorSubject<Observable<MongooseRunRecord>[]>([]);
  
     constructor(private monitoringApiService: MonitoringApiService,
-        private prometheusApiService: PrometheusApiService) {}
+        private prometheusApiService: PrometheusApiService,
+        private controlApiService: ControlApiService) {}
 
     
     // MARK: - Public
@@ -20,14 +21,18 @@ export class MongooseRunRecordsRepository {
         return this.runRecords$.asObservable(); 
     }
     
-    public updateRecords() { 
-        this.getConstructedMongooseRunRecords$().pipe(
+    public updateRecords(): Observable<any> { 
+        console.log(`[Records Repository] Updating records.`)
+        return this.getConstructedMongooseRunRecords$().pipe(
             map(updatedRecords => { 
+                console.log(`[Records Repository updateRecords)()] Records length: ${updatedRecords.length}`)
+
                 var records: Observable<MongooseRunRecord>[] = []; 
                 for (let record of updatedRecords) { 
                     records.push(of(record));
                 }
                 this.runRecords$.next(records);
+                return this.runRecords$.asObservable();
             })
         )
     }
@@ -36,8 +41,11 @@ export class MongooseRunRecordsRepository {
         return this.prometheusApiService.getExistingRecordsInfo().pipe(
           map(
             metricsArray => {
+                console.log(`[Records Repository getConstructedMongooseRunRecords] metrics array length: ${metricsArray.length}`)
+
               var runRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
               runRecords = this.sortMongooseRecordsByStartTime(runRecords);
+              console.log(`[Records Repository getConstructedMongooseRunRecords] records length: ${runRecords.length}`)
               return runRecords;
             },
             error => {
@@ -130,27 +138,5 @@ export class MongooseRunRecordsRepository {
       }
     // MARK: - Private 
 
-    // public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
-    //     return this.prometheusApiService.getExistingRecordsInfo().pipe(
-    //       map(
-    //         metricsArray => {
-    //           let runRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
-    //           // NOTE: Records are being sorted for order retaining. This ...
-    //           // ... is useful while updating Run Records table. 
-    //           runRecords = this.sortMongooseRecordsByStartTime(runRecords);
-    //           // NOTE: Using behavior subject object in order to reduce amount of HTTP requests.
-    //           this.currentMongooseRunRecords$.next(runRecords);
-    //           return runRecords;
-    //         },
-    //         error => {
-    //           let misleadingMsg = `An error has occured while loading Mongoose run records: ${error}`;
-    //           console.error(misleadingMsg);
-    //           alert(misleadingMsg)
-    //           let emptyRecordsArray: MongooseRunRecord[] = [];
-    //           return emptyRecordsArray;
-    //         }
-    //       )
-    //     )
-    //   }
 
 }

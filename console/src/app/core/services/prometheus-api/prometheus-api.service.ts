@@ -132,6 +132,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   public getExistingRecordsInfo(): Observable<any> {
     // TODO: Add function that creates that kind of a query
+    console.log("[Prometheus service] Fetching existing records info.");
     let targetQuery = "sum%20without%20(instance)(rate(mongoose_duration_count[1y]))";
     return this.runQuery(targetQuery);
   }

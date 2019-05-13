@@ -18,10 +18,10 @@ export class MongooseRunRecordsDao {
         private monitoringApiService: MonitoringApiService,
         private prometheusApiService: PrometheusApiService) {
         this.dataProvider = controlApiService;
-        this.mongooseRunRecordsRepository = new MongooseRunRecordsRepository(monitoringApiService, prometheusApiService);
+        this.mongooseRunRecordsRepository = new MongooseRunRecordsRepository(monitoringApiService, prometheusApiService, controlApiService);
     }
 
-    public getMongooseRunRecords(): Observable<Observable<MongooseRunRecord>[]> { 
+    public getMongooseRunRecords$(): Observable<Observable<MongooseRunRecord>[]> { 
         return this.mongooseRunRecordsRepository.getMongooseRunRecords$();
     }
 
@@ -35,6 +35,11 @@ export class MongooseRunRecordsDao {
             }),
             share()
         )
+    }
+
+    public updateRecords(): Observable<any> { 
+        console.log(`Updating records from DAO`);
+        return this.mongooseRunRecordsRepository.updateRecords();
     }
 
     // public getRecord(loadStepId: string): Observable<MongooseRunRecord> { 

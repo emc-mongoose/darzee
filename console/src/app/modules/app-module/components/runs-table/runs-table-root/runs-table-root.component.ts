@@ -6,6 +6,9 @@ import { BehaviorSubject, Subscription, Observable } from "rxjs";
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
 import { MongooseRunRecordCounter } from "src/app/core/models/mongoose-run-record/run-record-counter";
 import { MongooseRunStatus } from "src/app/core/models/mongoose-run-record/mongoose-run-status";
+import { MongooseRunRecordsDao } from "src/app/core/models/mongoose-run-record/mongoose-run-records-dao.model";
+import { ControlApiService } from "src/app/core/services/control-api/control-api.service";
+import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
 
 @Component({
   selector: 'app-runs-table-root',
@@ -32,9 +35,13 @@ export class RunsTableRootComponent implements OnInit {
   private mongooseRecordsSubscription: Subscription = new Subscription();
   private monitoringApiServiceSubscriptions: Subscription = new Subscription();;
 
+  private mongooseRunRecordsDao: MongooseRunRecordsDao; 
   // MARK: - Lifecycle
 
-  constructor(private monitoringApiService: MonitoringApiService) {
+  constructor(private controlApiService: ControlApiService,
+    private monitoringApiService: MonitoringApiService,
+    private prometheusApiService: PrometheusApiService) {
+    this.mongooseRunRecordsDao = new MongooseRunRecordsDao(controlApiService, monitoringApiService, prometheusApiService)
     this.setUpInitialTabs();
     this.mongooseRecordsSubscription.add(
       this.getTabUpdatingSubscription()
@@ -43,8 +50,12 @@ export class RunsTableRootComponent implements OnInit {
 
 
   ngOnInit() {
-
     this.mongooseRecordsSubscription.add(this.getRecordsUpdateSusbcription())
+    this.mongooseRunRecordsDao.updateRecords().subscribe(
+      updatedRecordsData => { 
+        console.log(`[Run table root] updated records data: ${updatedRecordsData.length}`)
+      }
+    );
   }
 
   ngOnDestroy() {
@@ -55,8 +66,9 @@ export class RunsTableRootComponent implements OnInit {
 
   // MARK: - Public 
 
-  public getFiltredRecords(): Observable<MongooseRunRecord[]> {
-    return this.filtredRecords$.asObservable();
+  public getFiltredRecords(): Observable<Observable<MongooseRunRecord>[]> {
+    return this.mongooseRunRecordsDao.getMongooseRunRecords$();
+    // return this.filtredRecords$.asObservable();
   }
 
   public onStatusTabClick(requiredTab: MongooseRunTab) {
@@ -73,6 +85,7 @@ export class RunsTableRootComponent implements OnInit {
     this.currentActiveTab = requiredTab;
     this.currentTab$.next(requiredTab);
 
+    
     this.monitoringApiServiceSubscriptions = this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(requiredTab.tabTitle).subscribe(
       filtedRecords => {
         requiredTab.setAmountOfRecords(filtedRecords.length);
