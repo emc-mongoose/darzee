@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MongooseRouteParamsParser } from "src/app/core/models/mongoose-route-params-praser";
 import { RoutesList } from "../../../Routing/routes-list";
 import { BasicChartComponent } from "./basic-chart/basic-chart.component";
+import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
 
 
 
@@ -78,9 +79,13 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   // MARK: - Public 
 
-  public drawChart() {
+  public drawChart(record: MongooseRunRecord = this.processingRecord) {
+    if (record == undefined) { 
+      console.error(`Unable to draw chart for an undefined record.`);
+      return;
+    }
     let updationPeriodSeconds = 2;
-    let loadStepId = this.processingRecord.getLoadStepId() as string; 
+    let loadStepId = record.getLoadStepId() as string; 
     this.chartsProviderService.updateCharts(updationPeriodSeconds, loadStepId);
     this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();
   }
@@ -122,9 +127,16 @@ export class RunStatisticsChartsComponent implements OnInit {
       alert(`Unable to draw the required chart for load step ID.`);
       return;
     }
-    setInterval(this.drawChart, 2000);
+    if (this.shouldUpdateChart()) { 
+      setInterval(this.drawChart, 2000);
+      return;
+    }
+    this.drawChart(this.processingRecord);
   }
 
+  private shouldUpdateChart(): boolean { 
+    return (this.processingRecord.getStatus() == MongooseRunStatus.Running);
+  }
   private shouldDrawChart(): boolean {
     return (this.processingRecord != undefined);
   }
