@@ -5,6 +5,7 @@ import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
 import { Observable, of } from 'rxjs';
 import { map, retry } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { MongooseRunStatus } from '../../models/mongoose-run-status';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +44,28 @@ export class ControlApiService {
       }));
   }
 
+  public terminateMongooseRun(runId: string): Observable<string> { 
+    const terminationHeaders = {
+      // NOTE: Termination is completed using'If-Match' header. 
+      // Matching by run ID.
+      'If-Match': `${runId}`
+    }
+
+    const terminationRequestOptions = { 
+      headers: new HttpHeaders(terminationHeaders), 
+      observe: 'response' as 'body'
+    }
+
+    return this.http.delete(`${this.mongooseHostIp}/${MongooseApi.RunApi.RUN_ENDPOINT}`, terminationRequestOptions).pipe(
+      map((response: any) => { 
+        if (response.status == Constants.HttpStatus.OK) { 
+          return `Run ${runId} has been successfully terminated.`;
+        }
+        return `Run ${runId} hasn't been terminated. Detauls: ${response}`;
+      })
+    );
+  }
+
   // NOTE: Returning Mongoose configuration as JSON 
   public getMongooseConfiguration(mongooseAddress: string): Observable<any> {
     let configEndpoint = MongooseApi.Config.CONFIG;
@@ -53,7 +76,7 @@ export class ControlApiService {
     return this.http.get(mongooseAddress + configEndpoint, {headers: mongooseConfigurationHeaders});
   }
 
-  public isMongooseRunActive(runId: string): Observable<boolean> { 
+  public getStatusForMongooseRun(runId: string): Observable<MongooseRunStatus> { 
 
     const requestRunStatusHeaders = {
       // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.
@@ -70,11 +93,11 @@ export class ControlApiService {
         let responseStatusCode = runStatusResponse.status;
 
         if (responseStatusCode == undefined) { 
-          return false; 
+          return MongooseRunStatus.Unavailable; 
         }
 
         let isRunActive: boolean = (responseStatusCode == Constants.HttpStatus.OK);
-        return isRunActive;
+        return isRunActive ? MongooseRunStatus.Running : MongooseRunStatus.Finished;
       })
     )
   }

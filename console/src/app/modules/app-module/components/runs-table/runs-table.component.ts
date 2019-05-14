@@ -54,6 +54,12 @@ export class RunsTableComponent implements OnInit {
 
   // MARK: - Public 
 
+  public getDisplayingTimeForRecord(record: MongooseRunRecord): string { 
+    let unixEpochStartTime = record.getStartTime(); 
+    let displayingDate = new Date(Number.parseInt(unixEpochStartTime as string));
+    return displayingDate.toString();
+  }
+
   public onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) {
     if (!this.isRunStatisticsReachable(mongooseRunRecord)) {
       let loadStepId = mongooseRunRecord.getLoadStepId();

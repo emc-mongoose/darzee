@@ -6,6 +6,9 @@ import { Subscription } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
 import { RouteParams } from "../../Routing/params.routes";
+import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
+import { ControlApiService } from "src/app/core/services/control-api/control-api.service";
+import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
 
 
 @Component({
@@ -32,10 +35,12 @@ export class RunStatisticsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
     private router: Router,
-    private monitoringApiService: MonitoringApiService) {
+    private monitoringApiService: MonitoringApiService,
+    private controlApiService: ControlApiService) {
   }
 
   ngOnInit() {
+
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.params.subscribe(params => {
       let targetRecordLoadStepId = params[RouteParams.ID];
@@ -46,15 +51,19 @@ export class RunStatisticsComponent implements OnInit {
           },
           error => {
             let misleadingMsg = `Unable to display statistics for Mongoose run record with ID ${targetRecordLoadStepId}, reason: ${error.message}`;
+            
+            // TODO: Figure out whether error alers should be displayed or not
             console.error(misleadingMsg);
-            alert(misleadingMsg);
+            // alert(misleadingMsg);
             return;
           }
         )
         this.initTabs();
       } catch (recordNotFoundError) {
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
-        alert("Unable to load requested record.");
+        
+        // TODO: Figure out whether error alers should be displayed or not
+        // alert("Unable to load requested record.");
         console.error(recordNotFoundError);
         this.router.navigate([RoutesList.RUNS]);
       }
@@ -80,6 +89,19 @@ export class RunStatisticsComponent implements OnInit {
     this.loadTab(targetTab);
   }
 
+  public isRunActive(runRecord: MongooseRunRecord) { 
+    return (runRecord.getStatus() == MongooseRunStatus.Running);
+  }
+
+  public onTerminateBtnClicked(runRecord: MongooseRunRecord) { 
+    let terminatingRunId = runRecord.getRunId();
+    this.controlApiService.terminateMongooseRun(terminatingRunId as string).subscribe(
+      (terminationStatusMessage: string) => { 
+        alert(terminationStatusMessage);
+        window.location.reload();
+      }
+    );
+  }
   // MARK: - Private
 
   private initTabs() {
