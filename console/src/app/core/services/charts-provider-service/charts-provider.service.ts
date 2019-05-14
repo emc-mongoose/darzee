@@ -79,14 +79,6 @@ export class ChartsProviderService {
     }));
   }
 
-  private updateStaticDurationChart(periodOfDataRequestSeconds: number, loadStepId: string) {
-    this.mongooseChartDao.getDurationArray(periodOfDataRequestSeconds, loadStepId).subscribe(
-      (metrics: MongooseMetric[]) => {
-        this.durationChart.updateChart(loadStepId, metrics);
-      }
-    )
-
-  }
 
   private updateBandwidthChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
     this.mongooseChartDao.getBandWidth(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((byteRateMean: MongooseMetric[]) => {

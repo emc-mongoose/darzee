@@ -10,7 +10,7 @@ export class MongooseChartDataset {
     private readonly CHART_POINT_RADIUS_PX = 0;
 
     public data: any[] = [];
-    public points: ChartPoint[] = []; 
+    public points: ChartPoint[] = [];
     public label: string = "";
 
     public lineTension: number = this.ZERO_CURVE_LINE_TENSION;
@@ -22,15 +22,18 @@ export class MongooseChartDataset {
     public options: Object = {
         responsiveAnimationDuration: 0,
         animation: {
-          duration: 100
+            duration: 100
         }
     }
-    
+
 
     constructor(data: any[], label: string) {
         this.data = data;
         this.label = label;
     }
+
+
+    // MARK: - Public 
 
     public appendDatasetWithNewValue(newValue: string) {
         const emptyValue = "";
@@ -40,15 +43,16 @@ export class MongooseChartDataset {
         this.data.push(newValue);
     }
 
-    public setChartData(data: any[]) { 
+    public setChartData(data: any[]) {
         this.data = data;
     }
 
-    public addPoint(x: number, y: number) { 
+    public addPoint(x: number, y: number) {
         let point = new ChartPoint(x, y);
-        // this.points.push(point);
         this.data.push(point);
     }
+
+    // MARK: - Private 
 
     private getPreviousValueFromDataset(dataset: MongooseChartDataset): string {
         let previosValueIndex = dataset.data.length - 1;

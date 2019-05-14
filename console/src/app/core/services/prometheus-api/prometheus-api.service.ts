@@ -58,7 +58,6 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.FAILED_OPERATIONS_RATE_MEAN_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawFailedlOperationsResponse => {
-        console.log(`rawFailedlOperationsResponse: ${JSON.stringify(rawFailedlOperationsResponse)} for loadStepId: ${loadStepId} for the last seconds: ${periodInSeconds}`)
         return this.getMongooseMetricsArray(rawFailedlOperationsResponse, this.FAILED_OPERATIONS_RATE_MEAN_METRIC_NAME);
       })
     )
@@ -183,7 +182,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     return Number(timeStampAsString);
   }
 
-  private getMongooseMetricsArray(rawResponse: any, metricName: string): MongooseMetric[] { 
+  private getMongooseMetricsArray(rawResponse: any, metricName: string): MongooseMetric[] {
     const emptyValue = [];
 
     if (rawResponse.length == 0) {
@@ -192,9 +191,6 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
     var resultMetrics: MongooseMetric[] = [];
     let firstFoundMetricIndex = 0;
-
-  
-    console.log(`Mongoose metric array [Prometheus]. Raw response length: ${rawResponse.length}. Raw response: ${JSON.stringify(rawResponse)}`)
 
     let singleValuePrometheusResponseTag = "value";
     let multipleValuesPrometheusResponseTag = "values";
@@ -205,15 +201,13 @@ export class PrometheusApiService implements MongooseChartDataProvider {
       return currentMetricValue[firstFoundMetricIndex];
     }
 
-    let resultValuesIndex = 0;
+    let prometheusResponsePayloadIndex = 0;
     // NOTE: Data from Prometheus are coming in 2d-array, e.g.: [[timestamp, "value"]]
-    const values = rawResponse[0][multipleValuesPrometheusResponseTag]; 
+    const values = rawResponse[prometheusResponsePayloadIndex][multipleValuesPrometheusResponseTag];
 
 
-    for (var metricIndex = 0; metricIndex < values.length; metricIndex++) { 
+    for (var metricIndex = 0; metricIndex < values.length; metricIndex++) {
 
-
-      console.log(`Amount of fetchd values: ${values.length}`)
       const timestampValueIndex = 0;
       const currentMetricTimestamp = values[metricIndex][timestampValueIndex];
       const metricValueIndex = 1;
@@ -258,7 +252,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     return result;
   }
 
-  private getMetricName(rawResponse: any): string { 
+  private getMetricName(rawResponse: any): string {
     const emptyValue = "";
 
     if (rawResponse.length == 0) {
@@ -266,21 +260,21 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     }
 
     const metricTag = "metric";
-    const firstFoundMetricIndex = 0; 
+    const firstFoundMetricIndex = 0;
     const firstFoundResponse = rawResponse[firstFoundMetricIndex][metricTag];
 
-    if (firstFoundResponse == undefined) { 
+    if (firstFoundResponse == undefined) {
       throw new Error(`Unable to get "${metricTag}" field from Prometheus response. Response: ${JSON.stringify(rawResponse)}`);
     }
 
     const metricNameTag = "__name__";
     const metricName = firstFoundResponse[metricNameTag];
 
-    if (metricName == undefined) { 
+    if (metricName == undefined) {
       console.error(`Unable to find field ${metricNameTag} within Prometheus first found response. Response: ${firstFoundResponse}`);
       return emptyValue;
     }
 
-    return metricName; 
+    return metricName;
   }
 }

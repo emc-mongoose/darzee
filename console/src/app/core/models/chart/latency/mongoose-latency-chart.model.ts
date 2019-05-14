@@ -9,8 +9,6 @@ import { InternalMetricNames } from "../internal-metric-names";
 
 export class MongooseLatencyChart implements MongooseChart {
 
-    private readonly PERIOD_OF_LATENCY_UPDATE_SECONDS = 2;
-
     private readonly MAX_LATENCY_DATASET_INDEX = 0;
     private readonly MIN_LATENCY_DATASET_INDEX = 1;
 
@@ -39,7 +37,6 @@ export class MongooseLatencyChart implements MongooseChart {
     }
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
-        let perdiodOfLatencyUpdate = this.PERIOD_OF_LATENCY_UPDATE_SECONDS;
 
         var maxLatencyMetricValues = [];
         var minLatencyMetricValues = [];
@@ -62,18 +59,11 @@ export class MongooseLatencyChart implements MongooseChart {
                 }
             }
         })
-        this.chartLabels = latencyChartTimestamps; 
+        this.chartLabels = latencyChartTimestamps;
         this.chartData[this.MAX_LATENCY_DATASET_INDEX].setChartData(maxLatencyMetricValues);
         this.chartData[this.MIN_LATENCY_DATASET_INDEX].setChartData(minLatencyMetricValues);
     }
 
-    //     this.chartLabels.push(formatDate(Math.round(minLatencyMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
-    //     if (this.shouldScaleChart()) {
-    //         this.chartData[this.MAX_LATENCY_DATASET_INDEX].data.shift();
-    //         this.chartData[this.MIN_LATENCY_DATASET_INDEX].data.shift();
-    //         this.chartLabels.shift();
-    //     }
-    // }
 
     shouldDrawChart(): boolean {
         return this.isChartDataValid;

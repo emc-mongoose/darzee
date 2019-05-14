@@ -36,8 +36,7 @@ export class MongooseDurationChart implements MongooseChart {
     }
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
-    
-        let durationMetricName = InternalMetricNames.DURATION;
+
         var meanDurationMetrics: any[] = [];
         var updatedLabels: any[] = [];
 
