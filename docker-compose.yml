@@ -19,6 +19,7 @@ services:
             
     prometheus:
         image: 'prom/prometheus:${PROMETHEUS_VER}'
+        network_mode: host
         networks: 
             vpcbr:
                 ipv4_address: ${PROMETHEUS_IMAGE_IP}
