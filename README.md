@@ -112,6 +112,7 @@ It'd build a container that contains Mongoose Web UI and Prometheus.
 
 ### 3.2.2 Run in development mode 
 Mongoose Web UI has been build with Angular CLI. It could be ran in development mode using the appropriate command: 
+> $ npm install
 > $ ng serve 
 
 
@@ -122,3 +123,9 @@ Mongoose image is being loaded into the [docker hub](https://hub.docker.com/r/em
 * It's possible to push Docker image to docker hub via gradle: 
 > $ docker login
 > $ ./gradlew pushImage 
+
+# 5. Troubleshooting 
+
+## 5.1 Running Mongoose on localhost (Mac, Windows)
+
+If you're running the web UI via docker-compose, make sure that it doesn't support host-networking. Instead of "localhost", use "host.docker.internal" address that'd point to the docker container host. 

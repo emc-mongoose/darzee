@@ -2,9 +2,7 @@ version: '3'
 services:
     mongoose-console:
         image: 'emcmongoose/mongoose-console:${CONSOLE_VER}'
-        networks: 
-            vpcbr:
-                ipv4_address: ${NODE_SERVER_IMAGE_IP}
+        network_mode: host
         ports:
             - '${CONSOLE_PORT}:${CONSOLE_PORT}'
         env_file:
@@ -20,9 +18,6 @@ services:
     prometheus:
         image: 'prom/prometheus:${PROMETHEUS_VER}'
         network_mode: host
-        networks: 
-            vpcbr:
-                ipv4_address: ${PROMETHEUS_IMAGE_IP}
         ports:
             - '${PROMETHEUS_PORT}:${PROMETHEUS_PORT}'
         volumes:
@@ -30,11 +25,3 @@ services:
         command:
             - '--config.file=/etc/prometheus/prometheus.yml'
             - '--web.enable-lifecycle'
-volumes:
-    prometheus-configuration-folder-volume: 
-networks: 
-    vpcbr:
-        driver: bridge
-        ipam:
-            config:
-                - subnet: ${IMAGES_NETWORK_BRIDGE_BASE_SUBNET}/${IMAGES_NETWORK_BRIDGE_BASE_SUBNET_SLOTS}
