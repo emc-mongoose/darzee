@@ -43,6 +43,10 @@ export class ControlApiService {
       }));
   }
 
+  public terminateMongooseRun(runId: string) { 
+    
+  }
+
   // NOTE: Returning Mongoose configuration as JSON 
   public getMongooseConfiguration(mongooseAddress: string): Observable<any> {
     let configEndpoint = MongooseApi.Config.CONFIG;

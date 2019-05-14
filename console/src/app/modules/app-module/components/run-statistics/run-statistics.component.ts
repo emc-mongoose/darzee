@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
 import { RouteParams } from "../../Routing/params.routes";
 import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
+import { ControlApiService } from "src/app/core/services/control-api/control-api.service";
 
 
 @Component({
@@ -33,7 +34,8 @@ export class RunStatisticsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
     private router: Router,
-    private monitoringApiService: MonitoringApiService) {
+    private monitoringApiService: MonitoringApiService,
+    private controlApiService: ControlApiService) {
   }
 
   ngOnInit() {
@@ -83,6 +85,11 @@ export class RunStatisticsComponent implements OnInit {
 
   public isRunActive(runRecord: MongooseRunRecord) { 
     return (runRecord.getStatus() == MongooseRunStatus.Running);
+  }
+
+  public onTerminateBtnClicked(runRecord: MongooseRunRecord) { 
+    let terminatingRunId = runRecord.getRunId();
+    this.controlApiService.terminateMongooseRun(terminatingRunId as string);
   }
   // MARK: - Private
 
