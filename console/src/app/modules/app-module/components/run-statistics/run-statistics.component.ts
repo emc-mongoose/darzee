@@ -6,6 +6,7 @@ import { Subscription } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
 import { RouteParams } from "../../Routing/params.routes";
+import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
 
 
 @Component({
@@ -80,6 +81,9 @@ export class RunStatisticsComponent implements OnInit {
     this.loadTab(targetTab);
   }
 
+  public isRunActive(runRecord: MongooseRunRecord) { 
+    return (runRecord.getStatus() == MongooseRunStatus.Running);
+  }
   // MARK: - Private
 
   private initTabs() {
