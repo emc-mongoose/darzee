@@ -43,8 +43,26 @@ export class ControlApiService {
       }));
   }
 
-  public terminateMongooseRun(runId: string) { 
-    
+  public terminateMongooseRun(runId: string): Observable<string> { 
+    const terminationHeaders = {
+      // NOTE: Termination is completed using'If-Match' header. 
+      // Matching by run ID.
+      'If-Match': `${runId}`
+    }
+
+    const terminationRequestOptions = { 
+      headers: new HttpHeaders(terminationHeaders), 
+      observe: 'response' as 'body'
+    }
+
+    return this.http.delete(`${this.mongooseHostIp}/${MongooseApi.RunApi.RUN_ENDPOINT}`, terminationRequestOptions).pipe(
+      map((response: any) => { 
+        if (response.status == Constants.HttpStatus.OK) { 
+          return `Run ${runId} has been successfully terminated.`;
+        }
+        return `Run ${runId} hasn't been terminated. Detauls: ${response}`;
+      })
+    );
   }
 
   // NOTE: Returning Mongoose configuration as JSON 
