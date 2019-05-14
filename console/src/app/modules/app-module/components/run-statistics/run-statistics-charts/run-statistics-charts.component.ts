@@ -127,9 +127,9 @@ export class RunStatisticsChartsComponent implements OnInit {
 
     // NOTE: Chart is being shifted after specific amount of values if Mongoose run is ...
     // ... still in process.
-    if (this.shouldUpdateChart()) { 
-      Array.from(chartsList.values()).forEach(chart => { 
-        chart.shouldShiftChart = true; 
+    if (this.shouldUpdateChart()) {
+      Array.from(chartsList.values()).forEach(chart => {
+        chart.shouldShiftChart = true;
       });
     }
     return chartsList;
@@ -148,8 +148,6 @@ export class RunStatisticsChartsComponent implements OnInit {
       return;
     }
     this.drawChart(this.processingRecord);
-    // this.drawStaticChart(this.processingRecord);
-
   }
 
   private shouldUpdateChart(): boolean {
