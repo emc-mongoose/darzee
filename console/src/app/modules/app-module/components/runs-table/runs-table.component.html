@@ -20,7 +20,7 @@
           </app-mongoose-run-status-icon>
         </th>
 
-        <td> {{ runRecord.startTime }} </td>
+        <td> {{ this.getDisplayingTimeForRecord(runRecord) }} </td>
         <td> 
           <a *ngFor="let node of runRecord.getNodesList()">
             {{ node }}

@@ -8,6 +8,7 @@ import { MonitoringApiService } from "src/app/core/services/monitoring-api/monit
 import { RouteParams } from "../../Routing/params.routes";
 import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
 import { ControlApiService } from "src/app/core/services/control-api/control-api.service";
+import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
 
 
 @Component({
@@ -39,6 +40,7 @@ export class RunStatisticsComponent implements OnInit {
   }
 
   ngOnInit() {
+
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.params.subscribe(params => {
       let targetRecordLoadStepId = params[RouteParams.ID];
@@ -92,6 +94,7 @@ export class RunStatisticsComponent implements OnInit {
     this.controlApiService.terminateMongooseRun(terminatingRunId as string).subscribe(
       (terminationStatusMessage: string) => { 
         alert(terminationStatusMessage);
+        window.location.reload();
       }
     );
   }

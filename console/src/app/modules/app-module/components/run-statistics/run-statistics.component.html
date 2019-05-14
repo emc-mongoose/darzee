@@ -27,7 +27,7 @@
     <tr>
         <th scope="row"> Status:</th>
         <td>
-          {{ runRecord.getStatus() }}
+          {{ runRecord.getStatusObs() | async }}
   
           <!-- NOTE: Termination button -->
           <button *ngIf="this.isRunActive(runRecord)" type="button" class="btn btn-outline-danger"
