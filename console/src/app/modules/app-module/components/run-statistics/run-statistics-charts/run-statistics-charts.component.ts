@@ -86,7 +86,8 @@ export class RunStatisticsChartsComponent implements OnInit {
     }
     switch (record.getStatus()) {
       case MongooseRunStatus.Running: {
-        this.drawDynamicChart(record);
+        // TODO: Change redrawing behavior to appending, not completely redrawing. 
+        this.drawStaticChart(record);
         break;
       }
       default: {
@@ -136,6 +137,7 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   private configureChartUpdateInterval() {
     this.drawChart = this.drawChart.bind(this);
+
     if (!this.shouldDrawChart()) {
       this.isChartDrawActive = false;
       alert(`Unable to draw the required chart for load step ID.`);
@@ -146,6 +148,8 @@ export class RunStatisticsChartsComponent implements OnInit {
       return;
     }
     this.drawChart(this.processingRecord);
+    // this.drawStaticChart(this.processingRecord);
+
   }
 
   private shouldUpdateChart(): boolean {
@@ -206,7 +210,6 @@ export class RunStatisticsChartsComponent implements OnInit {
 
     var runStartDate = new Date(mongooseStartTimeAsNumber);
     let currentDate = new Date(Date.now());
-
 
     const differenceInSeconds = Math.abs(currentDate.getTime() - runStartDate.getTime()) / 1000;
 
