@@ -12,56 +12,69 @@ export class MongooseChartDao {
         this.chartDataProvider = dataProvider;
     }
 
-    public getDuration(periodInSeconds: number, loadStepId: string): Observable<any> {
+    public getDuration(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getDuration(periodInSeconds, loadStepId).pipe(
-            map(metric => {
-                metric.setName(InternalMetricNames.DURATION);
-                return metric;
+            map((durationMetrics: MongooseMetric[]) => {
+                durationMetrics.forEach(metric => {
+                    metric.setName(InternalMetricNames.DURATION);
+                });
+                return durationMetrics;
             })
         );
     }
 
-    public getLatencyMax(lastSecondsAmount: number, loadStepId: string): Observable<MongooseMetric> {
+
+    public getLatencyMax(lastSecondsAmount: number, loadStepId: string): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getLatencyMax(lastSecondsAmount, loadStepId).pipe(
-            map(metric => {
-                metric.setName(InternalMetricNames.LATENCY_MAX);
-                return metric;
+            map((metrics: MongooseMetric[]) => {
+                metrics.forEach(metric => {
+                    metric.setName(InternalMetricNames.LATENCY_MAX);
+                })
+                return metrics;
             })
         );
     }
 
-    public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+    public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getLatencyMin(periodInSeconds, loadStepId).pipe(
-            map(metric => {
-                metric.setName(InternalMetricNames.LATENCY_MIN);
-                return metric;
+            map((metrics: MongooseMetric[]) => {
+                metrics.forEach(metric => {
+                    metric.setName(InternalMetricNames.LATENCY_MIN);
+                })
+                return metrics;
             })
         );
     }
 
-    public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+    public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getBandWidth(periodInSeconds, loadStepId).pipe(
-            map(metric => {
-                metric.setName(InternalMetricNames.BANDWIDTH);
-                return metric;
+            map((metrics: MongooseMetric[]) => {
+                metrics.forEach(metric => {
+                    metric.setName(InternalMetricNames.BANDWIDTH);
+                })
+                return metrics;
             })
         );
     }
 
-    public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+    public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId).pipe(
-            map(metric => {
-                metric.setName(InternalMetricNames.FAILED_OPERATIONS);
-                return metric;
+            map((metrics: MongooseMetric[]) => {
+                metrics.forEach(metric => {
+                    metric.setName(InternalMetricNames.FAILED_OPERATIONS);
+                })
+                return metrics;
             })
         );
     }
 
-    public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+    public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getAmountOfSuccessfulOperations(periodInSeconds, loadStepId).pipe(
-            map(metric => {
-                metric.setName(InternalMetricNames.SUCCESSFUL_OPERATIONS);
-                return metric;
+            map((metrics: MongooseMetric[]) => {
+                metrics.forEach(metric => {
+                    metric.setName(InternalMetricNames.SUCCESSFUL_OPERATIONS);
+                })
+                return metrics;
             })
         );
     }

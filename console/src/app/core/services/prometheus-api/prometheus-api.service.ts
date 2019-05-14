@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { map, filter, tap } from 'rxjs/operators';
 import { MongooseChartDataProvider } from '../../models/chart/mongoose-chart-interface/mongoose-chart-data-provider.interface';
 import { MongooseMetric } from '../../models/chart/mongoose-metric.model';
+import { PrometheusResponseParser } from './prometheus-response.parser';
 
 
 @Injectable({
@@ -32,6 +33,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   readonly METRIC_LABELS_LIST_START_SYMBOL = "{";
   readonly METRIC_LABELS_LIST_END_SYMBOL = "}";
 
+  readonly prometheusResponseParser: PrometheusResponseParser = new PrometheusResponseParser();
   // MARK: - Lifecycle 
 
   constructor(private httpClient: HttpClient) { }
@@ -39,50 +41,58 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   // MARK: - MogooseChartDataProvider 
 
 
-  public getDuration(periodInSeconds: number, loadStepId: string): Observable<any> {
-    return this.runQuery(`${this.MEAN_DURATION_METRIC_NAME}{load_step_id="${loadStepId}"}`).pipe(
+  public getDuration(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
+    return this.runQuery(`${this.MEAN_DURATION_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawDurationResponse => {
-        return this.createMongooseMetricInstanceFromResponse(rawDurationResponse);
+        return this.prometheusResponseParser.getMongooseMetricsArray(rawDurationResponse);
       })
     );
   }
 
-  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+  public getDurationValuesArray(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
+    return this.runQuery(`${this.MEAN_DURATION_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+      map(rawDurationResponse => {
+        return this.prometheusResponseParser.getMongooseMetricsArray(rawDurationResponse);
+      })
+    );
+  }
+
+  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.FAILED_OPERATIONS_RATE_MEAN_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawFailedlOperationsResponse => {
-        return this.createMongooseMetricInstanceFromResponse(rawFailedlOperationsResponse);
+        return this.prometheusResponseParser.getMongooseMetricsArray(rawFailedlOperationsResponse);
       })
     )
   }
 
-  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.SUCCESS_OPERATIONS_RATE_MEAN_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawSuccessfulOperationsResponse => {
-        return this.createMongooseMetricInstanceFromResponse(rawSuccessfulOperationsResponse);
+        return this.prometheusResponseParser.getMongooseMetricsArray(rawSuccessfulOperationsResponse);
       })
     )
   }
 
-  public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+  public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.MAX_LATENCY_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawMaxLatencyQueryResponse => {
-        return this.createMongooseMetricInstanceFromResponse(rawMaxLatencyQueryResponse);
+        return this.prometheusResponseParser.getMongooseMetricsArray(rawMaxLatencyQueryResponse);
       })
     )
   }
 
-  public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+  public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.MIN_LATENCY_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawMinLatencyQueryResponse => {
-        return this.createMongooseMetricInstanceFromResponse(rawMinLatencyQueryResponse);
+        return this.prometheusResponseParser.getMongooseMetricsArray(rawMinLatencyQueryResponse);
       })
     )
   }
 
-  public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric> {
+  public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.BYTE_RATE_MEAN_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawByteRateResponse => {
-        return this.createMongooseMetricInstanceFromResponse(rawByteRateResponse);
+        return this.prometheusResponseParser.getMongooseMetricsArray(rawByteRateResponse);
       })
     )
   }
@@ -152,76 +162,5 @@ export class PrometheusApiService implements MongooseChartDataProvider {
       throw new Error(misleadingMsg);
     }
     return labelsOfMetric;
-  }
-
-
-  private createMongooseMetricInstanceFromResponse(rawResponse: any): MongooseMetric {
-    let metricValue = this.getMetricValueFromRawResponse(rawResponse);
-    let timestampValue = this.getTimestampValueFromRawResponse(rawResponse);
-    let metricName = this.getMetricName(rawResponse);
-    return new MongooseMetric(timestampValue, metricValue, metricName);
-  }
-
-  private getMetricValueFromRawResponse(rawResponse: any): string {
-    let metricValueIndex = 1;
-    return this.getResultValueWithIndex(rawResponse, metricValueIndex);
-  }
-
-  private getTimestampValueFromRawResponse(rawResponse: any): number {
-    let timestampValueIndex = 0;
-    let timeStampAsString = this.getResultValueWithIndex(rawResponse, timestampValueIndex);
-    return Number(timeStampAsString);
-  }
-
-  private getResultValueWithIndex(rawResponse: any, requiredValueIndex: number): string {
-    const emptyValue = "";
-
-    if (rawResponse.length == 0) {
-      return emptyValue;
-    }
-
-    let singleValuePrometheusResponseTag = "value";
-    let multipleValuesPrometheusResponseTag = "values";
-
-    let firstFoundMetricIndex = 0;
-    var result = rawResponse[firstFoundMetricIndex][singleValuePrometheusResponseTag];
-    if (result != undefined) {
-      // NOTE: If Prometheus has responded with a single value (1d-array), return it. 
-      return result[requiredValueIndex];
-    }
-
-    let resultValuesIndex = 0;
-    // NOTE: Data from Prometheus are coming in 2d-array, e.g.: [[timestamp, "value"]]
-    result = rawResponse[firstFoundMetricIndex][multipleValuesPrometheusResponseTag][resultValuesIndex][requiredValueIndex];
-    if (result == undefined) {
-      return emptyValue;
-    }
-    return result;
-  }
-
-  private getMetricName(rawResponse: any): string { 
-    const emptyValue = "";
-
-    if (rawResponse.length == 0) {
-      return emptyValue;
-    }
-
-    const metricTag = "metric";
-    const firstFoundMetricIndex = 0; 
-    const firstFoundResponse = rawResponse[firstFoundMetricIndex][metricTag];
-
-    if (firstFoundResponse == undefined) { 
-      throw new Error(`Unable to get "${metricTag}" field from Prometheus response. Response: ${JSON.stringify(rawResponse)}`);
-    }
-
-    const metricNameTag = "__name__";
-    const metricName = firstFoundResponse[metricNameTag];
-
-    if (metricName == undefined) { 
-      console.error(`Unable to find field ${metricNameTag} within Prometheus first found response. Response: ${firstFoundResponse}`);
-      return emptyValue;
-    }
-
-    return metricName; 
   }
 }

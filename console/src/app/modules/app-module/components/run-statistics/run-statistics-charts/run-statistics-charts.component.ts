@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MongooseRouteParamsParser } from "src/app/core/models/mongoose-route-params-praser";
 import { RoutesList } from "../../../Routing/routes-list";
 import { BasicChartComponent } from "./basic-chart/basic-chart.component";
+import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
 
 
 
@@ -21,7 +22,7 @@ import { BasicChartComponent } from "./basic-chart/basic-chart.component";
 
 export class RunStatisticsChartsComponent implements OnInit {
 
-  @ViewChild('chartContainer', { read: ViewContainerRef}) chartContainerReference: ViewContainerRef;
+  @ViewChild('chartContainer', { read: ViewContainerRef }) chartContainerReference: ViewContainerRef;
 
   public displayingMongooseChart: MongooseChart;
 
@@ -33,14 +34,14 @@ export class RunStatisticsChartsComponent implements OnInit {
   // NOTE: isChartDrawActive is used to check whether the chart should be dispalyed within the UI.
   private isChartDrawActive: boolean = true;
   private availableCharts: Map<string, MongooseChart>;
-  
+
 
 
   constructor(private monitoringApiService: MonitoringApiService,
     private chartsProviderService: ChartsProviderService,
     private resolver: ComponentFactoryResolver,
     private route: ActivatedRoute,
-    private router: Router) {  }
+    private router: Router) { }
 
   // MARK: - Lifecycle 
 
@@ -54,8 +55,8 @@ export class RunStatisticsChartsComponent implements OnInit {
               throw new Error(`Requested run record hasn't been found.`);
             }
             this.configureChartsRepository();
-            this.configureTabs();
             this.processingRecord = foundRecord;
+            this.configureTabs();
             this.configureChartUpdateInterval();
 
           }
@@ -78,11 +79,22 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   // MARK: - Public 
 
-  public drawChart() {
-    let updationPeriodSeconds = 2;
-    let loadStepId = this.processingRecord.getLoadStepId() as string; 
-    this.chartsProviderService.updateCharts(updationPeriodSeconds, loadStepId);
-    this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();
+  public drawChart(record: MongooseRunRecord = this.processingRecord) {
+    if (record == undefined) {
+      console.error(`Unable to draw chart for an undefined record.`);
+      return;
+    }
+    switch (record.getStatus()) {
+      case MongooseRunStatus.Running: {
+        // TODO: Change redrawing behavior to appending, not completely redrawing. 
+        this.drawStaticChart(record);
+        break;
+      }
+      default: {
+        this.drawStaticChart(record);
+        break;
+      }
+    }
   }
 
   public switchTab(selectedTab: BasicTab) {
@@ -112,19 +124,35 @@ export class RunStatisticsChartsComponent implements OnInit {
     chartsList.set("Bandwidth", this.chartsProviderService.getBandwidthChart());
     chartsList.set("Throughtput", this.chartsProviderService.getThoughputChart());
     chartsList.set("Latency", this.chartsProviderService.getLatencyChart());
+
+    // NOTE: Chart is being shifted after specific amount of values if Mongoose run is ...
+    // ... still in process.
+    if (this.shouldUpdateChart()) {
+      Array.from(chartsList.values()).forEach(chart => {
+        chart.shouldShiftChart = true;
+      });
+    }
     return chartsList;
   }
 
   private configureChartUpdateInterval() {
     this.drawChart = this.drawChart.bind(this);
+
     if (!this.shouldDrawChart()) {
       this.isChartDrawActive = false;
       alert(`Unable to draw the required chart for load step ID.`);
       return;
     }
-    setInterval(this.drawChart, 2000);
+    if (this.shouldUpdateChart()) {
+      setInterval(this.drawChart, 2000);
+      return;
+    }
+    this.drawChart(this.processingRecord);
   }
 
+  private shouldUpdateChart(): boolean {
+    return (this.processingRecord.getStatus() == MongooseRunStatus.Running);
+  }
   private shouldDrawChart(): boolean {
     return (this.processingRecord != undefined);
   }
@@ -146,25 +174,46 @@ export class RunStatisticsChartsComponent implements OnInit {
     return Array.from(this.availableCharts.keys());
   }
 
-  private configureTabs() { 
+  private configureTabs() {
     this.availableCharts = this.getAvailableCharts();
     this.chartTabs = this.generateChartTabs();
 
-    if (this.chartTabs.length < 0) { 
+    if (this.chartTabs.length < 0) {
       console.error(`Tabs haven't been generated.`);
-      return; 
+      return;
     }
-    
-    let initialTabIndex = 0; 
-    let initialTab =  this.chartTabs[initialTabIndex];
+
+    let initialTabIndex = 0;
+    let initialTab = this.chartTabs[initialTabIndex];
     this.switchTab(initialTab);
   }
 
-  private createChartComponent(chart: MongooseChart) { 
+  private createChartComponent(chart: MongooseChart) {
     this.chartContainerReference.clear();
     const factory = this.resolver.resolveComponentFactory(BasicChartComponent);
     const chartComponentReference = this.chartContainerReference.createComponent(factory);
     chartComponentReference.instance.chart = this.displayingMongooseChart;
-  }  
+  }
+
+  private drawDynamicChart(record: MongooseRunRecord) {
+    let updationPeriodSeconds = 200;
+    let loadStepId = record.getLoadStepId() as string;
+    this.chartsProviderService.updateCharts(updationPeriodSeconds, loadStepId);
+    this.isChartDrawActive = this.displayingMongooseChart.shouldDrawChart();
+  }
+
+  private drawStaticChart(record: MongooseRunRecord) {
+    let mongooseRunStartTime = record.getStartTime();
+    let mongooseStartTimeAsNumber = Number.parseInt(mongooseRunStartTime as string);
+
+    var runStartDate = new Date(mongooseStartTimeAsNumber);
+    let currentDate = new Date(Date.now());
+
+    const differenceInSeconds = Math.abs(currentDate.getTime() - runStartDate.getTime()) / 1000;
+
+    const targetLoadStepId = record.getLoadStepId() as string;
+    console.log(`Run has started at ${runStartDate}, Difference in seconds with the current date: ${differenceInSeconds}`)
+    this.chartsProviderService.drawStatisCharts(differenceInSeconds, targetLoadStepId);
+  }
 
 }

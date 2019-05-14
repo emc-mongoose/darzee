@@ -8,12 +8,12 @@ import { MongooseLatencyChart } from '../../models/chart/latency/mongoose-latenc
 import { MongooseBandwidthChart } from '../../models/chart/bandwidth/mongoose-bandwidth-chart.model';
 import { MongooseThroughputChart } from '../../models/chart/throughput/mongoose-throughput-chart.model';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class ChartsProviderService {
 
-  private readonly PERIOD_OF_DATA_UPDATE_SECONDS = 2;
 
   private mongooseChartDao: MongooseChartDao;
 
@@ -47,49 +47,58 @@ export class ChartsProviderService {
     return this.latencyChart;
   }
 
-  public updateCharts(perdiodOfLatencyUpdateMs: number, loadStepId: string) {
-    this.updateLatencyChart(perdiodOfLatencyUpdateMs, loadStepId);
-    this.updateDurationChart(perdiodOfLatencyUpdateMs, loadStepId);
-    this.updateBandwidthChart(perdiodOfLatencyUpdateMs, loadStepId);
-    this.updateThoughputChart(perdiodOfLatencyUpdateMs, loadStepId);
+  public updateCharts(perdiodOfLatencyUpdateSeconds: number, loadStepId: string) {
+    this.updateLatencyChart(perdiodOfLatencyUpdateSeconds, loadStepId);
+    this.updateDurationChart(perdiodOfLatencyUpdateSeconds, loadStepId);
+    this.updateBandwidthChart(perdiodOfLatencyUpdateSeconds, loadStepId);
+    this.updateThoughputChart(perdiodOfLatencyUpdateSeconds, loadStepId);
+  }
+
+  public drawStatisCharts(secondsSinceCurrentDate: number, loadStepId: string) {
+    secondsSinceCurrentDate = Math.round(secondsSinceCurrentDate);
+    console.log(`Update static charts for loadStepId ${loadStepId} for the past ${secondsSinceCurrentDate} seconds.`);
+    this.updateCharts(secondsSinceCurrentDate, loadStepId);
   }
 
   // MARK: - Private
 
   private updateLatencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((maxLatencyResult: MongooseMetric) => {
-      this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((minLatencyResult: MongooseMetric) => {
-        let latencyRelatedMetrics = [maxLatencyResult, minLatencyResult];
-        this.latencyChart.updateChart(loadStepId, latencyRelatedMetrics);
+    this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((maxLatencyResult: MongooseMetric[]) => {
+      this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((minLatencyResult: MongooseMetric[]) => {
+        // NOTE: Concadentation of the arrays due tothe specific logic of updating (based on the internal names)
+        let concatenatedMetrics = maxLatencyResult.concat(minLatencyResult);
+        this.latencyChart.updateChart(loadStepId, concatenatedMetrics);
       });
     });
   }
 
   private updateDurationChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getDuration(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((duration => {
-      let durationRelatedMetrics = [duration];
-      this.durationChart.updateChart(loadStepId, durationRelatedMetrics);
+    this.mongooseChartDao.getDuration(perdiodOfLatencyUpdateSecs, loadStepId).subscribe(
+      ((durationMetrics: MongooseMetric[]) => {
+      this.durationChart.updateChart(loadStepId, durationMetrics);
     }));
   }
 
+
   private updateBandwidthChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getBandWidth(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((byteRateMean: MongooseMetric) => {
-      let bandwidthRelatedMetrics = [byteRateMean];
-      this.bandwidthChart.updateChart(loadStepId, bandwidthRelatedMetrics);
+    this.mongooseChartDao.getBandWidth(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((byteRateMean: MongooseMetric[]) => {
+      this.bandwidthChart.updateChart(loadStepId, byteRateMean);
     });
   }
 
   private updateThoughputChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getAmountOfSuccessfulOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, loadStepId).subscribe((sucessfulOperationAmount: MongooseMetric) => {
-      this.mongooseChartDao.getAmountOfFailedOperations(this.PERIOD_OF_DATA_UPDATE_SECONDS, loadStepId).subscribe((failedOperationsMetric: MongooseMetric) => {
-        let thoughtputRelatedMetrics = [sucessfulOperationAmount, failedOperationsMetric];
-        this.throughputChart.updateChart(loadStepId, thoughtputRelatedMetrics);
+    this.mongooseChartDao.getAmountOfSuccessfulOperations(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((sucessfulOperationsMetrics: MongooseMetric[]) => {
+      this.mongooseChartDao.getAmountOfFailedOperations(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((failedOperationsMetrics: MongooseMetric[]) => {
+        console.log(`failedOperationsMetrics length: ${failedOperationsMetrics.length}`)
+        let concatenatedThoughtputRelatedMetrics = sucessfulOperationsMetrics.concat(failedOperationsMetrics);
+        this.throughputChart.updateChart(loadStepId, concatenatedThoughtputRelatedMetrics);
       })
     })
   }
 
   private configureMongooseCharts() {
     let mongooseChartRepository = new MongooseChartsRepository(this.mongooseChartDao);
+    
     this.durationChart = mongooseChartRepository.getDurationChart();
     this.latencyChart = mongooseChartRepository.getLatencyChart();
     this.bandwidthChart = mongooseChartRepository.getBandwidthChart();

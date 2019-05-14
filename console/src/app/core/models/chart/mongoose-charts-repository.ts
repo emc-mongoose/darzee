@@ -6,6 +6,14 @@ import { MongooseBandwidthChart } from "./bandwidth/mongoose-bandwidth-chart.mod
 import { MongooseChartDao } from "./mongoose-chart-interface/mongoose-chart-dao.model";
 
 export class MongooseChartsRepository {
+
+    private readonly BASIC_MONGOOSE_CHART_OPTIONS: MongooseChartOptions = new MongooseChartOptions();
+    private readonly BASIC_MONGOOSE_CHART_LABELS: string[] = [];
+    private readonly BASIC_MONGOOSE_CHART_TYPE: string = "line";
+    // NOTE: determining whether the legend should be shown or not (depends on the boolean value)
+    private readonly BASIC_MONGOOSE_CHART_LEGEND_MODE: boolean = true;
+
+
     private mongooseChartDao: MongooseChartDao;
 
     private durationChart: MongooseDurationChart;
@@ -42,41 +50,21 @@ export class MongooseChartsRepository {
         this.latencyChart = this.createMongooseLatencyChart();
         this.thoughputChart = this.createMongooseThroughtputChart();
         this.bandwidthChart = this.createMongooseBandwidthChart();
-
     }
 
     private createMongooseDurationChart(): MongooseDurationChart {
-        let durationChartOptions = new MongooseChartOptions();
-        let durationChartLabels: string[] = [];
-        let durationChartType = "line";
-        let durationChartLegend = true;
-
-        return new MongooseDurationChart(durationChartOptions, durationChartLabels, durationChartType, durationChartLegend, this.mongooseChartDao);
+        return new MongooseDurationChart(this.BASIC_MONGOOSE_CHART_OPTIONS, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
     }
 
     private createMongooseLatencyChart(): MongooseLatencyChart {
-
-        let durationChartOptions = new MongooseChartOptions();
-        let durationChartLabels: string[] = [];
-        let durationChartType = "line";
-        let durationChartLegend = true;
-        return new MongooseLatencyChart(durationChartOptions, durationChartLabels, durationChartType, durationChartLegend, this.mongooseChartDao);
+        return new MongooseLatencyChart(this.BASIC_MONGOOSE_CHART_OPTIONS, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
     }
 
     private createMongooseThroughtputChart(): MongooseThroughputChart {
-        let durationChartOptions = new MongooseChartOptions();
-        let durationChartLabels: string[] = [];
-        let durationChartType = "line";
-        let durationChartLegend = true;
-        return new MongooseThroughputChart(durationChartOptions, durationChartLabels, durationChartType, durationChartLegend, this.mongooseChartDao);
+        return new MongooseThroughputChart(this.BASIC_MONGOOSE_CHART_OPTIONS, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
     }
 
-
     private createMongooseBandwidthChart(): MongooseBandwidthChart {
-        let durationChartOptions = new MongooseChartOptions();
-        let durationChartLabels: string[] = [];
-        let durationChartType = "line";
-        let durationChartLegend = true;
-        return new MongooseBandwidthChart(durationChartOptions, durationChartLabels, durationChartType, durationChartLegend, this.mongooseChartDao);
+        return new MongooseBandwidthChart(this.BASIC_MONGOOSE_CHART_OPTIONS, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
     }
 }

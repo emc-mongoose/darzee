@@ -10,6 +10,7 @@ export interface MongooseChart {
     chartLegend: boolean;
     chartData: MongooseChartDataset[];
     isChartDataValid: boolean;
+    shouldShiftChart: boolean; 
 
     mongooseChartDao: MongooseChartDao;
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]);

@@ -19,14 +19,17 @@ export class MongooseThroughputChart implements MongooseChart {
     chartData: MongooseChartDataset[];
     isChartDataValid: boolean;
     mongooseChartDao: MongooseChartDao;
+    shouldShiftChart: boolean;
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao) {
+
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao, shouldShiftChart: boolean = false) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
         this.chartLegend = chartLegend;
         this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
+        this.shouldShiftChart = shouldShiftChart; 
 
         let successfulOperationsDataset = new MongooseChartDataset([], 'Successful operations');
         let failedOperationsDataset = new MongooseChartDataset([], 'Failed operations');
@@ -36,24 +39,36 @@ export class MongooseThroughputChart implements MongooseChart {
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
 
+
+        console.log(`Throughtput array: ${JSON.stringify(metrics)}`)
         let successfulOperationsMetricName = InternalMetricNames.SUCCESSFUL_OPERATIONS;
-        let successfulOperationsMetric = metrics.find(metric => metric.getName() == successfulOperationsMetricName);
-
         let failedOperationsMetricName = InternalMetricNames.FAILED_OPERATIONS;
-        let failedOperationsMetric = metrics.find(metric => metric.getName() == failedOperationsMetricName);
 
-        if ((successfulOperationsMetric == undefined) || (failedOperationsMetric == undefined)) {
-            throw new Error(`An error has occured while parsing bandwidth metrics.`);
-        }
-        this.chartData[this.SUCCESSFUL_OPERATIONS_DATASET_INDEX].appendDatasetWithNewValue(successfulOperationsMetric.getValue());
-        this.chartData[this.FAILED_OPERATIONS_DATASET_INDEX].appendDatasetWithNewValue(failedOperationsMetric.getValue());
+        var throughtputChartTimestamps: string[] = [];
+        var failedOperationsMetrics: string[] = []; 
+        var successfulOperationsMetrics: string[] = [];
 
-        this.chartLabels.push(formatDate(Math.round(failedOperationsMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
-        if (this.shouldScaleChart()) {
-            this.chartData[this.SUCCESSFUL_OPERATIONS_DATASET_INDEX].data.shift();
-            this.chartData[this.FAILED_OPERATIONS_DATASET_INDEX].data.shift();
-            this.chartLabels.shift();
-        }
+        metrics.forEach((metric: MongooseMetric) => { 
+            switch(metric.getName()) { 
+                case successfulOperationsMetricName: { 
+                    successfulOperationsMetrics.push(metric.getValue());
+                    throughtputChartTimestamps.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
+                    break;
+                }
+                case failedOperationsMetricName: { 
+                    failedOperationsMetrics.push(metric.getValue());
+                    break;
+                }
+            }
+        })
+        this.chartLabels = throughtputChartTimestamps; 
+        this.chartData[this.SUCCESSFUL_OPERATIONS_DATASET_INDEX].setChartData(successfulOperationsMetrics);
+        this.chartData[this.FAILED_OPERATIONS_DATASET_INDEX].setChartData(failedOperationsMetrics);
+        // if (this.shouldShift()) {
+        //     this.chartData[this.SUCCESSFUL_OPERATIONS_DATASET_INDEX].data.shift();
+        //     this.chartData[this.FAILED_OPERATIONS_DATASET_INDEX].data.shift();
+        //     this.chartLabels.shift();
+        // }
 
     }
 
@@ -61,7 +76,7 @@ export class MongooseThroughputChart implements MongooseChart {
         return this.isChartDataValid;
     }
 
-    private shouldScaleChart(): boolean {
+    private shouldShift(): boolean {
         const maxAmountOfPointsInGraph = 20;
         return (this.chartLabels.length >= maxAmountOfPointsInGraph);
     }

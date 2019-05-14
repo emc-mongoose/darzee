@@ -17,14 +17,17 @@ export class MongooseDurationChart implements MongooseChart {
     chartData: MongooseChartDataset[];
     mongooseChartDao: MongooseChartDao;
     isChartDataValid: boolean;
+    shouldShiftChart: boolean;
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao) {
+
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao, shouldShiftChart: boolean = false) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
         this.chartLegend = chartLegend;
         this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
+        this.shouldShiftChart = shouldShiftChart;
 
         let durationChartDatasetInitialValue = new MongooseChartDataset([], 'Mean duration');
         var durationChartDataset: MongooseChartDataset[] = [];
@@ -33,19 +36,23 @@ export class MongooseDurationChart implements MongooseChart {
     }
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
-        let durationMetricName = InternalMetricNames.DURATION; 
-        let durationMetric = metrics.find(metric => metric.getName() == durationMetricName);
-        if (durationMetric == undefined) {
-            throw new Error(`An error has occured while parsing duration metrics.`);
-        }
 
-        this.chartData[this.DURATION_DATASET_INDEX].appendDatasetWithNewValue(durationMetric.getValue());
+        var meanDurationMetrics: any[] = [];
+        var updatedLabels: any[] = [];
 
-        this.chartLabels.push(formatDate(Math.round(durationMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
-        if (this.shouldScaleChart()) {
-            this.chartData[this.DURATION_DATASET_INDEX].data.shift();
-            this.chartLabels.shift();
-        }
+        metrics.forEach(durationMetric => {
+            const metricName = durationMetric.getName(); 
+            switch (metricName) { 
+                case (InternalMetricNames.DURATION): { 
+                    meanDurationMetrics.push(durationMetric.getValue());
+                    break;
+                }
+            }
+
+            updatedLabels.push(formatDate(Math.round(durationMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
+        });
+        this.chartLabels = updatedLabels;
+        this.chartData[this.DURATION_DATASET_INDEX].setChartData(meanDurationMetrics);
     }
 
     public shouldDrawChart(): boolean {
@@ -54,7 +61,7 @@ export class MongooseDurationChart implements MongooseChart {
 
     private shouldScaleChart(): boolean {
         const maxAmountOfPointsInGraph = 20;
-        return (this.chartLabels.length >= maxAmountOfPointsInGraph);
+        return ((this.chartLabels.length >= maxAmountOfPointsInGraph) && this.shouldShiftChart);
     }
 
 }
