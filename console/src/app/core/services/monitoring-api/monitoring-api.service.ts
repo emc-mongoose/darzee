@@ -35,12 +35,9 @@ export class MonitoringApiService {
 
   public getStatusForMongooseRecord(targetRecordRunId: string): Observable<MongooseRunStatus> {
     // NOTE: As for now, we're checking status for Mongoose run overtall, not just Run ID. 
-    return this.controlApiService.isMongooseRunActive(targetRecordRunId).pipe(
-      map(isMongooseRunActive => { 
-        if (isMongooseRunActive) { 
-          return MongooseRunStatus.Running;
-        }
-        return MongooseRunStatus.Finished;
+    return this.controlApiService.getStatusForMongooseRun(targetRecordRunId).pipe(
+      map((mongooseRunStatus: MongooseRunStatus) => { 
+       return mongooseRunStatus;
       })
     ).pipe(
       share()
