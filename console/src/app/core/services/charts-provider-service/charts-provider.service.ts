@@ -7,9 +7,7 @@ import { MongooseDurationChart } from '../../models/chart/duration/mongoose-dura
 import { MongooseLatencyChart } from '../../models/chart/latency/mongoose-latency-chart.model';
 import { MongooseBandwidthChart } from '../../models/chart/bandwidth/mongoose-bandwidth-chart.model';
 import { MongooseThroughputChart } from '../../models/chart/throughput/mongoose-throughput-chart.model';
-import { MongooseChart } from '../../models/chart/mongoose-chart-interface/mongoose-chart.interface';
-import { MongooseRunRecord } from '../../models/run-record.model';
-import { MongooseRunStatus } from '../../models/mongoose-run-status';
+
 
 @Injectable({
   providedIn: 'root'

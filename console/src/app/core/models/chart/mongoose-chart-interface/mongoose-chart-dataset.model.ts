@@ -1,3 +1,5 @@
+import { ChartPoint } from "./chart-point.model";
+
 export class MongooseChartDataset {
     // NOTE: Fields are public since they should match ng-chart2 library naming 
     // link: https://github.com/valor-software/ng2-charts
@@ -7,7 +9,8 @@ export class MongooseChartDataset {
     private readonly CHART_LINE_WIDTH_PX = 1;
     private readonly CHART_POINT_RADIUS_PX = 0;
 
-    public data = [];
+    public data: any[] = [];
+    public points: ChartPoint[] = []; 
     public label: string = "";
 
     public lineTension: number = this.ZERO_CURVE_LINE_TENSION;
@@ -39,6 +42,12 @@ export class MongooseChartDataset {
 
     public setChartData(data: any[]) { 
         this.data = data;
+    }
+
+    public addPoint(x: number, y: number) { 
+        let point = new ChartPoint(x, y);
+        // this.points.push(point);
+        this.data.push(point);
     }
 
     private getPreviousValueFromDataset(dataset: MongooseChartDataset): string {

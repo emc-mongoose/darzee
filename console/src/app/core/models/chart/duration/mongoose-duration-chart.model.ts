@@ -43,11 +43,17 @@ export class MongooseDurationChart implements MongooseChart {
             if (durationMetric.getName() != durationMetricName) {
                 return;
             }
+
+//            let x = Number(durationMetric.getValue());
+  //          let y = Number(durationMetric.getTimestamp());
+    //        console.log(`x: ${x}, y: ${y}`);
+      //      this.chartData[this.DURATION_DATASET_INDEX].addPoint(y, x);
+
             updatedLabels.push(formatDate(Math.round(durationMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
             updatedData.push(durationMetric.getValue());
         })
         this.chartLabels = updatedLabels;
-        this.chartData[this.DURATION_DATASET_INDEX].setChartData(updatedData);
+         this.chartData[this.DURATION_DATASET_INDEX].setChartData(updatedData);
 
     }
 
