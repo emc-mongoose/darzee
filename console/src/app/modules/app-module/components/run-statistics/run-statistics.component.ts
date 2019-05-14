@@ -51,15 +51,19 @@ export class RunStatisticsComponent implements OnInit {
           },
           error => {
             let misleadingMsg = `Unable to display statistics for Mongoose run record with ID ${targetRecordLoadStepId}, reason: ${error.message}`;
+            
+            // TODO: Figure out whether error alers should be displayed or not
             console.error(misleadingMsg);
-            alert(misleadingMsg);
+            // alert(misleadingMsg);
             return;
           }
         )
         this.initTabs();
       } catch (recordNotFoundError) {
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
-        alert("Unable to load requested record.");
+        
+        // TODO: Figure out whether error alers should be displayed or not
+        // alert("Unable to load requested record.");
         console.error(recordNotFoundError);
         this.router.navigate([RoutesList.RUNS]);
       }
