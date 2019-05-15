@@ -108,7 +108,6 @@ UI's configuration depends on the parameters listen within .env file.
 The following parameters are being used to specify deploying ports of the services: 
  
 * CONSOLE_PORT - for Mongoose Web UI; 
-* GRAFANA_PORT - for Grafana; 
 * PROMETHEUS_PORT - for Prometheus; 
 * MONGOOSE_PORT - for Mongoose; 
 
@@ -116,7 +115,6 @@ The following parameters are being used to specify deploying ports of the servic
 The following parameters are being used to specify docker image version of a specific service: 
 * CONSOLE_VER - Mongoose Web UI image version; 
 * PROMETHEUS_VER - Prometheus image version; 
-* GRAFANA_VER - Grafana image version; 
 
 
 ## 2.3 Container configuration 
