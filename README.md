@@ -9,8 +9,9 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 &nbsp;&nbsp;1.3 [Scenario](#13-scenario)<br/>
 &nbsp;&nbsp;1.4 [Monitoring](#14-monitoring)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.4.1 [Mongoose runs table](#141-mongoose-runs-table)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;1.4.2 [Mongoose logs](#142-mongoose-logs)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;1.4.3 [Mongoose charts](#143-mongoose-charts)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.4.2 [Mongoose run statistics](#142-mongoose-run-statistics)
+&nbsp;&nbsp;&nbsp;&nbsp;1.4.2.1 [Mongoose logs](#1421-mongoose-logs)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.4.2.2 [Mongoose charts](#1422-mongoose-charts)<br/>
 2. [Configuration](#2-configuration)<br/>
 &nbsp;&nbsp;2.1 [Deploying ports](#21-deploying-ports)<br/>
 &nbsp;&nbsp;2.2 [Image versions](#22-image-versions)<br/>
@@ -72,11 +73,26 @@ You could see Mongoose run status or run details by pressing the status icon.
 ![](screenshots/runs-table/run_table_finished_results.png)
 ![](screenshots/runs-table/run_table_running_details.png)
 
-### 1.4.2 Mongoose logs 
-![](screenshots/monitoring/logs/logs-overview.png)
+By pressing run status icon, you'll be redirected to run statistics screen. See [Mongoose logs](#1421-mongoose-logs), [Mongoose charts](#1422-mongoose-charts)<br/>
 
-### 1.4.3 Mongoose charts
-![](screenshots/monitoring/charts/charts-overview.png)
+### 1.4.2 Mongoose run statistics
+
+You're able to check run statistics (logs, charts) of the selected Mongoose run.
+![](screenshots/monitoring/run_statistics_overview.png)
+ If the run is still being processed, the data will be updating dynamically based on the Mongoose's exported metrics and generated logs. 
+
+#### 1.4.2.1 Mongoose logs 
+![](screenshots/monitoring/logs/logs_overview.png)
+
+#### 1.4.2.2 Mongoose charts
+Charts are drawn based on Mongoose's exported metrics. There're 4 types of Mongoose charts available:
+
+* <b>duration</b> - mean duration of Mongoose's performed operations;
+* <b>bandwidth</b> - amount of processed bytes per second; 
+* <b>throughput</b> - shows rate of successful and failed operations performed by Mongoose. It takes mean values for each metric; 
+* <b>latency</b> - shows minimal and maximal latency during Mongoose's run; 
+
+![](screenshots/monitoring/charts/charts_overview.png)
 
 
 # 2. Configuration 
