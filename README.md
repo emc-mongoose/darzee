@@ -4,13 +4,13 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 # Contents 
 
 1. [Overview](#1-overview)<br/>
-&nbsp;&nbsp;1.1 [Launch Mongoose run](#11-launching)<br/>
+&nbsp;&nbsp;1.1 [Launch Mongoose run](#11-launch-mongoose-run)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.1.1 [Nodes selection](#111-nodes-selection)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.1.2 [Configuring](#112-configuring)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.1.3 [Scenario](#113-scenario)<br/>
-&nbsp;&nbsp;1.2 [Monitoring](#12-moniroting)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;1.2.1 [Mongoose runs table](#12-mongoose-runs-table)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;1.2.2 [Mongoose run statistics](#121-mongoose-run-statistics)<br/>
+&nbsp;&nbsp;1.2 [Monitoring](#12-monitoring)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.2.1 [Mongoose runs table](#121-mongoose-runs-table)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.2.2 [Mongoose run statistics](#122-mongoose-run-statistics)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2.2.1 [Mongoose logs](#1221-mongoose-logs)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2.2.2 [Mongoose charts](#1222-mongoose-charts)<br/>
 &nbsp;&nbsp;1.3 [Terminate Mongoose run](#13-terminate-mongoose-run)<br/>
