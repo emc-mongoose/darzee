@@ -9,6 +9,8 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 &nbsp;&nbsp;1.3 [Scenario](#13-scenario)<br/>
 &nbsp;&nbsp;1.4 [Monitoring](#14-monitoring)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.4.1 [Mongoose runs table](#141-mongoose-runs-table)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.4.2 [Mongoose logs](#142-mongoose-logs)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.4.3 [Mongoose charts](#143-mongoose-charts)<br/>
 2. [Configuration](#2-configuration)<br/>
 &nbsp;&nbsp;2.1 [Deploying ports](#21-deploying-ports)<br/>
 &nbsp;&nbsp;2.2 [Image versions](#22-image-versions)<br/>
@@ -70,6 +72,11 @@ You could see Mongoose run status or run details by pressing the status icon.
 ![](screenshots/runs-table/run_table_finished_results.png)
 ![](screenshots/runs-table/run_table_running_details.png)
 
+### 1.4.2 Mongoose logs 
+![](screenshots/monitoring/logs/logs-overview.png)
+
+### 1.4.3 Mongoose charts
+![](screenshots/monitoring/charts/charts-overview.png)
 
 
 # 2. Configuration 
