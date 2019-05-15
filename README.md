@@ -1,6 +1,27 @@
 # Mongoose Web UI 
 Provides web interface for Mongoose - storage performance testing tool maintained by Dell EMC. 
 
+# Contents 
+
+1. [Overview](#1-overview)<br/>
+&nbsp;&nbsp;1.1 [Launching](#11-launching)<br/>
+&nbsp;&nbsp;1.2 [Configuring](#12-configuring)<br/>
+&nbsp;&nbsp;1.3 [Scenario](#13-scenario)<br/>
+&nbsp;&nbsp;1.4 [Monitoring](#14-monitoring)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.4.1[Mongoose runs table](#141-mongoose-runs-table)<br/>
+2. [Configuration](#2-configuration)
+&nbsp;&nbsp;2.1 [Deploying ports](#21-deploying-ports)<br/>
+&nbsp;&nbsp;2.2 [Image versions](#22-image-versions)<br/>
+&nbsp;&nbsp;2.3 [Container configuration](#23-container-configuration)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;2.3.1 [Network](#231-network)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;2.3.2 [Prometheus](#232-prometheus)<br/>
+&nbsp;&nbsp;2.4 [Other parameters](#24-other-parameters) <br/>
+3. [Build and run](#3-build-and-run)
+4. [Deploying](#4-deploying)
+5. [Troubleshooting](#5-troubleshooting)<br/>
+&nbsp;&nbsp;5.1 [Running Mongoose on localhost (Mac, Windows)](#51-running-mongoose-on-localhost-mac-windows)<br/>
+
+
 # 1. Overview 
 
 Web UI lets you configure, run and monitor Mongoose. 
@@ -31,9 +52,9 @@ Scenarios could be both loaded and saved into the file system.
 ![](screenshots/setup/scenario/scenario_buttons.png)
 
 
-## 1.2 Monitoring runs 
+## 1.4 Monitoring 
 
-### 1.2.1 Runs table 
+### 1.4.1 Mongoose runs table
 Discovered Mongoose's runs are displayed within the runs table. 
 ![](screenshots/runs-table/runs_table_filled.png)
 
@@ -101,13 +122,14 @@ Docker image is being builted via Gradle. To build Docker image, use:
 
 ### 3.1.2 Build project 
 Mongoose Web UI has been made with Angular 7.0. You could build it just like any Angular app. 
+> $ npm install
 > $ ng build 
 
 ## 3.2 Run 
 
 ### 3.2.1 Run via docker-compose 
 Mongoose Web UI could be ran via docker compose. 
-It'd build a container that contains Mongoose Web UI and Prometheus. 
+It'd build a container that contains Mongoose Web UI and Prometheus. Versions of the images are specified within .env file. 
 > $ docker-compose up 
 
 ### 3.2.2 Run in development mode 
