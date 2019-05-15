@@ -4,7 +4,7 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 # Contents 
 
 1. [Overview](#1-overview)<br/>
-&nbsp;&nbsp;1.1 [Launching](#11-launching)<br/>
+&nbsp;&nbsp;1.1 [Launch Mongoose run](#11-launching)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.1.1 [Nodes selection](#111-nodes-selection)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.1.2 [Configuring](#112-configuring)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.1.3 [Scenario](#113-scenario)<br/>
@@ -13,6 +13,7 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 &nbsp;&nbsp;&nbsp;&nbsp;1.2.2 [Mongoose run statistics](#121-mongoose-run-statistics)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2.2.1 [Mongoose logs](#1221-mongoose-logs)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2.2.2 [Mongoose charts](#1222-mongoose-charts)<br/>
+&nbsp;&nbsp;1.3 [Terminate Mongoose run](#13-terminate-mongoose-run)<br/>
 2. [Configuration](#2-configuration)<br/>
 &nbsp;&nbsp;2.1 [Deploying ports](#21-deploying-ports)<br/>
 &nbsp;&nbsp;2.2 [Image versions](#22-image-versions)<br/>
@@ -30,7 +31,7 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 
 Web UI lets you configure, run and monitor Mongoose. 
 
-## 1.1 Launching
+## 1.1 Launch Mongoose run
 
 Mongoose launching process is divided in 3 steps: 
 * nodes selection; 
@@ -92,6 +93,11 @@ Charts are drawn based on Mongoose's exported metrics. There're 4 types of Mongo
 * <b>latency</b> - shows minimal and maximal latency during Mongoose's run; 
 
 ![](screenshots/monitoring/charts/charts_overview.png)
+
+## 1.3 Terminate Mongoose run
+
+Processing Mongoose run could be terminated from the UI. 
+![](screenshots/monitoring/termination_instruction.png)
 
 
 # 2. Configuration 
