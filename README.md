@@ -9,7 +9,7 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 &nbsp;&nbsp;1.3 [Scenario](#13-scenario)<br/>
 &nbsp;&nbsp;1.4 [Monitoring](#14-monitoring)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.4.1 [Mongoose runs table](#141-mongoose-runs-table)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;1.4.2 [Mongoose run statistics](#142-mongoose-run-statistics)
+&nbsp;&nbsp;&nbsp;&nbsp;1.4.2 [Mongoose run statistics](#142-mongoose-run-statistics)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.4.2.1 [Mongoose logs](#1421-mongoose-logs)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.4.2.2 [Mongoose charts](#1422-mongoose-charts)<br/>
 2. [Configuration](#2-configuration)<br/>
