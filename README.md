@@ -8,8 +8,8 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 &nbsp;&nbsp;1.2 [Configuring](#12-configuring)<br/>
 &nbsp;&nbsp;1.3 [Scenario](#13-scenario)<br/>
 &nbsp;&nbsp;1.4 [Monitoring](#14-monitoring)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;1.4.1[Mongoose runs table](#141-mongoose-runs-table)<br/>
-2. [Configuration](#2-configuration)
+&nbsp;&nbsp;&nbsp;&nbsp;1.4.1 [Mongoose runs table](#141-mongoose-runs-table)<br/>
+2. [Configuration](#2-configuration)<br/>
 &nbsp;&nbsp;2.1 [Deploying ports](#21-deploying-ports)<br/>
 &nbsp;&nbsp;2.2 [Image versions](#22-image-versions)<br/>
 &nbsp;&nbsp;2.3 [Container configuration](#23-container-configuration)<br/>
