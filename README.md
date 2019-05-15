@@ -48,7 +48,7 @@ Configuration is being fetched via Mongoose REST API. You could change it via th
 The changed configuration would be passed to Mongoose /run POST request as a parameter. 
 
 ## 1.3 Scenario 
-Mongoose's scenarios are writtign in JavaScript. It's possibl to write JavaScript code in the UI using code editor. 
+Mongoose's scenarios are writtign in JavaScript. It's possible to write JavaScript code in the UI using code editor. 
 ![](screenshots/setup/scenario/scenario_general.png)
 
 Scenarios could be both loaded and saved into the file system. 
@@ -67,7 +67,7 @@ There's 3 possible status of Mongoose runs:
 * Unavailable - means info about Mongoose run has been found on the server, but the related data is lost or couldn't be loaded. 
 
 You could see Mongoose run status or run details by pressing the status icon. 
-<img src="screenshots/runs-table/run_table_finished_results.png" style="width:calc(10%);
+<img src="screenshots/runs-table/run_table_finished_results.png" style="display:inline-block; width:calc(20%);
     height:auto;"/>
 
 ![](screenshots/runs-table/run_table_running_details.png)
