@@ -73,7 +73,7 @@ You could see Mongoose run status or run details by pressing the status icon.
 ![](screenshots/runs-table/run_status_overview.png)
 
 
-By pressing run status icon, you'll be redirected to run statistics screen. See [Mongoose logs](#1421-mongoose-logs), [Mongoose charts](#1422-mongoose-charts)<br/>
+By pressing run status icon, you'll be redirected to run statistics screen. See [Mongoose logs](#1421-mongoose-logs), [Mongoose charts](#1422-mongoose-charts)<br/>.
 
 ### 1.2.2 Mongoose run statistics
 
@@ -166,7 +166,7 @@ Mongoose Web UI has been build with Angular CLI. It could be ran in development 
 
 # 4. Deploying 
 
-Mongoose image is being loaded into the [docker hub](https://hub.docker.com/r/emcmongoose/mongoose-console)
+Mongoose image is being loaded into the [docker hub](https://hub.docker.com/r/emcmongoose/mongoose-console).
 
 * It's possible to push Docker image to docker hub via gradle: 
 > $ docker login
@@ -176,4 +176,4 @@ Mongoose image is being loaded into the [docker hub](https://hub.docker.com/r/em
 
 ## 5.1 Running Mongoose on localhost (Mac, Windows)
 
-If you're running the web UI via docker-compose, make sure that it doesn't support host-networking. Instead of "localhost", use "host.docker.internal" address that'd point to the docker container host. 
+See [Using Mongoose Web UI on Mac or Windows](console/supporting-files/windows-and-mac-support).
