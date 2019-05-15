@@ -5,13 +5,14 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 
 1. [Overview](#1-overview)<br/>
 &nbsp;&nbsp;1.1 [Launching](#11-launching)<br/>
-&nbsp;&nbsp;1.2 [Configuring](#12-configuring)<br/>
-&nbsp;&nbsp;1.3 [Scenario](#13-scenario)<br/>
-&nbsp;&nbsp;1.4 [Monitoring](#14-monitoring)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;1.4.1 [Mongoose runs table](#141-mongoose-runs-table)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;1.4.2 [Mongoose run statistics](#142-mongoose-run-statistics)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;1.4.2.1 [Mongoose logs](#1421-mongoose-logs)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;1.4.2.2 [Mongoose charts](#1422-mongoose-charts)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.1.1 [Nodes selection](#111-nodes-selection)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.1.2 [Configuring](#112-configuring)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.1.3 [Scenario](#113-scenario)<br/>
+&nbsp;&nbsp;1.2 [Monitoring](#12-moniroting)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.2.1 [Mongoose runs table](#12-mongoose-runs-table)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.2.2 [Mongoose run statistics](#121-mongoose-run-statistics)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2.2.1 [Mongoose logs](#1221-mongoose-logs)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2.2.2 [Mongoose charts](#1222-mongoose-charts)<br/>
 2. [Configuration](#2-configuration)<br/>
 &nbsp;&nbsp;2.1 [Deploying ports](#21-deploying-ports)<br/>
 &nbsp;&nbsp;2.2 [Image versions](#22-image-versions)<br/>
@@ -41,13 +42,13 @@ Mongoose launching process is divided in 3 steps:
 ![](screenshots/setup/nodes/nodes-selection.png)
 Mongoose could be launched on multiple nodes. You could add and select nodes on the first step of set up. Added nodes will be remained within the UI. 
 
-## 1.2 Configuring 
+## 1.1.2 Configuring 
 ![](screenshots/setup/configuration/configuration.png)
 
 Configuration is being fetched via Mongoose REST API. You could change it via the UI. 
 The changed configuration would be passed to Mongoose /run POST request as a parameter. 
 
-## 1.3 Scenario 
+## 1.1.3 Scenario 
 Mongoose's scenarios are writtign in JavaScript. It's possible to write JavaScript code in the UI using code editor. 
 ![](screenshots/setup/scenario/scenario_general.png)
 
@@ -55,9 +56,9 @@ Scenarios could be both loaded and saved into the file system.
 ![](screenshots/setup/scenario/scenario_buttons.png)
 
 
-## 1.4 Monitoring 
+## 1.2 Monitoring 
 
-### 1.4.1 Mongoose runs table
+### 1.2.1 Mongoose runs table
 Discovered Mongoose's runs are displayed within the runs table. 
 ![](screenshots/runs-table/run_table_filled.png)
 
@@ -73,16 +74,16 @@ You could see Mongoose run status or run details by pressing the status icon.
 
 By pressing run status icon, you'll be redirected to run statistics screen. See [Mongoose logs](#1421-mongoose-logs), [Mongoose charts](#1422-mongoose-charts)<br/>
 
-### 1.4.2 Mongoose run statistics
+### 1.2.2 Mongoose run statistics
 
 You're able to check run statistics (logs, charts) of the selected Mongoose run.
 ![](screenshots/monitoring/run_statistics_overview.png)
  If the run is still being processed, the data will be updating dynamically based on the Mongoose's exported metrics and generated logs. 
 
-#### 1.4.2.1 Mongoose logs 
+#### 1.2.2.1 Mongoose logs 
 ![](screenshots/monitoring/logs/logs_overview.png)
 
-#### 1.4.2.2 Mongoose charts
+#### 1.2.2.2 Mongoose charts
 Charts are drawn based on Mongoose's exported metrics. There're 4 types of Mongoose charts available:
 
 * <b>duration</b> - mean duration of Mongoose's performed operations;
