@@ -59,7 +59,7 @@ Scenarios could be both loaded and saved into the file system.
 
 ### 1.4.1 Mongoose runs table
 Discovered Mongoose's runs are displayed within the runs table. 
-![](screenshots/runs-table/runs_table_filled.png)
+![](screenshots/runs-table/run_table_filled.png)
 
 There's 3 possible status of Mongoose runs: 
 * Finished - means Mongoose run has finished and its logs are available; 
@@ -67,10 +67,9 @@ There's 3 possible status of Mongoose runs:
 * Unavailable - means info about Mongoose run has been found on the server, but the related data is lost or couldn't be loaded. 
 
 You could see Mongoose run status or run details by pressing the status icon. 
-<img src="screenshots/runs-table/run_table_finished_results.png" style="display:inline-block; width:calc(20%);
-    height:auto;"/>
 
-![](screenshots/runs-table/run_table_running_details.png)
+![](screenshots/runs-table/run_status_overview.png)
+
 
 By pressing run status icon, you'll be redirected to run statistics screen. See [Mongoose logs](#1421-mongoose-logs), [Mongoose charts](#1422-mongoose-charts)<br/>
 
