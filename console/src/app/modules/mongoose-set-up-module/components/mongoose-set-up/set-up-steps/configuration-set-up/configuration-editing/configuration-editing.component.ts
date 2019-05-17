@@ -3,6 +3,7 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { Constants } from 'src/app/common/constants';
 import { Subscription } from 'rxjs';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
+import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 
 
 @Component({
@@ -52,8 +53,9 @@ export class ConfigurationEditingComponent implements OnInit {
   // MARK: - Private 
 
   private configureJsonEditor() {
+    let mongooseEntryNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode(); 
     this.monitoringApiSubscriptions.add(
-      this.mongooseSetUpService.getMongooseConfigurationForSetUp().subscribe(
+      this.mongooseSetUpService.getMongooseConfigurationForSetUp(mongooseEntryNode).subscribe(
         configuration => {
           this.initialJsonEditorConfiguration = configuration;
         },

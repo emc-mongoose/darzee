@@ -36,8 +36,8 @@ export class MongooseSetUpService {
 
   // MARK: - Getters & Setters 
 
-  public getMongooseConfigurationForSetUp(): Observable<any> {
-    let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${environment.mongooseIp}:` + `${environment.mongoosePort}`;
+  public getMongooseConfigurationForSetUp(entryNode: MongooseRunNode): Observable<any> {
+    let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${entryNode.getResourceLocation()}`;
     return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
       map(
         (configuration: any) => {
@@ -74,6 +74,12 @@ export class MongooseSetUpService {
 
   public isNodeExist(node: MongooseRunNode): boolean { 
     return this.mongooseSetupInfoModel.isNodeAlreadyExist(node);
+  }
+
+  public getMongooseEntryNode(): MongooseRunNode { 
+    // NOTE: First node from the list counts as the entry one. 
+    const firstNodeIndex = 0;
+    return this.mongooseSetupInfoModel.getRunNodes()[firstNodeIndex];
   }
 
   // NOTE: Adding Mongoose nodes (while node selection)
