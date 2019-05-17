@@ -69,14 +69,9 @@ export class MongooseSetupInfoModel {
         return this.runScenario;
     }
 
-    public getStringifiedNodesForDistributedMode(entryNode: MongooseRunNode): String[] {
+    public getStringifiedNodesForDistributedMode(): String[] {
         let stringfiedRunNodes: String[] = [];
         this.runNodes.forEach(runNode => {
-            let isNodeEntry = (runNode.getResourceLocation() == entryNode.getResourceLocation());
-            if (isNodeEntry) { 
-                // NOTE: Entry node shouldn't be added as a slave node into Mongoose's cofiguration.
-                return; 
-            }
             stringfiedRunNodes.push(runNode.toString());
         });
         return stringfiedRunNodes;

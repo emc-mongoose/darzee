@@ -119,10 +119,9 @@ export class MongooseSetUpService {
     this.http.get(environment.prometheusConfigPath, { responseType: 'text' }).subscribe((configurationFileContent: Object) => {
       let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
 
-      let entryNode = this.getMongooseEntryNode();
-      let mongooseSlaveNodesForDistributedMode = this.mongooseSetupInfoModel.getStringifiedNodesForDistributedMode(entryNode);
-
-      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(mongooseSlaveNodesForDistributedMode);
+      let mongooseRunNodes = this.mongooseSetupInfoModel.getStringifiedNodesForDistributedMode();
+      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(mongooseRunNodes);
+      
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
       this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => {
