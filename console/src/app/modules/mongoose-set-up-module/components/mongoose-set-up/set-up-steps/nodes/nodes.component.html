@@ -16,9 +16,6 @@
         <th scope="row">
           <!-- Default unchecked -->
            <div class="custom-control custom-checkbox">
-              <!-- <input type="checkbox"  
-              (ngModelChange)="onRunNodeSelect(savedNode)"
-              (click)="onRunNodeSelect(savedNode)"> -->
             <input type="checkbox" class="custom-control-input" id="{{ savedNode.getResourceLocation() }}" (click)="onRunNodeSelect(savedNode)">
             <label class="custom-control-label" for="{{ savedNode.getResourceLocation() }}" ></label>
           </div>

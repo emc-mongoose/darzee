@@ -72,8 +72,18 @@ export class MongooseSetUpService {
     return this.mongooseSetupInfoModel.getRunNodes();
   }
 
+  public isNodeExist(node: MongooseRunNode): boolean { 
+    return this.mongooseSetupInfoModel.isNodeAlreadyExist(node);
+  }
+
+  // NOTE: Adding Mongoose nodes (while node selection)
   public addNode(node: MongooseRunNode) {
+    console.log(`node ${node.getResourceLocation()} will be eventually added.`)
     this.mongooseSetupInfoModel.addRunNode(node);
+  }
+
+  public removeNode(node: MongooseRunNode) { 
+    this.mongooseSetupInfoModel.removeRunNode(node);
   }
 
 

@@ -98,9 +98,13 @@ export class MongooseSetupInfoModel {
         }
     }
 
-    // MARK: - Private 
+    public removeRunNode(runNode: MongooseRunNode) {
+        this.runNodes = this.runNodes.filter(node => {
+            return (node.getResourceLocation() != runNode.getResourceLocation());
+        })
+    }
 
-    private isNodeAlreadyExist(node: MongooseRunNode) {
+    public isNodeAlreadyExist(node: MongooseRunNode) {
         let isNodeExist = false;
         this.runNodes.forEach(savedNode => {
             isNodeExist = ((savedNode.getResourceLocation() == node.getResourceLocation()) && (savedNode.getResourceType() == savedNode.getResourceType()));
@@ -110,4 +114,7 @@ export class MongooseSetupInfoModel {
         });
         return isNodeExist;
     }
+    // MARK: - Private 
+
+
 }
