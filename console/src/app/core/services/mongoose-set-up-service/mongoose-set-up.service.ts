@@ -93,11 +93,11 @@ export class MongooseSetUpService {
   }
 
 
-  public runMongoose(): Observable<String> {
+  public runMongoose(entryNode: MongooseRunNode): Observable<String> {
     // NOTE: Updating Prometheus configuration with respect to Mongoose Run nodes. 
     this.updatePrometheusConfiguration();
     // NOTE: you can get related load step ID from mongoose setup model here. 
-    return this.controlApiService.runMongoose(this.mongooseSetupInfoModel.getConfiguration(), this.mongooseSetupInfoModel.getRunScenario()).pipe(
+    return this.controlApiService.runMongoose(entryNode.getResourceLocation(), this.mongooseSetupInfoModel.getConfiguration(), this.mongooseSetupInfoModel.getRunScenario()).pipe(
       map(runId => {
         this.mongooseSetupInfoModel.setLoadStepId(runId);
         return runId;
@@ -121,7 +121,7 @@ export class MongooseSetUpService {
 
       let mongooseRunNodes = this.mongooseSetupInfoModel.getStringifiedNodesForDistributedMode();
       let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(mongooseRunNodes);
-      
+
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
       this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => {

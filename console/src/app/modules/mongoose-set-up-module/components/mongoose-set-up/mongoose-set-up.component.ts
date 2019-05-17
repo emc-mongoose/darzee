@@ -81,7 +81,9 @@ export class MongooseSetUpComponent implements OnInit {
   }
 
   public onRunBtnClicked() {
-    this.mongooseRunSubscription = this.mongooseSetUpService.runMongoose().subscribe(
+    // NOTE: Launching Mongoose on its entry node.
+    let mongooseEntryNode = this.mongooseSetUpService.getMongooseEntryNode();
+    this.mongooseRunSubscription = this.mongooseSetUpService.runMongoose(mongooseEntryNode).subscribe(
       mongooseRunId => {
         // NOTE: Updated Metrics will include both run ID and load step ID. In case ...
         // ... it won't be implimented, map them here. If you want to get ...

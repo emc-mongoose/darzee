@@ -29,7 +29,7 @@ export class ControlApiService {
     return this.mongooseHostIp;
   }
 
-  public runMongoose(mongooseJsonConfiguration: Object, javaScriptScenario: String = ""): Observable<any> {
+  public runMongoose(entryNodeAddress: string, mongooseJsonConfiguration: Object, javaScriptScenario: String = ""): Observable<any> {
 
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
     javaScriptScenario = JSON.stringify(javaScriptScenario);
@@ -37,7 +37,7 @@ export class ControlApiService {
     let formData = new FormData();
     formData.append('defaults', JSON.stringify(mongooseJsonConfiguration));
 
-    return this.http.post(this.mongooseHostIp + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), { observe: "response" }).pipe(
+    return this.http.post(`${Constants.Http.HTTP_PREFIX}${entryNodeAddress}` + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, {headers:this.getHttpHeadersForMongooseRun()}, { observe: "response" }).pipe(
       map(runResponse => {
         let runId = runResponse.headers.get(MongooseApi.Headers.ETAG);
         return runId;
