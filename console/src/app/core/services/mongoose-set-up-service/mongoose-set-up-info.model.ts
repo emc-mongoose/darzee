@@ -13,6 +13,21 @@ export class MongooseSetupInfoModel {
     private readonly DEFAULT_CONFIGURATION = "";
     private readonly DEFAULT_SCENARIO = "Load.run();";
 
+     // MARK: - Constructor
+     constructor(runNodes: MongooseRunNode[] = [], configuration: any = undefined, runScenario: String = "") {
+        this.runNodes = runNodes;
+        this.configuration = configuration;
+        this.runScenario = runScenario;
+
+        if (this.configuration == undefined) {
+            this.configuration = this.DEFAULT_CONFIGURATION;
+        }
+
+        if (runScenario = "") {
+            this.runScenario = this.DEFAULT_SCENARIO;
+        }
+    }
+
     // MARK: Getters & Setters
 
     public setLoadStepId(loadStepId: String) {
@@ -38,8 +53,12 @@ export class MongooseSetupInfoModel {
         this.configuration = configuration;
     }
 
-    public getRunNodes(): MongooseRunNode[] {
+    public getFullRunNodesList(): MongooseRunNode[] {
         return this.runNodes;
+    }
+
+    public getSlaveNodesList(entryNode: MongooseRunNode): MongooseRunNode[] { 
+        return this.runNodes.filter(node => { return (entryNode.getResourceLocation() != node.getResourceLocation())});
     }
 
     public getConfiguration(): any {
@@ -50,11 +69,16 @@ export class MongooseSetupInfoModel {
         return this.runScenario;
     }
 
-    public getStringfiedRunNodes(): String[] {
+    public getStringifiedNodesForDistributedMode(entryNode: MongooseRunNode): String[] {
         let stringfiedRunNodes: String[] = [];
         this.runNodes.forEach(runNode => {
+            let isNodeEntry = (runNode.getResourceLocation() == entryNode.getResourceLocation());
+            if (isNodeEntry) { 
+                // NOTE: Entry node shouldn't be added as a slave node into Mongoose's cofiguration.
+                return; 
+            }
             stringfiedRunNodes.push(runNode.toString());
-        })
+        });
         return stringfiedRunNodes;
     }
 
@@ -69,20 +93,7 @@ export class MongooseSetupInfoModel {
         })
     }
 
-    // MARK: - Constructor
-    constructor(runNodes: MongooseRunNode[] = [], configuration: any = undefined, runScenario: String = "") {
-        this.runNodes = runNodes;
-        this.configuration = configuration;
-        this.runScenario = runScenario;
-
-        if (this.configuration == undefined) {
-            this.configuration = this.DEFAULT_CONFIGURATION;
-        }
-
-        if (runScenario = "") {
-            this.runScenario = this.DEFAULT_SCENARIO;
-        }
-    }
+   
 
     // MARK: - Public 
 

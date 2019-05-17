@@ -43,7 +43,7 @@ export class MongooseSetUpService {
         (configuration: any) => {
           let mongooseConfigrationParser: MongooseConfigurationParser = new MongooseConfigurationParser(configuration);
           try {
-            let additionalNodes = this.mongooseSetupInfoModel.getRunNodes(); 
+            let additionalNodes = this.mongooseSetupInfoModel.getSlaveNodesList(entryNode);
             configuration = mongooseConfigrationParser.getConfigurationWithAdditionalNodes(additionalNodes);
           } catch (error) {
             console.error(`Nodes couldn't be inserted into configuration. Details: ${error}`);
@@ -68,18 +68,18 @@ export class MongooseSetUpService {
 
   // MARK: - Public 
 
-  public getTargetRunNodes(): MongooseRunNode[] { 
-    return this.mongooseSetupInfoModel.getRunNodes();
+  public getSelectedMongooseRunNodes(): MongooseRunNode[] {
+    return this.mongooseSetupInfoModel.getFullRunNodesList();
   }
 
-  public isNodeExist(node: MongooseRunNode): boolean { 
+  public isNodeExist(node: MongooseRunNode): boolean {
     return this.mongooseSetupInfoModel.isNodeAlreadyExist(node);
   }
 
-  public getMongooseEntryNode(): MongooseRunNode { 
+  public getMongooseEntryNode(): MongooseRunNode {
     // NOTE: First node from the list counts as the entry one. 
     const firstNodeIndex = 0;
-    return this.mongooseSetupInfoModel.getRunNodes()[firstNodeIndex];
+    return this.mongooseSetupInfoModel.getFullRunNodesList()[firstNodeIndex];
   }
 
   // NOTE: Adding Mongoose nodes (while node selection)
@@ -88,7 +88,7 @@ export class MongooseSetUpService {
     this.mongooseSetupInfoModel.addRunNode(node);
   }
 
-  public removeNode(node: MongooseRunNode) { 
+  public removeNode(node: MongooseRunNode) {
     this.mongooseSetupInfoModel.removeRunNode(node);
   }
 
@@ -118,7 +118,11 @@ export class MongooseSetUpService {
     // NOTE: An initial fetch of Prometheus configuration.
     this.http.get(environment.prometheusConfigPath, { responseType: 'text' }).subscribe((configurationFileContent: Object) => {
       let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
-      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(this.mongooseSetupInfoModel.getStringfiedRunNodes());
+
+      let entryNode = this.getMongooseEntryNode();
+      let mongooseSlaveNodesForDistributedMode = this.mongooseSetupInfoModel.getStringifiedNodesForDistributedMode(entryNode);
+
+      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(mongooseSlaveNodesForDistributedMode);
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
       this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => {
