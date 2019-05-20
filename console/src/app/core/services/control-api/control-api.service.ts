@@ -25,7 +25,7 @@ export class ControlApiService {
 
   // MARK: - Public
 
-  public getMongooseIp(): string { 
+  public getMongooseIp(): string {
     return this.mongooseHostIp;
   }
 
@@ -35,16 +35,16 @@ export class ControlApiService {
 
     let configurationFormData = new FormData();
 
-    let mongooseConfigurationBlob = new Blob([JSON.stringify(mongooseJsonConfiguration)], {type: "application/json"});
+    let mongooseConfigurationBlob = new Blob([JSON.stringify(mongooseJsonConfiguration)], { type: "application/json" });
     configurationFormData.append('defaults', mongooseConfigurationBlob);
-    
+
     const emptyValue = "";
-    if (javaScriptScenario != emptyValue) { 
+    if (javaScriptScenario != emptyValue) {
       javaScriptScenario = JSON.stringify(javaScriptScenario);
-      let mongooseRunScenarioBlob = new Blob([JSON.stringify(javaScriptScenario)], {type: "text/plain"});
+      let mongooseRunScenarioBlob = new Blob([JSON.stringify(javaScriptScenario)], { type: "text/plain" });
       configurationFormData.append('scenario', mongooseRunScenarioBlob);
     }
-   
+
 
     return this.http.post(`${Constants.Http.HTTP_PREFIX}${entryNodeAddress}` + "/run", configurationFormData, { observe: "response" }).pipe(
       map(runResponse => {
@@ -53,21 +53,21 @@ export class ControlApiService {
       }));
   }
 
-  public terminateMongooseRun(runId: string): Observable<string> { 
+  public terminateMongooseRun(runId: string): Observable<string> {
     const terminationHeaders = {
       // NOTE: Termination is completed using'If-Match' header. 
       // Matching by run ID.
       'If-Match': `${runId}`
     }
 
-    const terminationRequestOptions = { 
-      headers: new HttpHeaders(terminationHeaders), 
+    const terminationRequestOptions = {
+      headers: new HttpHeaders(terminationHeaders),
       observe: 'response' as 'body'
     }
 
     return this.http.delete(`${this.mongooseHostIp}/${MongooseApi.RunApi.RUN_ENDPOINT}`, terminationRequestOptions).pipe(
-      map((response: any) => { 
-        if (response.status == Constants.HttpStatus.OK) { 
+      map((response: any) => {
+        if (response.status == Constants.HttpStatus.OK) {
           return `Run ${runId} has been successfully terminated.`;
         }
         return `Run ${runId} hasn't been terminated. Detauls: ${response}`;
@@ -82,27 +82,27 @@ export class ControlApiService {
     var mongooseConfigurationHeaders = new HttpHeaders();
     mongooseConfigurationHeaders.append('Accept', 'application/json');
 
-    return this.http.get(mongooseAddress + configEndpoint, {headers: mongooseConfigurationHeaders});
+    return this.http.get(mongooseAddress + configEndpoint, { headers: mongooseConfigurationHeaders });
   }
 
-  public getStatusForMongooseRun(runId: string): Observable<MongooseRunStatus> { 
+  public getStatusForMongooseRun(runId: string): Observable<MongooseRunStatus> {
 
     const requestRunStatusHeaders = {
       // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.
       'If-Match': `${runId}`
     }
 
-    const runStatusRequestOptions = { 
-      headers: new HttpHeaders(requestRunStatusHeaders), 
+    const runStatusRequestOptions = {
+      headers: new HttpHeaders(requestRunStatusHeaders),
       observe: 'response' as 'body'
     }
 
     return this.http.get(`${this.mongooseHostIp}/${MongooseApi.RunApi.RUN_ENDPOINT}`, runStatusRequestOptions).pipe(
-      map((runStatusResponse: any) => { 
+      map((runStatusResponse: any) => {
         let responseStatusCode = runStatusResponse.status;
 
-        if (responseStatusCode == undefined) { 
-          return MongooseRunStatus.Unavailable; 
+        if (responseStatusCode == undefined) {
+          return MongooseRunStatus.Unavailable;
         }
 
         let isRunActive: boolean = (responseStatusCode == Constants.HttpStatus.OK);
