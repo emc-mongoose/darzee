@@ -37,7 +37,7 @@ export class ControlApiService {
     let configurationFormData = this.getFormDataArgumentsForMongooseRun(mongooseJsonConfiguration, javaScriptScenario);
 
 
-    return this.http.post(`${Constants.Http.HTTP_PREFIX}${entryNodeAddress}` + "/run", configurationFormData, { observe: "response" }).pipe(
+    return this.http.post(`${Constants.Http.HTTP_PREFIX}${entryNodeAddress}/${MongooseApi.RunApi.RUN_ENDPOINT}`, configurationFormData, { observe: "response" }).pipe(
       map(runResponse => {
         let runId = runResponse.headers.get(MongooseApi.Headers.ETAG);
         return runId;
@@ -77,6 +77,10 @@ export class ControlApiService {
   }
 
   public getStatusForMongooseRun(runEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
+
+    if (runEntryNode.getEntryNodeAddress() == "address-not-exist") {
+      return (of(MongooseRunStatus.Unavailable));
+    }
 
     const requestRunStatusHeaders = {
       // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.

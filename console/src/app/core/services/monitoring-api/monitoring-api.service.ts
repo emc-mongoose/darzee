@@ -39,8 +39,8 @@ export class MonitoringApiService {
   public getStatusForMongooseRecord(mongooseRunEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
     // NOTE: As for now, we're checking status for Mongoose run overtall, not just Run ID. 
     return this.controlApiService.getStatusForMongooseRun(mongooseRunEntryNode).pipe(
-      map((mongooseRunStatus: MongooseRunStatus) => { 
-       return mongooseRunStatus;
+      map((mongooseRunStatus: MongooseRunStatus) => {
+        return mongooseRunStatus;
       })
     ).pipe(
       share()
@@ -67,7 +67,7 @@ export class MonitoringApiService {
   }
 
   public getMongooseRunRecordByLoadStepId(loadStepId: String): Observable<MongooseRunRecord> {
-    if (loadStepId == "") { 
+    if (loadStepId == "") {
       throw Error("Load step ID hasn't been saved.");
     }
     return this.getCurrentMongooseRunRecords().pipe(
@@ -231,15 +231,14 @@ export class MonitoringApiService {
       let duration = computedRunData[durationIndex];
 
       let entryNode = undefined;
-      try { 
-       entryNode = this.localStorageService.getEntryNodeAddressForRunId(runId);
+      try {
+        entryNode = this.localStorageService.getEntryNodeAddressForRunId(runId);
       } catch (entryNodeNotFoundError) {
         console.error(`Unable to create entry node instance. Details: ${entryNodeNotFoundError}`);
         const NOT_EXISTING_ADDRESS = "address-not-exist";
         entryNode = new MongooseRunEntryNode(NOT_EXISTING_ADDRESS, runId);
       }
       const mongooseRunStatus$ = this.getStatusForMongooseRecord(entryNode);
-
 
       let currentRunRecord = new MongooseRunRecord(loadStepId, mongooseRunStatus$, startTime, nodesList, duration, userComment, entryNode);
       runRecords.push(currentRunRecord);

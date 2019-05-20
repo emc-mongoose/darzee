@@ -13,7 +13,7 @@ export class LocalStorageService {
 
   constructor(@Inject(LOCAL_STORAGE) private storage: StorageService) { }
 
-  public saveToLocalStorage(runEntryNodeAddress: string, runId: string) { 
+  public saveToLocalStorage(runEntryNodeAddress: string, runId: string) {
     const currentEntryNodeMap = this.storage.get(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY) || [];
     let newMongooseRunInstance = new MongooseRunEntryNode(runEntryNodeAddress, runId);
     currentEntryNodeMap.push(newMongooseRunInstance);
@@ -21,20 +21,16 @@ export class LocalStorageService {
     this.storage.set(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY, currentEntryNodeMap);
   }
 
-  public getEntryNodeAddressForRunId(runId: string): MongooseRunEntryNode { 
+  public getEntryNodeAddressForRunId(runId: string): MongooseRunEntryNode {
     let currentEntryNodeMap: MongooseRunEntryNode[] = this.storage.get(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY) || [];
 
     const firstFoundEntryIndex = 0;
-    let matchingEntryFromLocalStorage: any = currentEntryNodeMap.filter((entry: any) => { 
-      let entryRunId = entry.runId;
-      if (entryRunId == undefined) { 
-        return false; 
-      }
+    let matchingEntryFromLocalStorage: any = currentEntryNodeMap.filter((entry: any) => {
       return (entry.runId == runId);
-    })[firstFoundEntryIndex];
+    })[firstFoundEntryIndex] || "";
 
-    let matchingEntryNodeAddress = matchingEntryFromLocalStorage.runEntryNode; 
-    if (matchingEntryNodeAddress == undefined) { 
+    let matchingEntryNodeAddress = matchingEntryFromLocalStorage.runEntryNode;
+    if (matchingEntryNodeAddress == undefined) {
       throw new Error(`Entry node address for run ID ${runId} doesn't exist within local storage.`);
     };
 
