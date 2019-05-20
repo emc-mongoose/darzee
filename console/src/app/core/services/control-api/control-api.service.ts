@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import { map, retry } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { MongooseRunStatus } from '../../models/mongoose-run-status';
+import { MongooseRunEntryNode } from '../local-storage-service/MongooseRunEntryNode';
 
 @Injectable({
   providedIn: 'root'
@@ -75,11 +76,11 @@ export class ControlApiService {
     return this.http.get(mongooseAddress + configEndpoint, { headers: mongooseConfigurationHeaders });
   }
 
-  public getStatusForMongooseRun(runId: string): Observable<MongooseRunStatus> {
+  public getStatusForMongooseRun(runEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
 
     const requestRunStatusHeaders = {
       // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.
-      'If-Match': `${runId}`
+      'If-Match': `${runEntryNode.getRunId()}`
     }
 
     const runStatusRequestOptions = {
@@ -87,7 +88,7 @@ export class ControlApiService {
       observe: 'response' as 'body'
     }
 
-    return this.http.get(`${this.mongooseHostIp}/${MongooseApi.RunApi.RUN_ENDPOINT}`, runStatusRequestOptions).pipe(
+    return this.http.get(`http://${runEntryNode.getEntryNodeAddress()}/${MongooseApi.RunApi.RUN_ENDPOINT}`, runStatusRequestOptions).pipe(
       map((runStatusResponse: any) => {
         let responseStatusCode = runStatusResponse.status;
 

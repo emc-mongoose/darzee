@@ -10,6 +10,7 @@ import { MongooseApi } from "../mongoose-api-models/MongooseApi.model";
 import { HttpClient } from "@angular/common/http";
 import { ControlApiService } from "../control-api/control-api.service";
 import { LocalStorageService } from "../local-storage-service/local-storage.service";
+import { MongooseRunEntryNode } from "../local-storage-service/MongooseRunEntryNode";
 
 
 @Injectable({
@@ -35,9 +36,9 @@ export class MonitoringApiService {
 
   // MARK: - Public
 
-  public getStatusForMongooseRecord(targetRecordRunId: string): Observable<MongooseRunStatus> {
+  public getStatusForMongooseRecord(mongooseRunEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
     // NOTE: As for now, we're checking status for Mongoose run overtall, not just Run ID. 
-    return this.controlApiService.getStatusForMongooseRun(targetRecordRunId).pipe(
+    return this.controlApiService.getStatusForMongooseRun(mongooseRunEntryNode).pipe(
       map((mongooseRunStatus: MongooseRunStatus) => { 
        return mongooseRunStatus;
       })
@@ -229,9 +230,16 @@ export class MonitoringApiService {
       let durationIndex = 1;
       let duration = computedRunData[durationIndex];
 
-      const mongooseRunStatus$ = this.getStatusForMongooseRecord(runId);
+      let entryNode = undefined;
+      try { 
+       entryNode = this.localStorageService.getEntryNodeAddressForRunId(runId);
+      } catch (entryNodeNotFoundError) {
+        console.error(`Unable to create entry node instance. Details: ${entryNodeNotFoundError}`);
+        const NOT_EXISTING_ADDRESS = "address-not-exist";
+        entryNode = new MongooseRunEntryNode(NOT_EXISTING_ADDRESS, runId);
+      }
+      const mongooseRunStatus$ = this.getStatusForMongooseRecord(entryNode);
 
-      let entryNode = this.localStorageService.getEntryNodeAddressForRunId(runId);
 
       let currentRunRecord = new MongooseRunRecord(loadStepId, mongooseRunStatus$, startTime, nodesList, duration, userComment, entryNode);
       runRecords.push(currentRunRecord);

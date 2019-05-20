@@ -23,9 +23,21 @@ export class LocalStorageService {
 
   public getEntryNodeAddressForRunId(runId: string): MongooseRunEntryNode { 
     let currentEntryNodeMap: MongooseRunEntryNode[] = this.storage.get(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY) || [];
-    let matchingMongooseRunEntryNode = currentEntryNodeMap.find(entry => {
-      return (entry.getRunId() == runId);
-    });
-    return matchingMongooseRunEntryNode;
+
+    const firstFoundEntryIndex = 0;
+    let matchingEntryFromLocalStorage: any = currentEntryNodeMap.filter((entry: any) => { 
+      let entryRunId = entry.runId;
+      if (entryRunId == undefined) { 
+        return false; 
+      }
+      return (entry.runId == runId);
+    })[firstFoundEntryIndex];
+
+    let matchingEntryNodeAddress = matchingEntryFromLocalStorage.runEntryNode; 
+    if (matchingEntryNodeAddress == undefined) { 
+      throw new Error(`Entry node address for run ID ${runId} doesn't exist within local storage.`);
+    };
+
+    return new MongooseRunEntryNode(matchingEntryNodeAddress, runId);
   }
 }
