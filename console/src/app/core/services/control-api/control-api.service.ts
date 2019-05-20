@@ -78,7 +78,7 @@ export class ControlApiService {
 
   public getStatusForMongooseRun(runEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
 
-    if (runEntryNode.getEntryNodeAddress() == "address-not-exist") {
+    if (runEntryNode.getEntryNodeAddress() == MongooseRunEntryNode.ADDRESS_NOT_EXIST) {
       return (of(MongooseRunStatus.Unavailable));
     }
 

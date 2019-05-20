@@ -235,7 +235,7 @@ export class MonitoringApiService {
         entryNode = this.localStorageService.getEntryNodeAddressForRunId(runId);
       } catch (entryNodeNotFoundError) {
         console.error(`Unable to create entry node instance. Details: ${entryNodeNotFoundError}`);
-        const NOT_EXISTING_ADDRESS = "address-not-exist";
+        const NOT_EXISTING_ADDRESS = MongooseRunEntryNode.ADDRESS_NOT_EXIST;
         entryNode = new MongooseRunEntryNode(NOT_EXISTING_ADDRESS, runId);
       }
       const mongooseRunStatus$ = this.getStatusForMongooseRecord(entryNode);
