@@ -34,10 +34,14 @@ export class ControlApiService {
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
     javaScriptScenario = JSON.stringify(javaScriptScenario);
 
-    let formData = new FormData();
-    formData.append('defaults', JSON.stringify(mongooseJsonConfiguration));
+    let configurationFormData = new FormData();
+    configurationFormData.append('defaults', new Blob([JSON.stringify(mongooseJsonConfiguration)], {type: "application/json"}));
 
-    return this.http.post(`${Constants.Http.HTTP_PREFIX}${entryNodeAddress}` + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, {headers:this.getHttpHeadersForMongooseRun()}, { observe: "response" }).pipe(
+    // let scenarioFormData = new FormData();
+    configurationFormData.append('scenario', new Blob([JSON.stringify(javaScriptScenario)], {type: "text/plain"}));
+
+    // let mongooseRunArguments = [configurationFormData, scenarioFormData];
+    return this.http.post(`${Constants.Http.HTTP_PREFIX}${entryNodeAddress}` + "/run", configurationFormData, { observe: "response" }).pipe(
       map(runResponse => {
         let runId = runResponse.headers.get(MongooseApi.Headers.ETAG);
         return runId;
@@ -115,7 +119,6 @@ export class ControlApiService {
 
   private getHttpHeadersForMongooseRun(): HttpHeaders {
     let httpHeadersForMongooseRun = new HttpHeaders();
-    httpHeadersForMongooseRun.append('Content-Type', 'multipart/form-data');
     httpHeadersForMongooseRun.append('Accept', '*/*');
     return httpHeadersForMongooseRun;
   }
