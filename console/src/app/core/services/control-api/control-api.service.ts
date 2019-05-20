@@ -32,15 +32,20 @@ export class ControlApiService {
   public runMongoose(entryNodeAddress: string, mongooseJsonConfiguration: Object, javaScriptScenario: String = ""): Observable<any> {
 
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
-    javaScriptScenario = JSON.stringify(javaScriptScenario);
 
     let configurationFormData = new FormData();
-    configurationFormData.append('defaults', new Blob([JSON.stringify(mongooseJsonConfiguration)], {type: "application/json"}));
 
-    // let scenarioFormData = new FormData();
-    configurationFormData.append('scenario', new Blob([JSON.stringify(javaScriptScenario)], {type: "text/plain"}));
+    let mongooseConfigurationBlob = new Blob([JSON.stringify(mongooseJsonConfiguration)], {type: "application/json"});
+    configurationFormData.append('defaults', mongooseConfigurationBlob);
+    
+    const emptyValue = "";
+    if (javaScriptScenario != emptyValue) { 
+      javaScriptScenario = JSON.stringify(javaScriptScenario);
+      let mongooseRunScenarioBlob = new Blob([JSON.stringify(javaScriptScenario)], {type: "text/plain"});
+      configurationFormData.append('scenario', mongooseRunScenarioBlob);
+    }
+   
 
-    // let mongooseRunArguments = [configurationFormData, scenarioFormData];
     return this.http.post(`${Constants.Http.HTTP_PREFIX}${entryNodeAddress}` + "/run", configurationFormData, { observe: "response" }).pipe(
       map(runResponse => {
         let runId = runResponse.headers.get(MongooseApi.Headers.ETAG);
