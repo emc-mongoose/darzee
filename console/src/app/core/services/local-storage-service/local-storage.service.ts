@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
+import { MongooseRunEntryNode } from './MongooseRunEntryNode';
 
 
 @Injectable({
@@ -12,14 +13,19 @@ export class LocalStorageService {
 
   constructor(@Inject(LOCAL_STORAGE) private storage: StorageService) { }
 
-  public saveToLocalStorage(runEntryNode: string, runId: string) { 
+  public saveToLocalStorage(runEntryNodeAddress: string, runId: string) { 
     const currentEntryNodeMap = this.storage.get(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY) || [];
-    currentEntryNodeMap.push({
-      runEntryNode: `${runEntryNode}`,
-      runId: `${runId}`
-    });
+    let newMongooseRunInstance = new MongooseRunEntryNode(runEntryNodeAddress, runId);
+    currentEntryNodeMap.push(newMongooseRunInstance);
 
     this.storage.set(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY, currentEntryNodeMap);
-    console.log(`updated currentEntryNodeMap: ${JSON.stringify(currentEntryNodeMap)}`);
+  }
+
+  public getEntryNodeAddressForRunId(runId: string): string { 
+    let currentEntryNodeMap: MongooseRunEntryNode[] = this.storage.get(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY) || [];
+    let matchingMongooseRunEntryNode = currentEntryNodeMap.find(entry => {
+      return (entry.getRunId() == runId);
+    });
+    return matchingMongooseRunEntryNode.getEntryNodeAddress();
   }
 }
