@@ -19,7 +19,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ChartsModule } from 'ng2-charts';
 import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
 import { BasicChartComponent } from './components/run-statistics/run-statistics-charts/basic-chart/basic-chart.component';
-
+import { StorageServiceModule } from "ngx-webstorage-service";
+import { LocalStorageService } from "src/app/core/services/local-storage-service/local-storage.service";
 
 @NgModule({
   declarations: [
@@ -28,13 +29,13 @@ import { BasicChartComponent } from './components/run-statistics/run-statistics-
     RunsTableComponent,
     MongooseRunStatusIconComponent,
     RunsTableRootComponent,
-    
+
     RunStatisticsComponent,
     RunStatisticLogsComponent,
     RunStatisticsChartsComponent,
     DateFormatPipe,
     BasicChartComponent
-    
+
   ],
   entryComponents: [
     BasicChartComponent
@@ -47,12 +48,13 @@ import { BasicChartComponent } from './components/run-statistics/run-statistics-
     AppRoutingModule,
     MongooseSetUpModuleModule,
     BrowserAnimationsModule,
-    ChartsModule
-    ],
+    ChartsModule,
+    StorageServiceModule
+  ],
 
   // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
   // ... since we use it for the set up. 
-  providers: [ControlApiService, MonitoringApiService, DateFormatPipe, PrometheusApiService],
+  providers: [ControlApiService, MonitoringApiService, DateFormatPipe, PrometheusApiService, LocalStorageService],
   bootstrap: [AppComponent],
   exports: [AppComponent],
 })

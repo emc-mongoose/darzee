@@ -12,6 +12,7 @@ import { map } from 'rxjs/operators';
 import { MongooseRunNode } from '../../models/mongoose-run-node.model';
 import { ResourceLocatorType } from '../../models/address-type';
 import { MongooseConfigurationParser } from '../../models/mongoose-configuration-parser';
+import { LocalStorageService } from '../local-storage-service/local-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,8 @@ export class MongooseSetUpService {
 
   constructor(private controlApiService: ControlApiService,
     private containerServerService: ContainerServerService,
-    private http: HttpClient) {
+    private http: HttpClient,
+    private localStorageService: LocalStorageService) {
 
     this.updatePrometheusConfiguration();
 
@@ -100,6 +102,7 @@ export class MongooseSetUpService {
     return this.controlApiService.runMongoose(entryNode.getResourceLocation(), this.mongooseSetupInfoModel.getConfiguration(), this.mongooseSetupInfoModel.getRunScenario()).pipe(
       map(runId => {
         this.mongooseSetupInfoModel.setLoadStepId(runId);
+        this.localStorageService.saveToLocalStorage(entryNode.getResourceLocation(), runId);
         return runId;
       })
     );
