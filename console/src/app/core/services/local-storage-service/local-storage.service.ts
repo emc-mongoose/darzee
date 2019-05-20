@@ -21,11 +21,11 @@ export class LocalStorageService {
     this.storage.set(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY, currentEntryNodeMap);
   }
 
-  public getEntryNodeAddressForRunId(runId: string): string { 
+  public getEntryNodeAddressForRunId(runId: string): MongooseRunEntryNode { 
     let currentEntryNodeMap: MongooseRunEntryNode[] = this.storage.get(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY) || [];
     let matchingMongooseRunEntryNode = currentEntryNodeMap.find(entry => {
       return (entry.getRunId() == runId);
     });
-    return matchingMongooseRunEntryNode.getEntryNodeAddress();
+    return matchingMongooseRunEntryNode;
   }
 }

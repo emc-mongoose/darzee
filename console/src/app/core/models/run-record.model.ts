@@ -1,6 +1,7 @@
 import { MongooseRunStatus } from './mongoose-run-status';
 import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
+import { MongooseRunEntryNode } from '../services/local-storage-service/MongooseRunEntryNode';
 
 export class MongooseRunRecord implements OnDestroy {
 
@@ -10,7 +11,7 @@ export class MongooseRunRecord implements OnDestroy {
     public nodes: String[];
     public comment: String;
 
-    private readonly runId: String;
+    private readonly entryNode: MongooseRunEntryNode;
     private loadStepId: String = ""; 
 
     private duration: string;
@@ -20,8 +21,7 @@ export class MongooseRunRecord implements OnDestroy {
 
     // MARK: - Lifecycle 
 
-    constructor(runId: String, loadStepId: String, mongooseRunStatus$: Observable<MongooseRunStatus>, startTime: String, nodes: String[], duration: string, comment: String) {
-        this.runId = runId;
+    constructor(loadStepId: String, mongooseRunStatus$: Observable<MongooseRunStatus>, startTime: String, nodes: String[], duration: string, comment: String, entryNode: MongooseRunEntryNode) {
         this.loadStepId = loadStepId;
         this.startTime = startTime;
         this.nodes = nodes;
@@ -29,6 +29,7 @@ export class MongooseRunRecord implements OnDestroy {
         this.comment = comment;
 
         this.status$ = mongooseRunStatus$; 
+        this.entryNode = entryNode;
         this.statusSubscription.add(mongooseRunStatus$.subscribe(
             fetchedStatus => {
                 this.currentStatus = fetchedStatus;
@@ -62,7 +63,7 @@ export class MongooseRunRecord implements OnDestroy {
     }
 
     public getRunId(): String {
-        return this.runId;
+        return this.entryNode.getRunId();
     }
 
     public getNodesList(): String[] {

@@ -9,6 +9,7 @@ import { MongooseMetrics } from "../mongoose-api-models/MongooseMetrics";
 import { MongooseApi } from "../mongoose-api-models/MongooseApi.model";
 import { HttpClient } from "@angular/common/http";
 import { ControlApiService } from "../control-api/control-api.service";
+import { LocalStorageService } from "../local-storage-service/local-storage.service";
 
 
 @Injectable({
@@ -27,7 +28,8 @@ export class MonitoringApiService {
 
   constructor(private prometheusApiService: PrometheusApiService,
     private controlApiService: ControlApiService,
-    private http: HttpClient) {
+    private http: HttpClient,
+    private localStorageService: LocalStorageService) {
     this.setUpService();
   }
 
@@ -229,7 +231,9 @@ export class MonitoringApiService {
 
       const mongooseRunStatus$ = this.getStatusForMongooseRecord(runId);
 
-      let currentRunRecord = new MongooseRunRecord(runId, loadStepId, mongooseRunStatus$, startTime, nodesList, duration, userComment);
+      let entryNode = this.localStorageService.getEntryNodeAddressForRunId(runId);
+
+      let currentRunRecord = new MongooseRunRecord(loadStepId, mongooseRunStatus$, startTime, nodesList, duration, userComment, entryNode);
       runRecords.push(currentRunRecord);
     }
 
