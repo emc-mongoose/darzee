@@ -29,21 +29,11 @@ export class ControlApiService {
     return this.mongooseHostIp;
   }
 
-  public runMongoose(entryNodeAddress: string, mongooseJsonConfiguration: Object, javaScriptScenario: String = ""): Observable<any> {
+  public runMongoose(entryNodeAddress: string, mongooseJsonConfiguration: Object = "", javaScriptScenario: String = ""): Observable<any> {
 
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
 
-    let configurationFormData = new FormData();
-
-    let mongooseConfigurationBlob = new Blob([JSON.stringify(mongooseJsonConfiguration)], { type: "application/json" });
-    configurationFormData.append('defaults', mongooseConfigurationBlob);
-
-    const emptyValue = "";
-    if (javaScriptScenario != emptyValue) {
-      javaScriptScenario = JSON.stringify(javaScriptScenario);
-      let mongooseRunScenarioBlob = new Blob([JSON.stringify(javaScriptScenario)], { type: "text/plain" });
-      configurationFormData.append('scenario', mongooseRunScenarioBlob);
-    }
+    let configurationFormData = this.getFormDataArgumentsForMongooseRun(mongooseJsonConfiguration, javaScriptScenario);
 
 
     return this.http.post(`${Constants.Http.HTTP_PREFIX}${entryNodeAddress}` + "/run", configurationFormData, { observe: "response" }).pipe(
@@ -113,6 +103,26 @@ export class ControlApiService {
 
 
   // MARK: - Private
+
+
+  // NOTE: Mongoose run accepts parameters as form data (configuration file, scenario file, etc.). The function ...
+  // ... adds the parameters into FormData object.
+  private getFormDataArgumentsForMongooseRun(mongooseRunConfiguration: Object, mongooseRunScenario: Object): FormData {
+    const emptyValue = "";
+
+    let configurationFormData = new FormData();
+    if (mongooseRunConfiguration != emptyValue) {
+      let mongooseConfigurationBlob = new Blob([JSON.stringify(mongooseRunConfiguration)], { type: "application/json" });
+      configurationFormData.append('defaults', mongooseConfigurationBlob);
+    }
+
+    if (mongooseRunScenario != emptyValue) {
+      let mongooseRunScenarioBlob = new Blob([JSON.stringify(mongooseRunScenario)], { type: "text/plain" });
+      configurationFormData.append('scenario', mongooseRunScenarioBlob);
+    }
+
+    return configurationFormData;
+  }
 
   private getHttpHeaderForJsonFile(): HttpHeaders {
     var httpHeadersForMongooseRun = new HttpHeaders();
