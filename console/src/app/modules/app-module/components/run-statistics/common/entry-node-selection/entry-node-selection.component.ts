@@ -12,7 +12,7 @@ import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators'
 export class EntryNodeSelectionComponent implements OnInit {
 
   @Input() mongooseRunRecord: MongooseRunRecord;
-  @ViewChild('instance') instance: NgbTypeahead;
+  @ViewChild('instance') typeheadInstance: NgbTypeahead;
 
   private existingNodesList: String[] = [];
   private currentEnteredText: string = ""
@@ -29,7 +29,7 @@ export class EntryNodeSelectionComponent implements OnInit {
 
   search = (enteringText$: Observable<string>) => {
     const debouncedText$ = enteringText$.pipe(debounceTime(200), distinctUntilChanged());
-    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
+    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.typeheadInstance.isPopupOpen()));
     const inputFocus$ = this.focus$;
 
     return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
@@ -41,7 +41,8 @@ export class EntryNodeSelectionComponent implements OnInit {
     )
   }
 
-  public onAddEntryNodeClicked() {
+  public onAddEntryNodeClicked(value: string) {
     this.mongooseRunRecord.setEntryNodeAddress(this.currentEnteredText);
+    this.activeModal.dismiss('Cross click');
   }
 }
