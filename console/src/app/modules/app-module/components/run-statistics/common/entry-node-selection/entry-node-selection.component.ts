@@ -49,9 +49,10 @@ export class EntryNodeSelectionComponent implements OnInit {
   }
 
 
-  public onAddEntryNodeClicked(value: string) {
+  public onAddEntryNodeClicked(enteredEntryNodeAddress: string) {
+    // NOTE: Removing whitespaces from string in case of accidental entering of them
+    this.currentEnteredText = this.currentEnteredText.replace(" ", "");
     this.mongooseRunRecord.setEntryNodeAddress(this.currentEnteredText);
-    // TODO: Save it into local storage here 
-    this.activeModal.dismiss('Cross click');
+    this.activeModal.dismiss(enteredEntryNodeAddress);
   }
 }

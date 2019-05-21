@@ -11,6 +11,7 @@ import { MongooseRouteParamsParser } from 'src/app/core/models/mongoose-route-pa
 import { MongooseRunEntryNode } from 'src/app/core/services/local-storage-service/MongooseRunEntryNode';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EntryNodeSelectionComponent } from '../common/entry-node-selection/entry-node-selection.component';
+import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
 
 
 @Component({
@@ -36,7 +37,8 @@ export class RunStatisticLogsComponent implements OnInit {
   constructor(private monitoringApiService: MonitoringApiService,
     private router: Router,
     private route: ActivatedRoute,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal,
+    private localStorageService: LocalStorageService) { }
 
     ngOnInit() {}
 
@@ -53,9 +55,9 @@ export class RunStatisticLogsComponent implements OnInit {
               // NOTE: Timeout prevents situations when modal view will be created before the parent one. 
               setTimeout(() => this.openEntryNodeSelectionWindow());
             }
+            this.initlogTabs();
           }
         ));
-        this.initlogTabs();
       } catch (recordNotFoundError) {
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
         alert(`Unable to load requested record information. Reason: ${recordNotFoundError.message}`);
@@ -109,12 +111,14 @@ export class RunStatisticLogsComponent implements OnInit {
     entryRunNodeEntranceScreenReference.componentInstance.mongooseRunRecord = this.processingRunRecord;
     entryRunNodeEntranceScreenReference.result.then(
       (result) => {
-        console.log(`[run statistic logs] result: ${result}`);
-      // this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      console.log(`[run statistic logs] reason: ${reason}`);
-
-      // this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+        console.error(`Unexpected finish of node entrance window: ${result}`);
+      }, (entryNodeAddress) => {
+        // NOTE: Saving entered entry node into local storage
+      this.processingRunRecord.setEntryNodeAddress(entryNodeAddress);
+      this.localStorageService.saveToLocalStorage(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getRunId() as string);
+     
+      // NOTE: Reinitializing the tabs
+      this.initlogTabs();
     });
   }
 
