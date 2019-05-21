@@ -35,7 +35,8 @@ export class MongooseRunRecord implements OnDestroy {
                 this.currentStatus = fetchedStatus;
             },
             error => { 
-                this.currentStatus = MongooseRunStatus.Unavailable;
+                // NOTE: Handle situation of Mongoose entry node unavailability
+                this.currentStatus = MongooseRunStatus.Finished;
             }
         ));
     }

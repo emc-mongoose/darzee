@@ -77,11 +77,7 @@ export class ControlApiService {
   }
 
   public getStatusForMongooseRun(runEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
-
-    if (runEntryNode.getEntryNodeAddress() == MongooseRunEntryNode.ADDRESS_NOT_EXIST) {
-      return (of(MongooseRunStatus.Unavailable));
-    }
-
+    
     const requestRunStatusHeaders = {
       // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.
       'If-Match': `${runEntryNode.getRunId()}`
