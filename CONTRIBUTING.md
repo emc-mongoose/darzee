@@ -38,7 +38,7 @@ The following interfaces are mentioned as the subject of the backward compatibil
 
 ## 2.2. Numbers
 
-Mongoose Console uses the [semantic versioning](http://semver.org/). This means that the ***X.Y.Z*** version notation is used:
+Darzee uses the [semantic versioning](http://semver.org/). This means that the ***X.Y.Z*** version notation is used:
 
 * ***X***<br/>
     Major version number. Points to significant design and interfaces change. The *backward compatibility* is **not
