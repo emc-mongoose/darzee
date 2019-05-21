@@ -9,6 +9,8 @@ import { MongooseMetrics } from "../mongoose-api-models/MongooseMetrics";
 import { MongooseApi } from "../mongoose-api-models/MongooseApi.model";
 import { HttpClient } from "@angular/common/http";
 import { ControlApiService } from "../control-api/control-api.service";
+import { LocalStorageService } from "../local-storage-service/local-storage.service";
+import { MongooseRunEntryNode } from "../local-storage-service/MongooseRunEntryNode";
 
 
 @Injectable({
@@ -16,7 +18,6 @@ import { ControlApiService } from "../control-api/control-api.service";
 })
 export class MonitoringApiService {
 
-  private readonly MONGOOSE_HTTP_ADDRESS = Constants.Http.HTTP_PREFIX + Constants.Configuration.MONGOOSE_HOST_IP;
   private currentMongooseRunRecords$: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
 
   // NOTE: availableLogs is a list of logs provided by Mongoose. Key is REST API's endpoint for fetching the log, ...
@@ -27,17 +28,18 @@ export class MonitoringApiService {
 
   constructor(private prometheusApiService: PrometheusApiService,
     private controlApiService: ControlApiService,
-    private http: HttpClient) {
+    private http: HttpClient,
+    private localStorageService: LocalStorageService) {
     this.setUpService();
   }
 
   // MARK: - Public
 
-  public getStatusForMongooseRecord(targetRecordRunId: string): Observable<MongooseRunStatus> {
+  public getStatusForMongooseRecord(mongooseRunEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
     // NOTE: As for now, we're checking status for Mongoose run overtall, not just Run ID. 
-    return this.controlApiService.getStatusForMongooseRun(targetRecordRunId).pipe(
-      map((mongooseRunStatus: MongooseRunStatus) => { 
-       return mongooseRunStatus;
+    return this.controlApiService.getStatusForMongooseRun(mongooseRunEntryNode).pipe(
+      map((mongooseRunStatus: MongooseRunStatus) => {
+        return mongooseRunStatus;
       })
     ).pipe(
       share()
@@ -64,7 +66,7 @@ export class MonitoringApiService {
   }
 
   public getMongooseRunRecordByLoadStepId(loadStepId: String): Observable<MongooseRunRecord> {
-    if (loadStepId == "") { 
+    if (loadStepId == "") {
       throw Error("Load step ID hasn't been saved.");
     }
     return this.getCurrentMongooseRunRecords().pipe(
@@ -141,7 +143,7 @@ export class MonitoringApiService {
   }
 
 
-  public getLog(stepId: String, logName: String): Observable<any> {
+  public getLog(mongooseNodeAddress: string, stepId: String, logName: String): Observable<any> {
     let logsEndpoint = MongooseApi.LogsApi.LOGS;
     let targetUrl = "";
     let delimiter = "/";
@@ -151,11 +153,11 @@ export class MonitoringApiService {
       // NOTE: HTTP request on this URL will return error. 
       // The error will be handled and Mongoose's run status would be set to 'unavailable'. 
       // This is done in case Mongoose has been reloaded, but Prometheus still stores its metrics.
-      targetUrl = this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + logName;
+      targetUrl = mongooseNodeAddress + logsEndpoint + delimiter + logName;
     } else {
-      targetUrl = this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName;
+      targetUrl = mongooseNodeAddress + logsEndpoint + delimiter + stepId + delimiter + logName;
     }
-    return this.http.get(targetUrl, { responseType: 'text' }).pipe(share());
+    return this.http.get(`${Constants.Http.HTTP_PREFIX}${targetUrl}`, { responseType: 'text' }).pipe(share());
   }
 
   public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
@@ -227,9 +229,17 @@ export class MonitoringApiService {
       let durationIndex = 1;
       let duration = computedRunData[durationIndex];
 
-      const mongooseRunStatus$ = this.getStatusForMongooseRecord(runId);
+      let entryNode = undefined;
+      try {
+        entryNode = this.localStorageService.getEntryNodeAddressForRunId(runId);
+      } catch (entryNodeNotFoundError) {
+        console.error(`Unable to create entry node instance. Details: ${entryNodeNotFoundError}`);
+        const NOT_EXISTING_ADDRESS = MongooseRunEntryNode.ADDRESS_NOT_EXIST;
+        entryNode = new MongooseRunEntryNode(NOT_EXISTING_ADDRESS, runId);
+      }
+      const mongooseRunStatus$ = this.getStatusForMongooseRecord(entryNode);
 
-      let currentRunRecord = new MongooseRunRecord(runId, loadStepId, mongooseRunStatus$, startTime, nodesList, duration, userComment);
+      let currentRunRecord = new MongooseRunRecord(loadStepId, mongooseRunStatus$, startTime, nodesList, duration, userComment, entryNode);
       runRecords.push(currentRunRecord);
     }
 
@@ -300,8 +310,8 @@ export class MonitoringApiService {
     return requiredfiltredRecords;
   }
 
-  private isLogFileExist(loadStepId: String, logName: String): Observable<any> {
-    return this.getLog(loadStepId, logName).pipe(
+  private isLogFileExist(runEntryNodeAddress: string, loadStepId: String, logName: String): Observable<any> {
+    return this.getLog(runEntryNodeAddress, loadStepId, logName).pipe(
       map(hasConfig => hasConfig = of(true)),
       catchError(hasConfig => hasConfig = of(false))
     );

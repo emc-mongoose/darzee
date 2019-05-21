@@ -13,6 +13,7 @@ import { SetUpFooterComponent } from "./components/mongoose-set-up/set-up-footer
 import { ControlApiService } from "src/app/core/services/control-api/control-api.service";
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
 import { DateFormatPipe } from "src/app/common/date-format-pipe";
+import { LocalStorageService } from "src/app/core/services/local-storage-service/local-storage.service";
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { DateFormatPipe } from "src/app/common/date-format-pipe";
   providers: [
     ControlApiService,
     MonitoringApiService,
-    DateFormatPipe
+    DateFormatPipe,
+    LocalStorageService
   ],
   bootstrap: [
     MongooseSetUpComponent

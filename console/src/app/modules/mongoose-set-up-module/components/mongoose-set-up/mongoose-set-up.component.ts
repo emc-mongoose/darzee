@@ -41,7 +41,7 @@ export class MongooseSetUpComponent implements OnInit {
     let defaultTabNumber = 0;
     this.openUpTab(defaultTabNumber);
   }
-  
+
   ngOnInit() { }
 
   ngOnDestroy() {
@@ -64,9 +64,9 @@ export class MongooseSetUpComponent implements OnInit {
   public onConfirmClicked() {
     let processingTab = this.getCurrentSetupTab();
     processingTab.isCompleted = this.getSetUpTabComplitionStatus();
-    if (!processingTab.isCompleted) { 
+    if (!processingTab.isCompleted) {
       alert(`Please, select Mongoose run nodes before continuing.`);
-      return; 
+      return;
     }
     let nextTabId = this.processingTabID + 1;
     this.switchTab(nextTabId);
@@ -81,41 +81,43 @@ export class MongooseSetUpComponent implements OnInit {
   }
 
   public onRunBtnClicked() {
-    this.mongooseRunSubscription = this.mongooseSetUpService.runMongoose().subscribe(
+    // NOTE: Launching Mongoose on its entry node.
+    let mongooseEntryNode = this.mongooseSetUpService.getMongooseEntryNode();
+    this.mongooseRunSubscription = this.mongooseSetUpService.runMongoose(mongooseEntryNode).subscribe(
       mongooseRunId => {
-      // NOTE: Updated Metrics will include both run ID and load step ID. In case ...
-      // ... it won't be implimented, map them here. If you want to get ...
-      // ... load step id, you can do it via mongoose set up service. 
-      console.log("Launched Mongoose run with run ID: ", mongooseRunId);
-      
-      // NOTE: If run ID has been returned from the server, Mongoose run has started
-      let hasMongooseSuccessfullyStarted = (mongooseRunId != undefined);
-      if (!hasMongooseSuccessfullyStarted) {
-        let misleadingMessage = `Unable to launch Mongoose - run ID hasn't been generated. Details: ${JSON.stringify(mongooseRunId)}`;
-        alert(misleadingMessage);
-      } else {
-        let misleadingMessage = "Mongoose Run has started with ID " + mongooseRunId;
-        alert(misleadingMessage);
-      }
-      
-      this.router.navigate([RoutesList.RUNS]);
-    },
-    error => { 
-      let errorReason = ""; 
-      if (error.status != undefined) { 
-        if (error.status == Constants.HttpStatus.CONFLICT) { 
-          errorReason = "Another Mongoose run has already been launched on port " + this.mongooseSetUpService.getMongooseRunTargetPort() + ".";
+        // NOTE: Updated Metrics will include both run ID and load step ID. In case ...
+        // ... it won't be implimented, map them here. If you want to get ...
+        // ... load step id, you can do it via mongoose set up service. 
+        console.log("Launched Mongoose run with run ID: ", mongooseRunId);
+
+        // NOTE: If run ID has been returned from the server, Mongoose run has started
+        let hasMongooseSuccessfullyStarted = (mongooseRunId != undefined);
+        if (!hasMongooseSuccessfullyStarted) {
+          let misleadingMessage = `Unable to launch Mongoose - run ID hasn't been generated. Details: ${JSON.stringify(mongooseRunId)}`;
+          alert(misleadingMessage);
+        } else {
+          let misleadingMessage = "Mongoose Run has started with ID " + mongooseRunId;
+          alert(misleadingMessage);
         }
-      }
-      let misleadingMessage = `Unable to launch Mongoose. Details: ${JSON.stringify(error)}`;
-      let emptyString = "";
-      if (errorReason != emptyString) { 
-        let phrasesDelimiter = " ";
-        misleadingMessage += phrasesDelimiter + "Reason: " + errorReason;
-      }
-      alert(misleadingMessage);
-      console.error(misleadingMessage + error);
-    });
+
+        this.router.navigate([RoutesList.RUNS]);
+      },
+      error => {
+        let errorReason = "";
+        if (error.status != undefined) {
+          if (error.status == Constants.HttpStatus.CONFLICT) {
+            errorReason = "Another Mongoose run has already been launched on port " + this.mongooseSetUpService.getMongooseRunTargetPort() + ".";
+          }
+        }
+        let misleadingMessage = `Unable to launch Mongoose. Details: ${JSON.stringify(error)}`;
+        let emptyString = "";
+        if (errorReason != emptyString) {
+          let phrasesDelimiter = " ";
+          misleadingMessage += phrasesDelimiter + "Reason: " + errorReason;
+        }
+        alert(misleadingMessage);
+        console.error(misleadingMessage + error);
+      });
   }
 
   public onRouterComponentActivated($event) { }
@@ -161,9 +163,9 @@ export class MongooseSetUpComponent implements OnInit {
     this.openUpTab(nextTabId);
   }
 
-  private getSetUpTabComplitionStatus(): boolean { 
+  private getSetUpTabComplitionStatus(): boolean {
     // NOTE: Allowing switching set up tab only if target run nodes were selected 
-    let hasMongooseRunNodesSelected = (this.mongooseSetUpService.getTargetRunNodes().length > 0); 
+    let hasMongooseRunNodesSelected = (this.mongooseSetUpService.getSelectedMongooseRunNodes().length > 0);
     return hasMongooseRunNodesSelected;
   }
 }

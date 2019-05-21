@@ -73,7 +73,7 @@ export class RunStatisticLogsComponent implements OnInit {
     let emptyErrorHtmlValue = "";
     this.occuredError = emptyErrorHtmlValue;
 
-    this.monitoringApiService.getLog(this.processingRunRecord.getLoadStepId(), logApiEndpoint).subscribe(
+    this.monitoringApiService.getLog(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getLoadStepId(), logApiEndpoint).subscribe(
       logs => {
         this.displayingLog = logs;
       },

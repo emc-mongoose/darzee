@@ -10,5 +10,4 @@ export class ConfigurationEditingRootComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {}
-å
 }

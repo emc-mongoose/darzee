@@ -54,7 +54,9 @@ export class NodesComponent implements OnInit {
   }
 
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
-    this.mongooseSetUpService.addNode(selectedNode);
+    let hasNodeBeenSelected: boolean = this.mongooseSetUpService.isNodeExist(selectedNode);
+    // NOTE: Add noode if check mark has been set, remove if unset
+    hasNodeBeenSelected ? this.mongooseSetUpService.removeNode(selectedNode) : this.mongooseSetUpService.addNode(selectedNode);
   }
 
   private isipValid(entredIpAddress: string) {

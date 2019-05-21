@@ -95,7 +95,8 @@ export class RunStatisticsComponent implements OnInit {
 
   public onTerminateBtnClicked(runRecord: MongooseRunRecord) { 
     let terminatingRunId = runRecord.getRunId();
-    this.controlApiService.terminateMongooseRun(terminatingRunId as string).subscribe(
+    let terminatingRunEntryNodeAddress = runRecord.getEntryNodeAddress();
+    this.controlApiService.terminateMongooseRun(terminatingRunEntryNodeAddress, terminatingRunId as string).subscribe(
       (terminationStatusMessage: string) => { 
         alert(terminationStatusMessage);
         window.location.reload();

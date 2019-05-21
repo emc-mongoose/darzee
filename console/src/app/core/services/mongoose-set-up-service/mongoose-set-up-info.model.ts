@@ -13,6 +13,21 @@ export class MongooseSetupInfoModel {
     private readonly DEFAULT_CONFIGURATION = "";
     private readonly DEFAULT_SCENARIO = "Load.run();";
 
+     // MARK: - Constructor
+     constructor(runNodes: MongooseRunNode[] = [], configuration: any = undefined, runScenario: String = "") {
+        this.runNodes = runNodes;
+        this.configuration = configuration;
+        this.runScenario = runScenario;
+
+        if (this.configuration == undefined) {
+            this.configuration = this.DEFAULT_CONFIGURATION;
+        }
+
+        if (runScenario = "") {
+            this.runScenario = this.DEFAULT_SCENARIO;
+        }
+    }
+
     // MARK: Getters & Setters
 
     public setLoadStepId(loadStepId: String) {
@@ -38,8 +53,12 @@ export class MongooseSetupInfoModel {
         this.configuration = configuration;
     }
 
-    public getRunNodes(): MongooseRunNode[] {
+    public getFullRunNodesList(): MongooseRunNode[] {
         return this.runNodes;
+    }
+
+    public getSlaveNodesList(entryNode: MongooseRunNode): MongooseRunNode[] { 
+        return this.runNodes.filter(node => { return (entryNode.getResourceLocation() != node.getResourceLocation())});
     }
 
     public getConfiguration(): any {
@@ -50,11 +69,12 @@ export class MongooseSetupInfoModel {
         return this.runScenario;
     }
 
-    public getStringfiedRunNodes(): String[] {
-        let stringfiedRunNodes: String[] = [];
+    public getStringifiedNodesForDistributedMode(): string[] {
+        let stringfiedRunNodes: string[] = [];
         this.runNodes.forEach(runNode => {
-            stringfiedRunNodes.push(runNode.toString());
-        })
+            let nodeAddress: string = runNode.toString() as string; 
+            stringfiedRunNodes.push(nodeAddress);
+        });
         return stringfiedRunNodes;
     }
 
@@ -69,20 +89,7 @@ export class MongooseSetupInfoModel {
         })
     }
 
-    // MARK: - Constructor
-    constructor(runNodes: MongooseRunNode[] = [], configuration: any = undefined, runScenario: String = "") {
-        this.runNodes = runNodes;
-        this.configuration = configuration;
-        this.runScenario = runScenario;
-
-        if (this.configuration == undefined) {
-            this.configuration = this.DEFAULT_CONFIGURATION;
-        }
-
-        if (runScenario = "") {
-            this.runScenario = this.DEFAULT_SCENARIO;
-        }
-    }
+   
 
     // MARK: - Public 
 
@@ -98,9 +105,13 @@ export class MongooseSetupInfoModel {
         }
     }
 
-    // MARK: - Private 
+    public removeRunNode(runNode: MongooseRunNode) {
+        this.runNodes = this.runNodes.filter(node => {
+            return (node.getResourceLocation() != runNode.getResourceLocation());
+        })
+    }
 
-    private isNodeAlreadyExist(node: MongooseRunNode) {
+    public isNodeAlreadyExist(node: MongooseRunNode) {
         let isNodeExist = false;
         this.runNodes.forEach(savedNode => {
             isNodeExist = ((savedNode.getResourceLocation() == node.getResourceLocation()) && (savedNode.getResourceType() == savedNode.getResourceType()));
@@ -110,4 +121,7 @@ export class MongooseSetupInfoModel {
         });
         return isNodeExist;
     }
+    // MARK: - Private 
+
+
 }

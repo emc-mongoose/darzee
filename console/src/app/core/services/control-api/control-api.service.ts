@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import { map, retry } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { MongooseRunStatus } from '../../models/mongoose-run-status';
+import { MongooseRunEntryNode } from '../local-storage-service/MongooseRunEntryNode';
 
 @Injectable({
   providedIn: 'root'
@@ -25,40 +26,39 @@ export class ControlApiService {
 
   // MARK: - Public
 
-  public getMongooseIp(): string { 
+  public getMongooseIp(): string {
     return this.mongooseHostIp;
   }
 
-  public runMongoose(mongooseJsonConfiguration: Object, javaScriptScenario: String = ""): Observable<any> {
+  public runMongoose(entryNodeAddress: string, mongooseJsonConfiguration: Object = "", javaScriptScenario: String = ""): Observable<any> {
 
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
-    javaScriptScenario = JSON.stringify(javaScriptScenario);
 
-    let formData = new FormData();
-    formData.append('defaults', JSON.stringify(mongooseJsonConfiguration));
+    let configurationFormData = this.getFormDataArgumentsForMongooseRun(mongooseJsonConfiguration, javaScriptScenario);
 
-    return this.http.post(this.mongooseHostIp + '/run?defaults=' + formData + "&scenario=" + javaScriptScenario, this.getHttpHeadersForMongooseRun(), { observe: "response" }).pipe(
+
+    return this.http.post(`${Constants.Http.HTTP_PREFIX}${entryNodeAddress}/${MongooseApi.RunApi.RUN_ENDPOINT}`, configurationFormData, { observe: "response" }).pipe(
       map(runResponse => {
         let runId = runResponse.headers.get(MongooseApi.Headers.ETAG);
         return runId;
       }));
   }
 
-  public terminateMongooseRun(runId: string): Observable<string> { 
+  public terminateMongooseRun(mongooseRunEntryNodeAddress: string, runId: string): Observable<string> {
     const terminationHeaders = {
       // NOTE: Termination is completed using'If-Match' header. 
       // Matching by run ID.
       'If-Match': `${runId}`
     }
 
-    const terminationRequestOptions = { 
-      headers: new HttpHeaders(terminationHeaders), 
+    const terminationRequestOptions = {
+      headers: new HttpHeaders(terminationHeaders),
       observe: 'response' as 'body'
     }
 
-    return this.http.delete(`${this.mongooseHostIp}/${MongooseApi.RunApi.RUN_ENDPOINT}`, terminationRequestOptions).pipe(
-      map((response: any) => { 
-        if (response.status == Constants.HttpStatus.OK) { 
+    return this.http.delete(`${Constants.Http.HTTP_PREFIX}${mongooseRunEntryNodeAddress}/${MongooseApi.RunApi.RUN_ENDPOINT}`, terminationRequestOptions).pipe(
+      map((response: any) => {
+        if (response.status == Constants.HttpStatus.OK) {
           return `Run ${runId} has been successfully terminated.`;
         }
         return `Run ${runId} hasn't been terminated. Detauls: ${response}`;
@@ -73,27 +73,31 @@ export class ControlApiService {
     var mongooseConfigurationHeaders = new HttpHeaders();
     mongooseConfigurationHeaders.append('Accept', 'application/json');
 
-    return this.http.get(mongooseAddress + configEndpoint, {headers: mongooseConfigurationHeaders});
+    return this.http.get(mongooseAddress + configEndpoint, { headers: mongooseConfigurationHeaders });
   }
 
-  public getStatusForMongooseRun(runId: string): Observable<MongooseRunStatus> { 
+  public getStatusForMongooseRun(runEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
+
+    if (runEntryNode.getEntryNodeAddress() == MongooseRunEntryNode.ADDRESS_NOT_EXIST) {
+      return (of(MongooseRunStatus.Unavailable));
+    }
 
     const requestRunStatusHeaders = {
       // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.
-      'If-Match': `${runId}`
+      'If-Match': `${runEntryNode.getRunId()}`
     }
 
-    const runStatusRequestOptions = { 
-      headers: new HttpHeaders(requestRunStatusHeaders), 
+    const runStatusRequestOptions = {
+      headers: new HttpHeaders(requestRunStatusHeaders),
       observe: 'response' as 'body'
     }
 
-    return this.http.get(`${this.mongooseHostIp}/${MongooseApi.RunApi.RUN_ENDPOINT}`, runStatusRequestOptions).pipe(
-      map((runStatusResponse: any) => { 
+    return this.http.get(`http://${runEntryNode.getEntryNodeAddress()}/${MongooseApi.RunApi.RUN_ENDPOINT}`, runStatusRequestOptions).pipe(
+      map((runStatusResponse: any) => {
         let responseStatusCode = runStatusResponse.status;
 
-        if (responseStatusCode == undefined) { 
-          return MongooseRunStatus.Unavailable; 
+        if (responseStatusCode == undefined) {
+          return MongooseRunStatus.Unavailable;
         }
 
         let isRunActive: boolean = (responseStatusCode == Constants.HttpStatus.OK);
@@ -105,6 +109,26 @@ export class ControlApiService {
 
   // MARK: - Private
 
+
+  // NOTE: Mongoose run accepts parameters as form data (configuration file, scenario file, etc.). The function ...
+  // ... adds the parameters into FormData object.
+  private getFormDataArgumentsForMongooseRun(mongooseRunConfiguration: Object, mongooseRunScenario: Object): FormData {
+    const emptyValue = "";
+
+    let configurationFormData = new FormData();
+    if (mongooseRunConfiguration != emptyValue) {
+      let mongooseConfigurationBlob = new Blob([JSON.stringify(mongooseRunConfiguration)], { type: "application/json" });
+      configurationFormData.append('defaults', mongooseConfigurationBlob);
+    }
+
+    if (mongooseRunScenario != emptyValue) {
+      let mongooseRunScenarioBlob = new Blob([JSON.stringify(mongooseRunScenario)], { type: "text/plain" });
+      configurationFormData.append('scenario', mongooseRunScenarioBlob);
+    }
+
+    return configurationFormData;
+  }
+
   private getHttpHeaderForJsonFile(): HttpHeaders {
     var httpHeadersForMongooseRun = new HttpHeaders();
     httpHeadersForMongooseRun.append('Accept', 'application/json');
@@ -115,7 +139,6 @@ export class ControlApiService {
 
   private getHttpHeadersForMongooseRun(): HttpHeaders {
     let httpHeadersForMongooseRun = new HttpHeaders();
-    httpHeadersForMongooseRun.append('Content-Type', 'multipart/form-data');
     httpHeadersForMongooseRun.append('Accept', '*/*');
     return httpHeadersForMongooseRun;
   }
