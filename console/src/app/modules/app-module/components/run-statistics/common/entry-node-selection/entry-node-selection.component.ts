@@ -1,8 +1,10 @@
 import { Component, OnInit, AfterViewChecked, Input, ViewChild } from '@angular/core';
 import { NgbActiveModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
-import { Observable, Subject, merge, of } from 'rxjs';
+import { Observable, Subject, merge, of, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
+import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 
 @Component({
   selector: 'app-entry-node-selection',
@@ -16,18 +18,32 @@ export class EntryNodeSelectionComponent implements OnInit {
 
   private existingNodesList: String[] = [];
   private currentEnteredText: string = ""
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
+  private activeSubscriptions: Subscription = new Subscription();
+
+  public focus$ = new Subject<string>();
+  public click$ = new Subject<string>();
 
 
   // public search: any; 
 
-  constructor(public activeModal: NgbActiveModal) {
+  constructor(public activeModal: NgbActiveModal,
+    private mongooseDataSharedServiceService: MongooseDataSharedServiceService) {
+      this.activeSubscriptions.add(
+        this.mongooseDataSharedServiceService.getAvailableRunNodes().subscribe(
+          (availableRunNodes: MongooseRunNode[]) => { 
+            let availableRunNodeAddressess: String[] = [];
+            availableRunNodes.forEach((runNode: MongooseRunNode) => {
+              availableRunNodeAddressess.push(runNode.getResourceLocation());
+            });
+            this.existingNodesList = availableRunNodeAddressess;
+          }
+        )
+      )
   }
 
   ngOnInit() {
-    this.existingNodesList = this.mongooseRunRecord.getNodesList() || [];
-    
+
+    // this.existingNodesList = this.mongooseRunRecord.getNodesList() || [];
   }
 
 

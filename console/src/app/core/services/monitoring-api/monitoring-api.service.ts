@@ -11,6 +11,10 @@ import { HttpClient } from "@angular/common/http";
 import { ControlApiService } from "../control-api/control-api.service";
 import { LocalStorageService } from "../local-storage-service/local-storage.service";
 import { MongooseRunEntryNode } from "../local-storage-service/MongooseRunEntryNode";
+import { MongooseDataSharedServiceService } from "../mongoose-data-shared-service/mongoose-data-shared-service.service";
+import { ResourceLoader } from "@angular/compiler";
+import { ResourceLocatorType } from "../../models/address-type";
+import { MongooseRunNode } from "../../models/mongoose-run-node.model";
 
 
 @Injectable({
@@ -29,7 +33,8 @@ export class MonitoringApiService {
   constructor(private prometheusApiService: PrometheusApiService,
     private controlApiService: ControlApiService,
     private http: HttpClient,
-    private localStorageService: LocalStorageService) {
+    private localStorageService: LocalStorageService,
+    private mongooseDataSharedServiceService: MongooseDataSharedServiceService) {
     this.setUpService();
   }
 
@@ -222,6 +227,7 @@ export class MonitoringApiService {
       let nodesListTag = "node_list";
       var rawNodesList: string = this.fetchLabelValue(staticRunData, nodesListTag);
       let nodesList: string[] = this.getNodesFromRawMetric(rawNodesList);
+      this.addNodesListIntoNodesRepository(nodesList);
 
       let userCommentTag = "user_comment";
       let userComment = this.fetchLabelValue(staticRunData, userCommentTag);
@@ -337,5 +343,21 @@ export class MonitoringApiService {
       map(hasConfig => hasConfig = of(true)),
       catchError(hasConfig => hasConfig = of(false))
     );
+  }
+
+  private addNodesListIntoNodesRepository(nodesList: string[]) { 
+    // NOTE: Adding fetched nodes into nodes repository. 
+    nodesList.forEach((nodeAddress: string) => {
+      // NOTE: Temporary assuming that every node address is an IP.
+      const RESOURCE_LOCATOR_TYPE_STUB = ResourceLocatorType.IP;
+      let nodeInstance = new MongooseRunNode(nodeAddress, RESOURCE_LOCATOR_TYPE_STUB);
+      try { 
+        this.mongooseDataSharedServiceService.addMongooseRunNode(nodeInstance);
+      } catch (nodeIsAlreadyExistError) {
+        // NOTE: Not handling the situation since it's normal to have duplicate node addresses.
+        // Example: Mongoose distributed mode. 
+        return;
+      }
+    });
   }
 }
