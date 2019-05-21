@@ -25,6 +25,8 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 4. [Deploying](#4-deploying)
 5. [Troubleshooting](#5-troubleshooting)<br/>
 &nbsp;&nbsp;5.1 [Running Mongoose on localhost (Mac, Windows)](#51-running-mongoose-on-localhost-mac-windows)<br/>
+5. [Open issues](#6-open-issues)<br/>
+&nbsp;&nbsp;6.1 [Mongoose run logs unavailability](#61-mongoose-run-logs-unavailability)
 
 
 # 1. Overview 
@@ -177,3 +179,17 @@ Mongoose image is being loaded into the [docker hub](https://hub.docker.com/r/em
 ## 5.1 Running Mongoose on localhost (Mac, Windows)
 
 See [Using Mongoose Web UI on Mac or Windows](console/supporting-files/windows-and-mac-support).
+
+# 6. Open issues 
+We're constantly working on making the UI and Mongoose project overall better. 
+In this section, you'd find a list of a high-priority issues that would be fixed as soon as possible.
+
+## 6.1 Mongoose run logs unavailability 
+Mongoose run's table is constructed based on the retrieved data from Prometheus: run ID, additional nodes, load step ID, etc. The list doesn't contain entry node address. <br/>
+<b>Now</b>: Mongoose run's entry nodes addresses are stored within browser's local storage. It helps to retain the information about entry nodes as long as the local storage not getting cleaned up, yet it'd be saved even if the browser and/or tab has been closed.<br/>
+We need entry node's address in order to get logs via POST request with Mongoose Logs API to its entry node. 
+<b>Problem</b>: while working outside of the browser from which Mongoose run has been launched (other browser, other computer, etc.), the data about run's entry node is missing, thus logs couldn't be gathered via the Logs API.<br/>
+
+Track progress on the issue [here](https://mongoose-issues.atlassian.net/projects/GUI/issues/GUI-137?filter=allissues).
+
+
