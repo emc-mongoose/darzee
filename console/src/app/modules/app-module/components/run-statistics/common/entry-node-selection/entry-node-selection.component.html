@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">Add entry node for run ID {{ this.mongooseRunRecord.getRunId() }}</h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('')">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -11,5 +11,5 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-outline-success" (click)="onAddEntryNodeClicked(nodeEnteringInstance.value)">Confirm</button>
-  <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss()">Dismiss</button>
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss('')">Dismiss</button>
 </div>

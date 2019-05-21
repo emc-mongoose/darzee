@@ -1,5 +1,5 @@
 export class MongooseRunEntryNode { 
-    static readonly ADDRESS_NOT_EXIST = "address-not-exist";
+    static readonly EMPTY_ADDRESS = "";
 
     private entryNodeAddress: string;
     private runId: string;

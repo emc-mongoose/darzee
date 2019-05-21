@@ -103,7 +103,7 @@ export class RunStatisticLogsComponent implements OnInit {
     if (record == undefined) { 
       return false; 
     }
-    return (record.getEntryNodeAddress() != MongooseRunEntryNode.ADDRESS_NOT_EXIST);
+    return (record.getEntryNodeAddress() != MongooseRunEntryNode.EMPTY_ADDRESS);
   }
 
   public openEntryNodeSelectionWindow() { 

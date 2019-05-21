@@ -43,7 +43,7 @@ export class MonitoringApiService {
   public getStatusForMongooseRecord(mongooseRunEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
     let defaultMongooseRunStatus = MongooseRunStatus.Finished;
 
-    if (mongooseRunEntryNode.getEntryNodeAddress() == MongooseRunEntryNode.ADDRESS_NOT_EXIST) {
+    if (mongooseRunEntryNode.getEntryNodeAddress() == MongooseRunEntryNode.EMPTY_ADDRESS) {
       return of(defaultMongooseRunStatus);
     }
     // NOTE: As for now, we're checking status for Mongoose run overtall, not just Run ID. 
@@ -246,7 +246,7 @@ export class MonitoringApiService {
         entryNode = this.localStorageService.getEntryNodeAddressForRunId(runId);
       } catch (entryNodeNotFoundError) {
         console.error(`Unable to create entry node instance. Details: ${entryNodeNotFoundError}`);
-        const NOT_EXISTING_ADDRESS = MongooseRunEntryNode.ADDRESS_NOT_EXIST;
+        const NOT_EXISTING_ADDRESS = MongooseRunEntryNode.EMPTY_ADDRESS;
         entryNode = new MongooseRunEntryNode(NOT_EXISTING_ADDRESS, runId);
       }
       const mongooseRunStatus$ = this.getStatusForMongooseRecord(entryNode);

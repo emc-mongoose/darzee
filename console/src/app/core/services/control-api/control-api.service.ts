@@ -7,6 +7,7 @@ import { map, retry } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { MongooseRunStatus } from '../../models/mongoose-run-status';
 import { MongooseRunEntryNode } from '../local-storage-service/MongooseRunEntryNode';
+import { HttpUtils } from 'src/app/common/HttpUtils';
 
 @Injectable({
   providedIn: 'root'
@@ -32,8 +33,12 @@ export class ControlApiService {
 
   public runMongoose(entryNodeAddress: string, mongooseJsonConfiguration: Object = "", javaScriptScenario: String = ""): Observable<any> {
 
-    // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
+    if (!HttpUtils.shouldPerformMongooseRunRequest(entryNodeAddress)) { 
+      console.error(`IP address is not valid for Mongoose run entry node: ${entryNodeAddress}`);
+      return; 
+    }
 
+    // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
     let configurationFormData = this.getFormDataArgumentsForMongooseRun(mongooseJsonConfiguration, javaScriptScenario);
 
 
@@ -45,6 +50,12 @@ export class ControlApiService {
   }
 
   public terminateMongooseRun(mongooseRunEntryNodeAddress: string, runId: string): Observable<string> {
+    
+    if (!HttpUtils.shouldPerformMongooseRunRequest(mongooseRunEntryNodeAddress)) { 
+      console.error(`IP address is not valid for Mongoose run entry node: ${mongooseRunEntryNodeAddress}`);
+      return;
+    }
+
     const terminationHeaders = {
       // NOTE: Termination is completed using'If-Match' header. 
       // Matching by run ID.
@@ -78,6 +89,12 @@ export class ControlApiService {
 
   public getStatusForMongooseRun(runEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
 
+    let mongooseEntryNodeAddress = runEntryNode.getEntryNodeAddress();
+    if (!HttpUtils.shouldPerformMongooseRunRequest(mongooseEntryNodeAddress)) { 
+      console.error(`IP address is not valid for Mongoose run entry node: ${mongooseEntryNodeAddress}`);
+      return of(MongooseRunStatus.Finished);
+    }
+
     const requestRunStatusHeaders = {
       // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.
       'If-Match': `${runEntryNode.getRunId()}`
@@ -88,7 +105,7 @@ export class ControlApiService {
       observe: 'response' as 'body'
     }
 
-    return this.http.get(`http://${runEntryNode.getEntryNodeAddress()}/${MongooseApi.RunApi.RUN_ENDPOINT}`, runStatusRequestOptions).pipe(
+    return this.http.get(`http://${mongooseEntryNodeAddress}/${MongooseApi.RunApi.RUN_ENDPOINT}`, runStatusRequestOptions).pipe(
       map((runStatusResponse: any) => {
         let responseStatusCode = runStatusResponse.status;
 
