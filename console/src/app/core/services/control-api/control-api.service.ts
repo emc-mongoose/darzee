@@ -44,7 +44,7 @@ export class ControlApiService {
       }));
   }
 
-  public terminateMongooseRun(runId: string): Observable<string> {
+  public terminateMongooseRun(mongooseRunEntryNodeAddress: string, runId: string): Observable<string> {
     const terminationHeaders = {
       // NOTE: Termination is completed using'If-Match' header. 
       // Matching by run ID.
@@ -56,7 +56,7 @@ export class ControlApiService {
       observe: 'response' as 'body'
     }
 
-    return this.http.delete(`${this.mongooseHostIp}/${MongooseApi.RunApi.RUN_ENDPOINT}`, terminationRequestOptions).pipe(
+    return this.http.delete(`${Constants.Http.HTTP_PREFIX}${mongooseRunEntryNodeAddress}/${MongooseApi.RunApi.RUN_ENDPOINT}`, terminationRequestOptions).pipe(
       map((response: any) => {
         if (response.status == Constants.HttpStatus.OK) {
           return `Run ${runId} has been successfully terminated.`;

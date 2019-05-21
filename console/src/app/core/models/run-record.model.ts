@@ -94,6 +94,10 @@ export class MongooseRunRecord implements OnDestroy {
         this.duration = updatedDuration;
     }
 
+    public getEntryNodeAddress(): string { 
+        return this.entryNode.getEntryNodeAddress();
+    }
+
     // MARK: - Private 
 
 }
