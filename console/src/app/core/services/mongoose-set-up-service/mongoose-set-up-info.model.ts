@@ -69,10 +69,11 @@ export class MongooseSetupInfoModel {
         return this.runScenario;
     }
 
-    public getStringifiedNodesForDistributedMode(): String[] {
-        let stringfiedRunNodes: String[] = [];
+    public getStringifiedNodesForDistributedMode(): string[] {
+        let stringfiedRunNodes: string[] = [];
         this.runNodes.forEach(runNode => {
-            stringfiedRunNodes.push(runNode.toString());
+            let nodeAddress: string = runNode.toString() as string; 
+            stringfiedRunNodes.push(nodeAddress);
         });
         return stringfiedRunNodes;
     }

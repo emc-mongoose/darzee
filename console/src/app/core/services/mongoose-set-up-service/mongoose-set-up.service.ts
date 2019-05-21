@@ -26,7 +26,8 @@ export class MongooseSetUpService {
     private http: HttpClient,
     private localStorageService: LocalStorageService) {
 
-    this.updatePrometheusConfiguration();
+    let currentNodesList: string[] = this.mongooseSetupInfoModel.getStringifiedNodesForDistributedMode() || []; 
+    this.addNodesToPrometheusTargets(currentNodesList);
 
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel();
     this.controlApiService.getMongooseConfiguration(this.controlApiService.getMongooseIp())
@@ -96,8 +97,11 @@ export class MongooseSetUpService {
 
 
   public runMongoose(entryNode: MongooseRunNode): Observable<String> {
+
     // NOTE: Updating Prometheus configuration with respect to Mongoose Run nodes. 
-    this.updatePrometheusConfiguration();
+    let mongooseRunNodesList: string[] = this.mongooseSetupInfoModel.getStringifiedNodesForDistributedMode();
+    this.addNodesToPrometheusTargets(mongooseRunNodesList);
+
     // NOTE: you can get related load step ID from mongoose setup model here. 
     return this.controlApiService.runMongoose(entryNode.getResourceLocation(), this.mongooseSetupInfoModel.getConfiguration(), this.mongooseSetupInfoModel.getRunScenario()).pipe(
       map(runId => {
@@ -117,14 +121,11 @@ export class MongooseSetUpService {
   }
 
 
-  private updatePrometheusConfiguration() {
+  private addNodesToPrometheusTargets(mongooseRunNodes: string[]) {
     // NOTE: An initial fetch of Prometheus configuration.
     this.http.get(environment.prometheusConfigPath, { responseType: 'text' }).subscribe((configurationFileContent: Object) => {
       let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
-
-      let mongooseRunNodes = this.mongooseSetupInfoModel.getStringifiedNodesForDistributedMode();
       let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(mongooseRunNodes);
-
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
       this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => {
