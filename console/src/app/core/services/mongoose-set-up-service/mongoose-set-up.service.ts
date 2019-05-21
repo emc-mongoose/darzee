@@ -26,9 +26,6 @@ export class MongooseSetUpService {
     private http: HttpClient,
     private localStorageService: LocalStorageService) {
 
-    let currentNodesList: string[] = this.mongooseSetupInfoModel.getStringifiedNodesForDistributedMode() || [];
-    this.addNodesToPrometheusTargets(currentNodesList);
-
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel();
     this.controlApiService.getMongooseConfiguration(this.controlApiService.getMongooseIp())
       .subscribe((configuration: any) => {
