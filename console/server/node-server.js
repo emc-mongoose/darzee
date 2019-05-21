@@ -1,4 +1,4 @@
-const MONGOOSE_CONSOLE_DEFAULT_PORT = 8080;
+const DARZEE_DEFAULT_PORT = 8080;
 const PROMETHEUS_DEFAULT_PORT = 9090;
 const PROMETHEUS_DEFAULT_IP = "localhost";
 
@@ -22,7 +22,7 @@ var app = express();
 var path = __dirname + '';
 
 // NOTE: Fetching environment variables' values 
-var port = process.env.CONSOLE_PORT || MONGOOSE_CONSOLE_DEFAULT_PORT;
+var port = process.env.DARZEE_PORT || DARZEE_DEFAULT_PORT;
 var prometheusConfigurationPath = process.env.PROMETHEUS_CONFIGURATION_PATH || PROMETHEUS_DEFAULT_CONFIGURATION_PATH;
 var prometheusPort = process.env.PROMETHEUS_PORT || PROMETHEUS_DEFAULT_PORT;
 var prometheusIp = process.env.PROMETHEUS_IMAGE_IP || PROMETHEUS_DEFAULT_IP;

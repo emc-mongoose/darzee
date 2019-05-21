@@ -38,7 +38,7 @@ The following interfaces are mentioned as the subject of the backward compatibil
 
 ## 2.2. Numbers
 
-Mongoose Console uses the [semantic versioning](http://semver.org/). This means that the ***X.Y.Z*** version notation is used:
+Darzee uses the [semantic versioning](http://semver.org/). This means that the ***X.Y.Z*** version notation is used:
 
 * ***X***<br/>
     Major version number. Points to significant design and interfaces change. The *backward compatibility* is **not
@@ -64,7 +64,7 @@ Types:
 | Task     | A task which couldn't be included into any defect/story |
 | Sub-task | A task which could be included into a defect/story |
 
-Mongoose Console's tracker link: https://mongoose-issues.atlassian.net/projects/GUI
+Darzee's tracker link: https://mongoose-issues.atlassian.net/projects/GUI
 
 ## 3.1. States
 

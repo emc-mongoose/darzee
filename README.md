@@ -1,4 +1,4 @@
-# Mongoose Web UI 
+# Darzee
 Provides web interface for Mongoose - storage performance testing tool maintained by Dell EMC. 
 
 # Contents 
@@ -31,7 +31,7 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 
 # 1. Overview 
 
-Web UI lets you configure, run and monitor Mongoose. 
+Darzee lets you configure, run and monitor Mongoose. 
 
 ## 1.1 Launch Mongoose run
 
@@ -109,13 +109,13 @@ UI's configuration depends on the parameters listen within .env file.
 ## 2.1 Deploying ports 
 The following parameters are being used to specify deploying ports of the services: 
  
-* CONSOLE_PORT - for Mongoose Web UI; 
+* DARZEE_PORT - for Darzee itself; 
 * PROMETHEUS_PORT - for Prometheus; 
 * MONGOOSE_PORT - for Mongoose; 
 
 ## 2.2 Image versions 
 The following parameters are being used to specify docker image version of a specific service: 
-* CONSOLE_VER - Mongoose Web UI image version; 
+* DARZEE_VER - Darzee's image version; 
 * PROMETHEUS_VER - Prometheus image version; 
 
 
@@ -149,26 +149,26 @@ Docker image is being builted via Gradle. To build Docker image, use:
 > $ ./gradlew buildImage
 
 ### 3.1.2 Build project 
-Mongoose Web UI has been made with Angular 7.0. You could build it just like any Angular app. 
+Darzee has been created with Angular 7.0. You could build it just like any Angular app. 
 > $ npm install
 > $ ng build 
 
 ## 3.2 Run 
 
 ### 3.2.1 Run via docker-compose 
-Mongoose Web UI could be ran via docker compose. 
-It'd build a container that contains Mongoose Web UI and Prometheus. Versions of the images are specified within .env file. 
+Darzee could be ran via docker compose. 
+It'd build a container with Darzee and Prometheus. Versions of the images are specified within .env file. 
 > $ docker-compose up 
 
 ### 3.2.2 Run in development mode 
-Mongoose Web UI has been build with Angular CLI. It could be ran in development mode using the appropriate command: 
+Darzee has been created with Angular CLI. It could be ran in development mode using the appropriate command: 
 > $ npm install
 > $ ng serve 
 
 
 # 4. Deploying 
 
-Mongoose image is being loaded into the [docker hub](https://hub.docker.com/r/emcmongoose/mongoose-console).
+Mongoose image is being loaded into the [docker hub](https://hub.docker.com/r/emcmongoose/darzee).
 
 * It's possible to push Docker image to docker hub via gradle: 
 > $ docker login
@@ -178,7 +178,7 @@ Mongoose image is being loaded into the [docker hub](https://hub.docker.com/r/em
 
 ## 5.1 Running Mongoose on localhost (Mac, Windows)
 
-See [Using Mongoose Web UI on Mac or Windows](console/supporting-files/windows-and-mac-support).
+See [Using Darzee on Mac or Windows](console/supporting-files/windows-and-mac-support).
 
 # 6. Open issues 
 We're constantly working on making the UI and Mongoose project overall better. 

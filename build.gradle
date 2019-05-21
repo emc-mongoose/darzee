@@ -4,19 +4,19 @@ import com.bmuschko.gradle.docker.tasks.image.*
 
 // NOTE: Project-related configuration properties are listed within .env file. 
 // The structure contains names of the properties. 
-def CONSOLE_CONFIGURATION_NAMES = [
-  version: "CONSOLE_VER",
-  port: "CONSOLE_PORT",
+def DARZEE_CONFIGURATION_NAMES = [
+  version: "DARZEE_VER",
+  port: "DARZEE_PORT",
 ]
 
 buildscript {
   ext {
     // NOTE: Project configurations' actual parameter values. 
-    consoleConfiguration = [ 
-      CONSOLE_VERSION: '${getConsoleConfiurationParameter(${CONSOLE_CONFIGURATION_NAMES.version})}',
-      CONSOLE_PORT: '${getConsoleConfiurationParameter(${CONSOLE_CONFIGURATION_NAMES.port})}',
-      CONSOLE_IMAGE_FULL_ID: 'emcmongoose/mongoose-console',
-      CONSOLE_IMAGE_NAME: 'mongoose-console'
+    darzeeConfiguration = [ 
+      DARZEE_VERSION: '${getConsoleConfiurationParameter(${DARZEE_CONFIGURATION_NAMES.version})}',
+      DARZEE_PORT: '${getConsoleConfiurationParameter(${DARZEE_CONFIGURATION_NAMES.port})}',
+      DARZEE_IMAGE_FULL_ID: 'emcmongoose/darzee',
+      DARZEE_IMAGE_NAME: 'darzee'
     ]
     
     depVersion = [
@@ -43,7 +43,7 @@ apply plugin: 'com.bmuschko.docker-java-application'
 apply plugin: 'com.moowork.node'
 apply plugin: 'base'
 
-version rootProject.ext.consoleConfiguration.CONSOLE_VERSION
+version rootProject.ext.darzeeConfiguration.DARZEE_VERSION
 
 repositories {
   mavenLocal()
@@ -87,15 +87,15 @@ task createDockerfile(type: Dockerfile) {
     instruction "RUN npm install shelljs"
     instruction "RUN npm install axios"
 
-    instruction "EXPOSE " + getConsoleConfiurationParameter(CONSOLE_CONFIGURATION_NAMES.port)
+    instruction "EXPOSE " + getConsoleConfiurationParameter(DARZEE_CONFIGURATION_NAMES.port)
     instruction 'CMD [ "node", "node-server.js" ]' 
 }
 
 task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
-    imageId = consoleConfiguration.CONSOLE_IMAGE_ID
-    tags = [consoleConfiguration.CONSOLE_IMAGE_FULL_ID + ':' + getConsoleConfiurationParameter(CONSOLE_CONFIGURATION_NAMES.version), consoleConfiguration.CONSOLE_IMAGE_FULL_ID + ':latest']
+    imageId = darzeeConfiguration.DARZEE_IMAGE_ID
+    tags = [darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':' + getConsoleConfiurationParameter(DARZEE_CONFIGURATION_NAMES.version), darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':latest']
     doLast { 
         clearProductionFiles()
     }
@@ -103,12 +103,12 @@ task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
 
 task tagImage(type: DockerTagImage, dependsOn: 'buildImage') {
     targetImageId { buildImage.getImageId() }
-    tag consoleConfiguration.CONSOLE_IMAGE_NAME
-    repository consoleConfiguration.CONSOLE_IMAGE_NAME
+    tag darzeeConfiguration.DARZEE_IMAGE_NAME
+    repository darzeeConfiguration.DARZEE_IMAGE_NAME
 }
 
 task pushImage(type: DockerPushImage, dependsOn: 'tagImage'){
-    imageName consoleConfiguration.CONSOLE_IMAGE_FULL_ID
+    imageName darzeeConfiguration.DARZEE_IMAGE_FULL_ID
 }
 
 // Leaving "clear" task so it could be configured lately. Remaining clearProductionFiles() as a function in order ...
@@ -146,7 +146,6 @@ def getConsoleConfiurationParameter(final String parameterName) {
 
 def getConsoleExposingPort() { 
   // TODO: Figure out the way how to extract parameter name from the variable. 
-  // return getConsoleConfiurationParameter(ext.consoleConfiguration.CONSOLE_PORT);
-  return getConsoleConfiurationParameter(CONSOLE_CONFIGURATION_NAMES.port);
+  // return getConsoleConfiurationParameter(ext.darzeeConfiguration.DARZEE_PORT);
+  return getConsoleConfiurationParameter(DARZEE_CONFIGURATION_NAMES.port);
 }
-
