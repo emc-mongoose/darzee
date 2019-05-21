@@ -64,7 +64,7 @@ Types:
 | Task     | A task which couldn't be included into any defect/story |
 | Sub-task | A task which could be included into a defect/story |
 
-Mongoose Console's tracker link: https://mongoose-issues.atlassian.net/projects/GUI
+Darzee's tracker link: https://mongoose-issues.atlassian.net/projects/GUI
 
 ## 3.1. States
 
