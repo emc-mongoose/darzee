@@ -219,8 +219,9 @@ export class MonitoringApiService {
       let startTimeTag = "start_time";
       let startTime = this.fetchLabelValue(staticRunData, startTimeTag);
 
-      let nodesListTag = "nodes_list";
-      let nodesList = this.fetchLabelValue(staticRunData, nodesListTag);
+      let nodesListTag = "node_list";
+      var rawNodesList: string = this.fetchLabelValue(staticRunData, nodesListTag);
+      let nodesList: string[] = this.getNodesFromRawMetric(rawNodesList);
 
       let userCommentTag = "user_comment";
       let userComment = this.fetchLabelValue(staticRunData, userCommentTag);
@@ -249,6 +250,22 @@ export class MonitoringApiService {
     }
 
     return runRecords;
+  }
+
+  
+  // NOTE: Retrieves nodes from string like "[..., node1, ...]"
+  private getNodesFromRawMetric(rawNodesMetric: string): string[] { 
+    var nodeDefaultValue = "-";
+    if (rawNodesMetric == undefined) { 
+      let emptyArray = [nodeDefaultValue];
+      return emptyArray; 
+    }
+    const leftNodeBoundSymbol = "[";
+    const rightNodeBoundSymbol = "]";
+    const nodesListDelimiter = ",";
+    // NOTE: transforming string from "[.., node, ...]" into a string array of nodes. 
+    rawNodesMetric = rawNodesMetric.replace(leftNodeBoundSymbol, "").replace(rightNodeBoundSymbol, "");
+    return rawNodesMetric.split(nodesListDelimiter);
   }
 
   private fetchLabelValue(metricJson: any, label: string): any {

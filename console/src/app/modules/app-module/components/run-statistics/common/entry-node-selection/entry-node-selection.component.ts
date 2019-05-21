@@ -14,7 +14,7 @@ export class EntryNodeSelectionComponent implements OnInit {
   @Input() mongooseRunRecord: MongooseRunRecord;
   @ViewChild('instance') instance: NgbTypeahead;
 
-  private existingNodesList = [];
+  private existingNodesList: String[] = [];
   focus$ = new Subject<string>();
   click$ = new Subject<string>();
   
@@ -22,7 +22,7 @@ export class EntryNodeSelectionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.existingNodesList = this.mongooseRunRecord.getNodesList();
+    this.existingNodesList = this.mongooseRunRecord.getNodesList() || [];
 
    }
 
