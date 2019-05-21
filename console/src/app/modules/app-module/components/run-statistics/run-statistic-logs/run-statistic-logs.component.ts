@@ -101,12 +101,13 @@ export class RunStatisticLogsComponent implements OnInit {
   }
 
   public openEntryNodeSelectionWindow() { 
-    this.modalService.open(EntryNodeSelectionComponent, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+    const entryRunNodeEntranceScreenReference = this.modalService.open(EntryNodeSelectionComponent, {ariaLabelledBy: 'modal-basic-title'});
+    entryRunNodeEntranceScreenReference.componentInstance.mongooseRunRecord = this.processingRunRecord;
+    entryRunNodeEntranceScreenReference.result.then((result) => {
       // this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       // this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
-    // this.modalService.open(EntryNodeSelectionComponent);
   }
 
   // MARK: - Private
