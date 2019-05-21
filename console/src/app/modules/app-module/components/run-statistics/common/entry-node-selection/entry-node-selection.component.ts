@@ -1,6 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { NgbActiveModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
+import { Observable, Subject, merge } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-entry-node-selection',
@@ -10,10 +12,28 @@ import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 export class EntryNodeSelectionComponent implements OnInit {
 
   @Input() mongooseRunRecord: MongooseRunRecord;
-  
-  constructor(public activeModal: NgbActiveModal) { }
+  @ViewChild('instance') instance: NgbTypeahead;
 
-  ngOnInit() {
+  private existingNodesList = [];
+  focus$ = new Subject<string>();
+  click$ = new Subject<string>();
+  
+  constructor(public activeModal: NgbActiveModal) { 
   }
 
+  ngOnInit() {
+    this.existingNodesList = this.mongooseRunRecord.getNodesList();
+
+   }
+
+   search = (enteringText$: Observable<string>) => { 
+    const debouncedText$ = enteringText$.pipe(debounceTime(200), distinctUntilChanged());
+    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
+    const inputFocus$ = this.focus$;
+
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map(term => (term === '' ? this.existingNodesList
+        : this.existingNodesList.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10))
+    );
+   }
 }
