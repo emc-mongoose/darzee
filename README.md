@@ -168,7 +168,7 @@ Darzee has been created with Angular CLI. It could be ran in development mode us
 
 # 4. Deploying 
 
-Mongoose image is being loaded into the [docker hub](https://hub.docker.com/r/emcmongoose/mongoose-console).
+Mongoose image is being loaded into the [docker hub](https://hub.docker.com/r/emcmongoose/darzee).
 
 * It's possible to push Docker image to docker hub via gradle: 
 > $ docker login
