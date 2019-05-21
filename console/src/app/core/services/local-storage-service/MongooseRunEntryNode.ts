@@ -16,4 +16,8 @@ export class MongooseRunEntryNode {
     public getEntryNodeAddress(): string { 
         return this.entryNodeAddress;
     }
+
+    public setEntryNodeAddress(newAddress: string) { 
+        this.entryNodeAddress = newAddress;
+    }
 }

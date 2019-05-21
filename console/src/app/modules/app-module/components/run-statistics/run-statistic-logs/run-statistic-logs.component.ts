@@ -101,7 +101,7 @@ export class RunStatisticLogsComponent implements OnInit {
   }
 
   public openEntryNodeSelectionWindow() { 
-    const entryRunNodeEntranceScreenReference = this.modalService.open(EntryNodeSelectionComponent, {ariaLabelledBy: 'modal-basic-title'});
+    const entryRunNodeEntranceScreenReference = this.modalService.open(EntryNodeSelectionComponent, {ariaLabelledBy: 'modal-basic-title', backdropClass: 'light-blue-backdrop'});
     entryRunNodeEntranceScreenReference.componentInstance.mongooseRunRecord = this.processingRunRecord;
     entryRunNodeEntranceScreenReference.result.then((result) => {
       // this.closeResult = `Closed with: ${result}`;

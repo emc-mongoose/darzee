@@ -15,25 +15,33 @@ export class EntryNodeSelectionComponent implements OnInit {
   @ViewChild('instance') instance: NgbTypeahead;
 
   private existingNodesList: String[] = [];
+  private currentEnteredText: string = ""
   focus$ = new Subject<string>();
   click$ = new Subject<string>();
-  
-  constructor(public activeModal: NgbActiveModal) { 
+
+
+  constructor(public activeModal: NgbActiveModal) {
   }
 
   ngOnInit() {
     this.existingNodesList = this.mongooseRunRecord.getNodesList() || [];
+  }
 
-   }
-
-   search = (enteringText$: Observable<string>) => { 
+  search = (enteringText$: Observable<string>) => {
     const debouncedText$ = enteringText$.pipe(debounceTime(200), distinctUntilChanged());
     const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
     const inputFocus$ = this.focus$;
 
     return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      map(term => (term === '' ? this.existingNodesList
-        : this.existingNodesList.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10))
-    );
-   }
+      map(term => {
+        this.currentEnteredText = term;
+        return (term === '' ? this.existingNodesList
+          : this.existingNodesList.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10);
+      })
+    )
+  }
+
+  public onAddEntryNodeClicked() {
+    this.mongooseRunRecord.setEntryNodeAddress(this.currentEnteredText);
+  }
 }
