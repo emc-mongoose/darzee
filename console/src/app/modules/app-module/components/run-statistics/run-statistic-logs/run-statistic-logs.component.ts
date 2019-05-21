@@ -8,6 +8,10 @@ import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
 import { Observable, Subscription, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MongooseRouteParamsParser } from 'src/app/core/models/mongoose-route-params-praser';
+import { MongooseRunEntryNode } from 'src/app/core/services/local-storage-service/MongooseRunEntryNode';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EntryNodeSelectionComponent } from '../common/entry-node-selection/entry-node-selection.component';
+
 
 @Component({
   selector: 'app-run-statistic-logs',
@@ -31,7 +35,8 @@ export class RunStatisticLogsComponent implements OnInit {
 
   constructor(private monitoringApiService: MonitoringApiService,
     private router: Router,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private modalService: NgbModal) { }
 
   ngOnInit() {
 
@@ -42,6 +47,9 @@ export class RunStatisticLogsComponent implements OnInit {
         this.monitoringApiSubscriptions.add(mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
           foundRecord => {
             this.processingRunRecord = foundRecord;
+            if (!this.shouldDisplayLogs(this.processingRunRecord)) {
+              this.openEntryNodeSelectionWindow();
+            }
           }
         ));
         this.initlogTabs();
@@ -83,7 +91,22 @@ export class RunStatisticLogsComponent implements OnInit {
         this.occuredError = error.error;
       }
     );
+  }
 
+  public shouldDisplayLogs(record: MongooseRunRecord): boolean { 
+    if (record == undefined) { 
+      return false; 
+    }
+    return (record.getEntryNodeAddress() != MongooseRunEntryNode.ADDRESS_NOT_EXIST);
+  }
+
+  public openEntryNodeSelectionWindow() { 
+    this.modalService.open(EntryNodeSelectionComponent, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+      // this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      // this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+    // this.modalService.open(EntryNodeSelectionComponent);
   }
 
   // MARK: - Private

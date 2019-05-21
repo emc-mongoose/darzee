@@ -21,6 +21,9 @@ import { PrometheusApiService } from "src/app/core/services/prometheus-api/prome
 import { BasicChartComponent } from './components/run-statistics/run-statistics-charts/basic-chart/basic-chart.component';
 import { StorageServiceModule } from "ngx-webstorage-service";
 import { LocalStorageService } from "src/app/core/services/local-storage-service/local-storage.service";
+import { EntryNodeSelectionComponent } from './components/run-statistics/common/entry-node-selection/entry-node-selection.component';
+import { NgbModalBackdrop } from "@ng-bootstrap/ng-bootstrap/modal/modal-backdrop";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
   declarations: [
@@ -34,11 +37,13 @@ import { LocalStorageService } from "src/app/core/services/local-storage-service
     RunStatisticLogsComponent,
     RunStatisticsChartsComponent,
     DateFormatPipe,
-    BasicChartComponent
+    BasicChartComponent,
+    EntryNodeSelectionComponent
 
   ],
   entryComponents: [
-    BasicChartComponent
+    BasicChartComponent,
+    EntryNodeSelectionComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +54,8 @@ import { LocalStorageService } from "src/app/core/services/local-storage-service
     MongooseSetUpModuleModule,
     BrowserAnimationsModule,
     ChartsModule,
-    StorageServiceModule
+    StorageServiceModule,
+    NgbModule
   ],
 
   // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
