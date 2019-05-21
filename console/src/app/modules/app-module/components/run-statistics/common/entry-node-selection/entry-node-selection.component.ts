@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, Input, ViewChild } from '@angular/core';
 import { NgbActiveModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
-import { Observable, Subject, merge } from 'rxjs';
+import { Observable, Subject, merge, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 @Component({
@@ -20,14 +20,21 @@ export class EntryNodeSelectionComponent implements OnInit {
   click$ = new Subject<string>();
 
 
+  // public search: any; 
+
   constructor(public activeModal: NgbActiveModal) {
   }
 
   ngOnInit() {
     this.existingNodesList = this.mongooseRunRecord.getNodesList() || [];
+    
   }
 
+
   search = (enteringText$: Observable<string>) => {
+    if (this == undefined) { 
+      return; 
+    }
     const debouncedText$ = enteringText$.pipe(debounceTime(200), distinctUntilChanged());
     const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.typeheadInstance.isPopupOpen()));
     const inputFocus$ = this.focus$;
@@ -41,8 +48,10 @@ export class EntryNodeSelectionComponent implements OnInit {
     )
   }
 
+
   public onAddEntryNodeClicked(value: string) {
     this.mongooseRunRecord.setEntryNodeAddress(this.currentEnteredText);
+    // TODO: Save it into local storage here 
     this.activeModal.dismiss('Cross click');
   }
 }

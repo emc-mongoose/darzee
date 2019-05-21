@@ -38,7 +38,9 @@ export class RunStatisticLogsComponent implements OnInit {
     private route: ActivatedRoute,
     private modalService: NgbModal) { }
 
-  ngOnInit() {
+    ngOnInit() {}
+
+    ngAfterContentInit() {
 
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.parent.params.subscribe(params => {
@@ -48,7 +50,8 @@ export class RunStatisticLogsComponent implements OnInit {
           foundRecord => {
             this.processingRunRecord = foundRecord;
             if (!this.shouldDisplayLogs(this.processingRunRecord)) {
-              this.openEntryNodeSelectionWindow();
+              // NOTE: Timeout prevents situations when modal view will be created before the parent one. 
+              setTimeout(() => this.openEntryNodeSelectionWindow());
             }
           }
         ));
@@ -61,6 +64,7 @@ export class RunStatisticLogsComponent implements OnInit {
       }
     });
   }
+  
 
   ngOnDestroy() {
     this.monitoringApiSubscriptions.unsubscribe();
@@ -103,9 +107,13 @@ export class RunStatisticLogsComponent implements OnInit {
   public openEntryNodeSelectionWindow() { 
     const entryRunNodeEntranceScreenReference = this.modalService.open(EntryNodeSelectionComponent, {ariaLabelledBy: 'modal-basic-title', backdropClass: 'light-blue-backdrop'});
     entryRunNodeEntranceScreenReference.componentInstance.mongooseRunRecord = this.processingRunRecord;
-    entryRunNodeEntranceScreenReference.result.then((result) => {
+    entryRunNodeEntranceScreenReference.result.then(
+      (result) => {
+        console.log(`[run statistic logs] result: ${result}`);
       // this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
+      console.log(`[run statistic logs] reason: ${reason}`);
+
       // this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }

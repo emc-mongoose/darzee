@@ -6,7 +6,7 @@
 </div>
 <div class="modal-body">
   <p>Entry node</p>
-  <input #nodeEnteringInstance id="typeahead-focus" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search"
+  <input #nodeEnteringInstance id="typeahead-focus" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="this.search"
     (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)" (value)="currentEnteredText" #instance="ngbTypeahead" />
 </div>
 <div class="modal-footer">

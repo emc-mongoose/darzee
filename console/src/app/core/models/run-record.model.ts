@@ -71,11 +71,6 @@ export class MongooseRunRecord implements OnDestroy {
         if (this.nodes.length == 0) {
             return [this.DEFAULT_VALUE];
         }
-        console.log(`this.nodes type: ${typeof this.nodes}`)
-        this.nodes.forEach(node => { 
-            console.log(`node: ${node}`);
-        })
-        // console.log(`his.nodes: ${this.nodes}`)
         return this.nodes;
     }
 
