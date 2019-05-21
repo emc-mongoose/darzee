@@ -13,6 +13,8 @@ export class LocalStorageService {
 
   constructor(@Inject(LOCAL_STORAGE) private storage: StorageService) { }
 
+  // MARK: - Public 
+  
   public saveToLocalStorage(runEntryNodeAddress: string, runId: string) {
     const currentEntryNodeMap = this.storage.get(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY) || [];
     let newMongooseRunInstance = new MongooseRunEntryNode(runEntryNodeAddress, runId);
@@ -23,17 +25,26 @@ export class LocalStorageService {
 
   public getEntryNodeAddressForRunId(runId: string): MongooseRunEntryNode {
     let currentEntryNodeMap: MongooseRunEntryNode[] = this.storage.get(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY) || [];
-
     const firstFoundEntryIndex = 0;
     let matchingEntryFromLocalStorage: any = currentEntryNodeMap.filter((entry: any) => {
       return (entry.runId == runId);
     })[firstFoundEntryIndex] || "";
 
-    let matchingEntryNodeAddress = matchingEntryFromLocalStorage.runEntryNode;
+    let matchingEntryNodeAddress = this.getEntryNodeAddressFromObject(matchingEntryFromLocalStorage);
     if (matchingEntryNodeAddress == undefined) {
       throw new Error(`Entry node address for run ID ${runId} doesn't exist within local storage.`);
     };
 
     return new MongooseRunEntryNode(matchingEntryNodeAddress, runId);
+  }
+
+  // MARK: - Private 
+
+  private getEntryNodeAddressFromObject(object: any): string { 
+    let nodeAddress =  object.entryNodeAddress; 
+    if (nodeAddress == undefined) { 
+      throw new Error(`Unable to get entry node address from local storage entry.`)
+    }
+    return nodeAddress;
   }
 }
