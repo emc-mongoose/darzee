@@ -187,7 +187,7 @@ In this section, you'd find a list of a high-priority issues that would be fixed
 ## 6.1 Mongoose run logs unavailability 
 Mongoose run's table is constructed based on the retrieved data from Prometheus: run ID, additional nodes, load step ID, etc. The list doesn't contain entry node address. <br/>
 <b>Now</b>: Mongoose run's entry nodes addresses are stored within browser's local storage. It helps to retain the information about entry nodes as long as the local storage not getting cleaned up, yet it'd be saved even if the browser and/or tab has been closed.<br/>
-We need entry node's address in order to get logs via POST request with Mongoose Logs API to its entry node. 
+We need entry node's address in order to get logs via POST request with Mongoose Logs API to its entry node. <br/>
 <b>Problem</b>: while working outside of the browser from which Mongoose run has been launched (other browser, other computer, etc.), the data about run's entry node is missing, thus logs couldn't be gathered via the Logs API.<br/>
 
 Track progress on the issue [here](https://mongoose-issues.atlassian.net/projects/GUI/issues/GUI-137?filter=allissues).
