@@ -7,10 +7,10 @@ export const environment = {
   prometheusPort: '${PROMETHEUS_PORT}',
 
   // NOTE: NodeJS Server related configuration. It's used to server .html files ...
-  // ... (that's why it's address matches Mongoose Console's address) in production and ...
+  // ... (that's why it's address matches Darzee's address) in production and ...
   // ... to perform POST requests to Prometheus.
   nodeJsServerIp: '${NODE_SERVER_IMAGE_IP}',
-  nodeJsServerPort: '${CONSOLE_PORT}',
+  nodeJsServerPort: '${DARZEE_PORT}',
 
   // NOTE: Mongoose-related configuration 
   mongooseIp: 'localhost',
