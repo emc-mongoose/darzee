@@ -144,7 +144,7 @@ export class MonitoringApiService {
   }
 
 
-  public getLog(stepId: String, logName: String): Observable<any> {
+  public getLog(mongooseNodeAddress: string, stepId: String, logName: String): Observable<any> {
     let logsEndpoint = MongooseApi.LogsApi.LOGS;
     let targetUrl = "";
     let delimiter = "/";
@@ -154,11 +154,11 @@ export class MonitoringApiService {
       // NOTE: HTTP request on this URL will return error. 
       // The error will be handled and Mongoose's run status would be set to 'unavailable'. 
       // This is done in case Mongoose has been reloaded, but Prometheus still stores its metrics.
-      targetUrl = this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + logName;
+      targetUrl = mongooseNodeAddress + logsEndpoint + delimiter + logName;
     } else {
-      targetUrl = this.MONGOOSE_HTTP_ADDRESS + logsEndpoint + delimiter + stepId + delimiter + logName;
+      targetUrl = mongooseNodeAddress + logsEndpoint + delimiter + stepId + delimiter + logName;
     }
-    return this.http.get(targetUrl, { responseType: 'text' }).pipe(share());
+    return this.http.get(`${Constants.Http.HTTP_PREFIX}${targetUrl}`, { responseType: 'text' }).pipe(share());
   }
 
   public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
@@ -311,8 +311,8 @@ export class MonitoringApiService {
     return requiredfiltredRecords;
   }
 
-  private isLogFileExist(loadStepId: String, logName: String): Observable<any> {
-    return this.getLog(loadStepId, logName).pipe(
+  private isLogFileExist(runEntryNodeAddress: string, loadStepId: String, logName: String): Observable<any> {
+    return this.getLog(runEntryNodeAddress, loadStepId, logName).pipe(
       map(hasConfig => hasConfig = of(true)),
       catchError(hasConfig => hasConfig = of(false))
     );
