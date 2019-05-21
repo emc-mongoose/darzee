@@ -36,6 +36,11 @@ export class MonitoringApiService {
   // MARK: - Public
 
   public getStatusForMongooseRecord(mongooseRunEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
+    let defaultMongooseRunStatus = MongooseRunStatus.Finished;
+
+    if (mongooseRunEntryNode.getEntryNodeAddress() == MongooseRunEntryNode.ADDRESS_NOT_EXIST) {
+      return of(defaultMongooseRunStatus);
+    }
     // NOTE: As for now, we're checking status for Mongoose run overtall, not just Run ID. 
     return this.controlApiService.getStatusForMongooseRun(mongooseRunEntryNode).pipe(
       map((mongooseRunStatus: MongooseRunStatus) => {

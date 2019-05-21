@@ -77,7 +77,7 @@ export class ControlApiService {
   }
 
   public getStatusForMongooseRun(runEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
-    
+
     const requestRunStatusHeaders = {
       // NOTE: 'If-Match' header should contain Mongoose run ID, NOT load step ID.
       'If-Match': `${runEntryNode.getRunId()}`
