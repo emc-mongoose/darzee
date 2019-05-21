@@ -1,4 +1,4 @@
-# Mongoose Web UI 
+# Darzee
 Provides web interface for Mongoose - storage performance testing tool maintained by Dell EMC. 
 
 # Contents 
@@ -109,13 +109,13 @@ UI's configuration depends on the parameters listen within .env file.
 ## 2.1 Deploying ports 
 The following parameters are being used to specify deploying ports of the services: 
  
-* CONSOLE_PORT - for Mongoose Web UI; 
+* DARZEE_PORT - for Mongoose Web UI; 
 * PROMETHEUS_PORT - for Prometheus; 
 * MONGOOSE_PORT - for Mongoose; 
 
 ## 2.2 Image versions 
 The following parameters are being used to specify docker image version of a specific service: 
-* CONSOLE_VER - Mongoose Web UI image version; 
+* DARZEE_VER - Mongoose Web UI image version; 
 * PROMETHEUS_VER - Prometheus image version; 
 
 
