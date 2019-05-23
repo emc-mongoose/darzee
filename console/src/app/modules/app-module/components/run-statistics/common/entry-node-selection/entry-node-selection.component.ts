@@ -17,7 +17,10 @@ export class EntryNodeSelectionComponent implements OnInit {
   @Input() mongooseRunRecord: MongooseRunRecord;
   @ViewChild('instance') typeheadInstance: NgbTypeahead;
 
-  public errorMessage = "Error message";
+  public errorMessage: string = undefined;
+
+  private errorMessage$: Subject<string> = new Subject<string>();
+
   private existingNodesList: String[] = [];
   private currentEnteredText: string = ""
   private activeSubscriptions: Subscription = new Subscription();
@@ -44,7 +47,9 @@ export class EntryNodeSelectionComponent implements OnInit {
     )
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.errorMessage$.subscribe((message) => this.errorMessage = message);
+   }
 
 
   search = (enteringText$: Observable<string>) => {
@@ -81,7 +86,7 @@ export class EntryNodeSelectionComponent implements OnInit {
           this.activeModal.dismiss(enteredEntryNodeAddress);
         },
         error => {
-          alert(`Entry node ${enteredEntryNodeAddress} is not correct for load step ID ${this.mongooseRunRecord.getLoadStepId()}`);
+          this.errorMessage$.next(`Entry node ${enteredEntryNodeAddress} is not correct for load step ID ${this.mongooseRunRecord.getLoadStepId()}`)
         }
       )
     )
