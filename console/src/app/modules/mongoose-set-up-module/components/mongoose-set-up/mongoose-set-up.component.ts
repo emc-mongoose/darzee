@@ -63,22 +63,18 @@ export class MongooseSetUpComponent implements OnInit {
   }
 
   public onConfirmClicked() {
-    let processingTab = this.getCurrentSetupTab();
-    if (processingTab instanceof NodesComponent) {
-      console.log(`this.isNodeSetUpComplete(): ${this.isNodeSetUpComplete()}`);
-      if (!processingTab.isCompleted) {
-        alert(`Please, select Mongoose run nodes before continuing.`);
-        return;
+    let currentTab: MongooseSetupTab = this.getCurrentSetupTab();
+    switch(currentTab.contentLink) { 
+      case RoutesList.NODES: { 
+        currentTab.isCompleted = this.isNodeSetUpComplete();
+        if (!currentTab.isCompleted) {
+          alert(`Please, select Mongoose run nodes before continuing.`);
+          return;
+        }
       }
-      console.log(`nodes tab should be completed.`)
-      processingTab.isCompleted = true; 
     }
-    processingTab.isCompleted = this.isNodeSetUpComplete();
-
+    currentTab.isCompleted = this.isNodeSetUpComplete();
     let nextTabId = this.processingTabID + 1;
-    this.setUpTabs.forEach(tab => { 
-      console.log(`tab ${tab.title} is completed? ${tab.isCompleted}`);
-    })
     this.switchTab(nextTabId);
   }
 
