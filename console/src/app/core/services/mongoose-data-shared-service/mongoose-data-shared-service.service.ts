@@ -24,14 +24,25 @@ export class MongooseDataSharedServiceService {
 
   // MARK: - Public 
 
+  /**
+   * Returns observable array of Mongoose run nodes within Mongoose node repository. 
+   */
   public getAvailableRunNodes(): Observable<MongooseRunNode[]> {
     return this.mongooseNodesRepository.getAvailableRunNodes();
   }
 
+  /**
+   * Adds @param mongooseRunNode  into Mongoose Run Node's repository.
+   * @param mongooseRunNode new Mongoose run node 
+   */
   public addMongooseRunNode(mongooseRunNode: MongooseRunNode) {
     this.mongooseNodesRepository.addMongooseRunNode(mongooseRunNode);
   }
 
+  /**
+   * Removes @param mongooseRunNode into Mongoose run nodes rpeository.
+   * @param mongooseRunNode run node to be removed.
+   */
   public deleteMongooseRunNode(mongooseRunNode: MongooseRunNode) {
     this.mongooseNodesRepository.deleteMongooseRunNode(mongooseRunNode);
   }

@@ -64,8 +64,8 @@ export class MongooseSetUpComponent implements OnInit {
 
   public onConfirmClicked() {
     let currentTab: MongooseSetupTab = this.getCurrentSetupTab();
-    switch(currentTab.contentLink) { 
-      case RoutesList.NODES: { 
+    switch (currentTab.contentLink) {
+      case RoutesList.NODES: {
         currentTab.isCompleted = this.isNodeSetUpComplete();
         if (!currentTab.isCompleted) {
           alert(`Please, select active Mongoose run nodes before continuing.`);
