@@ -122,6 +122,10 @@ export class RunStatisticLogsComponent implements OnInit {
         if (entryNodeAddress == emptyValue) { 
           return; 
         }
+        this.processingRunRecord.setEntryNodeAddress(entryNodeAddress);
+        // NOTE: Save pair "resource - run ID" to local storage.
+        let entryNodeRunId: string = this.processingRunRecord.getRunId() as string;
+        this.localStorageService.saveToLocalStorage(entryNodeAddress, entryNodeRunId);
         // NOTE: Reinitializing log tabs with existing entry node address.
         this.initlogTabs();
       }

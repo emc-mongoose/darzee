@@ -169,6 +169,7 @@ export class MonitoringApiService {
     let targetUrl = "";
     let delimiter = "/";
     let emptyValue = "";
+    console.log(`[monitoring service] mongooseNodeAddress: ${mongooseNodeAddress}`)
     if (stepId == emptyValue) {
       console.error(`Step ID for required log "${logName}" hasn't been found.`);
       // NOTE: HTTP request on this URL will return error. 
@@ -178,6 +179,7 @@ export class MonitoringApiService {
     } else {
       targetUrl = mongooseNodeAddress + logsEndpoint + delimiter + stepId + delimiter + logName;
     }
+    console.log(`targetUrl: ${targetUrl}`)
     return this.http.get(`${Constants.Http.HTTP_PREFIX}${targetUrl}`, { responseType: 'text' }).pipe(share());
   }
 

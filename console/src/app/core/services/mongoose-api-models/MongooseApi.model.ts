@@ -6,7 +6,7 @@ export namespace MongooseApi {
 
     // NOTE: API for configuration.
     export class Config {
-        public static readonly CONFIG = "/config";
+        public static readonly CONFIG = "/Config";
     }
 
     // NOTE: API for configuring Mongoose Run. 

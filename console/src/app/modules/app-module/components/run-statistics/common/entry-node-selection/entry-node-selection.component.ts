@@ -6,6 +6,7 @@ import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators'
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
+import { MongooseApi } from 'src/app/core/services/mongoose-api-models/MongooseApi.model';
 
 @Component({
   selector: 'app-entry-node-selection',
@@ -74,14 +75,10 @@ export class EntryNodeSelectionComponent implements OnInit {
     // NOTE: Removing whitespaces from string in case of accidental entering of them
     this.currentEnteredText = this.currentEnteredText.replace(" ", "");
     this.mongooseRunRecord.setEntryNodeAddress(this.currentEnteredText);
-    let availableLogNames = this.monitoringApiService.getAvailableLogNames();
-    let testLogName = availableLogNames[0];
-    if (testLogName == undefined) {
-      alert(`ERROR: Unable to get any logs.`);
-      return;
-    }
+   
+    let testLogNameEndpoint = MongooseApi.Config.CONFIG;
     this.activeSubscriptions.add(
-      this.monitoringApiService.getLog(enteredEntryNodeAddress, this.mongooseRunRecord.getLoadStepId(), testLogName).subscribe(
+      this.monitoringApiService.getLog(enteredEntryNodeAddress, this.mongooseRunRecord.getLoadStepId(), testLogNameEndpoint).subscribe(
         successResult => {
           this.activeModal.dismiss(enteredEntryNodeAddress);
         },
