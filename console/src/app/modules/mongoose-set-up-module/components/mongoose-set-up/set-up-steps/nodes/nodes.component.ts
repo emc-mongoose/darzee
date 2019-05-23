@@ -69,6 +69,7 @@ export class NodesComponent implements OnInit {
           (isNodeActive: boolean) => {
             if (!isNodeActive) {
               this.displayInactivenodeAlert(selectedNode);
+              return;
             }
             this.mongooseSetUpService.addNode(selectedNode);
           }
