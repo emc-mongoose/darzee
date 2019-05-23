@@ -6,6 +6,7 @@ import { RoutesList } from '../../../app-module/Routing/routes-list';
 import { Subscription } from 'rxjs';
 import { Constants } from '../../../../common/constants';
 import { MongooseSetUpService } from '../../../../core/services/mongoose-set-up-service/mongoose-set-up.service';
+import { NodesComponent } from './set-up-steps/nodes/nodes.component';
 
 @Component({
   selector: 'app-mongoose-set-up',
@@ -63,11 +64,14 @@ export class MongooseSetUpComponent implements OnInit {
 
   public onConfirmClicked() {
     let processingTab = this.getCurrentSetupTab();
-    processingTab.isCompleted = this.getSetUpTabComplitionStatus();
-    if (!processingTab.isCompleted) {
-      alert(`Please, select Mongoose run nodes before continuing.`);
-      return;
+    if (processingTab instanceof NodesComponent) {
+      processingTab.isCompleted = this.isNodeSetUpComplete();
+      if (!processingTab.isCompleted) {
+        alert(`Please, select Mongoose run nodes before continuing.`);
+        return;
+      }
     }
+
     let nextTabId = this.processingTabID + 1;
     this.switchTab(nextTabId);
   }
@@ -163,7 +167,7 @@ export class MongooseSetUpComponent implements OnInit {
     this.openUpTab(nextTabId);
   }
 
-  private getSetUpTabComplitionStatus(): boolean {
+  private isNodeSetUpComplete(): boolean {
     // NOTE: Allowing switching set up tab only if target run nodes were selected 
     let hasMongooseRunNodesSelected = (this.mongooseSetUpService.getSelectedMongooseRunNodes().length > 0);
     return hasMongooseRunNodesSelected;

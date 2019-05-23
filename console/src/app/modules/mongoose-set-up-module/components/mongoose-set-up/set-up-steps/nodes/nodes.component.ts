@@ -6,6 +6,7 @@ import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-serv
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 import { ResourceLocatorType } from 'src/app/core/models/address-type';
+import { MongooseSetupStep } from 'src/app/modules/mongoose-set-up-module/interfaces/mongoose-setup-step.interface';
 
 @Component({
   selector: 'app-nodes',
