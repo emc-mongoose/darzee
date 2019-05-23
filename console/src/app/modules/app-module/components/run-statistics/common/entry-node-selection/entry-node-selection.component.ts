@@ -17,6 +17,7 @@ export class EntryNodeSelectionComponent implements OnInit {
   @Input() mongooseRunRecord: MongooseRunRecord;
   @ViewChild('instance') typeheadInstance: NgbTypeahead;
 
+  public errorMessage = "Error message";
   private existingNodesList: String[] = [];
   private currentEnteredText: string = ""
   private activeSubscriptions: Subscription = new Subscription();

@@ -4,6 +4,8 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
+<ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null" style="margin: calc(2%) calc(2%);">{{ errorMessage }}</ngb-alert>
+
 <div class="modal-body">
   <p>Entry node</p>
   <input #nodeEnteringInstance id="typeahead-focus" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search"
