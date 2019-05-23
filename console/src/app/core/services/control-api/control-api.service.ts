@@ -3,7 +3,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
 import { MongooseApi } from '../mongoose-api-models/MongooseApi.model';
 import { Observable, of } from 'rxjs';
-import { map, retry } from 'rxjs/operators';
+import { map, retry, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { MongooseRunStatus } from '../../models/mongoose-run-status';
 import { MongooseRunEntryNode } from '../local-storage-service/MongooseRunEntryNode';
@@ -87,6 +87,12 @@ export class ControlApiService {
     return this.http.get(mongooseAddress + configEndpoint, { headers: mongooseConfigurationHeaders });
   }
 
+  /** 
+   * Acces Mongoose via "/run" endpoint with "If-Match" header.
+   * "If-Match" header contains run ID which is retrieved from @param runEntryNode.
+    @param runEntryNode Mongoose's run entry node. It should contain logs. 
+    @returns 'Finished' is entry node is unavailable or contain logs, "Running" if response HTTP status was 200.
+  */
   public getStatusForMongooseRun(runEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
 
     let mongooseEntryNodeAddress = runEntryNode.getEntryNodeAddress();
@@ -115,6 +121,10 @@ export class ControlApiService {
 
         let isRunActive: boolean = (responseStatusCode == Constants.HttpStatus.OK);
         return isRunActive ? MongooseRunStatus.Running : MongooseRunStatus.Finished;
+      }),
+      catchError((error, cause) => { 
+        // NOTE: Returning status 'Finished' since entry node could be unavailable.
+        return of(MongooseRunStatus.Finished);
       })
     )
   }
