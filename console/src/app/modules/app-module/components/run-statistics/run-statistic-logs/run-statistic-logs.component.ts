@@ -40,9 +40,9 @@ export class RunStatisticLogsComponent implements OnInit {
     private modalService: NgbModal,
     private localStorageService: LocalStorageService) { }
 
-    ngOnInit() {}
+  ngOnInit() { }
 
-    ngAfterContentInit() {
+  ngAfterContentInit() {
 
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.parent.params.subscribe(params => {
@@ -54,6 +54,7 @@ export class RunStatisticLogsComponent implements OnInit {
             if (!this.shouldDisplayLogs(this.processingRunRecord)) {
               // NOTE: Timeout prevents situations when modal view will be created before the parent one. 
               setTimeout(() => this.openEntryNodeSelectionWindow());
+              return;
             }
             this.initlogTabs();
           }
@@ -66,7 +67,7 @@ export class RunStatisticLogsComponent implements OnInit {
       }
     });
   }
-  
+
 
   ngOnDestroy() {
     this.monitoringApiSubscriptions.unsubscribe();
@@ -82,7 +83,27 @@ export class RunStatisticLogsComponent implements OnInit {
     })
 
 
-    let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(selectedTab.getName());
+    let targetLogName = selectedTab.getName() as string;
+    this.setDisplayingLog(targetLogName)
+    // let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(targetLogName);
+    // // NOTE: Resetting error's inner HTML 
+    // let emptyErrorHtmlValue = "";
+    // this.occuredError = emptyErrorHtmlValue;
+
+    // this.monitoringApiService.getLog(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getLoadStepId(), logApiEndpoint).subscribe(
+    //   logs => {
+    //     this.displayingLog = logs;
+    //   },
+    //   error => {
+    //     var misleadingMessage = `Requested target doesn't seem to exist. Details: ${error}`;
+    //     this.displayingLog = misleadingMessage;
+    //     this.occuredError = error.error;
+    //   }
+    // );
+  }
+
+  private setDisplayingLog(logName: string) {
+    let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(logName);
     // NOTE: Resetting error's inner HTML 
     let emptyErrorHtmlValue = "";
     this.occuredError = emptyErrorHtmlValue;
@@ -99,27 +120,41 @@ export class RunStatisticLogsComponent implements OnInit {
     );
   }
 
-  public shouldDisplayLogs(record: MongooseRunRecord): boolean { 
-    if (record == undefined) { 
-      return false; 
+  public shouldDisplayLogs(record: MongooseRunRecord): boolean {
+    if (record == undefined) {
+      return false;
     }
     return (record.getEntryNodeAddress() != MongooseRunEntryNode.EMPTY_ADDRESS);
   }
 
-  public openEntryNodeSelectionWindow() { 
-    const entryRunNodeEntranceScreenReference = this.modalService.open(EntryNodeSelectionComponent, {ariaLabelledBy: 'modal-basic-title', backdropClass: 'light-blue-backdrop'});
+  public openEntryNodeSelectionWindow() {
+    const entryRunNodeEntranceScreenReference = this.modalService.open(EntryNodeSelectionComponent, { ariaLabelledBy: 'modal-basic-title', backdropClass: 'light-blue-backdrop' });
     entryRunNodeEntranceScreenReference.componentInstance.mongooseRunRecord = this.processingRunRecord;
     entryRunNodeEntranceScreenReference.result.then(
       (result) => {
         console.error(`Unexpected finish of node entrance window: ${result}`);
       }, (entryNodeAddress) => {
-        // NOTE: Saving entered entry node into local storage
-      this.processingRunRecord.setEntryNodeAddress(entryNodeAddress);
-      this.localStorageService.saveToLocalStorage(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getRunId() as string);
-     
-      // NOTE: Reinitializing the tabs
-      this.initlogTabs();
-    });
+        let availableLogNames = this.monitoringApiService.getAvailableLogNames();
+        let testLogName = availableLogNames[0];
+        if (testLogName == undefined) {
+          alert(`ERROR: Unable to get any logs.`);
+          return;
+        }
+        this.monitoringApiService.getLog(entryNodeAddress, this.processingRunRecord.getLoadStepId(), testLogName).subscribe(
+          successResult => {
+            // NOTE: Saving entered entry node into local storage
+            this.processingRunRecord.setEntryNodeAddress(entryNodeAddress);
+            this.localStorageService.saveToLocalStorage(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getLoadStepId() as string);
+
+            // NOTE: Reinitializing the tabs
+            this.initlogTabs();
+          },
+          error => { 
+            alert(`Entry node ${entryNodeAddress} is not correct for load step ID ${this.processingRunRecord.getLoadStepId()}`)
+          }
+        )
+
+      });
   }
 
   // MARK: - Private
