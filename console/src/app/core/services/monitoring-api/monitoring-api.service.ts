@@ -152,6 +152,17 @@ export class MonitoringApiService {
     )
   }
 
+  public isMongooseRunNodeActive(runNodeAddress: string): Observable<boolean> { 
+    const mongooseConfigEndpoint = MongooseApi.Config.CONFIG;
+    return this.http.get(`${Constants.Http.HTTP_PREFIX}${runNodeAddress}${mongooseConfigEndpoint}`).pipe(
+      map((successResult: any) => { 
+        return true; 
+      }),
+      catchError((error, caughtError) => { 
+        return of(false);
+      })
+    );
+  }
 
   public getLog(mongooseNodeAddress: string, stepId: String, logName: String): Observable<any> {
     let logsEndpoint = MongooseApi.LogsApi.LOGS;
@@ -360,4 +371,5 @@ export class MonitoringApiService {
       }
     });
   }
+
 }

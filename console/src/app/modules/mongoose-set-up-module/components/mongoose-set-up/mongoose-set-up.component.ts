@@ -70,6 +70,8 @@ export class MongooseSetUpComponent implements OnInit {
         alert(`Please, select Mongoose run nodes before continuing.`);
         return;
       }
+      let mongooseEntryNodeAddress = this.mongooseSetUpService.getMongooseEntryNode();
+      
     }
 
     let nextTabId = this.processingTabID + 1;

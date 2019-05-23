@@ -55,9 +55,28 @@ export class NodesComponent implements OnInit {
   }
 
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
+    let isNodeLocatedByIp: boolean = (selectedNode.getResourceType() == ResourceLocatorType.IP);
+
+    // NOTE: Add noode if check mark has been set, remove if unset    
     let hasNodeBeenSelected: boolean = this.mongooseSetUpService.isNodeExist(selectedNode);
-    // NOTE: Add noode if check mark has been set, remove if unset
-    hasNodeBeenSelected ? this.mongooseSetUpService.removeNode(selectedNode) : this.mongooseSetUpService.addNode(selectedNode);
+
+    if (!hasNodeBeenSelected && isNodeLocatedByIp) {
+      let selectedNodeResourceLocationIp: string = selectedNode.getResourceLocation();
+      this.slaveNodesSubscription.add(
+        this.mongooseSetUpService.isMongooseNodeActive(selectedNodeResourceLocationIp).subscribe(
+          (isNodeActive: boolean) => {
+            if (!isNodeActive) {
+              // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
+              // ... the configuration thought. 
+              alert(`selected node ${selectedNode.getResourceLocation()} is not active`);
+              return;
+            }
+            this.mongooseSetUpService.addNode(selectedNode);
+          }
+        )
+      )
+    }
+
   }
 
   private isipValid(entredIpAddress: string) {
