@@ -1,7 +1,12 @@
 import { MongooseRunNode } from "src/app/core/models/mongoose-run-node.model";
 
-export interface InactiveNodeAlert { 
-    type: string;
+export class InactiveNodeAlert { 
+    alertType: string = "danger";
     message: string;
-    node: MongooseRunNode; 
+    mongooseNode: MongooseRunNode; 
+
+    constructor( displayingMessage: string, mongooseNode: MongooseRunNode) { 
+        this.message = displayingMessage;
+        this.mongooseNode = mongooseNode; 
+    }
 }

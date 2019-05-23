@@ -14,6 +14,7 @@ import { ControlApiService } from "src/app/core/services/control-api/control-api
 import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
 import { DateFormatPipe } from "src/app/common/date-format-pipe";
 import { LocalStorageService } from "src/app/core/services/local-storage-service/local-storage.service";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { LocalStorageService } from "src/app/core/services/local-storage-service
     FormsModule,
     // NOTE: Dependencies
     NgJsonEditorModule,
-    CodemirrorModule
+    CodemirrorModule,
+    NgbModule
   ],
   declarations: [
     MongooseSetUpComponent,

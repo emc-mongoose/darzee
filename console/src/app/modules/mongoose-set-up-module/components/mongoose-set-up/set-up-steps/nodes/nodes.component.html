@@ -1,3 +1,11 @@
+<!-- 
+<div *ngIf="inactiveNodeAlerts.length > 0">
+    <ngb-alert type="danger" > test </ngb-alert>
+</div> -->
+
+<p *ngFor="let inactiveAlert of inactiveNodeAlerts">
+    <ngb-alert [type]="inactiveAlert.alertType" (close)="close(inactiveAlert)">{{ inactiveAlert.message }}</ngb-alert>
+  </p>
 
 <!-- NOTE: Table with saved Mongoose Run Nodes.  -->
 <div *ngIf="(savedMongooseNodes$ | async).length; else emptyNodesTable">

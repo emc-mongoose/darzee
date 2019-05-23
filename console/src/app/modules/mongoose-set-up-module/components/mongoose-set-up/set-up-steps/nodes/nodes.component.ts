@@ -7,6 +7,7 @@ import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 import { ResourceLocatorType } from 'src/app/core/models/address-type';
 import { MongooseSetupStep } from 'src/app/modules/mongoose-set-up-module/interfaces/mongoose-setup-step.interface';
+import { InactiveNodeAlert } from './incative-node-alert.interface';
 
 @Component({
   selector: 'app-nodes',
@@ -17,6 +18,7 @@ import { MongooseSetupStep } from 'src/app/modules/mongoose-set-up-module/interf
 export class NodesComponent implements OnInit {
 
   public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>();
+  public inactiveNodeAlerts: InactiveNodeAlert[] = []; 
 
   displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
 
@@ -68,7 +70,9 @@ export class NodesComponent implements OnInit {
             if (!isNodeActive) {
               // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
               // ... the configuration thought. 
-              alert(`selected node ${selectedNode.getResourceLocation()} is not active`);
+              let inactiveNodeAlert = new InactiveNodeAlert(`selected node ${selectedNode.getResourceLocation()} is not active`, selectedNode);
+              // alert();
+              this.inactiveNodeAlerts.push(inactiveNodeAlert);
               return;
             }
             this.mongooseSetUpService.addNode(selectedNode);
