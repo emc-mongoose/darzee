@@ -120,6 +120,8 @@ export class RunStatisticLogsComponent implements OnInit {
         const emptyValue = "";
         // NOTE: Do nothing if entry node address hasn't been entetred. 
         if (entryNodeAddress == emptyValue) { 
+          this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.processingRunRecord.getLoadStepId()
+          + '/' + RoutesList.RUN_CHARTS]);
           return; 
         }
         this.processingRunRecord.setEntryNodeAddress(entryNodeAddress);
