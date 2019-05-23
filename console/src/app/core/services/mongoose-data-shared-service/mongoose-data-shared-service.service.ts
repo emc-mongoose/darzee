@@ -15,10 +15,10 @@ export class MongooseDataSharedServiceService {
   private mongooseNodesRepository: MongooseRunNodesRepository = new MongooseRunNodesRepository();
 
   constructor(private localStorageService: LocalStorageService) {
-    try { 
+    try {
       this.setupMongooseNodesRepository();
-    } catch (nodeExistError) { 
-      
+    } catch (nodeExistError) {
+
     }
   }
 

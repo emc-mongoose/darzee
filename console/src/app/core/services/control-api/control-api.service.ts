@@ -33,9 +33,9 @@ export class ControlApiService {
 
   public runMongoose(entryNodeAddress: string, mongooseJsonConfiguration: Object = "", javaScriptScenario: String = ""): Observable<any> {
 
-    if (!HttpUtils.shouldPerformMongooseRunRequest(entryNodeAddress)) { 
+    if (!HttpUtils.shouldPerformMongooseRunRequest(entryNodeAddress)) {
       console.error(`IP address is not valid for Mongoose run entry node: ${entryNodeAddress}`);
-      return; 
+      return;
     }
 
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
@@ -50,8 +50,8 @@ export class ControlApiService {
   }
 
   public terminateMongooseRun(mongooseRunEntryNodeAddress: string, runId: string): Observable<string> {
-    
-    if (!HttpUtils.shouldPerformMongooseRunRequest(mongooseRunEntryNodeAddress)) { 
+
+    if (!HttpUtils.shouldPerformMongooseRunRequest(mongooseRunEntryNodeAddress)) {
       console.error(`IP address is not valid for Mongoose run entry node: ${mongooseRunEntryNodeAddress}`);
       return;
     }
@@ -77,7 +77,10 @@ export class ControlApiService {
     );
   }
 
-  // NOTE: Returning Mongoose configuration as JSON 
+  /**
+   * @param mongooseAddress IP of Mongoose run node.
+   * @returns configuration of Mongoose Run Node located at @param mongooseAddress.
+   */
   public getMongooseConfiguration(mongooseAddress: string): Observable<any> {
     let configEndpoint = MongooseApi.Config.CONFIG_ENDPONT;
 
@@ -96,7 +99,7 @@ export class ControlApiService {
   public getStatusForMongooseRun(runEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
 
     let mongooseEntryNodeAddress = runEntryNode.getEntryNodeAddress();
-    if (!HttpUtils.shouldPerformMongooseRunRequest(mongooseEntryNodeAddress)) { 
+    if (!HttpUtils.shouldPerformMongooseRunRequest(mongooseEntryNodeAddress)) {
       console.error(`IP address is not valid for Mongoose run entry node: ${mongooseEntryNodeAddress}`);
       return of(MongooseRunStatus.Finished);
     }
@@ -122,7 +125,7 @@ export class ControlApiService {
         let isRunActive: boolean = (responseStatusCode == Constants.HttpStatus.OK);
         return isRunActive ? MongooseRunStatus.Running : MongooseRunStatus.Finished;
       }),
-      catchError((error, cause) => { 
+      catchError((error, cause) => {
         // NOTE: Returning status 'Finished' since entry node could be unavailable.
         return of(MongooseRunStatus.Finished);
       })

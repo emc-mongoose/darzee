@@ -19,15 +19,20 @@ export class LocalStorageService {
 
   // MARK: - Public 
 
+  /**
+   * Save pair of "node address - run ID" into browser's local storage.
+   * @param runEntryNodeAddress Mongoose entry node address that does run with ID @param runId
+   * @param runId identifier of Mongoose run.
+   */
   public saveToLocalStorage(runEntryNodeAddress: string, runId: string) {
     const currentEntryNodeMapAsObject: Object[] = this.storage.get(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY) || [];
-   
-   let convertedEntryNodesMap: MongooseRunEntryNode[] = [];
+
+    let convertedEntryNodesMap: MongooseRunEntryNode[] = [];
     currentEntryNodeMapAsObject.forEach((rawEntryNode: Object) => {
-      try { 
+      try {
         let entryNode: MongooseRunEntryNode = this.getEntryNodeFromObject(rawEntryNode);
         convertedEntryNodesMap.push(entryNode);
-      } catch (castError) { 
+      } catch (castError) {
         console.error('Unable to cast object to MongooseRunEntryNode.');
       }
     });
@@ -38,6 +43,11 @@ export class LocalStorageService {
     this.storage.set(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY, convertedEntryNodesMap);
   }
 
+  /**
+   * Searches for Mongoose run entry node with speciified @param runId .
+   * @param runId ID of Mongoose run.
+   * @returns Location of Mongoose run entry node (e.g.: IP address).
+   */
   public getEntryNodeAddressForRunId(runId: string): MongooseRunEntryNode {
     let currentEntryNodeMap: MongooseRunEntryNode[] = this.storage.get(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY) || [];
     this.mongooseRunEntryNodes$.next(currentEntryNodeMap);
@@ -46,10 +56,10 @@ export class LocalStorageService {
       return (entry.runId == runId);
     })[firstFoundEntryIndex] || "";
     let matchingEntryNodeAddress: string = MongooseRunEntryNode.EMPTY_ADDRESS;
-    try { 
+    try {
       let matchingEntryNodeInstance = this.getEntryNodeFromObject(matchingEntryFromLocalStorage);
       matchingEntryNodeAddress = matchingEntryNodeInstance.getEntryNodeAddress();
-    } catch (castException) { 
+    } catch (castException) {
       console.error(`Unable to cast object to entry node.`);
     }
     return new MongooseRunEntryNode(matchingEntryNodeAddress, runId);
@@ -65,20 +75,20 @@ export class LocalStorageService {
       map((runEntryNodes: MongooseRunEntryNode[]) => {
         var nodeAddresses: string[] = [];
         runEntryNodes.forEach((runEntryNode: Object) => {
-         try { 
-          let entryNodeInstance = this.getEntryNodeFromObject(runEntryNode);
-          let entryNodeAddress = entryNodeInstance.getEntryNodeAddress();
-          nodeAddresses.push(entryNodeAddress);
-         } catch (castException) { 
-           console.error(`Unable to cast object to entry node.`);
-         }
+          try {
+            let entryNodeInstance = this.getEntryNodeFromObject(runEntryNode);
+            let entryNodeAddress = entryNodeInstance.getEntryNodeAddress();
+            nodeAddresses.push(entryNodeAddress);
+          } catch (castException) {
+            console.error(`Unable to cast object to entry node.`);
+          }
         });
         return nodeAddresses;
       }));
   }
   // MARK: - Private 
 
-  private getEntryNodeFromObject(object: any) { 
+  private getEntryNodeFromObject(object: any) {
     let nodeAddress = object.entryNodeAddress;
     let runId = object.runId;
     if ((nodeAddress == undefined) || (runId == undefined)) {
