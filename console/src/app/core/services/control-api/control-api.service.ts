@@ -79,7 +79,7 @@ export class ControlApiService {
 
   // NOTE: Returning Mongoose configuration as JSON 
   public getMongooseConfiguration(mongooseAddress: string): Observable<any> {
-    let configEndpoint = MongooseApi.Config.CONFIG;
+    let configEndpoint = MongooseApi.Config.CONFIG_ENDPONT;
 
     var mongooseConfigurationHeaders = new HttpHeaders();
     mongooseConfigurationHeaders.append('Accept', 'application/json');

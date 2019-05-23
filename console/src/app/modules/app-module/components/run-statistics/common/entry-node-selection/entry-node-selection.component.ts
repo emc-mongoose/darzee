@@ -76,7 +76,7 @@ export class EntryNodeSelectionComponent implements OnInit {
     this.currentEnteredText = this.currentEnteredText.replace(" ", "");
     this.mongooseRunRecord.setEntryNodeAddress(this.currentEnteredText);
    
-    let testLogNameEndpoint = MongooseApi.Config.CONFIG;
+    let testLogNameEndpoint = MongooseApi.Config.CONFIG_ENDPONT;
     this.activeSubscriptions.add(
       this.monitoringApiService.getLog(enteredEntryNodeAddress, this.mongooseRunRecord.getLoadStepId(), testLogNameEndpoint).subscribe(
         successResult => {

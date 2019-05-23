@@ -153,7 +153,7 @@ export class MonitoringApiService {
   }
 
   public isMongooseRunNodeActive(runNodeAddress: string): Observable<boolean> { 
-    const mongooseConfigEndpoint = MongooseApi.Config.CONFIG;
+    const mongooseConfigEndpoint = MongooseApi.Config.CONFIG_ENDPONT;
     return this.http.get(`${Constants.Http.HTTP_PREFIX}${runNodeAddress}${mongooseConfigEndpoint}`).pipe(
       map((successResult: any) => { 
         return true; 
