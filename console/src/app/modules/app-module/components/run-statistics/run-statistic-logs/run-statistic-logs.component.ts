@@ -81,25 +81,8 @@ export class RunStatisticLogsComponent implements OnInit {
       let isSelectedTab = (tab.getName() == selectedTab.getName());
       tab.isActive = isSelectedTab ? true : false;
     })
-
-
     let targetLogName = selectedTab.getName() as string;
     this.setDisplayingLog(targetLogName)
-    // let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(targetLogName);
-    // // NOTE: Resetting error's inner HTML 
-    // let emptyErrorHtmlValue = "";
-    // this.occuredError = emptyErrorHtmlValue;
-
-    // this.monitoringApiService.getLog(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getLoadStepId(), logApiEndpoint).subscribe(
-    //   logs => {
-    //     this.displayingLog = logs;
-    //   },
-    //   error => {
-    //     var misleadingMessage = `Requested target doesn't seem to exist. Details: ${error}`;
-    //     this.displayingLog = misleadingMessage;
-    //     this.occuredError = error.error;
-    //   }
-    // );
   }
 
   private setDisplayingLog(logName: string) {
@@ -134,27 +117,17 @@ export class RunStatisticLogsComponent implements OnInit {
       (result) => {
         console.error(`Unexpected finish of node entrance window: ${result}`);
       }, (entryNodeAddress) => {
-        let availableLogNames = this.monitoringApiService.getAvailableLogNames();
-        let testLogName = availableLogNames[0];
-        if (testLogName == undefined) {
-          alert(`ERROR: Unable to get any logs.`);
-          return;
+        const emptyValue = "";
+        // NOTE: Do nothing if entry node address hasn't been entetred. 
+        if (entryNodeAddress == emptyValue) { 
+          return; 
         }
-        this.monitoringApiService.getLog(entryNodeAddress, this.processingRunRecord.getLoadStepId(), testLogName).subscribe(
-          successResult => {
-            // NOTE: Saving entered entry node into local storage
-            this.processingRunRecord.setEntryNodeAddress(entryNodeAddress);
-            this.localStorageService.saveToLocalStorage(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getLoadStepId() as string);
+        // NOTE: Reinitializing log tabs with existing entry node address.
+        this.initlogTabs();
+      }
+    )
 
-            // NOTE: Reinitializing the tabs
-            this.initlogTabs();
-          },
-          error => { 
-            alert(`Entry node ${entryNodeAddress} is not correct for load step ID ${this.processingRunRecord.getLoadStepId()}`)
-          }
-        )
 
-      });
   }
 
   // MARK: - Private

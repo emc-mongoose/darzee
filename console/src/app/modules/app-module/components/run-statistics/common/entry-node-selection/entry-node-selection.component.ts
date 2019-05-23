@@ -5,6 +5,7 @@ import { Observable, Subject, merge, of, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
+import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
 
 @Component({
   selector: 'app-entry-node-selection',
@@ -27,29 +28,27 @@ export class EntryNodeSelectionComponent implements OnInit {
   // public search: any; 
 
   constructor(public activeModal: NgbActiveModal,
-    private mongooseDataSharedServiceService: MongooseDataSharedServiceService) {
-      this.activeSubscriptions.add(
-        this.mongooseDataSharedServiceService.getAvailableRunNodes().subscribe(
-          (availableRunNodes: MongooseRunNode[]) => { 
-            let availableRunNodeAddressess: String[] = [];
-            availableRunNodes.forEach((runNode: MongooseRunNode) => {
-              availableRunNodeAddressess.push(runNode.getResourceLocation());
-            });
-            this.existingNodesList = availableRunNodeAddressess;
-          }
-        )
+    private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
+    private monitoringApiService: MonitoringApiService) {
+    this.activeSubscriptions.add(
+      this.mongooseDataSharedServiceService.getAvailableRunNodes().subscribe(
+        (availableRunNodes: MongooseRunNode[]) => {
+          let availableRunNodeAddressess: String[] = [];
+          availableRunNodes.forEach((runNode: MongooseRunNode) => {
+            availableRunNodeAddressess.push(runNode.getResourceLocation());
+          });
+          this.existingNodesList = availableRunNodeAddressess;
+        }
       )
+    )
   }
 
-  ngOnInit() {
-
-    // this.existingNodesList = this.mongooseRunRecord.getNodesList() || [];
-  }
+  ngOnInit() { }
 
 
   search = (enteringText$: Observable<string>) => {
-    if (this == undefined) { 
-      return; 
+    if (this == undefined) {
+      return;
     }
     const debouncedText$ = enteringText$.pipe(debounceTime(200), distinctUntilChanged());
     const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.typeheadInstance.isPopupOpen()));
@@ -69,6 +68,21 @@ export class EntryNodeSelectionComponent implements OnInit {
     // NOTE: Removing whitespaces from string in case of accidental entering of them
     this.currentEnteredText = this.currentEnteredText.replace(" ", "");
     this.mongooseRunRecord.setEntryNodeAddress(this.currentEnteredText);
-    this.activeModal.dismiss(enteredEntryNodeAddress);
+    let availableLogNames = this.monitoringApiService.getAvailableLogNames();
+    let testLogName = availableLogNames[0];
+    if (testLogName == undefined) {
+      alert(`ERROR: Unable to get any logs.`);
+      return;
+    }
+    this.activeSubscriptions.add(
+      this.monitoringApiService.getLog(enteredEntryNodeAddress, this.mongooseRunRecord.getLoadStepId(), testLogName).subscribe(
+        successResult => {
+          this.activeModal.dismiss(enteredEntryNodeAddress);
+        },
+        error => {
+          alert(`Entry node ${enteredEntryNodeAddress} is not correct for load step ID ${this.mongooseRunRecord.getLoadStepId()}`);
+        }
+      )
+    )
   }
 }
