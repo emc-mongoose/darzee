@@ -18,7 +18,7 @@ import { InactiveNodeAlert } from './incative-node-alert.interface';
 export class NodesComponent implements OnInit {
 
   public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>();
-  public inactiveNodeAlerts: InactiveNodeAlert[] = []; 
+  public inactiveNodeAlerts: InactiveNodeAlert[] = [];
 
   displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
 
@@ -68,12 +68,7 @@ export class NodesComponent implements OnInit {
         this.mongooseSetUpService.isMongooseNodeActive(selectedNodeResourceLocationIp).subscribe(
           (isNodeActive: boolean) => {
             if (!isNodeActive) {
-              // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
-              // ... the configuration thought. 
-              let inactiveNodeAlert = new InactiveNodeAlert(`selected node ${selectedNode.getResourceLocation()} is not active`, selectedNode);
-              // alert();
-              this.inactiveNodeAlerts.push(inactiveNodeAlert);
-              return;
+              this.displayInactivenodeAlert(selectedNode);
             }
             this.mongooseSetUpService.addNode(selectedNode);
           }
@@ -82,9 +77,10 @@ export class NodesComponent implements OnInit {
     }
 
   }
-  
-  public onAlertClosed(closedAlert: InactiveNodeAlert) { 
-    this.inactiveNodeAlerts.splice(this.inactiveNodeAlerts.indexOf(closedAlert), 1);
+
+  public onAlertClosed(closedAlert: InactiveNodeAlert) {
+    let closedAlertIndex = this.getAlertIndex(closedAlert);
+    this.inactiveNodeAlerts.splice(closedAlertIndex, 1);
   }
 
   private isipValid(entredIpAddress: string) {
@@ -99,5 +95,28 @@ export class NodesComponent implements OnInit {
 
     const isIpValid = regExpr.test(entredIpAddress);
     return isIpValid;
+  }
+
+  private displayInactivenodeAlert(inactiveNode: MongooseRunNode) {
+    // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
+    // ... the configuration thought. 
+    let inactiveNodeAlert = new InactiveNodeAlert(`selected node ${inactiveNode.getResourceLocation()} is not active`, inactiveNode);
+
+    // NOTE: Finding alert by message in alerts array
+    let alertIndex = this.getAlertIndex(inactiveNodeAlert);
+    console.log(`alertIndex: ${alertIndex}`)
+    let isAlertExist: boolean = (alertIndex >= 0);
+
+    if (!isAlertExist) {
+      this.inactiveNodeAlerts.push(inactiveNodeAlert);
+    }
+    return;
+  }
+
+  private getAlertIndex(inactiveNodeAlert: InactiveNodeAlert): number {
+    return (this.inactiveNodeAlerts.findIndex(
+      (alert: InactiveNodeAlert) => {
+        return (alert.message == inactiveNodeAlert.message);
+      }));
   }
 }
