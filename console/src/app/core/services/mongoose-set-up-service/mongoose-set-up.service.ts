@@ -39,6 +39,9 @@ export class MongooseSetUpService {
   // MARK: - Getters & Setters 
 
   public getMongooseConfigurationForSetUp(entryNode: MongooseRunNode): Observable<any> {
+    if (entryNode == undefined) { 
+      throw new Error(`Can't get configuration snce entry node ins an undefined.`);
+    }
     let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${entryNode.getResourceLocation()}`;
     return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
       map(
