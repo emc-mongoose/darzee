@@ -82,6 +82,10 @@ export class NodesComponent implements OnInit {
     }
 
   }
+  
+  public onAlertClosed(closedAlert: InactiveNodeAlert) { 
+    this.inactiveNodeAlerts.splice(this.inactiveNodeAlerts.indexOf(closedAlert), 1);
+  }
 
   private isipValid(entredIpAddress: string) {
     console.log(`Enterd IP Address: ${this.entredIpAddress}`)

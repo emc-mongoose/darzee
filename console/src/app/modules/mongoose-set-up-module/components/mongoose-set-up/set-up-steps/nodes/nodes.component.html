@@ -4,7 +4,7 @@
 </div> -->
 
 <p *ngFor="let inactiveAlert of inactiveNodeAlerts">
-    <ngb-alert [type]="inactiveAlert.alertType" (close)="close(inactiveAlert)">{{ inactiveAlert.message }}</ngb-alert>
+    <ngb-alert [type]="inactiveAlert.alertType" (close)="onAlertClosed(inactiveAlert)">{{ inactiveAlert.message }}</ngb-alert>
   </p>
 
 <!-- NOTE: Table with saved Mongoose Run Nodes.  -->
