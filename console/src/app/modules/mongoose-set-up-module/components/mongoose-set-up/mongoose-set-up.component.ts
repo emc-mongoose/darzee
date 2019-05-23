@@ -68,7 +68,7 @@ export class MongooseSetUpComponent implements OnInit {
       case RoutesList.NODES: { 
         currentTab.isCompleted = this.isNodeSetUpComplete();
         if (!currentTab.isCompleted) {
-          alert(`Please, select Mongoose run nodes before continuing.`);
+          alert(`Please, select active Mongoose run nodes before continuing.`);
           return;
         }
       }
