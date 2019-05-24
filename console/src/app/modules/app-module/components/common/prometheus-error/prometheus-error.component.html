@@ -4,7 +4,7 @@
     [ngbTypeahead]="search" (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)"
     (value)="currentEnteredText" #prometheusAddressTypeheadInstance="ngbTypeahead"
     placeholder="Enter Prometheus IP address.." />
-    <ng-container *ngIf="this.shouldDisplayLoadBtn(); else errorMessageComponent">
+    <ng-container *ngIf="!this.shouldDisplayLoadBtn(); else errorMessageComponent">
        <button type="button" class="btn btn-outline-dark" (click)="onRetryBtnClicked()">Retry</button>
 
     </ng-container>

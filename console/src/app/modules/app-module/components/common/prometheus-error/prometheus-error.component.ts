@@ -27,7 +27,7 @@ export class PrometheusErrorComponent implements OnInit {
   private possiblePrometheusNodesList: string[] = [];
   private activeSubscriptions: Subscription = new Subscription();
 
-  private isLoadingInProgress: boolean = true; 
+  private isLoadingInProgress: boolean = false; 
 
   constructor(private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
     private prometheusApiService: PrometheusApiService) {
@@ -61,7 +61,6 @@ export class PrometheusErrorComponent implements OnInit {
   }
 
   public onRetryBtnClicked() { 
-    this.isLoadingInProgress = !this.isLoadingInProgress; 
     this.tryToLoadPrometheus(this.currentEnteredText);
   }
 
@@ -88,7 +87,20 @@ export class PrometheusErrorComponent implements OnInit {
     )
   }
 
+  /**
+   * Reload Prometheus on provided address.
+   * @param prometheusAddress IP address of Prometheus.
+   */
   private tryToLoadPrometheus(prometheusAddress: string) { 
+    this.isLoadingInProgress = true; 
+    this.activeSubscriptions.add(
+      this.prometheusApiService.isAvailable(prometheusAddress).subscribe(
+        (isPrometheusAvailable: boolean) => { 
+          console.error(`is prometheus available on ${prometheusAddress} ? ${isPrometheusAvailable}`);
+          this.isLoadingInProgress = false; 
+        }
+      )
+    )
   }
 
 }
