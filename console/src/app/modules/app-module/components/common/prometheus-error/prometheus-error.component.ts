@@ -26,6 +26,8 @@ export class PrometheusErrorComponent implements OnInit {
   private possiblePrometheusNodesList: string[] = [];
   private activeSubscriptions: Subscription = new Subscription();
 
+  private isLoadingInProgress: boolean = true; 
+
   constructor(private mongooseDataSharedServiceService: MongooseDataSharedServiceService) {
     let prometheusBaseAddress: string = environment.prometheusIp;
     let prometheusPort: string = environment.prometheusPort;
@@ -57,7 +59,11 @@ export class PrometheusErrorComponent implements OnInit {
   }
 
   public onRetryBtnClicked() { 
-    alert(`Trying to reach Proemtheus on ${this.currentEnteredText}`);
+    this.isLoadingInProgress = !this.isLoadingInProgress; 
+  }
+
+  public shouldDisplayLoadBtn(): boolean { 
+    return this.isLoadingInProgress;
   }
 
   // MARK: - Private 
