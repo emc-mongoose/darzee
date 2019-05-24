@@ -5,6 +5,7 @@ import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators'
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
+import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prometheus-api.service';
 
 @Component({
   selector: 'app-prometheus-error',
@@ -28,7 +29,8 @@ export class PrometheusErrorComponent implements OnInit {
 
   private isLoadingInProgress: boolean = true; 
 
-  constructor(private mongooseDataSharedServiceService: MongooseDataSharedServiceService) {
+  constructor(private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
+    private prometheusApiService: PrometheusApiService) {
     let prometheusBaseAddress: string = environment.prometheusIp;
     let prometheusPort: string = environment.prometheusPort;
     this.prometheusResourceLocation = `${prometheusBaseAddress}:${prometheusPort}`;
@@ -60,6 +62,7 @@ export class PrometheusErrorComponent implements OnInit {
 
   public onRetryBtnClicked() { 
     this.isLoadingInProgress = !this.isLoadingInProgress; 
+    this.tryToLoadPrometheus(this.currentEnteredText);
   }
 
   public shouldDisplayLoadBtn(): boolean { 
@@ -83,6 +86,9 @@ export class PrometheusErrorComponent implements OnInit {
         }
       )
     )
+  }
+
+  private tryToLoadPrometheus(prometheusAddress: string) { 
   }
 
 }

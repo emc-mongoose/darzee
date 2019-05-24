@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
-import { Observable } from 'rxjs';
-import { map, filter, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, filter, tap, catchError } from 'rxjs/operators';
 import { MongooseChartDataProvider } from '../../models/chart/mongoose-chart-interface/mongoose-chart-data-provider.interface';
 import { MongooseMetric } from '../../models/chart/mongoose-metric.model';
 import { PrometheusResponseParser } from './prometheus-response.parser';
@@ -40,6 +40,26 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   // MARK: - MogooseChartDataProvider 
 
+  /**
+   * Prometheus healthcheck. 
+   * @param prometheusAddress IP address of Prometheus server.
+   * @returns true if Prometheus is available on @param prometheusAddress . 
+   */
+  public isAvailable(prometheusAddress: string): Observable<boolean> { 
+    const configurationEndpoint: string = 'status/config';
+    return this.httpClient.get(`${Constants.Http.HTTP_PREFIX}${prometheusAddress}${this.API_BASE}${configurationEndpoint}`).pipe(
+      map(
+        (successfulResult: any) => { 
+          return true; 
+        }
+      ),
+      catchError(
+        (errorResult: any) => { 
+          return of(false); 
+        }
+      )
+    )
+  }
 
   public getDuration(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.MEAN_DURATION_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
