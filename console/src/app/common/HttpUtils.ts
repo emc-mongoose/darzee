@@ -16,13 +16,12 @@ export class HttpUtils {
         const remaningAddressWithoutKeywords = ipAddress.replace(localhostKeyword + portNumberAndKeywordDelimiter, emptyString);
         
         const maximumAmountOfDigitsInPort = 5; 
-        if (remaningAddressWithoutKeywords.length < maximumAmountOfDigitsInPort) { 
+        if (remaningAddressWithoutKeywords.length >= maximumAmountOfDigitsInPort) { 
             return false; 
         }
 
         const portNumber = Number(remaningAddressWithoutKeywords);
-        
-        return (isNaN(portNumber) && (portNumber <= HttpUtils.PORT_NUMBER_UPPER_BOUND));
+        return (!isNaN(portNumber) && (portNumber <= HttpUtils.PORT_NUMBER_UPPER_BOUND));
 
     }
 
