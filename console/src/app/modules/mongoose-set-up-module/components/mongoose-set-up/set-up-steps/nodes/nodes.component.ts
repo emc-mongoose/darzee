@@ -12,7 +12,7 @@ import { InactiveNodeAlert } from './incative-node-alert.interface';
 @Component({
   selector: 'app-nodes',
   templateUrl: './nodes.component.html',
-  styleUrls: ['./nodes.component.css'],
+  styleUrls: ['./nodes.component.scss'],
   providers: []
 })
 export class NodesComponent implements OnInit {
@@ -58,9 +58,13 @@ export class NodesComponent implements OnInit {
 
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
     let isNodeLocatedByIp: boolean = (selectedNode.getResourceType() == ResourceLocatorType.IP);
-
     // NOTE: Add noode if check mark has been set, remove if unset    
     let hasNodeBeenSelected: boolean = this.mongooseSetUpService.isNodeExist(selectedNode);
+
+    if (hasNodeBeenSelected) { 
+      // NOTE: Remove node it checkmark has been unset.
+      this.mongooseSetUpService.removeNode(selectedNode);
+    }
 
     if (!hasNodeBeenSelected && isNodeLocatedByIp) {
       let selectedNodeResourceLocationIp: string = selectedNode.getResourceLocation();
