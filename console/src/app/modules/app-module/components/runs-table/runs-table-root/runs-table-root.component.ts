@@ -71,6 +71,7 @@ export class RunsTableRootComponent implements OnInit {
 
       },
       error => {
+        this.showErrorComponent(error);
         if (error instanceof PrometheusError) { 
           alert(`Prometheus unavailable. Reason: ${error.getReason()}`);
           return;
@@ -134,11 +135,13 @@ export class RunsTableRootComponent implements OnInit {
     return this.mongooseRunTabs$.asObservable();
   }
 
-  public showErrorComponent() { 
+  public showErrorComponent(error: Error) { 
     this.errorMessageComponent.clear();
-    const factory = this.resolver.resolveComponentFactory(PrometheusErrorComponent);
-    const chartComponentReference = this.errorMessageComponent.createComponent(factory);
-    // chartComponentReference  = new MongooseRunStatusIconComponent();
+
+    if (error instanceof PrometheusError) { 
+      const factory = this.resolver.resolveComponentFactory(PrometheusErrorComponent);
+      const chartComponentReference = this.errorMessageComponent.createComponent(factory);
+    }
   }
   // MARK: - Private 
 
