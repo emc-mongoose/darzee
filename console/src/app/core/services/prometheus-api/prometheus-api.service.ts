@@ -6,6 +6,7 @@ import { map, filter, tap, catchError } from 'rxjs/operators';
 import { MongooseChartDataProvider } from '../../models/chart/mongoose-chart-interface/mongoose-chart-data-provider.interface';
 import { MongooseMetric } from '../../models/chart/mongoose-metric.model';
 import { PrometheusResponseParser } from './prometheus-response.parser';
+import { HttpUtils } from 'src/app/common/HttpUtils';
 
 
 @Injectable({
@@ -46,6 +47,10 @@ export class PrometheusApiService implements MongooseChartDataProvider {
    * @returns true if Prometheus is available on @param prometheusAddress . 
    */
   public isAvailable(prometheusAddress: string): Observable<boolean> { 
+    if (!HttpUtils.isIpAddressValid(prometheusAddress)) { 
+      console.error(`IP address ${prometheusAddress} is not valid.`)
+      return of(false);
+    }
     const configurationEndpoint: string = 'status/config';
     return this.httpClient.get(`${Constants.Http.HTTP_PREFIX}${prometheusAddress}${this.API_BASE}${configurationEndpoint}`).pipe(
       map(

@@ -6,6 +6,7 @@ import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prometheus-api.service';
+import { HttpUtils } from 'src/app/common/HttpUtils';
 
 @Component({
   selector: 'app-prometheus-error',
@@ -67,7 +68,12 @@ export class PrometheusErrorComponent implements OnInit {
   }
 
   public onRetryBtnClicked() {
-    this.tryToLoadPrometheus(this.currentEnteredText);
+    let enteredPrometheusAddress: string = this.currentEnteredText;
+    if (!HttpUtils.isIpAddressValid(enteredPrometheusAddress)) { 
+      alert(`IP address ${enteredPrometheusAddress} is not valid.`);
+      return;
+    }
+    this.tryToLoadPrometheus(enteredPrometheusAddress);
   }
 
   public shouldDisplayLoadBtn(): boolean {
@@ -103,11 +109,12 @@ export class PrometheusErrorComponent implements OnInit {
       this.prometheusApiService.isAvailable(prometheusAddress).subscribe(
         (isPrometheusAvailable: boolean) => {
           this.isLoadingInProgress = false;
-          this.onPrometheusLoad.emit();
-          if (isPrometheusAvailable) { 
-            // TODO: Destroy component here & update Prometheus configuration
+          if (!isPrometheusAvailable) { 
+            alert(`Prometheus is not available on ${prometheusAddress}`);
+            this.prometheusResourceLocation = prometheusAddress;
+            return;
           }
-          console.error(`is prometheus available on ${prometheusAddress} ? ${isPrometheusAvailable}`);
+          this.onPrometheusLoad.emit();
         }
       )
     )
