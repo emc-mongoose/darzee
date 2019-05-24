@@ -12,6 +12,7 @@ import { Variable } from '@angular/compiler/src/render3/r3_ast';
 export class LocalStorageService {
 
   readonly ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY = "mongoose-darzee-entry-node-to-run-id-map";
+  readonly PROMETHEUS_HOST_ADDRESS_LOCAL_STORAGE_KEY = "mongoose-darzee-prometheus-host";
 
   private mongooseRunEntryNodes$: BehaviorSubject<MongooseRunEntryNode[]> = new BehaviorSubject<MongooseRunEntryNode[]>([]);
 
@@ -41,6 +42,32 @@ export class LocalStorageService {
     this.mongooseRunEntryNodes$.next(convertedEntryNodesMap);
 
     this.storage.set(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY, convertedEntryNodesMap);
+  }
+
+
+  /**
+   * 
+   * Saves Prometheus' @param address into local storage.
+   * Stores only 1 address at a time (at least for now).
+   */
+  public savePrometheusHostAddress(address: string) {
+    // NOTE: As for now, we're storing only 1 Prometheus' host.
+    const updatedArrayOfPrometheusHosts: string[] = [address];
+    this.storage.set(this.PROMETHEUS_HOST_ADDRESS_LOCAL_STORAGE_KEY, updatedArrayOfPrometheusHosts);
+  }
+
+
+  /**
+   * @returns Prometheus' server host address retrieved from local storage.
+   * If nothing has been found at local storage, returns empty value.
+   */
+  public getPrometheusHostAddress(): string {
+    let prometheusHostAddresses: string[] = this.storage.get(this.PROMETHEUS_HOST_ADDRESS_LOCAL_STORAGE_KEY) || [];
+    const firstAddressIndex: number = 0;
+    const emptyValue = "";
+
+    let firstFoundAddress = prometheusHostAddresses[firstAddressIndex] || emptyValue;
+    return firstFoundAddress;
   }
 
   /**

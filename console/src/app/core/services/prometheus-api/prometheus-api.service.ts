@@ -27,7 +27,6 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   private readonly BYTE_RATE_MEAN_METRIC_NAME = "mongoose_byte_rate_mean";
 
 
-
   // NOTE: Symbols used for queryting Prometheus for value of metric with specific labels. They ...
   // ... are listed within the labels list. 
   readonly METRIC_LABELS_LIST_START_SYMBOL = "{";
@@ -47,20 +46,20 @@ export class PrometheusApiService implements MongooseChartDataProvider {
    * @param prometheusAddress IP address of Prometheus server.
    * @returns true if Prometheus is available on @param prometheusAddress . 
    */
-  public isAvailable(prometheusAddress: string): Observable<boolean> { 
-    if (!HttpUtils.isIpAddressValid(prometheusAddress)) { 
+  public isAvailable(prometheusAddress: string): Observable<boolean> {
+    if (!HttpUtils.isIpAddressValid(prometheusAddress)) {
       return of(false);
     }
     const configurationEndpoint: string = 'status/config';
     return this.httpClient.get(`${this.getPrometheusApiBase()}${configurationEndpoint}`).pipe(
       map(
-        (successfulResult: any) => { 
-          return true; 
+        (successfulResult: any) => {
+          return true;
         }
       ),
       catchError(
-        (errorResult: any) => { 
-          return of(false); 
+        (errorResult: any) => {
+          return of(false);
         }
       )
     )
@@ -69,7 +68,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   /**
    * Sets @param prometheusHostIpAddress as a Prometheus' host for HTTP requests.
    */
-  public setHostIpAddress(prometheusHostIpAddress: string) { 
+  public setHostIpAddress(prometheusHostIpAddress: string) {
     this.currentPrometheusAddress = prometheusHostIpAddress;
   }
 
@@ -204,9 +203,9 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   /**
    * @returns full Prometheus' API base. Format: http//prometheushost.com/api/v1/
    */
-  private getPrometheusApiBase(): string { 
+  private getPrometheusApiBase(): string {
     const apiBasicEndpoint = "/api/v1/";
-    if (this.currentPrometheusAddress.includes(Constants.Http.HTTP_PREFIX)) { 
+    if (this.currentPrometheusAddress.includes(Constants.Http.HTTP_PREFIX)) {
       return (this.currentPrometheusAddress + apiBasicEndpoint);
     }
     return (Constants.Http.HTTP_PREFIX + this.currentPrometheusAddress + apiBasicEndpoint);
