@@ -27,7 +27,6 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   private readonly BYTE_RATE_MEAN_METRIC_NAME = "mongoose_byte_rate_mean";
 
 
-  readonly API_BASE = Constants.Http.HTTP_PREFIX + Constants.Configuration.PROMETHEUS_IP + "/api/v1/";
 
   // NOTE: Symbols used for queryting Prometheus for value of metric with specific labels. They ...
   // ... are listed within the labels list. 
@@ -35,6 +34,9 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   readonly METRIC_LABELS_LIST_END_SYMBOL = "}";
 
   readonly prometheusResponseParser: PrometheusResponseParser = new PrometheusResponseParser();
+  private currentPrometheusAddress: string = Constants.Configuration.PROMETHEUS_IP;
+  private prometheusApiBase = Constants.Http.HTTP_PREFIX + this.currentPrometheusAddress + "/api/v1/";
+
   // MARK: - Lifecycle 
 
   constructor(private httpClient: HttpClient) { }
@@ -52,7 +54,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
       return of(false);
     }
     const configurationEndpoint: string = 'status/config';
-    return this.httpClient.get(`${Constants.Http.HTTP_PREFIX}${prometheusAddress}${this.API_BASE}${configurationEndpoint}`).pipe(
+    return this.httpClient.get(`${Constants.Http.HTTP_PREFIX}${prometheusAddress}${this.prometheusApiBase}${configurationEndpoint}`).pipe(
       map(
         (successfulResult: any) => { 
           return true; 
@@ -64,6 +66,13 @@ export class PrometheusApiService implements MongooseChartDataProvider {
         }
       )
     )
+  }
+
+  /**
+   * Sets @param prometheusHostIpAddress as a Prometheus' host for HTTP requests.
+   */
+  public setHostIpAddress(prometheusHostIpAddress: string) { 
+    this.currentPrometheusAddress = prometheusHostIpAddress;
   }
 
   public getDuration(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
@@ -126,7 +135,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   public runQuery(query: String): Observable<any> {
     let queryRequest = "query?query=";
-    return this.httpClient.get(this.API_BASE + queryRequest + query, Constants.Http.JSON_CONTENT_TYPE).pipe(
+    return this.httpClient.get(this.prometheusApiBase + queryRequest + query, Constants.Http.JSON_CONTENT_TYPE).pipe(
       map((rawResponse: any) => this.extractResultPayload(rawResponse))
     );
   }
