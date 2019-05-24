@@ -67,14 +67,11 @@
 $CHECKBOX_DIAMETER: 25px;
 $CHECKBOX_BACKGROUND_COLOR-selected: #356cd2;
 $CHECKBOX_CHECK_MARK_COLOR: #fff;
-$CHECKBOX_BACKGROUND_COLOR: #c8dbff;
+$CHECKBOX_BACKGROUND_COLOR: #c9f6c9;
 $CHECKBOX_SELECTED_COLOR: #1dbf26;
 
 
 .checkbox:not(last-of-type) {
-  //   display: inline-block;
-  //   position: absolute;
-
   // NOTE: Cirlle
   label {
     background-color: pink;
