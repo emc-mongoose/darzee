@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Subject, Observable, merge, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
@@ -14,7 +14,13 @@ import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prome
 })
 export class PrometheusErrorComponent implements OnInit {
 
+  /**
+   * @param prometheusAddressTypeheadInstance references to input field for Prometheus IP address.
+   * @param onPrometheusLoad emits an event once Prometheus has been loaded.
+   */
   @ViewChild(`prometheusAddressTypeheadInstance`) prometheusAddressTypeheadInstance: NgbTypeahead;
+  @Output() onPrometheusLoad = new EventEmitter();
+
 
   private readonly DEFAULT_PROMETHEUS_NODE_ADDRESS = "localhost";
   private readonly DEFAULT_PROMETHEUS_NODE_PORT = "9090";
@@ -27,7 +33,7 @@ export class PrometheusErrorComponent implements OnInit {
   private possiblePrometheusNodesList: string[] = [];
   private activeSubscriptions: Subscription = new Subscription();
 
-  private isLoadingInProgress: boolean = false; 
+  private isLoadingInProgress: boolean = false;
 
   constructor(private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
     private prometheusApiService: PrometheusApiService) {
@@ -60,11 +66,11 @@ export class PrometheusErrorComponent implements OnInit {
     )
   }
 
-  public onRetryBtnClicked() { 
+  public onRetryBtnClicked() {
     this.tryToLoadPrometheus(this.currentEnteredText);
   }
 
-  public shouldDisplayLoadBtn(): boolean { 
+  public shouldDisplayLoadBtn(): boolean {
     return this.isLoadingInProgress;
   }
 
@@ -91,13 +97,17 @@ export class PrometheusErrorComponent implements OnInit {
    * Reload Prometheus on provided address.
    * @param prometheusAddress IP address of Prometheus.
    */
-  private tryToLoadPrometheus(prometheusAddress: string) { 
-    this.isLoadingInProgress = true; 
+  private tryToLoadPrometheus(prometheusAddress: string) {
+    this.isLoadingInProgress = true;
     this.activeSubscriptions.add(
       this.prometheusApiService.isAvailable(prometheusAddress).subscribe(
-        (isPrometheusAvailable: boolean) => { 
+        (isPrometheusAvailable: boolean) => {
+          this.isLoadingInProgress = false;
+          this.onPrometheusLoad.emit();
+          if (isPrometheusAvailable) { 
+            // TODO: Destroy component here & update Prometheus configuration
+          }
           console.error(`is prometheus available on ${prometheusAddress} ? ${isPrometheusAvailable}`);
-          this.isLoadingInProgress = false; 
         }
       )
     )

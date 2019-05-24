@@ -132,7 +132,12 @@ export class RunsTableRootComponent implements OnInit {
 
     if (error instanceof PrometheusError) { 
       const factory = this.resolver.resolveComponentFactory(PrometheusErrorComponent);
-      const chartComponentReference = this.errorMessageComponent.createComponent(factory);
+      const errorComponentReference = this.errorMessageComponent.createComponent(factory);
+      errorComponentReference.instance.onPrometheusLoad.subscribe(
+        onPrometheusClosed => { 
+          this.errorMessageComponent.clear();
+        }
+      );
     }
   }
   // MARK: - Private 
