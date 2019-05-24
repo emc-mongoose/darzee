@@ -33,10 +33,13 @@ export class PrometheusErrorComponent implements OnInit {
     this.prometheusResourceLocation = `${prometheusBaseAddress}:${prometheusPort}`;
   }
 
-  ngOnInit() { 
+  ngOnInit() {
     this.subscribeToPossiblePrometheusRunNodes();
   }
 
+  /**
+   * Searches for possible Prometheus node while user is typing.
+   */
   search = (enteringText$: Observable<string>) => {
     if (this == undefined) {
       return;
@@ -55,7 +58,8 @@ export class PrometheusErrorComponent implements OnInit {
   }
 
   // MARK: - Private 
-  private subscribeToPossiblePrometheusRunNodes() { 
+
+  private subscribeToPossiblePrometheusRunNodes() {
     this.activeSubscriptions.add(
       this.mongooseDataSharedServiceService.getAvailableRunNodes().subscribe(
         (availableRunNodes: MongooseRunNode[]) => {
