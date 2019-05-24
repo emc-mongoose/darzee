@@ -226,12 +226,9 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     if (isPrometheusConfiguredIpValid) { 
       // NPTE: Reaching this block means .env file contains ...
       // ... a valid configuration of Prometheus.
-      console.log(`.env file contains prometheus entry node: ${this.currentPrometheusAddress}`)
       return; 
     }
     let prometheusLocalStorageAddress: string = this.localStorageService.getPrometheusHostAddress();
     this.currentPrometheusAddress = prometheusLocalStorageAddress;
-    console.log(`Prometheus' entry node has been set to: ${this.currentPrometheusAddress}`)
-
   }
 }
