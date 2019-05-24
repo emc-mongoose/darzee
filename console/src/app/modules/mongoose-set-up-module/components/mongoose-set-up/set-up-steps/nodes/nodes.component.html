@@ -1,11 +1,7 @@
-<!-- 
-<div *ngIf="inactiveNodeAlerts.length > 0">
-    <ngb-alert type="danger" > test </ngb-alert>
-</div> -->
-
 <p *ngFor="let inactiveAlert of inactiveNodeAlerts">
-    <ngb-alert [type]="inactiveAlert.alertType" (close)="onAlertClosed(inactiveAlert)">{{ inactiveAlert.message }}</ngb-alert>
-  </p>
+  <ngb-alert [type]="inactiveAlert.alertType" (close)="onAlertClosed(inactiveAlert)">{{ inactiveAlert.message }}
+  </ngb-alert>
+</p>
 
 <!-- NOTE: Table with saved Mongoose Run Nodes.  -->
 <div *ngIf="(savedMongooseNodes$ | async).length; else emptyNodesTable">
@@ -21,12 +17,14 @@
     <tbody>
       <!-- NOTE: Trying to use 'async' -->
       <tr *ngFor="let savedNode of savedMongooseNodes$ | async">
+
         <th scope="row">
-          <!-- Default unchecked -->
-           <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="{{ savedNode.getResourceLocation() }}" (click)="onRunNodeSelect(savedNode)">
-            <label class="custom-control-label" for="{{ savedNode.getResourceLocation() }}" ></label>
+          <div class="checkbox">
+              <input type="checkbox" id="{{ savedNode.getResourceLocation() }}" class="custom-control-input" id="test"
+               style="visibility: hidden;" (click)="onRunNodeSelect(savedNode)">
+              <label for="{{ savedNode.getResourceLocation() }}" class="custom-control-label"></label>
           </div>
+
         </th>
         <td> {{ savedNode.resourceType }} </td>
         <td> {{ savedNode.resourceLocation }} </td>
