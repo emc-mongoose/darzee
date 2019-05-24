@@ -6,6 +6,7 @@ import { MongooseRunTab } from './model/monoose-run-tab.model';
 import { slideAnimation } from 'src/app/core/animations';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { MongooseRunRecordCounter } from 'src/app/core/models/run-record-counter';
+import { PrometheusError } from 'src/app/common/Exceptions/PrometheusError';
 
 @Component({
   selector: 'app-runs-table-root',
@@ -58,12 +59,17 @@ export class RunsTableRootComponent implements OnInit {
 
     this.mongooseRecordsSubscription = this.monitoringApiService.getMongooseRunRecords().subscribe(
       updatedRecords => {
-        // NOTE: Updating tabs here 
-        this.mongooseRunTabs$.next(this.getTabsForRecords(updatedRecords));
+        // NOTE: Updating tabs here
+        let runTableTabs = this.getTabsForRecords(updatedRecords); 
+        this.mongooseRunTabs$.next(runTableTabs);
         this.displayingRunRecords = updatedRecords;
 
       },
       error => {
+        if (error instanceof PrometheusError) { 
+          alert(`Prometheus unavailable. Reason: ${error.getReason()}`);
+          return;
+        }
         let misleadingMsg = `Unable to load Mongoose run records. Details: `;
 
         let errorDetails = JSON.stringify(error);
@@ -100,9 +106,12 @@ export class RunsTableRootComponent implements OnInit {
     })
     this.currentActiveTab = requiredTab;
     this.monitoringApiServiceSubscriptions = this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(requiredTab.tabTitle).subscribe(
-      filtedRecords => {
+      (filtedRecords: MongooseRunRecord[]) => {
         requiredTab.setAmountOfRecords(filtedRecords.length);
         this.filtredRecords$.next(filtedRecords);
+      },
+      (error): any => { 
+        alert(`Prometheus is unavailable.`)
       }
     )
   }
