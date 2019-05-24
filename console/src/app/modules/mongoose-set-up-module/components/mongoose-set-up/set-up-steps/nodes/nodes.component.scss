@@ -96,10 +96,11 @@ $CHECKBOX_SELECTED_BORDER_COLOR: #02ec0e;
     &:after {
       content: "";
       position: absolute;
-      width: 29%;
-      height: 14%;
-      top: 38%;
-      left: 33%;
+      // NOTE: Constructing checkmark
+      width: 50%;
+      height: 34%;
+      top: 33%;
+      left: 23%;
       opacity: 0;
       border-left: 2px solid $CHECKBOX_CHECK_MARK_COLOR;
       border-bottom: 2px solid $CHECKBOX_CHECK_MARK_COLOR;
