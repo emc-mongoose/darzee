@@ -72,18 +72,10 @@ export class RunsTableRootComponent implements OnInit {
       },
       error => {
         this.showErrorComponent(error);
-        if (error instanceof PrometheusError) { 
-          alert(`Prometheus unavailable. Reason: ${error.getReason()}`);
-          return;
-        }
         let misleadingMsg = `Unable to load Mongoose run records. Details: `;
 
         let errorDetails = JSON.stringify(error);
         console.error(misleadingMsg + errorDetails);
-
-        let errorCause = error;
-        alert(misleadingMsg + errorCause);
-        alert(`Unable to load Mongoose runs. Details: ${error}`);
       }
     )
   }
@@ -116,8 +108,8 @@ export class RunsTableRootComponent implements OnInit {
         requiredTab.setAmountOfRecords(filtedRecords.length);
         this.filtredRecords$.next(filtedRecords);
       },
-      (error): any => { 
-        alert(`Prometheus is unavailable.`)
+      (error: PrometheusError): any => { 
+        this.showErrorComponent(error);
       }
     )
   }
