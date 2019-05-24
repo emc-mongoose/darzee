@@ -13,11 +13,11 @@ import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 })
 export class PrometheusErrorComponent implements OnInit {
 
-
   @ViewChild(`prometheusAddressTypeheadInstance`) prometheusAddressTypeheadInstance: NgbTypeahead;
 
-  private DEFAULT_PROMETHEUS_NODE_ADDRESS = "localhost";
-  private DEFAULT_PROMETHEUS_NODE_PORT = "9090";
+  private readonly DEFAULT_PROMETHEUS_NODE_ADDRESS = "localhost";
+  private readonly DEFAULT_PROMETHEUS_NODE_PORT = "9090";
+  public readonly PROMETHEUS_ADDRESS_TYPEHEAD_PLACEHOLDER: string = "Enter Prometheus IP address..";
 
   public prometheusResourceLocation: string = "";
   public currentEnteredText: string = "";
@@ -34,6 +34,7 @@ export class PrometheusErrorComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(`PROMETHEUS_ADDRESS_TYPEHEAD_PLACEHOLDER: ${this.PROMETHEUS_ADDRESS_TYPEHEAD_PLACEHOLDER}`)
     this.subscribeToPossiblePrometheusRunNodes();
   }
 
@@ -55,6 +56,10 @@ export class PrometheusErrorComponent implements OnInit {
           : this.possiblePrometheusNodesList.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10);
       })
     )
+  }
+
+  public onRetryBtnClicked() { 
+    alert(`Trying to reach Proemtheus on ${this.currentEnteredText}`);
   }
 
   // MARK: - Private 

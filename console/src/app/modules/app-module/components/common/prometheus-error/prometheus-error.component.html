@@ -1,6 +1,7 @@
 <div class="alert alert-danger" role="alert">
-  <b>Prometheus doesn't exist on node {{ this.prometheusResourceLocation }}</b>
+  <b>Prometheus</b> service doesn't exist on node <b>{{ this.prometheusResourceLocation }}</b>.
   <input #nodeEnteringInstance id="typeahead-focus" type="text" class="form-control" [(ngModel)]="model"
     [ngbTypeahead]="search" (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)"
-    (value)="currentEnteredText" #prometheusAddressTypeheadInstance="ngbTypeahead" />
-</div>
+    (value)="currentEnteredText" #prometheusAddressTypeheadInstance="ngbTypeahead" (placeholder)="this.PROMETHEUS_ADDRESS_TYPEHEAD_PLACEHOLDER"/>
+    <button type="button" class="btn btn-outline-dark" (click)="onRetryBtnClicked()">Retry</button>
+  </div>
