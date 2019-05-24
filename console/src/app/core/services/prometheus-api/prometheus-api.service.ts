@@ -35,7 +35,6 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   readonly prometheusResponseParser: PrometheusResponseParser = new PrometheusResponseParser();
   private currentPrometheusAddress: string = Constants.Configuration.PROMETHEUS_IP;
-  private prometheusApiBase = Constants.Http.HTTP_PREFIX + this.currentPrometheusAddress + "/api/v1/";
 
   // MARK: - Lifecycle 
 
@@ -50,11 +49,10 @@ export class PrometheusApiService implements MongooseChartDataProvider {
    */
   public isAvailable(prometheusAddress: string): Observable<boolean> { 
     if (!HttpUtils.isIpAddressValid(prometheusAddress)) { 
-      console.error(`IP address ${prometheusAddress} is not valid.`)
       return of(false);
     }
     const configurationEndpoint: string = 'status/config';
-    return this.httpClient.get(`${Constants.Http.HTTP_PREFIX}${prometheusAddress}${this.prometheusApiBase}${configurationEndpoint}`).pipe(
+    return this.httpClient.get(`${this.getPrometheusApiBase()}${configurationEndpoint}`).pipe(
       map(
         (successfulResult: any) => { 
           return true; 
@@ -135,7 +133,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   public runQuery(query: String): Observable<any> {
     let queryRequest = "query?query=";
-    return this.httpClient.get(this.prometheusApiBase + queryRequest + query, Constants.Http.JSON_CONTENT_TYPE).pipe(
+    return this.httpClient.get(this.getPrometheusApiBase() + queryRequest + query, Constants.Http.JSON_CONTENT_TYPE).pipe(
       map((rawResponse: any) => this.extractResultPayload(rawResponse))
     );
   }
@@ -182,7 +180,11 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   // MARK: - Private 
 
-  // NOTE: Extracting payload from Prometheus' query response. 
+  /**
+   * Extracrs payload of Prometheus raw response.
+   * @param rawMetric raw response from Prometheys
+   * @returns Array of labels and metrics.
+   */
   private extractResultPayload(rawMetric: any): any {
     // NOTE: As for 21.03.2019, Ptometheus stores array of result for a query ...
     // ... within response's data.result field.
@@ -192,9 +194,21 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     let labelsOfMetric = rawMetric[dataField][resultFieldTag];
     if (labelsOfMetric == undefined) {
       let misleadingMsg = "Unable to fetch Mongoose Run List. Field 'data.result' doesn't exist.";
-      console.log(misleadingMsg);
+      console.error(misleadingMsg);
       throw new Error(misleadingMsg);
     }
     return labelsOfMetric;
+  }
+
+
+  /**
+   * @returns full Prometheus' API base. Format: http//prometheushost.com/api/v1/
+   */
+  private getPrometheusApiBase(): string { 
+    const apiBasicEndpoint = "/api/v1/";
+    if (this.currentPrometheusAddress.includes(Constants.Http.HTTP_PREFIX)) { 
+      return (this.currentPrometheusAddress + apiBasicEndpoint);
+    }
+    return (Constants.Http.HTTP_PREFIX + this.currentPrometheusAddress + apiBasicEndpoint);
   }
 }
