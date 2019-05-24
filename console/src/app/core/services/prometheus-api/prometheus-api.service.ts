@@ -7,6 +7,7 @@ import { MongooseChartDataProvider } from '../../models/chart/mongoose-chart-int
 import { MongooseMetric } from '../../models/chart/mongoose-metric.model';
 import { PrometheusResponseParser } from './prometheus-response.parser';
 import { HttpUtils } from 'src/app/common/HttpUtils';
+import { LocalStorageService } from '../local-storage-service/local-storage.service';
 
 
 @Injectable({
@@ -37,7 +38,10 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   // MARK: - Lifecycle 
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient,
+    private localStorageService: LocalStorageService) { 
+      this.setupPromtheusEntryNode();
+    }
 
   // MARK: - MogooseChartDataProvider 
 
@@ -51,7 +55,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
       return of(false);
     }
     const configurationEndpoint: string = 'status/config';
-    return this.httpClient.get(`${this.getPrometheusApiBase()}${configurationEndpoint}`).pipe(
+    return this.httpClient.get(`${this.getPrometheusApiBase(prometheusAddress)}${configurationEndpoint}`).pipe(
       map(
         (successfulResult: any) => {
           return true;
@@ -132,7 +136,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   public runQuery(query: String): Observable<any> {
     let queryRequest = "query?query=";
-    return this.httpClient.get(this.getPrometheusApiBase() + queryRequest + query, Constants.Http.JSON_CONTENT_TYPE).pipe(
+    return this.httpClient.get(this.getPrometheusApiBase(this.currentPrometheusAddress) + queryRequest + query, Constants.Http.JSON_CONTENT_TYPE).pipe(
       map((rawResponse: any) => this.extractResultPayload(rawResponse))
     );
   }
@@ -201,13 +205,33 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
 
   /**
+   * @param prometheusAddress Address for which API base will be returned.
    * @returns full Prometheus' API base. Format: http//prometheushost.com/api/v1/
    */
-  private getPrometheusApiBase(): string {
+  private getPrometheusApiBase(prometheusAddress: string): string {
     const apiBasicEndpoint = "/api/v1/";
     if (this.currentPrometheusAddress.includes(Constants.Http.HTTP_PREFIX)) {
       return (this.currentPrometheusAddress + apiBasicEndpoint);
     }
-    return (Constants.Http.HTTP_PREFIX + this.currentPrometheusAddress + apiBasicEndpoint);
+    return (Constants.Http.HTTP_PREFIX + prometheusAddress + apiBasicEndpoint);
+  }
+
+
+  /**
+   * Tries to retrieve Prometheus' entry node form both .env file and ...
+   * ... local browser's storage.
+   */
+  private setupPromtheusEntryNode() { 
+    let isPrometheusConfiguredIpValid = HttpUtils.isIpAddressValid(this.currentPrometheusAddress);
+    if (isPrometheusConfiguredIpValid) { 
+      // NPTE: Reaching this block means .env file contains ...
+      // ... a valid configuration of Prometheus.
+      console.log(`.env file contains prometheus entry node: ${this.currentPrometheusAddress}`)
+      return; 
+    }
+    let prometheusLocalStorageAddress: string = this.localStorageService.getPrometheusHostAddress();
+    this.currentPrometheusAddress = prometheusLocalStorageAddress;
+    console.log(`Prometheus' entry node has been set to: ${this.currentPrometheusAddress}`)
+
   }
 }
