@@ -99,6 +99,9 @@ export class MongooseRunRecord implements OnDestroy {
         return this.entryNode.getEntryNodeAddress();
     }
 
+    public setEntryNodeAddress(entryNodeAddress: string) { 
+        this.entryNode.setEntryNodeAddress(entryNodeAddress);
+    }
     // MARK: - Private 
 
 }

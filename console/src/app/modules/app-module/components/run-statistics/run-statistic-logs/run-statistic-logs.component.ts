@@ -8,6 +8,11 @@ import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
 import { Observable, Subscription, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MongooseRouteParamsParser } from 'src/app/core/models/mongoose-route-params-praser';
+import { MongooseRunEntryNode } from 'src/app/core/services/local-storage-service/MongooseRunEntryNode';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EntryNodeSelectionComponent } from '../common/entry-node-selection/entry-node-selection.component';
+import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
+
 
 @Component({
   selector: 'app-run-statistic-logs',
@@ -31,9 +36,13 @@ export class RunStatisticLogsComponent implements OnInit {
 
   constructor(private monitoringApiService: MonitoringApiService,
     private router: Router,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private modalService: NgbModal,
+    private localStorageService: LocalStorageService) { }
 
-  ngOnInit() {
+  ngOnInit() { }
+
+  ngAfterContentInit() {
 
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.parent.params.subscribe(params => {
@@ -42,9 +51,14 @@ export class RunStatisticLogsComponent implements OnInit {
         this.monitoringApiSubscriptions.add(mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
           foundRecord => {
             this.processingRunRecord = foundRecord;
+            if (!this.shouldDisplayLogs(this.processingRunRecord)) {
+              // NOTE: Timeout prevents situations when modal view will be created before the parent one. 
+              setTimeout(() => this.openEntryNodeSelectionWindow());
+              return;
+            }
+            this.initlogTabs();
           }
         ));
-        this.initlogTabs();
       } catch (recordNotFoundError) {
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
         alert(`Unable to load requested record information. Reason: ${recordNotFoundError.message}`);
@@ -53,6 +67,7 @@ export class RunStatisticLogsComponent implements OnInit {
       }
     });
   }
+
 
   ngOnDestroy() {
     this.monitoringApiSubscriptions.unsubscribe();
@@ -66,9 +81,12 @@ export class RunStatisticLogsComponent implements OnInit {
       let isSelectedTab = (tab.getName() == selectedTab.getName());
       tab.isActive = isSelectedTab ? true : false;
     })
+    let targetLogName = selectedTab.getName() as string;
+    this.setDisplayingLog(targetLogName)
+  }
 
-
-    let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(selectedTab.getName());
+  private setDisplayingLog(logName: string) {
+    let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(logName);
     // NOTE: Resetting error's inner HTML 
     let emptyErrorHtmlValue = "";
     this.occuredError = emptyErrorHtmlValue;
@@ -83,6 +101,38 @@ export class RunStatisticLogsComponent implements OnInit {
         this.occuredError = error.error;
       }
     );
+  }
+
+  public shouldDisplayLogs(record: MongooseRunRecord): boolean {
+    if (record == undefined) {
+      return false;
+    }
+    return (record.getEntryNodeAddress() != MongooseRunEntryNode.EMPTY_ADDRESS);
+  }
+
+  public openEntryNodeSelectionWindow() {
+    const entryRunNodeEntranceScreenReference = this.modalService.open(EntryNodeSelectionComponent, { ariaLabelledBy: 'modal-basic-title', backdropClass: 'light-blue-backdrop' });
+    entryRunNodeEntranceScreenReference.componentInstance.mongooseRunRecord = this.processingRunRecord;
+    entryRunNodeEntranceScreenReference.result.then(
+      (result) => {
+        console.error(`Unexpected finish of node entrance window: ${result}`);
+      }, (entryNodeAddress) => {
+        const emptyValue = "";
+        // NOTE: Do nothing if entry node address hasn't been entetred. 
+        if (entryNodeAddress == emptyValue) { 
+          this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.processingRunRecord.getLoadStepId()
+          + '/' + RoutesList.RUN_CHARTS]);
+          return; 
+        }
+        this.processingRunRecord.setEntryNodeAddress(entryNodeAddress);
+        // NOTE: Save pair "resource - run ID" to local storage.
+        let entryNodeRunId: string = this.processingRunRecord.getRunId() as string;
+        this.localStorageService.saveToLocalStorage(entryNodeAddress, entryNodeRunId);
+        // NOTE: Reinitializing log tabs with existing entry node address.
+        this.initlogTabs();
+      }
+    )
+
 
   }
 

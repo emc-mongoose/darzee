@@ -19,8 +19,8 @@ import { PrometheusApiService } from "src/app/core/services/prometheus-api/prome
 export class RunStatisticsComponent implements OnInit {
 
   private readonly STATISTICS_SECTIONS = [
-    { name: "Logs", url: RoutesList.RUN_LOGS },
-    { name: "Charts", url: RoutesList.RUN_CHARTS }
+    { name: "Charts", url: RoutesList.RUN_CHARTS },
+    { name: "Logs", url: RoutesList.RUN_LOGS }
   ];
 
   // NOTE: Displaying run record and related statistic tabs. 
@@ -54,7 +54,6 @@ export class RunStatisticsComponent implements OnInit {
             
             // TODO: Figure out whether error alers should be displayed or not
             console.error(misleadingMsg);
-            // alert(misleadingMsg);
             return;
           }
         )

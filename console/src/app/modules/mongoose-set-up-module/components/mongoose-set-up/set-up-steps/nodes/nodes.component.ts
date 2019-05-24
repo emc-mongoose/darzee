@@ -6,6 +6,8 @@ import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-serv
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 import { ResourceLocatorType } from 'src/app/core/models/address-type';
+import { MongooseSetupStep } from 'src/app/modules/mongoose-set-up-module/interfaces/mongoose-setup-step.interface';
+import { InactiveNodeAlert } from './incative-node-alert.interface';
 
 @Component({
   selector: 'app-nodes',
@@ -16,6 +18,7 @@ import { ResourceLocatorType } from 'src/app/core/models/address-type';
 export class NodesComponent implements OnInit {
 
   public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>();
+  public inactiveNodeAlerts: InactiveNodeAlert[] = [];
 
   displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
 
@@ -54,9 +57,31 @@ export class NodesComponent implements OnInit {
   }
 
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
+    let isNodeLocatedByIp: boolean = (selectedNode.getResourceType() == ResourceLocatorType.IP);
+
+    // NOTE: Add noode if check mark has been set, remove if unset    
     let hasNodeBeenSelected: boolean = this.mongooseSetUpService.isNodeExist(selectedNode);
-    // NOTE: Add noode if check mark has been set, remove if unset
-    hasNodeBeenSelected ? this.mongooseSetUpService.removeNode(selectedNode) : this.mongooseSetUpService.addNode(selectedNode);
+
+    if (!hasNodeBeenSelected && isNodeLocatedByIp) {
+      let selectedNodeResourceLocationIp: string = selectedNode.getResourceLocation();
+      this.slaveNodesSubscription.add(
+        this.mongooseSetUpService.isMongooseNodeActive(selectedNodeResourceLocationIp).subscribe(
+          (isNodeActive: boolean) => {
+            if (!isNodeActive) {
+              this.displayInactivenodeAlert(selectedNode);
+              return;
+            }
+            this.mongooseSetUpService.addNode(selectedNode);
+          }
+        )
+      )
+    }
+
+  }
+
+  public onAlertClosed(closedAlert: InactiveNodeAlert) {
+    let closedAlertIndex = this.getAlertIndex(closedAlert);
+    this.inactiveNodeAlerts.splice(closedAlertIndex, 1);
   }
 
   private isipValid(entredIpAddress: string) {
@@ -71,5 +96,28 @@ export class NodesComponent implements OnInit {
 
     const isIpValid = regExpr.test(entredIpAddress);
     return isIpValid;
+  }
+
+  private displayInactivenodeAlert(inactiveNode: MongooseRunNode) {
+    // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
+    // ... the configuration thought. 
+    let inactiveNodeAlert = new InactiveNodeAlert(`selected node ${inactiveNode.getResourceLocation()} is not active`, inactiveNode);
+
+    // NOTE: Finding alert by message in alerts array
+    let alertIndex = this.getAlertIndex(inactiveNodeAlert);
+    console.log(`alertIndex: ${alertIndex}`)
+    let isAlertExist: boolean = (alertIndex >= 0);
+
+    if (!isAlertExist) {
+      this.inactiveNodeAlerts.push(inactiveNodeAlert);
+    }
+    return;
+  }
+
+  private getAlertIndex(inactiveNodeAlert: InactiveNodeAlert): number {
+    return (this.inactiveNodeAlerts.findIndex(
+      (alert: InactiveNodeAlert) => {
+        return (alert.message == inactiveNodeAlert.message);
+      }));
   }
 }

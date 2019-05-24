@@ -13,6 +13,7 @@ import { MongooseRunNode } from '../../models/mongoose-run-node.model';
 import { ResourceLocatorType } from '../../models/address-type';
 import { MongooseConfigurationParser } from '../../models/mongoose-configuration-parser';
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
+import { MonitoringApiService } from '../monitoring-api/monitoring-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,7 @@ export class MongooseSetUpService {
   private mongooseSetupInfoModel: MongooseSetupInfoModel;
 
   constructor(private controlApiService: ControlApiService,
+    private monitoringApiService: MonitoringApiService,
     private containerServerService: ContainerServerService,
     private http: HttpClient,
     private localStorageService: LocalStorageService) {
@@ -37,6 +39,9 @@ export class MongooseSetUpService {
   // MARK: - Getters & Setters 
 
   public getMongooseConfigurationForSetUp(entryNode: MongooseRunNode): Observable<any> {
+    if (entryNode == undefined) { 
+      throw new Error(`Can't get configuration snce entry node ins an undefined.`);
+    }
     let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${entryNode.getResourceLocation()}`;
     return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
       map(
@@ -80,6 +85,11 @@ export class MongooseSetUpService {
     // NOTE: First node from the list counts as the entry one. 
     const firstNodeIndex = 0;
     return this.mongooseSetupInfoModel.getFullRunNodesList()[firstNodeIndex];
+  }
+
+
+  public isMongooseNodeActive(mongooseNodeAddress: string): Observable<boolean> { 
+    return this.monitoringApiService.isMongooseRunNodeActive(mongooseNodeAddress);
   }
 
   // NOTE: Adding Mongoose nodes (while node selection)
