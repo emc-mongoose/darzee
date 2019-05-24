@@ -36,6 +36,10 @@ export class MongooseDataSharedServiceService {
    * @param mongooseRunNode new Mongoose run node 
    */
   public addMongooseRunNode(mongooseRunNode: MongooseRunNode) {
+    const emptyAddress = "";
+    if (mongooseRunNode.getResourceLocation() == emptyAddress) { 
+      throw new Error(`Mongoose run node's address couldn't be empty.`);
+    }
     this.mongooseNodesRepository.addMongooseRunNode(mongooseRunNode);
   }
 
