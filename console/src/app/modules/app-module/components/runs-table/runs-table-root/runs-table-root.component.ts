@@ -26,7 +26,7 @@ export class RunsTableRootComponent implements OnInit {
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
   public runTabs: MongooseRunTab[] = [];
   public currentActiveTab: MongooseRunTab;
-  
+
 
   private displayingRunRecords: MongooseRunRecord[] = [];
 
@@ -65,14 +65,14 @@ export class RunsTableRootComponent implements OnInit {
     this.mongooseRecordsSubscription = this.monitoringApiService.getMongooseRunRecords().subscribe(
       updatedRecords => {
         // NOTE: Updating tabs here
-        let runTableTabs = this.getTabsForRecords(updatedRecords); 
+        let runTableTabs = this.getTabsForRecords(updatedRecords);
         this.mongooseRunTabs$.next(runTableTabs);
         this.displayingRunRecords = updatedRecords;
 
       },
       error => {
         this.showErrorComponent(error);
-    
+
         let misleadingMsg = `Unable to load Mongoose run records. Details: `;
         let errorDetails = JSON.stringify(error);
         console.error(misleadingMsg + errorDetails);
@@ -108,7 +108,7 @@ export class RunsTableRootComponent implements OnInit {
         requiredTab.setAmountOfRecords(filtedRecords.length);
         this.filtredRecords$.next(filtedRecords);
       },
-      (error: PrometheusError): any => { 
+      (error: PrometheusError): any => {
         this.showErrorComponent(error);
       }
     )
@@ -127,14 +127,14 @@ export class RunsTableRootComponent implements OnInit {
     return this.mongooseRunTabs$.asObservable();
   }
 
-  public showErrorComponent(error: Error) { 
+  public showErrorComponent(error: Error) {
     this.errorMessageComponent.clear();
 
-    if (error instanceof PrometheusError) { 
+    if (error instanceof PrometheusError) {
       const factory = this.resolver.resolveComponentFactory(PrometheusErrorComponent);
       const errorComponentReference = this.errorMessageComponent.createComponent(factory);
       errorComponentReference.instance.onPrometheusLoad.subscribe(
-        onPrometheusClosed => { 
+        onPrometheusClosed => {
           this.errorMessageComponent.clear();
         }
       );

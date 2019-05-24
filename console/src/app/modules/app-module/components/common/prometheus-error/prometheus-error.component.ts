@@ -7,6 +7,7 @@ import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prometheus-api.service';
 import { HttpUtils } from 'src/app/common/HttpUtils';
+import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
 
 @Component({
   selector: 'app-prometheus-error',
@@ -37,7 +38,8 @@ export class PrometheusErrorComponent implements OnInit {
   private isLoadingInProgress: boolean = false;
 
   constructor(private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
-    private prometheusApiService: PrometheusApiService) {
+    private prometheusApiService: PrometheusApiService,
+    private localStorageService: LocalStorageService) {
     let prometheusBaseAddress: string = environment.prometheusIp;
     let prometheusPort: string = environment.prometheusPort;
     this.prometheusResourceLocation = `${prometheusBaseAddress}:${prometheusPort}`;
@@ -69,7 +71,7 @@ export class PrometheusErrorComponent implements OnInit {
 
   public onRetryBtnClicked() {
     let enteredPrometheusAddress: string = this.currentEnteredText;
-    if (!HttpUtils.isIpAddressValid(enteredPrometheusAddress)) { 
+    if (!HttpUtils.isIpAddressValid(enteredPrometheusAddress)) {
       alert(`IP address ${enteredPrometheusAddress} is not valid.`);
       return;
     }
@@ -100,7 +102,7 @@ export class PrometheusErrorComponent implements OnInit {
   }
 
   /**
-   * Reload Prometheus on provided address.
+   * Reload Prometheus on provided address. If address is reachable, it saves it into browser's local storage.
    * @param prometheusAddress IP address of Prometheus.
    */
   private tryToLoadPrometheus(prometheusAddress: string) {
@@ -109,11 +111,13 @@ export class PrometheusErrorComponent implements OnInit {
       this.prometheusApiService.isAvailable(prometheusAddress).subscribe(
         (isPrometheusAvailable: boolean) => {
           this.isLoadingInProgress = false;
-          if (!isPrometheusAvailable) { 
+          if (!isPrometheusAvailable) {
             alert(`Prometheus is not available on ${prometheusAddress}`);
             this.prometheusResourceLocation = prometheusAddress;
             return;
           }
+          // NOTE: Saving Prometheus' address if true.
+          this.localStorageService.savePrometheusHostAddress(prometheusAddress);
           this.onPrometheusLoad.emit();
         }
       )
