@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import { MongooseRunStatus } from 'src/app/core/models/mongoose-run-status';
 import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
@@ -7,6 +7,9 @@ import { slideAnimation } from 'src/app/core/animations';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { MongooseRunRecordCounter } from 'src/app/core/models/run-record-counter';
 import { PrometheusError } from 'src/app/common/Exceptions/PrometheusError';
+import { BasicChartComponent } from '../../run-statistics/run-statistics-charts/basic-chart/basic-chart.component';
+import { MongooseRunStatusIconComponent } from '../mongoose-run-status-icon/mongoose-run-status-icon.component';
+import { PrometheusErrorComponent } from '../../common/prometheus-error/prometheus-error.component';
 
 @Component({
   selector: 'app-runs-table-root',
@@ -19,10 +22,11 @@ import { PrometheusError } from 'src/app/common/Exceptions/PrometheusError';
 
 export class RunsTableRootComponent implements OnInit {
 
+  @ViewChild('errorMessageComponent', { read: ViewContainerRef }) errorMessageComponent: ViewContainerRef;
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
   public runTabs: MongooseRunTab[] = [];
-
   public currentActiveTab: MongooseRunTab;
+  
 
   private displayingRunRecords: MongooseRunRecord[] = [];
 
@@ -31,11 +35,12 @@ export class RunsTableRootComponent implements OnInit {
   private currentTab$: BehaviorSubject<MongooseRunTab>;
 
   private mongooseRecordsSubscription: Subscription = new Subscription();
-  private monitoringApiServiceSubscriptions: Subscription = new Subscription();;
+  private monitoringApiServiceSubscriptions: Subscription = new Subscription();
 
   // MARK: - Lifecycle
 
-  constructor(private monitoringApiService: MonitoringApiService) {
+  constructor(private monitoringApiService: MonitoringApiService,
+    private resolver: ComponentFactoryResolver) {
     this.setUpInitialTabs();
     this.currentTab$.subscribe(tab => {
       let targetStatus = tab.getStatus();
@@ -129,6 +134,12 @@ export class RunsTableRootComponent implements OnInit {
     return this.mongooseRunTabs$.asObservable();
   }
 
+  public showErrorComponent() { 
+    this.errorMessageComponent.clear();
+    const factory = this.resolver.resolveComponentFactory(PrometheusErrorComponent);
+    const chartComponentReference = this.errorMessageComponent.createComponent(factory);
+    // chartComponentReference  = new MongooseRunStatusIconComponent();
+  }
   // MARK: - Private 
 
   private getTabsForRecords(records: MongooseRunRecord[]): MongooseRunTab[] {
