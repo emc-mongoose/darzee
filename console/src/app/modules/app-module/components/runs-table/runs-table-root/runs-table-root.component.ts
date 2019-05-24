@@ -72,8 +72,8 @@ export class RunsTableRootComponent implements OnInit {
       },
       error => {
         this.showErrorComponent(error);
+    
         let misleadingMsg = `Unable to load Mongoose run records. Details: `;
-
         let errorDetails = JSON.stringify(error);
         console.error(misleadingMsg + errorDetails);
       }

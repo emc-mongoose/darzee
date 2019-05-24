@@ -17,7 +17,6 @@ export class PrometheusErrorComponent implements OnInit {
 
   private readonly DEFAULT_PROMETHEUS_NODE_ADDRESS = "localhost";
   private readonly DEFAULT_PROMETHEUS_NODE_PORT = "9090";
-  public readonly PROMETHEUS_ADDRESS_TYPEHEAD_PLACEHOLDER: string = "Enter Prometheus IP address..";
 
   public prometheusResourceLocation: string = "";
   public currentEnteredText: string = "";
@@ -34,7 +33,6 @@ export class PrometheusErrorComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(`PROMETHEUS_ADDRESS_TYPEHEAD_PLACEHOLDER: ${this.PROMETHEUS_ADDRESS_TYPEHEAD_PLACEHOLDER}`)
     this.subscribeToPossiblePrometheusRunNodes();
   }
 
