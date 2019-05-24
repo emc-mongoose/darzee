@@ -35,7 +35,8 @@ export class MongooseRunRecord implements OnDestroy {
                 this.currentStatus = fetchedStatus;
             },
             error => { 
-                this.currentStatus = MongooseRunStatus.Unavailable;
+                // NOTE: Handle situation of Mongoose entry node unavailability
+                this.currentStatus = MongooseRunStatus.Finished;
             }
         ));
     }
@@ -98,6 +99,9 @@ export class MongooseRunRecord implements OnDestroy {
         return this.entryNode.getEntryNodeAddress();
     }
 
+    public setEntryNodeAddress(entryNodeAddress: string) { 
+        this.entryNode.setEntryNodeAddress(entryNodeAddress);
+    }
     // MARK: - Private 
 
 }

@@ -6,7 +6,12 @@ export namespace MongooseApi {
 
     // NOTE: API for configuration.
     export class Config {
-        public static readonly CONFIG = "/config";
+        // WARNING: Logs API's config endpoint of CASE-SENSITIVE! 
+
+        /** @param CONFIG_LOGS_API_ENDPOINT endpoint for getting load-step configuration via Logs API */
+        public static readonly CONFIG_LOGS_API_ENDPOINT = "/Config";
+        /** @param CONFIG_ENDPONT endpoint for getting Mongoose configuration (not load-step configuration) via Logs API */
+        public static readonly CONFIG_ENDPONT = "/config";
     }
 
     // NOTE: API for configuring Mongoose Run. 
@@ -19,7 +24,7 @@ export namespace MongooseApi {
         public static readonly LOGS = "/logs";
     }
 
-    export class Headers { 
+    export class Headers {
         // NOTE: ETAG is a Mongoose Run ID
         public static readonly ETAG = "etag";
     }

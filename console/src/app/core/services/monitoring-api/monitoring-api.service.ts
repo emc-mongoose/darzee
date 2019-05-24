@@ -11,6 +11,10 @@ import { HttpClient } from "@angular/common/http";
 import { ControlApiService } from "../control-api/control-api.service";
 import { LocalStorageService } from "../local-storage-service/local-storage.service";
 import { MongooseRunEntryNode } from "../local-storage-service/MongooseRunEntryNode";
+import { MongooseDataSharedServiceService } from "../mongoose-data-shared-service/mongoose-data-shared-service.service";
+import { ResourceLoader } from "@angular/compiler";
+import { ResourceLocatorType } from "../../models/address-type";
+import { MongooseRunNode } from "../../models/mongoose-run-node.model";
 
 
 @Injectable({
@@ -29,13 +33,19 @@ export class MonitoringApiService {
   constructor(private prometheusApiService: PrometheusApiService,
     private controlApiService: ControlApiService,
     private http: HttpClient,
-    private localStorageService: LocalStorageService) {
+    private localStorageService: LocalStorageService,
+    private mongooseDataSharedServiceService: MongooseDataSharedServiceService) {
     this.setUpService();
   }
 
   // MARK: - Public
 
   public getStatusForMongooseRecord(mongooseRunEntryNode: MongooseRunEntryNode): Observable<MongooseRunStatus> {
+    let defaultMongooseRunStatus = MongooseRunStatus.Finished;
+
+    if (mongooseRunEntryNode.getEntryNodeAddress() == MongooseRunEntryNode.EMPTY_ADDRESS) {
+      return of(defaultMongooseRunStatus);
+    }
     // NOTE: As for now, we're checking status for Mongoose run overtall, not just Run ID. 
     return this.controlApiService.getStatusForMongooseRun(mongooseRunEntryNode).pipe(
       map((mongooseRunStatus: MongooseRunStatus) => {
@@ -142,12 +152,24 @@ export class MonitoringApiService {
     )
   }
 
+  public isMongooseRunNodeActive(runNodeAddress: string): Observable<boolean> { 
+    const mongooseConfigEndpoint = MongooseApi.Config.CONFIG_ENDPONT;
+    return this.http.get(`${Constants.Http.HTTP_PREFIX}${runNodeAddress}${mongooseConfigEndpoint}`).pipe(
+      map((successResult: any) => { 
+        return true; 
+      }),
+      catchError((error, caughtError) => { 
+        return of(false);
+      })
+    );
+  }
 
   public getLog(mongooseNodeAddress: string, stepId: String, logName: String): Observable<any> {
     let logsEndpoint = MongooseApi.LogsApi.LOGS;
     let targetUrl = "";
     let delimiter = "/";
     let emptyValue = "";
+    console.log(`[monitoring service] mongooseNodeAddress: ${mongooseNodeAddress}`)
     if (stepId == emptyValue) {
       console.error(`Step ID for required log "${logName}" hasn't been found.`);
       // NOTE: HTTP request on this URL will return error. 
@@ -157,6 +179,7 @@ export class MonitoringApiService {
     } else {
       targetUrl = mongooseNodeAddress + logsEndpoint + delimiter + stepId + delimiter + logName;
     }
+    console.log(`targetUrl: ${targetUrl}`)
     return this.http.get(`${Constants.Http.HTTP_PREFIX}${targetUrl}`, { responseType: 'text' }).pipe(share());
   }
 
@@ -214,8 +237,10 @@ export class MonitoringApiService {
       let startTimeTag = "start_time";
       let startTime = this.fetchLabelValue(staticRunData, startTimeTag);
 
-      let nodesListTag = "nodes_list";
-      let nodesList = this.fetchLabelValue(staticRunData, nodesListTag);
+      let nodesListTag = "node_list";
+      var rawNodesList: string = this.fetchLabelValue(staticRunData, nodesListTag);
+      let nodesList: string[] = this.getNodesFromRawMetric(rawNodesList);
+      this.addNodesListIntoNodesRepository(nodesList);
 
       let userCommentTag = "user_comment";
       let userComment = this.fetchLabelValue(staticRunData, userCommentTag);
@@ -234,7 +259,7 @@ export class MonitoringApiService {
         entryNode = this.localStorageService.getEntryNodeAddressForRunId(runId);
       } catch (entryNodeNotFoundError) {
         console.error(`Unable to create entry node instance. Details: ${entryNodeNotFoundError}`);
-        const NOT_EXISTING_ADDRESS = MongooseRunEntryNode.ADDRESS_NOT_EXIST;
+        const NOT_EXISTING_ADDRESS = MongooseRunEntryNode.EMPTY_ADDRESS;
         entryNode = new MongooseRunEntryNode(NOT_EXISTING_ADDRESS, runId);
       }
       const mongooseRunStatus$ = this.getStatusForMongooseRecord(entryNode);
@@ -244,6 +269,22 @@ export class MonitoringApiService {
     }
 
     return runRecords;
+  }
+
+  
+  // NOTE: Retrieves nodes from string like "[..., node1, ...]"
+  private getNodesFromRawMetric(rawNodesMetric: string): string[] { 
+    var nodeDefaultValue = "-";
+    if (rawNodesMetric == undefined) { 
+      let emptyArray = [nodeDefaultValue];
+      return emptyArray; 
+    }
+    const leftNodeBoundSymbol = "[";
+    const rightNodeBoundSymbol = "]";
+    const nodesListDelimiter = ",";
+    // NOTE: transforming string from "[.., node, ...]" into a string array of nodes. 
+    rawNodesMetric = rawNodesMetric.replace(leftNodeBoundSymbol, "").replace(rightNodeBoundSymbol, "");
+    return rawNodesMetric.split(nodesListDelimiter);
   }
 
   private fetchLabelValue(metricJson: any, label: string): any {
@@ -316,4 +357,21 @@ export class MonitoringApiService {
       catchError(hasConfig => hasConfig = of(false))
     );
   }
+
+  private addNodesListIntoNodesRepository(nodesList: string[]) { 
+    // NOTE: Adding fetched nodes into nodes repository. 
+    nodesList.forEach((nodeAddress: string) => {
+      // NOTE: Temporary assuming that every node address is an IP.
+      const RESOURCE_LOCATOR_TYPE_STUB = ResourceLocatorType.IP;
+      let nodeInstance = new MongooseRunNode(nodeAddress, RESOURCE_LOCATOR_TYPE_STUB);
+      try { 
+        this.mongooseDataSharedServiceService.addMongooseRunNode(nodeInstance);
+      } catch (nodeIsAlreadyExistError) {
+        // NOTE: Not handling the situation since it's normal to have duplicate node addresses.
+        // Example: Mongoose distributed mode. 
+        return;
+      }
+    });
+  }
+
 }

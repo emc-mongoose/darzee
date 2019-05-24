@@ -31,7 +31,9 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 
 # 1. Overview 
 
-Darzee lets you configure, run and monitor Mongoose. 
+Darzee lets you configure, run and monitor Mongoose. It gathers metrics from Prometheus and displays them in an appropriate way (runs table, chart).
+![](screenshots/architecture_overview.png)
+
 
 ## 1.1 Launch Mongoose run
 
@@ -39,6 +41,8 @@ Mongoose launching process is divided in 3 steps:
 * nodes selection; 
 * configuration set up; 
 * scenario set up; 
+![](screenshots/setup/set_up_overview.png)
+
 
 ### 1.1.1 Nodes selection 
 

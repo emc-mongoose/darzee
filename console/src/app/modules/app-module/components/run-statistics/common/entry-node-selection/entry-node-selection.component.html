@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add entry node for run ID {{ this.mongooseRunRecord.getRunId() }}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null" style="margin: calc(2%) calc(2%);">{{ errorMessage }}</ngb-alert>
+
+<div class="modal-body">
+  <p>Entry node</p>
+  <input #nodeEnteringInstance id="typeahead-focus" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search"
+    (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)" (value)="currentEnteredText" #instance="ngbTypeahead" />
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-success" (click)="onAddEntryNodeClicked(nodeEnteringInstance.value)">Confirm</button>
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss('')">Dismiss</button>
+</div>
