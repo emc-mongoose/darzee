@@ -66,9 +66,13 @@
 
 $CHECKBOX_DIAMETER: 25px;
 $CHECKBOX_BACKGROUND_COLOR-selected: #356cd2;
-$CHECKBOX_CHECK_MARK_COLOR: #fff;
+// $CHECKBOX_CHECK_MARK_COLOR: #fff;
+// $CHECKBOX_SELECTED_COLOR: #1dbf26;
 $CHECKBOX_BACKGROUND_COLOR: #c9f6c9;
-$CHECKBOX_SELECTED_COLOR: #1dbf26;
+$CHECKBOX_CHECK_MARK_COLOR: #02ec0e;
+
+$CHECKBOX_SELECTED_COLOR: #fff;
+$CHECKBOX_SELECTED_BORDER_COLOR: #02ec0e;
 
 
 .checkbox:not(last-of-type) {
@@ -81,8 +85,9 @@ $CHECKBOX_SELECTED_COLOR: #1dbf26;
     top: 0;
     width: $CHECKBOX_DIAMETER;
     height: $CHECKBOX_DIAMETER;
+    // NOTE: Unselected circle configuration
     background-color: $CHECKBOX_BACKGROUND_COLOR;
-    border: 1px solid $CHECKBOX_BACKGROUND_COLOR;
+    border: 1px solid $CHECKBOX_SELECTED_BORDER_COLOR;
     border-radius: 50%;
     cursor: pointer;
     transition: background-color 300ms ease, colour 300ms ease, box-shadow 300ms ease;
@@ -125,7 +130,7 @@ $CHECKBOX_SELECTED_COLOR: #1dbf26;
   input {
     &:checked + label {
       background-color: ($CHECKBOX_SELECTED_COLOR);
-      border-color: ($CHECKBOX_SELECTED_COLOR);
+      border-color: ($CHECKBOX_SELECTED_BORDER_COLOR);
     }
   }
 }
