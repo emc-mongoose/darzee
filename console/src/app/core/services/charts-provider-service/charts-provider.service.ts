@@ -66,13 +66,16 @@ export class ChartsProviderService {
   // MARK: - Private
 
   private updateLatencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getLatencyMax(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((maxLatencyResult: MongooseMetric[]) => {
-      this.mongooseChartDao.getLatencyMin(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((minLatencyResult: MongooseMetric[]) => {
-        // NOTE: Concadentation of the arrays due tothe specific logic of updating (based on the internal names)
-        let concatenatedMetrics = maxLatencyResult.concat(minLatencyResult);
-        this.latencyChart.updateChart(loadStepId, concatenatedMetrics);
+    Object.values(MetricValueType).forEach(metricValueType => { 
+      this.mongooseChartDao.getLatency(perdiodOfLatencyUpdateSecs, loadStepId, MetricValueType.MAX).subscribe((maxLatencyResult: MongooseMetric[]) => {
+        this.mongooseChartDao.getLatency(perdiodOfLatencyUpdateSecs, loadStepId, MetricValueType.MIN).subscribe((minLatencyResult: MongooseMetric[]) => {
+          // NOTE: Concadentation of the arrays due tothe specific logic of updating (based on the internal names)
+          let concatenatedMetrics = maxLatencyResult.concat(minLatencyResult);
+          this.latencyChart.updateChart(loadStepId, concatenatedMetrics);
+        });
       });
-    });
+    })
+   
   }
 
   private updateDurationChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, metricValueType: MetricValueType = MetricValueType.MEAN) {
@@ -84,7 +87,6 @@ export class ChartsProviderService {
         }));
     })
   }
-
 
 
   private updateBandwidthChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {

@@ -39,35 +39,27 @@ export class MongooseChartDao {
         );
     }
 
-
-    public getLatencyMax(lastSecondsAmount: number, loadStepId: string): Observable<MongooseMetric[]> {
-        return this.chartDataProvider.getLatency(lastSecondsAmount, loadStepId, MetricValueType.MAX).pipe(
+    public getLatency(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
+        return this.chartDataProvider.getLatency(periodInSeconds, loadStepId, metricValueType).pipe(
             map((metrics: MongooseMetric[]) => {
+                let internalMetricName = InternalMetricNames.LATENCY_MEAN;
+                    switch (metricValueType) { 
+                        case (MetricValueType.MAX): { 
+                            internalMetricName = InternalMetricNames.LATENCY_MAX;
+                            break;
+                        }
+                        case (MetricValueType.MIN): { 
+                            internalMetricName = InternalMetricNames.LATENCY_MIN;
+                            break;
+                        }
+                        case (MetricValueType.MEAN): { 
+                            internalMetricName = InternalMetricNames.LATENCY_MEAN;
+                            break;
+                        }
+                    }
                 metrics.forEach(metric => {
-                    metric.setName(InternalMetricNames.LATENCY_MAX);
-                })
-                return metrics;
-            })
-        );
-    }
-
-    public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-        return this.chartDataProvider.getLatency(periodInSeconds, loadStepId, MetricValueType.MIN).pipe(
-            map((metrics: MongooseMetric[]) => {
-                metrics.forEach(metric => {
-                    metric.setName(InternalMetricNames.LATENCY_MIN);
-                })
-                return metrics;
-            })
-        );
-    }
-
-    public getLatencyMean(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> { 
-        return this.chartDataProvider.getLatency(periodInSeconds, loadStepId, MetricValueType.MEAN).pipe(
-            map((metrics: MongooseMetric[]) => {
-                metrics.forEach(metric => {
-                    metric.setName(InternalMetricNames.LATENCY_MIN);
-                })
+                    metric.setName(internalMetricName);
+                });
                 return metrics;
             })
         );
