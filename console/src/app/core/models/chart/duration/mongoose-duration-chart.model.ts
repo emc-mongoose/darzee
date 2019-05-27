@@ -1,5 +1,5 @@
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
-import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
+import { MongooseChartOptions, MongooseChartAxesType } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
 import { formatDate } from "@angular/common";
@@ -55,19 +55,19 @@ export class MongooseDurationChart implements MongooseChart {
 
         let metricName = InternalMetricNames.MEAN_DURATION;
         metrics.forEach(durationMetric => {
-            metricName = durationMetric.getName(); 
+            metricName = durationMetric.getName();
             console.log(`duration metric name: ${metricName}`);
             let durationMetricValue = durationMetric.getValue();
-            switch (metricName) { 
-                case (InternalMetricNames.MEAN_DURATION): { 
+            switch (metricName) {
+                case (InternalMetricNames.MEAN_DURATION): {
                     meanDurationMetrics.push(durationMetricValue);
                     break;
                 }
-                case (InternalMetricNames.MIN_DURATION): { 
+                case (InternalMetricNames.MIN_DURATION): {
                     minDurationMetrics.push(durationMetricValue);
                     break;
                 }
-                case (InternalMetricNames.MAX_DURATION): { 
+                case (InternalMetricNames.MAX_DURATION): {
                     maxDurationMetrics.push(durationMetricValue);
                     break;
                 }
@@ -79,24 +79,21 @@ export class MongooseDurationChart implements MongooseChart {
         console.log(`maxDurationMetrics length: ${maxDurationMetrics.length}`);
         console.log(`minDurationMetrics length: ${minDurationMetrics.length}`);
 
-        switch (metricName) { 
-            case (InternalMetricNames.MEAN_DURATION): { 
+        switch (metricName) {
+            case (InternalMetricNames.MEAN_DURATION): {
                 this.chartData[this.MEAN_DURATION_DATASET_INDEX].setChartData(meanDurationMetrics);
                 break;
             }
-            case (InternalMetricNames.MIN_DURATION): { 
+            case (InternalMetricNames.MIN_DURATION): {
                 this.chartData[this.MIN_DURATION_DATASET_INDEX].setChartData(minDurationMetrics);
                 break;
             }
-            case (InternalMetricNames.MAX_DURATION): { 
+            case (InternalMetricNames.MAX_DURATION): {
                 this.chartData[this.MAX_DURATION_DATASET_INDEX].setChartData(maxDurationMetrics);
                 break;
             }
         }
-        
-        
-        
-        
+
     }
 
     public shouldDrawChart(): boolean {
@@ -108,7 +105,7 @@ export class MongooseDurationChart implements MongooseChart {
         return ((this.chartLabels.length >= maxAmountOfPointsInGraph) && this.shouldShiftChart);
     }
 
-    private configureChartOptions() { 
+    private configureChartOptions() {
         const redColorRgb: string = "rgb(255, 0, 0)";
         this.chartData[this.MAX_DURATION_DATASET_INDEX].setChartColor(redColorRgb);
 

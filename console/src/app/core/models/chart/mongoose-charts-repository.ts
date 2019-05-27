@@ -1,5 +1,5 @@
 import { MongooseDurationChart } from "./duration/mongoose-duration-chart.model";
-import { MongooseChartOptions } from "./mongoose-chart-interface/mongoose-chart-options";
+import { MongooseChartOptions, MongooseChartAxesType } from "./mongoose-chart-interface/mongoose-chart-options";
 import { MongooseLatencyChart } from "./latency/mongoose-latency-chart.model";
 import { MongooseThroughputChart } from "./throughput/mongoose-throughput-chart.model";
 import { MongooseBandwidthChart } from "./bandwidth/mongoose-bandwidth-chart.model";
@@ -53,7 +53,10 @@ export class MongooseChartsRepository {
     }
 
     private createMongooseDurationChart(): MongooseDurationChart {
-        return new MongooseDurationChart(this.BASIC_MONGOOSE_CHART_OPTIONS, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
+        let options: MongooseChartOptions = new MongooseChartOptions();
+        const yAxisType = MongooseChartOptions.LOGARITHMIC_CHART_TYPE;
+        options.setAxisChartType(yAxisType, MongooseChartAxesType.Y);
+        return new MongooseDurationChart(options, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
     }
 
     private createMongooseLatencyChart(): MongooseLatencyChart {
