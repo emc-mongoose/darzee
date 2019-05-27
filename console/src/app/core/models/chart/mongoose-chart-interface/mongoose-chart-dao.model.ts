@@ -14,7 +14,6 @@ export class MongooseChartDao {
     }
 
     public getDuration(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
-        console.log(`[mongoose chart dao] metricValueType: ${metricValueType}`)
         return this.chartDataProvider.getDuration(periodInSeconds, loadStepId, metricValueType).pipe(
             map((durationMetrics: MongooseMetric[]) => {
                 durationMetrics.forEach(metric => {
