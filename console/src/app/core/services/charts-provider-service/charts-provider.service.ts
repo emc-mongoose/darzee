@@ -49,8 +49,10 @@ export class ChartsProviderService {
   }
 
   public updateCharts(perdiodOfLatencyUpdateSeconds: number, loadStepId: string) {
-    this.updateLatencyChart(perdiodOfLatencyUpdateSeconds, loadStepId);
     this.updateDurationChart(perdiodOfLatencyUpdateSeconds, loadStepId);
+
+
+    this.updateLatencyChart(perdiodOfLatencyUpdateSeconds, loadStepId);
     this.updateBandwidthChart(perdiodOfLatencyUpdateSeconds, loadStepId);
     this.updateThoughputChart(perdiodOfLatencyUpdateSeconds, loadStepId);
   }
@@ -74,11 +76,22 @@ export class ChartsProviderService {
   }
 
   private updateDurationChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, metricValueType: MetricValueType = MetricValueType.MEAN) {
-    this.mongooseChartDao.getDuration(perdiodOfLatencyUpdateSecs, loadStepId, metricValueType).subscribe(
+    this.mongooseChartDao.getDuration(perdiodOfLatencyUpdateSecs, loadStepId, MetricValueType.MIN).subscribe(
       ((durationMetrics: MongooseMetric[]) => {
         this.durationChart.updateChart(loadStepId, durationMetrics);
       }));
+
+      this.mongooseChartDao.getDuration(perdiodOfLatencyUpdateSecs, loadStepId, MetricValueType.MAX).subscribe(
+        ((durationMetrics: MongooseMetric[]) => {
+          this.durationChart.updateChart(loadStepId, durationMetrics);
+        }));
+
+        this.mongooseChartDao.getDuration(perdiodOfLatencyUpdateSecs, loadStepId, MetricValueType.MEAN).subscribe(
+          ((durationMetrics: MongooseMetric[]) => {
+            this.durationChart.updateChart(loadStepId, durationMetrics);
+          }));
   }
+  
 
 
   private updateBandwidthChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {

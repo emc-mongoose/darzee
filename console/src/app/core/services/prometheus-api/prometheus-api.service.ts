@@ -83,6 +83,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   public getDuration(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
     let metricName = this.MEAN_DURATION_METRIC_NAME; 
+    console.log(`[prometheu api service] metricValueType: ${metricValueType}`)
     switch (metricValueType) { 
       case (MetricValueType.MEAN): { 
         metricName = this.MEAN_DURATION_METRIC_NAME; 
@@ -97,6 +98,8 @@ export class PrometheusApiService implements MongooseChartDataProvider {
         break;
       }
     }
+    console.log(`[prometheus API serice] final deciision that metric iiiiis: ${metricName}`)
+
     return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawDurationResponse => {
         return this.prometheusResponseParser.getMongooseMetricsArray(rawDurationResponse);

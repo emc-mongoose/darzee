@@ -14,10 +14,26 @@ export class MongooseChartDao {
     }
 
     public getDuration(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
+        console.log(`[mongoose chart dao] metricValueType: ${metricValueType}`)
         return this.chartDataProvider.getDuration(periodInSeconds, loadStepId, metricValueType).pipe(
             map((durationMetrics: MongooseMetric[]) => {
                 durationMetrics.forEach(metric => {
-                    metric.setName(InternalMetricNames.MEAN_DURATION);
+                    let internalMetricName = InternalMetricNames.MEAN_DURATION;
+                    switch (metricValueType) { 
+                        case (MetricValueType.MAX): { 
+                            internalMetricName = InternalMetricNames.MAX_DURATION;
+                            break;
+                        }
+                        case (MetricValueType.MIN): { 
+                            internalMetricName = InternalMetricNames.MIN_DURATION;
+                            break;
+                        }
+                        case (MetricValueType.MEAN): { 
+                            internalMetricName = InternalMetricNames.MEAN_DURATION;
+                            break;
+                        }
+                    }
+                    metric.setName(internalMetricName);
                 });
                 return durationMetrics;
             })

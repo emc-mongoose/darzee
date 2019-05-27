@@ -32,29 +32,69 @@ export class MongooseDurationChart implements MongooseChart {
         this.shouldShiftChart = shouldShiftChart;
 
         let durationChartDatasetInitialValue = new MongooseChartDataset([], 'Mean duration');
+        let minDurationChartDatasetInitialValue = new MongooseChartDataset([], "Min duration");
+        let maxDurationChartDatasetInitialValue = new MongooseChartDataset([], "Max duration");
+
         var durationChartDataset: MongooseChartDataset[] = [];
         durationChartDataset.push(durationChartDatasetInitialValue);
+        durationChartDataset.push(minDurationChartDatasetInitialValue);
+        durationChartDataset.push(maxDurationChartDatasetInitialValue);
+
         this.chartData = durationChartDataset;
     }
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
 
         var meanDurationMetrics: any[] = [];
+        var minDurationMetrics: any[] = [];
+        var maxDurationMetrics: any[] = [];
+
         var updatedLabels: any[] = [];
 
+        let metricName = InternalMetricNames.MEAN_DURATION;
         metrics.forEach(durationMetric => {
-            const metricName = durationMetric.getName(); 
+            metricName = durationMetric.getName(); 
+            console.log(`duration metric name: ${metricName}`);
+            let durationMetricValue = durationMetric.getValue();
             switch (metricName) { 
                 case (InternalMetricNames.MEAN_DURATION): { 
-                    meanDurationMetrics.push(durationMetric.getValue());
+                    meanDurationMetrics.push(durationMetricValue);
+                    break;
+                }
+                case (InternalMetricNames.MIN_DURATION): { 
+                    minDurationMetrics.push(durationMetricValue);
+                    break;
+                }
+                case (InternalMetricNames.MAX_DURATION): { 
+                    maxDurationMetrics.push(durationMetricValue);
                     break;
                 }
             }
-
             updatedLabels.push(formatDate(Math.round(durationMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
         });
         this.chartLabels = updatedLabels;
-        this.chartData[this.MEAN_DURATION_DATASET_INDEX].setChartData(meanDurationMetrics);
+        console.log(`meanDurationMetrics length: ${meanDurationMetrics.length}`);
+        console.log(`maxDurationMetrics length: ${maxDurationMetrics.length}`);
+        console.log(`minDurationMetrics length: ${minDurationMetrics.length}`);
+
+        switch (metricName) { 
+            case (InternalMetricNames.MEAN_DURATION): { 
+                this.chartData[this.MEAN_DURATION_DATASET_INDEX].setChartData(meanDurationMetrics);
+                break;
+            }
+            case (InternalMetricNames.MIN_DURATION): { 
+                this.chartData[this.MIN_DURATION_DATASET_INDEX].setChartData(minDurationMetrics);
+                break;
+            }
+            case (InternalMetricNames.MAX_DURATION): { 
+                this.chartData[this.MAX_DURATION_DATASET_INDEX].setChartData(maxDurationMetrics);
+                break;
+            }
+        }
+        
+        
+        
+        
     }
 
     public shouldDrawChart(): boolean {
