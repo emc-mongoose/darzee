@@ -52,6 +52,14 @@ export class MongooseChartDataset {
         this.data.push(point);
     }
 
+    /**
+     * Sets color to a specific chart. 
+     * @param colorRgba color in RGB or RGBA format. E.g.: rgba(1, 1, 1, 1)
+     */
+    public setChartColor(colorRgba: string) { 
+        this.borderColor = colorRgba;
+    }
+
     // MARK: - Private 
 
     private getPreviousValueFromDataset(dataset: MongooseChartDataset): string {
