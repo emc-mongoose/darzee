@@ -3,6 +3,7 @@ import { MongooseChartDataProvider } from './mongoose-chart-data-provider.interf
 import { MongooseMetric } from '../mongoose-metric.model';
 import { map } from 'rxjs/operators';
 import { InternalMetricNames } from '../internal-metric-names';
+import { MetricValueType } from './metric-value-type';
 
 export class MongooseChartDao {
 
@@ -12,8 +13,8 @@ export class MongooseChartDao {
         this.chartDataProvider = dataProvider;
     }
 
-    public getDuration(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-        return this.chartDataProvider.getDuration(periodInSeconds, loadStepId).pipe(
+    public getDuration(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
+        return this.chartDataProvider.getDuration(periodInSeconds, loadStepId, metricValueType).pipe(
             map((durationMetrics: MongooseMetric[]) => {
                 durationMetrics.forEach(metric => {
                     metric.setName(InternalMetricNames.MEAN_DURATION);

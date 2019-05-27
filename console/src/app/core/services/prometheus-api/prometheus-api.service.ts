@@ -8,6 +8,7 @@ import { MongooseMetric } from '../../models/chart/mongoose-metric.model';
 import { PrometheusResponseParser } from './prometheus-response.parser';
 import { HttpUtils } from 'src/app/common/HttpUtils';
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
+import { MetricValueType } from '../../models/chart/mongoose-chart-interface/metric-value-type';
 
 
 @Injectable({
@@ -21,6 +22,10 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   private readonly MIN_LATENCY_METRIC_NAME = "mongoose_latency_min";
 
   private readonly MEAN_DURATION_METRIC_NAME = "mongoose_duration_mean";
+  private readonly MIN_DURATION_METRIC_NAME = "mongoose_duration_min";
+  private readonly MAX_DURATION_METRIC_NAME = "mongoose_duration_max";
+
+
 
   private readonly SUCCESS_OPERATIONS_RATE_MEAN_METRIC_NAME = "mongoose_success_op_rate_mean";
   private readonly FAILED_OPERATIONS_RATE_MEAN_METRIC_NAME = "mongoose_failed_op_rate_mean";
@@ -76,7 +81,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     this.currentPrometheusAddress = prometheusHostIpAddress;
   }
 
-  public getDuration(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
+  public getDuration(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
     return this.runQuery(`${this.MEAN_DURATION_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawDurationResponse => {
         return this.prometheusResponseParser.getMongooseMetricsArray(rawDurationResponse);
@@ -84,8 +89,23 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     );
   }
 
-  public getDurationValuesArray(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-    return this.runQuery(`${this.MEAN_DURATION_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+  public getDurationValuesArray(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
+    let metricName = this.MEAN_DURATION_METRIC_NAME; 
+    switch (metricValueType) { 
+      case (MetricValueType.MEAN): { 
+        metricName = this.MEAN_DURATION_METRIC_NAME; 
+        break;
+      }
+      case (MetricValueType.MAX): { 
+        metricName = this.MAX_DURATION_METRIC_NAME;
+        break;
+      } 
+      case (MetricValueType.MIN): { 
+        metricName = this.MIN_DURATION_METRIC_NAME;
+        break;
+      }
+    }
+    return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawDurationResponse => {
         return this.prometheusResponseParser.getMongooseMetricsArray(rawDurationResponse);
       })

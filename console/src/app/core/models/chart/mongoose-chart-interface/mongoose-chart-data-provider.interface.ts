@@ -1,10 +1,11 @@
 import { Observable } from "rxjs";
 import { MongooseMetric } from "../mongoose-metric.model";
+import { MetricValueType } from "./metric-value-type";
 
 export interface MongooseChartDataProvider {
 
-    getDuration(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]>;
-    getDurationValuesArray(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]>
+    getDuration(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]>;
+    getDurationValuesArray(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]>
 
     getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]>;
     getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]>;

@@ -7,6 +7,7 @@ import { MongooseDurationChart } from '../../models/chart/duration/mongoose-dura
 import { MongooseLatencyChart } from '../../models/chart/latency/mongoose-latency-chart.model';
 import { MongooseBandwidthChart } from '../../models/chart/bandwidth/mongoose-bandwidth-chart.model';
 import { MongooseThroughputChart } from '../../models/chart/throughput/mongoose-throughput-chart.model';
+import { MetricValueType } from '../../models/chart/mongoose-chart-interface/metric-value-type';
 
 
 @Injectable({
@@ -72,8 +73,8 @@ export class ChartsProviderService {
     });
   }
 
-  private updateDurationChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getDuration(perdiodOfLatencyUpdateSecs, loadStepId).subscribe(
+  private updateDurationChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, metricValueType: MetricValueType = MetricValueType.MEAN) {
+    this.mongooseChartDao.getDuration(perdiodOfLatencyUpdateSecs, loadStepId, metricValueType).subscribe(
       ((durationMetrics: MongooseMetric[]) => {
         this.durationChart.updateChart(loadStepId, durationMetrics);
       }));
