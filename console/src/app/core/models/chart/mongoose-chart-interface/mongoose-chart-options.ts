@@ -20,11 +20,14 @@ export class MongooseChartOptions {
     public scales: any = {
         yAxes: [{
             type: MongooseChartOptions.CHART_DEFAULT_TYPE
-        }],
-        xAxes: [{
-            // type: MongooseChartOptions.CHART_DEFAULT_TYPE
         }]
     }
+
+    public title: any =  {
+        display: true,
+        text: ''
+    }
+
 
     constructor(shouldScaleShowVerticalLines: boolean = false, isResponsive: boolean = true) {
         this.scaleShowVerticalLines = shouldScaleShowVerticalLines;
@@ -38,10 +41,6 @@ export class MongooseChartOptions {
      */
     public setAxisChartType(type: string, axis: MongooseChartAxesType) {
         switch (axis) {
-            case (MongooseChartAxesType.X): {
-                this.scales.xAxes[0].type = type;
-                break;
-            }
             case (MongooseChartAxesType.Y): {
                 this.scales.yAxes[0].type = type;
                 break;
@@ -51,6 +50,14 @@ export class MongooseChartOptions {
             }
         }
 
+    }
+
+    /**
+     * Title will be displayed above the chart.
+     * @param title a title of chart. 
+     */
+    public setChartTitle(title: string) { 
+        this.title.text = title; 
     }
 }
 
