@@ -75,9 +75,6 @@ export class MongooseDurationChart implements MongooseChart {
             updatedLabels.push(formatDate(Math.round(durationMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
         });
         this.chartLabels = updatedLabels;
-        console.log(`meanDurationMetrics length: ${meanDurationMetrics.length}`);
-        console.log(`maxDurationMetrics length: ${maxDurationMetrics.length}`);
-        console.log(`minDurationMetrics length: ${minDurationMetrics.length}`);
 
         switch (metricName) {
             case (InternalMetricNames.MEAN_DURATION): {

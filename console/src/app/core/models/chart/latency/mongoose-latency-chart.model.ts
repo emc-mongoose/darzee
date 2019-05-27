@@ -30,8 +30,9 @@ export class MongooseLatencyChart implements MongooseChart {
         this.isChartDataValid = true;
         this.shouldShiftChart = shouldShiftChart;
 
-        let maxLatencyDataset = new MongooseChartDataset([], 'Larency max');
-        let minLatencyDataset = new MongooseChartDataset([], 'Larency min');
+        let meanLatencyDataset = new MongooseChartDataset([], 'Mean latency');
+        let maxLatencyDataset = new MongooseChartDataset([], 'Max latency');
+        let minLatencyDataset = new MongooseChartDataset([], 'Min latency');
 
         this.chartData = [maxLatencyDataset, minLatencyDataset];
     }

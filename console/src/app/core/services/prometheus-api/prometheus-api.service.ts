@@ -20,11 +20,12 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   private readonly MAX_LATENCY_METRIC_NAME = "mongoose_latency_max";
   private readonly MIN_LATENCY_METRIC_NAME = "mongoose_latency_min";
+  private readonly MEAN_LATENCY_METRIC_NAME = "mongoose_latency_mean";
+
 
   private readonly MEAN_DURATION_METRIC_NAME = "mongoose_duration_mean";
   private readonly MIN_DURATION_METRIC_NAME = "mongoose_duration_min";
   private readonly MAX_DURATION_METRIC_NAME = "mongoose_duration_max";
-
 
 
   private readonly SUCCESS_OPERATIONS_RATE_MEAN_METRIC_NAME = "mongoose_success_op_rate_mean";
@@ -83,7 +84,6 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   public getDuration(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
     let metricName = this.MEAN_DURATION_METRIC_NAME; 
-    console.log(`[prometheu api service] metricValueType: ${metricValueType}`)
     switch (metricValueType) { 
       case (MetricValueType.MEAN): { 
         metricName = this.MEAN_DURATION_METRIC_NAME; 
@@ -98,7 +98,6 @@ export class PrometheusApiService implements MongooseChartDataProvider {
         break;
       }
     }
-    console.log(`[prometheus API serice] final deciision that metric iiiiis: ${metricName}`)
 
     return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawDurationResponse => {
@@ -123,16 +122,39 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     )
   }
 
-  public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-    return this.runQuery(`${this.MAX_LATENCY_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
-      map(rawMaxLatencyQueryResponse => {
-        return this.prometheusResponseParser.getMongooseMetricsArray(rawMaxLatencyQueryResponse);
-      })
-    )
-  }
+  // public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
+  //   return this.runQuery(`${this.MAX_LATENCY_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+  //     map(rawMaxLatencyQueryResponse => {
+  //       return this.prometheusResponseParser.getMongooseMetricsArray(rawMaxLatencyQueryResponse);
+  //     })
+  //   )
+  // }
 
-  public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-    return this.runQuery(`${this.MIN_LATENCY_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+  // public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
+  //   return this.runQuery(`${this.MIN_LATENCY_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+  //     map(rawMinLatencyQueryResponse => {
+  //       return this.prometheusResponseParser.getMongooseMetricsArray(rawMinLatencyQueryResponse);
+  //     })
+  //   )
+  // }
+
+  public getLatency(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> { 
+    let metricName = this.MEAN_DURATION_METRIC_NAME; 
+    switch (metricValueType) { 
+      case (MetricValueType.MEAN): { 
+        metricName = this.MEAN_LATENCY_METRIC_NAME; 
+        break;
+      }
+      case (MetricValueType.MAX): { 
+        metricName = this.MAX_LATENCY_METRIC_NAME;
+        break;
+      } 
+      case (MetricValueType.MIN): { 
+        metricName = this.MIN_LATENCY_METRIC_NAME;
+        break;
+      }
+    }
+    return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawMinLatencyQueryResponse => {
         return this.prometheusResponseParser.getMongooseMetricsArray(rawMinLatencyQueryResponse);
       })
