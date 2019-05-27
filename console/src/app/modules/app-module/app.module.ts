@@ -23,6 +23,7 @@ import { StorageServiceModule } from "ngx-webstorage-service";
 import { LocalStorageService } from "src/app/core/services/local-storage-service/local-storage.service";
 import { EntryNodeSelectionComponent } from './components/run-statistics/common/entry-node-selection/entry-node-selection.component';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { PrometheusErrorComponent } from "./components/common/prometheus-error/prometheus-error.component";
 
 @NgModule({
   declarations: [
@@ -37,12 +38,14 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     RunStatisticsChartsComponent,
     DateFormatPipe,
     BasicChartComponent,
-    EntryNodeSelectionComponent
+    EntryNodeSelectionComponent,
+    PrometheusErrorComponent
 
   ],
   entryComponents: [
     BasicChartComponent,
-    EntryNodeSelectionComponent
+    EntryNodeSelectionComponent,
+    PrometheusErrorComponent
   ],
   imports: [
     BrowserModule,

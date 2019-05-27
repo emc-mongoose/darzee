@@ -15,6 +15,7 @@ import { MongooseDataSharedServiceService } from "../mongoose-data-shared-servic
 import { ResourceLoader } from "@angular/compiler";
 import { ResourceLocatorType } from "../../models/address-type";
 import { MongooseRunNode } from "../../models/mongoose-run-node.model";
+import { PrometheusError } from "src/app/common/Exceptions/PrometheusError";
 
 
 @Injectable({
@@ -202,7 +203,12 @@ export class MonitoringApiService {
           let emptyRecordsArray: MongooseRunRecord[] = [];
           return emptyRecordsArray;
         }
-      )
+      ),
+      catchError((error: any) => {
+        let errorStatus = error.status || 500; 
+        let errroMessage = "Prometheus doesn't response.";
+        throw new PrometheusError(errroMessage, errorStatus);
+      })
     )
   }
 

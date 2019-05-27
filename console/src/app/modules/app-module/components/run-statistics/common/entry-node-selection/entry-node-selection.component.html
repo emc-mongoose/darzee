@@ -8,6 +8,7 @@
 
 <div class="modal-body">
   <p>Entry node</p>
+  <!-- NOTE: Node entering text field  -->
   <input #nodeEnteringInstance id="typeahead-focus" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search"
     (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)" (value)="currentEnteredText" #instance="ngbTypeahead" />
 </div>

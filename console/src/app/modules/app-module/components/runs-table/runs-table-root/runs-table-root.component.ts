@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import { MongooseRunStatus } from 'src/app/core/models/mongoose-run-status';
 import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
@@ -6,6 +6,10 @@ import { MongooseRunTab } from './model/monoose-run-tab.model';
 import { slideAnimation } from 'src/app/core/animations';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { MongooseRunRecordCounter } from 'src/app/core/models/run-record-counter';
+import { PrometheusError } from 'src/app/common/Exceptions/PrometheusError';
+import { BasicChartComponent } from '../../run-statistics/run-statistics-charts/basic-chart/basic-chart.component';
+import { MongooseRunStatusIconComponent } from '../mongoose-run-status-icon/mongoose-run-status-icon.component';
+import { PrometheusErrorComponent } from '../../common/prometheus-error/prometheus-error.component';
 
 @Component({
   selector: 'app-runs-table-root',
@@ -18,10 +22,11 @@ import { MongooseRunRecordCounter } from 'src/app/core/models/run-record-counter
 
 export class RunsTableRootComponent implements OnInit {
 
+  @ViewChild('errorMessageComponent', { read: ViewContainerRef }) errorMessageComponent: ViewContainerRef;
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
   public runTabs: MongooseRunTab[] = [];
-
   public currentActiveTab: MongooseRunTab;
+
 
   private displayingRunRecords: MongooseRunRecord[] = [];
 
@@ -30,50 +35,19 @@ export class RunsTableRootComponent implements OnInit {
   private currentTab$: BehaviorSubject<MongooseRunTab>;
 
   private mongooseRecordsSubscription: Subscription = new Subscription();
-  private monitoringApiServiceSubscriptions: Subscription = new Subscription();;
+  private monitoringApiServiceSubscriptions: Subscription = new Subscription();
 
   // MARK: - Lifecycle
 
-  constructor(private monitoringApiService: MonitoringApiService) {
+  constructor(private monitoringApiService: MonitoringApiService,
+    private resolver: ComponentFactoryResolver) {
     this.setUpInitialTabs();
-    this.currentTab$.subscribe(tab => {
-      let targetStatus = tab.getStatus();
-      this.monitoringApiServiceSubscriptions.add(
-        this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(targetStatus).subscribe(
-          records => {
-            console.log("Records have been changed.");
-            this.filtredRecords$.next(records);
-          },
-          error => {
-            console.error(`Unable to filter records by status "${targetStatus}. Details: ${error}"`);
-            this.displayingRunRecords = [];
-          }
-        )
-      )
-    });
+    this.initializeTabsRecordsData();
   }
 
 
   ngOnInit() {
-
-    this.mongooseRecordsSubscription = this.monitoringApiService.getMongooseRunRecords().subscribe(
-      updatedRecords => {
-        // NOTE: Updating tabs here 
-        this.mongooseRunTabs$.next(this.getTabsForRecords(updatedRecords));
-        this.displayingRunRecords = updatedRecords;
-
-      },
-      error => {
-        let misleadingMsg = `Unable to load Mongoose run records. Details: `;
-
-        let errorDetails = JSON.stringify(error);
-        console.error(misleadingMsg + errorDetails);
-
-        let errorCause = error;
-        alert(misleadingMsg + errorCause);
-        alert(`Unable to load Mongoose runs. Details: ${error}`);
-      }
-    )
+    this.setUpRecordsData();
   }
 
   ngOnDestroy() {
@@ -100,9 +74,12 @@ export class RunsTableRootComponent implements OnInit {
     })
     this.currentActiveTab = requiredTab;
     this.monitoringApiServiceSubscriptions = this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(requiredTab.tabTitle).subscribe(
-      filtedRecords => {
+      (filtedRecords: MongooseRunRecord[]) => {
         requiredTab.setAmountOfRecords(filtedRecords.length);
         this.filtredRecords$.next(filtedRecords);
+      },
+      (error: PrometheusError): any => {
+        this.showErrorComponent(error);
       }
     )
   }
@@ -120,8 +97,31 @@ export class RunsTableRootComponent implements OnInit {
     return this.mongooseRunTabs$.asObservable();
   }
 
+  /**
+   * Shows specific component that should occure on a specific ...
+   * ... errors. 
+   * @param error error instance.
+   */
+  public showErrorComponent(error: Error) {
+    this.errorMessageComponent.clear();
+
+    if (error instanceof PrometheusError) {
+      const factory = this.resolver.resolveComponentFactory(PrometheusErrorComponent);
+      const errorComponentReference = this.errorMessageComponent.createComponent(factory);
+      errorComponentReference.instance.onPrometheusLoad.subscribe(
+        onPrometheusClosed => {
+          this.errorMessageComponent.clear();
+          this.setUpRecordsData();
+        }
+      );
+    }
+  }
   // MARK: - Private 
 
+  /**
+   * @returns tab instances based on Mongoose run @param records . 
+   * 
+   */
   private getTabsForRecords(records: MongooseRunRecord[]): MongooseRunTab[] {
     let tabs: MongooseRunTab[] = [];
     let mongooseRunRecordCounter = new MongooseRunRecordCounter();
@@ -134,6 +134,9 @@ export class RunsTableRootComponent implements OnInit {
   }
 
 
+  /**
+   * Initialize basic tab isntances.
+   */
   private setUpInitialTabs() {
     let emptyMongooseRunRecords: MongooseRunRecord[] = [];
     this.runTabs = this.getTabsForRecords(emptyMongooseRunRecords);
@@ -144,6 +147,52 @@ export class RunsTableRootComponent implements OnInit {
     }
     let initialTab = this.runTabs[0];
     this.currentTab$ = new BehaviorSubject<MongooseRunTab>(initialTab);
+  }
+
+
+  /**
+   * Fullfill every tab (which provides run record status) with the related run records.
+   */
+  private initializeTabsRecordsData() {
+    this.currentTab$.subscribe(tab => {
+      let targetStatus = tab.getStatus();
+      this.monitoringApiServiceSubscriptions.add(
+        this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(targetStatus).subscribe(
+          records => {
+            console.log("Records have been changed.");
+            this.filtredRecords$.next(records);
+          },
+          error => {
+            console.error(`Unable to filter records by status "${targetStatus}. Details: ${error}"`);
+            this.displayingRunRecords = [];
+          }
+        )
+      )
+    });
+  }
+
+  /**
+   * Retrieves existing records from Prometheus. 
+   * Note that it will display every existing record on the screen without ...
+   * ... keeping status in mind.
+   */
+  private setUpRecordsData() {
+    this.mongooseRecordsSubscription = this.monitoringApiService.getMongooseRunRecords().subscribe(
+      updatedRecords => {
+        // NOTE: Updating tabs here
+        let runTableTabs = this.getTabsForRecords(updatedRecords);
+        this.mongooseRunTabs$.next(runTableTabs);
+        // NOTE: Displaying every fetched records.
+        this.displayingRunRecords = updatedRecords;
+      },
+      error => {
+        this.showErrorComponent(error);
+
+        let misleadingMsg = `Unable to load Mongoose run records. Details: `;
+        let errorDetails = JSON.stringify(error);
+        console.error(misleadingMsg + errorDetails);
+      }
+    )
   }
 
 }

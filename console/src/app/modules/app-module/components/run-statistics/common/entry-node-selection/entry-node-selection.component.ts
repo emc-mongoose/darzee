@@ -30,29 +30,19 @@ export class EntryNodeSelectionComponent implements OnInit {
   public click$ = new Subject<string>();
 
 
-  // public search: any; 
-
   constructor(public activeModal: NgbActiveModal,
     private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
     private monitoringApiService: MonitoringApiService) {
-    this.activeSubscriptions.add(
-      this.mongooseDataSharedServiceService.getAvailableRunNodes().subscribe(
-        (availableRunNodes: MongooseRunNode[]) => {
-          let availableRunNodeAddressess: String[] = [];
-          availableRunNodes.forEach((runNode: MongooseRunNode) => {
-            availableRunNodeAddressess.push(runNode.getResourceLocation());
-          });
-          this.existingNodesList = availableRunNodeAddressess;
-        }
-      )
-    )
+    this.configurePossibleMongooseRunNodesSubscription();
   }
 
   ngOnInit() {
     this.errorMessage$.subscribe((message) => this.errorMessage = message);
-   }
+  }
 
-
+  /**
+   * Searches for Mongoose run node within Mongoose run repository while user is typing.
+   */
   search = (enteringText$: Observable<string>) => {
     if (this == undefined) {
       return;
@@ -75,7 +65,7 @@ export class EntryNodeSelectionComponent implements OnInit {
     // NOTE: Removing whitespaces from string in case of accidental entering of them
     this.currentEnteredText = this.currentEnteredText.replace(" ", "");
     this.mongooseRunRecord.setEntryNodeAddress(this.currentEnteredText);
-   
+
     let testLogNameEndpoint = MongooseApi.Config.CONFIG_ENDPONT;
     this.activeSubscriptions.add(
       this.monitoringApiService.getLog(enteredEntryNodeAddress, this.mongooseRunRecord.getLoadStepId(), testLogNameEndpoint).subscribe(
@@ -84,6 +74,23 @@ export class EntryNodeSelectionComponent implements OnInit {
         },
         error => {
           this.errorMessage$.next(`Entry node ${enteredEntryNodeAddress} is not correct for load step ID ${this.mongooseRunRecord.getLoadStepId()}`)
+        }
+      )
+    )
+  }
+
+  /**
+   * Configuring subscription to Mongoose run nodes from Run Nodes Repository.
+   */
+  private configurePossibleMongooseRunNodesSubscription() {
+    this.activeSubscriptions.add(
+      this.mongooseDataSharedServiceService.getAvailableRunNodes().subscribe(
+        (availableRunNodes: MongooseRunNode[]) => {
+          let availableRunNodeAddressess: String[] = [];
+          availableRunNodes.forEach((runNode: MongooseRunNode) => {
+            availableRunNodeAddressess.push(runNode.getResourceLocation());
+          });
+          this.existingNodesList = availableRunNodeAddressess;
         }
       )
     )

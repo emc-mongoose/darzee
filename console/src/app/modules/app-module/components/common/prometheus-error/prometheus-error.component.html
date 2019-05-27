@@ -1,0 +1,20 @@
+<div class="alert alert-danger" role="alert">
+  <ng-container *ngIf="!this.shouldDisplayLoadBtn();">
+  <b>Prometheus</b> service doesn't exist on node <b>{{ this.prometheusResourceLocation }}</b>.
+  </ng-container>
+  <input #nodeEnteringInstance id="typeahead-focus" type="text" class="form-control" [(ngModel)]="model"
+    [ngbTypeahead]="search" (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)"
+    (value)="currentEnteredText" #prometheusAddressTypeheadInstance="ngbTypeahead"
+    placeholder="Enter Prometheus IP address.." />
+  <ng-container *ngIf="!this.shouldDisplayLoadBtn(); else errorMessageComponent">
+    <button type="button" class="btn btn-outline-dark" (click)="onRetryBtnClicked()">Retry</button>
+  </ng-container>
+</div>
+
+
+<ng-template #errorMessageComponent>
+  <button type="button" class="btn btn-outline-dark" (click)="onRetryBtnClicked()">
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    Loading...
+  </button>
+</ng-template>
