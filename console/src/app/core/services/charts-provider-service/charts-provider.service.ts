@@ -59,7 +59,6 @@ export class ChartsProviderService {
 
   public drawStatisCharts(secondsSinceCurrentDate: number, loadStepId: string) {
     secondsSinceCurrentDate = Math.round(secondsSinceCurrentDate);
-    console.log(`Update static charts for loadStepId ${loadStepId} for the past ${secondsSinceCurrentDate} seconds.`);
     this.updateCharts(secondsSinceCurrentDate, loadStepId);
   }
 

@@ -37,6 +37,7 @@ export class MongooseLatencyChart implements MongooseChart {
         let minLatencyDataset = new MongooseChartDataset([], 'Min latency');
 
         this.chartData = [maxLatencyDataset, minLatencyDataset, meanLatencyDataset];
+        this.configureChartOptions();
     }
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
@@ -69,19 +70,12 @@ export class MongooseLatencyChart implements MongooseChart {
                     break;
                 }
             }
-
-
-        })
-        console.log(`maxLatencyMetricName length: ${maxLatencyMetricValues.length}`);
-        console.log(`minLatencyMetricName length: ${minLatencyMetricValues.length}`);
-
-        console.log(`meanLatencyMetricName length: ${meanLatencyMetricValues.length}`);
+        });
 
         this.chartLabels = latencyChartTimestamps;
         this.chartData[this.MAX_LATENCY_DATASET_INDEX].setChartData(maxLatencyMetricValues);
         this.chartData[this.MIN_LATENCY_DATASET_INDEX].setChartData(minLatencyMetricValues);
         this.chartData[this.MEAN_LATENCY_DATASET_INDEX].setChartData(maxLatencyMetricValues);
-
     }
 
 
@@ -92,6 +86,20 @@ export class MongooseLatencyChart implements MongooseChart {
     private shouldScaleChart(): boolean {
         const maxAmountOfPointsInGraph = 20;
         return (this.chartLabels.length >= maxAmountOfPointsInGraph);
+    }
+
+    private configureChartOptions() { 
+        const redColorRgb: string = MongooseChartDataset.MAX_CHART_DEFAULT_LINE_COLOR_RGB;
+        this.chartData[this.MAX_LATENCY_DATASET_INDEX].setChartColor(redColorRgb);
+
+        const yellowColorRgb: string = MongooseChartDataset.MEAN_CHART_DEFAULT_LINE_COLOR_RGBA;
+        this.chartData[this.MEAN_LATENCY_DATASET_INDEX].setChartColor(yellowColorRgb);
+
+        const greenColorRgb: string = MongooseChartDataset.MIN_CHART_DEFAULT_LINE_COLOR_RGB;
+        this.chartData[this.MIN_LATENCY_DATASET_INDEX].setChartColor(greenColorRgb);
+
+        const chartTitle: string = "Mongoose's operations latency";
+        this.chartOptions.setChartTitle(chartTitle);
     }
 
 }

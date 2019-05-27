@@ -4,6 +4,15 @@ export class MongooseChartDataset {
     // NOTE: Fields are public since they should match ng-chart2 library naming 
     // link: https://github.com/valor-software/ng2-charts
 
+    /**
+     * @param MEAN_CHART_DEFAULT_LINE_COLOR_RGBA - yellow - default color for MEAN line on charts.
+     * @param MIN_CHART_DEFAULT_LINE_COLOR_RGBA - green - default color for MIN line on charts.
+     * @param MAX_CHART_DEFAULT_LINE_COLOR_RGBA - red - default color for MAX line on charts.
+     */
+    public static readonly MEAN_CHART_DEFAULT_LINE_COLOR_RGBA = "rgba(247, 202, 24, 1)";
+    public static readonly MIN_CHART_DEFAULT_LINE_COLOR_RGB = "rgb(255, 0, 0)";
+    public static readonly MAX_CHART_DEFAULT_LINE_COLOR_RGB = "rgb(46, 204, 113)";
+
     private readonly ZERO_CURVE_LINE_TENSION = 0;
     private readonly BLACK_SOLID_COLOR_RGBA = "rgba(1, 1, 1, 1)";
     private readonly CLEAR_COLOR_RGBA = "rgba(0, 0, 0, 0)";
@@ -57,7 +66,7 @@ export class MongooseChartDataset {
      * Sets color to a specific chart. 
      * @param colorRgba color in RGB or RGBA format. E.g.: rgba(1, 1, 1, 1)
      */
-    public setChartColor(colorRgba: string) { 
+    public setChartColor(colorRgba: string) {
         this.borderColor = colorRgba;
     }
 
