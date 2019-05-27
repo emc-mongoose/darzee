@@ -69,9 +69,12 @@ export class ChartsProviderService {
     Object.values(MetricValueType).forEach(metricValueType => { 
       this.mongooseChartDao.getLatency(perdiodOfLatencyUpdateSecs, loadStepId, MetricValueType.MAX).subscribe((maxLatencyResult: MongooseMetric[]) => {
         this.mongooseChartDao.getLatency(perdiodOfLatencyUpdateSecs, loadStepId, MetricValueType.MIN).subscribe((minLatencyResult: MongooseMetric[]) => {
+          this.mongooseChartDao.getLatency(perdiodOfLatencyUpdateSecs, loadStepId, MetricValueType.MEAN).subscribe((meanLatencyResult: MongooseMetric[]) => {
           // NOTE: Concadentation of the arrays due tothe specific logic of updating (based on the internal names)
-          let concatenatedMetrics = maxLatencyResult.concat(minLatencyResult);
+          let concatenatedMetrics = maxLatencyResult.concat(minLatencyResult).concat(meanLatencyResult);
           this.latencyChart.updateChart(loadStepId, concatenatedMetrics);
+          })
+          
         });
       });
     })

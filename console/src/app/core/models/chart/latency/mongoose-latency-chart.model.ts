@@ -11,6 +11,8 @@ export class MongooseLatencyChart implements MongooseChart {
 
     private readonly MAX_LATENCY_DATASET_INDEX = 0;
     private readonly MIN_LATENCY_DATASET_INDEX = 1;
+    private readonly MEAN_LATENCY_DATASET_INDEX = 2;
+
 
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
@@ -34,35 +36,52 @@ export class MongooseLatencyChart implements MongooseChart {
         let maxLatencyDataset = new MongooseChartDataset([], 'Max latency');
         let minLatencyDataset = new MongooseChartDataset([], 'Min latency');
 
-        this.chartData = [maxLatencyDataset, minLatencyDataset];
+        this.chartData = [maxLatencyDataset, minLatencyDataset, meanLatencyDataset];
     }
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
 
         var maxLatencyMetricValues = [];
         var minLatencyMetricValues = [];
+        var meanLatencyMetricValues = [];
 
         var latencyChartTimestamps: string[] = [];
 
         let maxLatencyMetricName = InternalMetricNames.LATENCY_MAX;
         let minLatencyMetricName = InternalMetricNames.LATENCY_MIN;
+        let meanLatencyMetricName = InternalMetricNames.LATENCY_MEAN;
         metrics.forEach(metric => {
-            switch (metric.getName()) {
+            let metricValue: string = metric.getValue();
+            let metricName: string = metric.getName();
+            switch (metricName) {
                 case maxLatencyMetricName: {
-                    maxLatencyMetricValues.push(metric.getValue());
-                    latencyChartTimestamps.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
-
+                    maxLatencyMetricValues.push(metricValue);
                     break;
                 }
                 case minLatencyMetricName: {
-                    minLatencyMetricValues.push(metric.getValue());
+                    let metricTimestamp: string = formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US');
+                    latencyChartTimestamps.push(metricTimestamp);
+                    minLatencyMetricValues.push(metricValue);
+                    break;
+                }
+                case meanLatencyMetricName: {
+                    meanLatencyMetricValues.push(metricValue);
                     break;
                 }
             }
+
+
         })
+        console.log(`maxLatencyMetricName length: ${maxLatencyMetricValues.length}`);
+        console.log(`minLatencyMetricName length: ${minLatencyMetricValues.length}`);
+
+        console.log(`meanLatencyMetricName length: ${meanLatencyMetricValues.length}`);
+
         this.chartLabels = latencyChartTimestamps;
         this.chartData[this.MAX_LATENCY_DATASET_INDEX].setChartData(maxLatencyMetricValues);
         this.chartData[this.MIN_LATENCY_DATASET_INDEX].setChartData(minLatencyMetricValues);
+        this.chartData[this.MEAN_LATENCY_DATASET_INDEX].setChartData(maxLatencyMetricValues);
+
     }
 
 

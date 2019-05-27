@@ -122,22 +122,6 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     )
   }
 
-  // public getLatencyMax(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-  //   return this.runQuery(`${this.MAX_LATENCY_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
-  //     map(rawMaxLatencyQueryResponse => {
-  //       return this.prometheusResponseParser.getMongooseMetricsArray(rawMaxLatencyQueryResponse);
-  //     })
-  //   )
-  // }
-
-  // public getLatencyMin(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-  //   return this.runQuery(`${this.MIN_LATENCY_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
-  //     map(rawMinLatencyQueryResponse => {
-  //       return this.prometheusResponseParser.getMongooseMetricsArray(rawMinLatencyQueryResponse);
-  //     })
-  //   )
-  // }
-
   public getLatency(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> { 
     let metricName = this.MEAN_DURATION_METRIC_NAME; 
     switch (metricValueType) { 
