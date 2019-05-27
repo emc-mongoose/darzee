@@ -5,7 +5,8 @@ export class MongooseChartDataset {
     // link: https://github.com/valor-software/ng2-charts
 
     private readonly ZERO_CURVE_LINE_TENSION = 0;
-    private readonly BLACK_SOLID_COLOR_RGBA = "rgba(1,1,1,1)";
+    private readonly BLACK_SOLID_COLOR_RGBA = "rgba(1, 1, 1, 1)";
+    private readonly CLEAR_COLOR_RGBA = "rgba(0, 0, 0, 0)";
     private readonly CHART_LINE_WIDTH_PX = 1;
     private readonly CHART_POINT_RADIUS_PX = 0;
 
@@ -15,7 +16,7 @@ export class MongooseChartDataset {
 
     public lineTension: number = this.ZERO_CURVE_LINE_TENSION;
     public fill: boolean = false;
-    public backgroundColor: string = this.BLACK_SOLID_COLOR_RGBA;
+    public backgroundColor: string = this.CLEAR_COLOR_RGBA;
     public borderColor: string = this.BLACK_SOLID_COLOR_RGBA;
     public borderWidth: number = this.CHART_LINE_WIDTH_PX;
     public pointRadius: number = this.CHART_POINT_RADIUS_PX;
