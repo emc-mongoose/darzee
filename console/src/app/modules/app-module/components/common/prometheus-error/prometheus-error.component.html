@@ -1,5 +1,7 @@
 <div class="alert alert-danger" role="alert">
+  <ng-container *ngIf="!this.shouldDisplayLoadBtn();">
   <b>Prometheus</b> service doesn't exist on node <b>{{ this.prometheusResourceLocation }}</b>.
+  </ng-container>
   <input #nodeEnteringInstance id="typeahead-focus" type="text" class="form-control" [(ngModel)]="model"
     [ngbTypeahead]="search" (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)"
     (value)="currentEnteredText" #prometheusAddressTypeheadInstance="ngbTypeahead"
