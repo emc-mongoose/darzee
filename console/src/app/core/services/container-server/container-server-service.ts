@@ -16,7 +16,7 @@ export class ContainerServerService {
 
     private readonly FILE_SAVE_ENDPOINT = "savefile";
     private readonly RELOAD_PROMETHEUS_ENDPOINT = "reloadprometheus";
-    
+
     private readonly CONTAINER_SERVER_ADDRESS = `${Constants.Http.HTTP_PREFIX}${environment.nodeJsServerIp}:${environment.nodeJsServerPort}`
 
     private readonly REQUEST_BODY_FILENAME_PARAM = "fileName";
@@ -44,5 +44,3 @@ export class ContainerServerService {
         return httpHeadersForMongooseRun;
     }
 }
-
-

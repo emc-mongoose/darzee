@@ -11,3 +11,4 @@ import { DatePipe } from '@angular/common';
        return super.transform(value, this.DEFAULT_DATE_FORMAT);
     }
   }
+  

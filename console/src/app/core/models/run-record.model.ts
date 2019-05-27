@@ -12,12 +12,12 @@ export class MongooseRunRecord implements OnDestroy {
     public comment: String;
 
     private readonly entryNode: MongooseRunEntryNode;
-    private loadStepId: String = ""; 
+    private loadStepId: String = "";
 
     private duration: string;
     private statusSubscription: Subscription = new Subscription();
     private currentStatus: MongooseRunStatus = MongooseRunStatus.Unavailable;
-    private status$: Observable<MongooseRunStatus>; 
+    private status$: Observable<MongooseRunStatus>;
 
     // MARK: - Lifecycle 
 
@@ -28,13 +28,13 @@ export class MongooseRunRecord implements OnDestroy {
         this.duration = duration;
         this.comment = comment;
 
-        this.status$ = mongooseRunStatus$; 
+        this.status$ = mongooseRunStatus$;
         this.entryNode = entryNode;
         this.statusSubscription.add(mongooseRunStatus$.subscribe(
             fetchedStatus => {
                 this.currentStatus = fetchedStatus;
             },
-            error => { 
+            error => {
                 // NOTE: Handle situation of Mongoose entry node unavailability
                 this.currentStatus = MongooseRunStatus.Finished;
             }
@@ -48,11 +48,11 @@ export class MongooseRunRecord implements OnDestroy {
     // MARK: - Public
 
     public getStatusObs(): Observable<MongooseRunStatus> {
-        return this.status$; 
+        return this.status$;
     }
 
 
-    public getLoadStepId(): String { 
+    public getLoadStepId(): String {
         return this.loadStepId;
     }
 
@@ -83,7 +83,7 @@ export class MongooseRunRecord implements OnDestroy {
         return this.currentStatus;
     }
 
-    public  getStartTime(): String {
+    public getStartTime(): String {
         return this.startTime;
     }
 
@@ -95,11 +95,11 @@ export class MongooseRunRecord implements OnDestroy {
         this.duration = updatedDuration;
     }
 
-    public getEntryNodeAddress(): string { 
+    public getEntryNodeAddress(): string {
         return this.entryNode.getEntryNodeAddress();
     }
 
-    public setEntryNodeAddress(entryNodeAddress: string) { 
+    public setEntryNodeAddress(entryNodeAddress: string) {
         this.entryNode.setEntryNodeAddress(entryNodeAddress);
     }
     // MARK: - Private 

@@ -51,5 +51,4 @@ export class MongooseConfigurationParser {
             (configuration.load.step.node.addrs == undefined));
     }
 
-
 }

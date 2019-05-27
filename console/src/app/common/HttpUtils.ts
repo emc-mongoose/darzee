@@ -26,10 +26,10 @@ export class HttpUtils {
         const emptyString = "";
         const portNumberAndKeywordDelimiter = ":";
         const remaningAddressWithoutKeywords = ipAddress.replace(localhostKeyword + portNumberAndKeywordDelimiter, emptyString);
-        
-        const maximumAmountOfDigitsInPort = 5; 
-        if (remaningAddressWithoutKeywords.length >= maximumAmountOfDigitsInPort) { 
-            return false; 
+
+        const maximumAmountOfDigitsInPort = 5;
+        if (remaningAddressWithoutKeywords.length >= maximumAmountOfDigitsInPort) {
+            return false;
         }
 
         const portNumber = Number(remaningAddressWithoutKeywords);
