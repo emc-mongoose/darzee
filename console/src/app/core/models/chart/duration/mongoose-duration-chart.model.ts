@@ -41,6 +41,8 @@ export class MongooseDurationChart implements MongooseChart {
         durationChartDataset.push(maxDurationChartDatasetInitialValue);
 
         this.chartData = durationChartDataset;
+
+        this.configureChartOptions();
     }
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
@@ -106,4 +108,14 @@ export class MongooseDurationChart implements MongooseChart {
         return ((this.chartLabels.length >= maxAmountOfPointsInGraph) && this.shouldShiftChart);
     }
 
+    private configureChartOptions() { 
+        const redColorRgb: string = "rgb(255, 0, 0)";
+        this.chartData[this.MAX_DURATION_DATASET_INDEX].setChartColor(redColorRgb);
+
+        const yellowColorRgb: string = "rgba(247, 202, 24, 1)";
+        this.chartData[this.MEAN_DURATION_DATASET_INDEX].setChartColor(yellowColorRgb);
+
+        const greenColorRgb: string = "rgb(46, 204, 113)";
+        this.chartData[this.MIN_DURATION_DATASET_INDEX].setChartColor(greenColorRgb);
+    }
 }
