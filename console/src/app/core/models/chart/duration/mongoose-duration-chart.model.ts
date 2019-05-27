@@ -8,7 +8,9 @@ import { InternalMetricNames } from "../internal-metric-names";
 
 export class MongooseDurationChart implements MongooseChart {
 
-    private readonly DURATION_DATASET_INDEX = 0;
+    private readonly MEAN_DURATION_DATASET_INDEX = 0;
+    private readonly MIN_DURATION_DATASET_INDEX = 1;
+    private readonly MAX_DURATION_DATASET_INDEX = 2;
 
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
@@ -43,7 +45,7 @@ export class MongooseDurationChart implements MongooseChart {
         metrics.forEach(durationMetric => {
             const metricName = durationMetric.getName(); 
             switch (metricName) { 
-                case (InternalMetricNames.DURATION): { 
+                case (InternalMetricNames.MEAN_DURATION): { 
                     meanDurationMetrics.push(durationMetric.getValue());
                     break;
                 }
@@ -52,7 +54,7 @@ export class MongooseDurationChart implements MongooseChart {
             updatedLabels.push(formatDate(Math.round(durationMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
         });
         this.chartLabels = updatedLabels;
-        this.chartData[this.DURATION_DATASET_INDEX].setChartData(meanDurationMetrics);
+        this.chartData[this.MEAN_DURATION_DATASET_INDEX].setChartData(meanDurationMetrics);
     }
 
     public shouldDrawChart(): boolean {

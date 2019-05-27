@@ -67,9 +67,7 @@ export class RunStatisticsChartsComponent implements OnInit {
         console.error(recordNotFoundError);
         this.router.navigate([RoutesList.RUNS]);
       }
-    }))
-
-
+    }));
   }
 
   ngOnDestroy() {

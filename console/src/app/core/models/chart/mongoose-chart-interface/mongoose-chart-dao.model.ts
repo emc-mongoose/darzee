@@ -16,7 +16,7 @@ export class MongooseChartDao {
         return this.chartDataProvider.getDuration(periodInSeconds, loadStepId).pipe(
             map((durationMetrics: MongooseMetric[]) => {
                 durationMetrics.forEach(metric => {
-                    metric.setName(InternalMetricNames.DURATION);
+                    metric.setName(InternalMetricNames.MEAN_DURATION);
                 });
                 return durationMetrics;
             })

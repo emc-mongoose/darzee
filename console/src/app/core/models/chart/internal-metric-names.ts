@@ -5,7 +5,7 @@ export class InternalMetricNames {
     static readonly LATENCY_MAX = "latency_max";
     static readonly LATENCY_MIN = "latency_min";    
 
-    static readonly DURATION = "duration";
+    static readonly MEAN_DURATION = "mean_duration";
     static readonly BANDWIDTH = "bandwidth";
     static readonly FAILED_OPERATIONS = "failed_operations";
     static readonly SUCCESSFUL_OPERATIONS = "successful_operations";
