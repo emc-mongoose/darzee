@@ -82,14 +82,6 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   }
 
   public getDuration(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
-    return this.runQuery(`${this.MEAN_DURATION_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
-      map(rawDurationResponse => {
-        return this.prometheusResponseParser.getMongooseMetricsArray(rawDurationResponse);
-      })
-    );
-  }
-
-  public getDurationValuesArray(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
     let metricName = this.MEAN_DURATION_METRIC_NAME; 
     switch (metricValueType) { 
       case (MetricValueType.MEAN): { 
