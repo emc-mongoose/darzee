@@ -8,6 +8,11 @@ export class MongooseChartOptions {
     public animation: any = {
         duration: 0
     }
+    public scales: any = {
+        yAxes: [{
+            type: 'logarithmic'
+        }]
+    }
 
     constructor(shouldScaleShowVerticalLines: boolean = false, isResponsive: boolean = true) {
         this.scaleShowVerticalLines = shouldScaleShowVerticalLines;
