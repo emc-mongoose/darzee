@@ -114,7 +114,7 @@ export class MongooseDurationChart implements MongooseChart {
         const greenColorRgb: string = "rgb(46, 204, 113)";
         this.chartData[this.MIN_DURATION_DATASET_INDEX].setChartColor(greenColorRgb);
 
-        let chartTitle: string = "Mongoose's operations duration";
+        let chartTitle: string = "Mongoose's operations duration, seconds";
         this.chartOptions.setChartTitle(chartTitle);
     }
 }
