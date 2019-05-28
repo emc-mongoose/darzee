@@ -53,10 +53,8 @@ export class MongooseChartsRepository {
     }
 
     private createMongooseDurationChart(): MongooseDurationChart {
-        let options: MongooseChartOptions = new MongooseChartOptions();
-        const yAxisType = MongooseChartOptions.LOGARITHMIC_CHART_TYPE;
-        options.setAxisChartType(yAxisType, MongooseChartAxesType.Y);
-        return new MongooseDurationChart(options, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
+        let durationChartOptions: MongooseChartOptions = this.getLogarithmicOptionsForChart();
+        return new MongooseDurationChart(durationChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
     }
 
     private createMongooseLatencyChart(): MongooseLatencyChart {
@@ -68,6 +66,17 @@ export class MongooseChartsRepository {
     }
 
     private createMongooseBandwidthChart(): MongooseBandwidthChart {
-        return new MongooseBandwidthChart(this.BASIC_MONGOOSE_CHART_OPTIONS, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
+        let bandwidthChartOptions: MongooseChartOptions = this.getLogarithmicOptionsForChart();
+        return new MongooseBandwidthChart(bandwidthChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
+    }
+
+    /**
+     * @returns MongooseChartOptions with logarithmic scaling on Y axes.
+     */
+    private getLogarithmicOptionsForChart(): MongooseChartOptions { 
+        let options: MongooseChartOptions = new MongooseChartOptions();
+        const yAxisType = MongooseChartOptions.LOGARITHMIC_CHART_TYPE;
+        options.setAxisChartType(yAxisType, MongooseChartAxesType.Y);
+        return options; 
     }
 }
