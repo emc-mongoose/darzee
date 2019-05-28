@@ -39,8 +39,6 @@ export class MongooseThroughputChart implements MongooseChart {
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
 
-
-        console.log(`Throughtput array: ${JSON.stringify(metrics)}`)
         let successfulOperationsMetricName = InternalMetricNames.SUCCESSFUL_OPERATIONS;
         let failedOperationsMetricName = InternalMetricNames.FAILED_OPERATIONS;
 
@@ -64,11 +62,6 @@ export class MongooseThroughputChart implements MongooseChart {
         this.chartLabels = throughtputChartTimestamps; 
         this.chartData[this.SUCCESSFUL_OPERATIONS_DATASET_INDEX].setChartData(successfulOperationsMetrics);
         this.chartData[this.FAILED_OPERATIONS_DATASET_INDEX].setChartData(failedOperationsMetrics);
-        // if (this.shouldShift()) {
-        //     this.chartData[this.SUCCESSFUL_OPERATIONS_DATASET_INDEX].data.shift();
-        //     this.chartData[this.FAILED_OPERATIONS_DATASET_INDEX].data.shift();
-        //     this.chartLabels.shift();
-        // }
 
     }
 

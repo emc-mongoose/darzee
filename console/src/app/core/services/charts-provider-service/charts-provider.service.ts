@@ -50,8 +50,6 @@ export class ChartsProviderService {
 
   public updateCharts(perdiodOfLatencyUpdateSeconds: number, loadStepId: string) {
     this.updateDurationChart(perdiodOfLatencyUpdateSeconds, loadStepId);
-
-
     this.updateLatencyChart(perdiodOfLatencyUpdateSeconds, loadStepId);
     this.updateBandwidthChart(perdiodOfLatencyUpdateSeconds, loadStepId);
     this.updateThoughputChart(perdiodOfLatencyUpdateSeconds, loadStepId);
@@ -100,7 +98,6 @@ export class ChartsProviderService {
   private updateThoughputChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
     this.mongooseChartDao.getAmountOfSuccessfulOperations(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((sucessfulOperationsMetrics: MongooseMetric[]) => {
       this.mongooseChartDao.getAmountOfFailedOperations(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((failedOperationsMetrics: MongooseMetric[]) => {
-        console.log(`failedOperationsMetrics length: ${failedOperationsMetrics.length}`)
         let concatenatedThoughtputRelatedMetrics = sucessfulOperationsMetrics.concat(failedOperationsMetrics);
         this.throughputChart.updateChart(loadStepId, concatenatedThoughtputRelatedMetrics);
       })
