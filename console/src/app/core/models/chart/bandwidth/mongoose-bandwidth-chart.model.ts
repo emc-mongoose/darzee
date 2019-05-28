@@ -9,7 +9,7 @@ import { InternalMetricNames } from "../internal-metric-names";
 export class MongooseBandwidthChart implements MongooseChart {
 
     private readonly MEAN_BANDWIDTH_DATASET_INDEX = 0;
-    private readonly LAST_BANDWIDTH_DATASET_INDEX = 0;
+    private readonly LAST_BANDWIDTH_DATASET_INDEX = 1;
 
 
     chartOptions: MongooseChartOptions;
@@ -43,22 +43,25 @@ export class MongooseBandwidthChart implements MongooseChart {
             console.log(`[bandwidth] metric: ${JSON.stringify(metric)}`)
             const metricName = metric.getName();
             let metricValue = metric.getValue();
-            switch (metricName) { 
-                case (InternalMetricNames.BANDWIDTH_LAST): { 
+
+            switch (metricName) {
+                case (InternalMetricNames.BANDWIDTH_LAST): {
                     lastBandwidthChartValues.push(metricValue);
                     break;
                 }
-                case (InternalMetricNames.BANDWIDTH_MEAN): { 
+                case (InternalMetricNames.BANDWIDTH_MEAN): {
                     meanBandwidthChartValues.push(metricValue);
                     bandwidthChartTimeLabels.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
+
+                    break;
                 }
-                default: { 
-                    console.error(`Unable to found matching internal name for bandwidth metric ${metricName}`);
+                default: {
+                    console.error(`Unable to find matching internal name for bandwidth metric ${metricName}`);
                     return;
                 }
-            }            
-        });
+            }
 
+        });
         this.chartData[this.MEAN_BANDWIDTH_DATASET_INDEX].setChartData(meanBandwidthChartValues);
         this.chartData[this.LAST_BANDWIDTH_DATASET_INDEX].setChartData(lastBandwidthChartValues);
 
