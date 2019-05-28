@@ -20,7 +20,6 @@ export class HttpUtils {
         if (!hasLocalhostKeyword) {
             console.error(`${ipAddress} doesn't contain any key words and will be trated as an IP address to be checked.`)
             let ipValidationRegex: RegExp = new RegExp(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
-            console.log(`But is it valid? ${ipValidationRegex.test(ipAddress)}`)
             return ipValidationRegex.test(ipAddress);
         }
         const emptyString = "";

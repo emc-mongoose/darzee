@@ -6,9 +6,13 @@ import { MongooseMetric } from "../mongoose-metric.model";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
 import { InternalMetricNames } from "../internal-metric-names";
 
+/**
+ * Bandwidth chart for BasicChart component.
+ */
 export class MongooseBandwidthChart implements MongooseChart {
 
-    private readonly BANDWIDTH_DATASET_INDEX = 0;
+    private readonly MEAN_BANDWIDTH_DATASET_INDEX = 0;
+    private readonly LAST_BANDWIDTH_DATASET_INDEX = 1;
 
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
@@ -28,26 +32,43 @@ export class MongooseBandwidthChart implements MongooseChart {
         this.isChartDataValid = true;
         this.shouldShiftChart = shouldShiftChart;
 
-        let bandwidthDataset = new MongooseChartDataset([], 'Byte per second');
-        this.chartData = [bandwidthDataset];
+        let meanBandwidthDataset = new MongooseChartDataset([], 'Byte per second, mean');
+        let lastBandwidthDataset = new MongooseChartDataset([], 'Byte per second, last');
+        this.chartData = [meanBandwidthDataset, lastBandwidthDataset];
+        this.configureChartOptions();
     }
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
-        let bandwidthMetricName = InternalMetricNames.BANDWIDTH;
-        var bandwidthChartValues: string[] = [];
+        var meanBandwidthChartValues: string[] = [];
+        var lastBandwidthChartValues: string[] = [];
         var bandwidthChartTimeLabels: string[] = []
         metrics.forEach((metric: MongooseMetric) => {
-            if (metric.getName() != bandwidthMetricName) {
-                return;
-            }
-            bandwidthChartValues.push(metric.getValue());
-            bandwidthChartTimeLabels.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
-        });
+            const metricName = metric.getName();
+            let metricValue = metric.getValue();
 
-        this.chartData[this.BANDWIDTH_DATASET_INDEX].setChartData(bandwidthChartValues);
+            switch (metricName) {
+                case (InternalMetricNames.BANDWIDTH_LAST): {
+                    lastBandwidthChartValues.push(metricValue);
+                    break;
+                }
+                case (InternalMetricNames.BANDWIDTH_MEAN): {
+                    meanBandwidthChartValues.push(metricValue);
+                    bandwidthChartTimeLabels.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
+
+                    break;
+                }
+                default: {
+                    console.error(`Unable to find matching internal name for bandwidth metric ${metricName}`);
+                    return;
+                }
+            }
+
+        });
+        this.chartData[this.MEAN_BANDWIDTH_DATASET_INDEX].setChartData(meanBandwidthChartValues);
+        this.chartData[this.LAST_BANDWIDTH_DATASET_INDEX].setChartData(lastBandwidthChartValues);
+
         this.chartLabels = bandwidthChartTimeLabels;
     }
-
 
     shouldDrawChart(): boolean {
         return this.isChartDataValid;
@@ -56,6 +77,14 @@ export class MongooseBandwidthChart implements MongooseChart {
     private shouldScaleChart(): boolean {
         const maxAmountOfPointsInGraph = 20;
         return (this.chartLabels.length >= maxAmountOfPointsInGraph);
+    }
+
+    private configureChartOptions() {
+        const mediumBlueColorRgb: string = "rgb(0,0,205)";
+        this.chartData[this.LAST_BANDWIDTH_DATASET_INDEX].setChartColor(mediumBlueColorRgb);
+
+        let chartTitle: string = `Amount of bytes processed by Mongoose, bytes per second`;
+        this.chartOptions.setChartTitle(chartTitle);
     }
 
 }
