@@ -44,6 +44,8 @@ export class MongooseThroughputChart implements MongooseChart {
         let failedOperationsLastDataset = new MongooseChartDataset([], 'Failed operations, mean');
 
         this.chartData = [successfulOperationsMeanDataset, successfulOperationsLastDataset, failedOperationsMeanDataset, failedOperationsLastDataset];
+
+        this.configureChartOptions();
     }
 
     /**
@@ -138,4 +140,20 @@ export class MongooseThroughputChart implements MongooseChart {
         this.chartData[relatedChartIndex].setChartData(metricValues);
     }
 
+    private configureChartOptions() { 
+        const lightGreenColorRgb: string = "rgb(21, 171, 16)";
+        this.chartData[this.SUCCESSFUL_OPERATIONS_LAST_DATASET_INDEX].setChartColor(lightGreenColorRgb);
+
+        const greenColorRgb: string = "rgb(0, 71, 0)";
+        this.chartData[this.SUCCESSFUL_OPERATIONS_MEAN_DATASET_INDEX].setChartColor(greenColorRgb);
+
+        const lightRedColorRgb: string = "rgb(240, 0, 0)";
+        this.chartData[this.FAILED_OPERATIONS_LAST_DATASET_INDEX].setChartColor(lightRedColorRgb);
+
+        const darkRedColorRgb: string = "rgb(103, 0, 0)";
+        this.chartData[this.FAILED_OPERATIONS_MEAN_DATASET_INDEX].setChartColor(darkRedColorRgb);
+
+
+      }
+    
 }

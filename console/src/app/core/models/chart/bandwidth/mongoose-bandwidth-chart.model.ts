@@ -41,7 +41,6 @@ export class MongooseBandwidthChart implements MongooseChart {
         var lastBandwidthChartValues: string[] = [];
         var bandwidthChartTimeLabels: string[] = []
         metrics.forEach((metric: MongooseMetric) => {
-            console.log(`[bandwidth] metric: ${JSON.stringify(metric)}`)
             const metricName = metric.getName();
             let metricValue = metric.getValue();
 
