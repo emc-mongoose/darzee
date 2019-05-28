@@ -6,6 +6,9 @@ import { formatDate } from "@angular/common";
 import { MongooseMetric } from "../mongoose-metric.model";
 import { InternalMetricNames } from "../internal-metric-names";
 
+/**
+ * Latency chart for BasicChart component.
+ */
 export class MongooseDurationChart implements MongooseChart {
 
     private readonly MEAN_DURATION_DATASET_INDEX = 0;

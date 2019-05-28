@@ -5,6 +5,10 @@ import { MongooseThroughputChart } from "./throughput/mongoose-throughput-chart.
 import { MongooseBandwidthChart } from "./bandwidth/mongoose-bandwidth-chart.model";
 import { MongooseChartDao } from "./mongoose-chart-interface/mongoose-chart-dao.model";
 
+/**
+ * Repository of different Mongoose metrics charts. 
+ * Every chart is compatible with BasicChart component.
+ */
 export class MongooseChartsRepository {
 
     private readonly BASIC_MONGOOSE_CHART_OPTIONS: MongooseChartOptions = new MongooseChartOptions();
@@ -12,7 +16,6 @@ export class MongooseChartsRepository {
     private readonly BASIC_MONGOOSE_CHART_TYPE: string = "line";
     // NOTE: determining whether the legend should be shown or not (depends on the boolean value)
     private readonly BASIC_MONGOOSE_CHART_LEGEND_MODE: boolean = true;
-
 
     private mongooseChartDao: MongooseChartDao;
 
@@ -73,10 +76,10 @@ export class MongooseChartsRepository {
     /**
      * @returns MongooseChartOptions with logarithmic scaling on Y axes.
      */
-    private getLogarithmicOptionsForChart(): MongooseChartOptions { 
+    private getLogarithmicOptionsForChart(): MongooseChartOptions {
         let options: MongooseChartOptions = new MongooseChartOptions();
         const yAxisType = MongooseChartOptions.LOGARITHMIC_CHART_TYPE;
         options.setAxisChartType(yAxisType, MongooseChartAxesType.Y);
-        return options; 
+        return options;
     }
 }

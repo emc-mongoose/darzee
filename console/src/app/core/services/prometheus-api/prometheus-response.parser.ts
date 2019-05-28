@@ -1,5 +1,8 @@
 import { MongooseMetric } from "../../models/chart/mongoose-metric.model";
 
+/**
+ * Parses Prometheus' response on PromQL queries.
+ */
 export class PrometheusResponseParser {
 
     constructor() { }

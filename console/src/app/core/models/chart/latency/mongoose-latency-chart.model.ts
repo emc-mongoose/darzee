@@ -6,13 +6,14 @@ import { MongooseMetric } from "../mongoose-metric.model";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
 import { InternalMetricNames } from "../internal-metric-names";
 
-
+/**
+ * Latency chart for BasicChart component.
+ */
 export class MongooseLatencyChart implements MongooseChart {
 
     private readonly MAX_LATENCY_DATASET_INDEX = 0;
     private readonly MIN_LATENCY_DATASET_INDEX = 1;
     private readonly MEAN_LATENCY_DATASET_INDEX = 2;
-
 
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
@@ -78,7 +79,6 @@ export class MongooseLatencyChart implements MongooseChart {
         this.chartData[this.MEAN_LATENCY_DATASET_INDEX].setChartData(maxLatencyMetricValues);
     }
 
-
     shouldDrawChart(): boolean {
         return this.isChartDataValid;
     }
@@ -88,7 +88,7 @@ export class MongooseLatencyChart implements MongooseChart {
         return (this.chartLabels.length >= maxAmountOfPointsInGraph);
     }
 
-    private configureChartOptions() { 
+    private configureChartOptions() {
         const redColorRgb: string = MongooseChartDataset.MAX_CHART_DEFAULT_LINE_COLOR_RGB;
         this.chartData[this.MAX_LATENCY_DATASET_INDEX].setChartColor(redColorRgb);
 

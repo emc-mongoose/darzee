@@ -11,7 +11,6 @@ export class InternalMetricNames {
     static readonly MIN_DURATION = "min_duration";
     static readonly MAX_DURATION = "max_duration";
 
-
     static readonly BANDWIDTH_MEAN = "bandwidth_mean";
     static readonly BANDWIDTH_LAST = "bandwidth_last";
 

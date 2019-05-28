@@ -6,6 +6,10 @@ import { InternalMetricNames } from '../internal-metric-names';
 import { MetricValueType } from './metric-value-type';
 import { NumbericMetricValueType } from './numeric-metric-value-type';
 
+/**
+ * Data access object for Mongoose charts' related data. 
+ * It retrieves data from @interface MongooseChartDataProvider .
+ */
 export class MongooseChartDao {
 
     private chartDataProvider: MongooseChartDataProvider;
@@ -19,16 +23,16 @@ export class MongooseChartDao {
             map((durationMetrics: MongooseMetric[]) => {
                 durationMetrics.forEach(metric => {
                     let internalMetricName = InternalMetricNames.MEAN_DURATION;
-                    switch (metricValueType) { 
-                        case (MetricValueType.MAX): { 
+                    switch (metricValueType) {
+                        case (MetricValueType.MAX): {
                             internalMetricName = InternalMetricNames.MAX_DURATION;
                             break;
                         }
-                        case (MetricValueType.MIN): { 
+                        case (MetricValueType.MIN): {
                             internalMetricName = InternalMetricNames.MIN_DURATION;
                             break;
                         }
-                        case (MetricValueType.MEAN): { 
+                        case (MetricValueType.MEAN): {
                             internalMetricName = InternalMetricNames.MEAN_DURATION;
                             break;
                         }
@@ -44,23 +48,23 @@ export class MongooseChartDao {
         return this.chartDataProvider.getLatency(periodInSeconds, loadStepId, metricValueType).pipe(
             map((metrics: MongooseMetric[]) => {
                 let internalMetricName = InternalMetricNames.LATENCY_MEAN;
-                    switch (metricValueType) { 
-                        case (MetricValueType.MAX): { 
-                            internalMetricName = InternalMetricNames.LATENCY_MAX;
-                            break;
-                        }
-                        case (MetricValueType.MIN): { 
-                            internalMetricName = InternalMetricNames.LATENCY_MIN;
-                            break;
-                        }
-                        case (MetricValueType.MEAN): { 
-                            internalMetricName = InternalMetricNames.LATENCY_MEAN;
-                            break;
-                        }
-                        default: { 
-                            throw new Error(`Internal metric name for metric type ${metricValueType} hasn't been found for latency.`)
-                        }
+                switch (metricValueType) {
+                    case (MetricValueType.MAX): {
+                        internalMetricName = InternalMetricNames.LATENCY_MAX;
+                        break;
                     }
+                    case (MetricValueType.MIN): {
+                        internalMetricName = InternalMetricNames.LATENCY_MIN;
+                        break;
+                    }
+                    case (MetricValueType.MEAN): {
+                        internalMetricName = InternalMetricNames.LATENCY_MEAN;
+                        break;
+                    }
+                    default: {
+                        throw new Error(`Internal metric name for metric type ${metricValueType} hasn't been found for latency.`)
+                    }
+                }
                 metrics.forEach(metric => {
                     metric.setName(internalMetricName);
                 });
@@ -79,16 +83,16 @@ export class MongooseChartDao {
         return this.chartDataProvider.getBandWidth(periodInSeconds, loadStepId, numericMetricValueType).pipe(
             map((metrics: MongooseMetric[]) => {
                 var internalMetricName: string = undefined;
-                switch (numericMetricValueType) { 
-                    case (NumbericMetricValueType.LAST): { 
+                switch (numericMetricValueType) {
+                    case (NumbericMetricValueType.LAST): {
                         internalMetricName = InternalMetricNames.BANDWIDTH_LAST;
                         break;
                     }
-                    case (NumbericMetricValueType.MEAN): { 
+                    case (NumbericMetricValueType.MEAN): {
                         internalMetricName = InternalMetricNames.BANDWIDTH_MEAN;
                         break;
                     }
-                    default: { 
+                    default: {
                         throw new Error(`Internal metric name for numeric metric type ${numericMetricValueType} hasn't been found for bandwidth.`)
                     }
                 }
@@ -100,26 +104,26 @@ export class MongooseChartDao {
         );
     }
 
-     /**
-     * Provides metric from data provider. 
-     * Data provider should impliment @interface MongooseChartDataProvider
-     * @param numericMetricValueType for bandwidth can be LAST (mean the last gathered) or MEAN (mean value).
-     * @returns observable array of failed operation metrics matched to requested parameters.
-     */
+    /**
+    * Provides metric from data provider. 
+    * Data provider should impliment @interface MongooseChartDataProvider
+    * @param numericMetricValueType for bandwidth can be LAST (mean the last gathered) or MEAN (mean value).
+    * @returns observable array of failed operation metrics matched to requested parameters.
+    */
     public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId, numericMetricValueType).pipe(
             map((metrics: MongooseMetric[]) => {
                 var internalMetricName: string = undefined;
-                switch (numericMetricValueType) { 
-                    case (NumbericMetricValueType.LAST): { 
+                switch (numericMetricValueType) {
+                    case (NumbericMetricValueType.LAST): {
                         internalMetricName = InternalMetricNames.FAILED_OPERATIONS_LAST;
                         break;
                     }
-                    case (NumbericMetricValueType.MEAN): { 
+                    case (NumbericMetricValueType.MEAN): {
                         internalMetricName = InternalMetricNames.FAILED_OPERATIONS_MEAN;
                         break;
                     }
-                    default: { 
+                    default: {
                         throw new Error(`Internal metric name for numeric metric type ${numericMetricValueType} hasn't been found for failed operations.`)
                     }
                 }
@@ -131,26 +135,26 @@ export class MongooseChartDao {
         );
     }
 
-     /**
-     * Provides metric from data provider. 
-     * Data provider should impliment @interface MongooseChartDataProvider
-     * @param numericMetricValueType for bandwidth can be LAST (mean the last gathered) or MEAN (mean value).
-     * @returns observable array of successful operations metrics matched to requested parameters.
-     */
+    /**
+    * Provides metric from data provider. 
+    * Data provider should impliment @interface MongooseChartDataProvider
+    * @param numericMetricValueType for bandwidth can be LAST (mean the last gathered) or MEAN (mean value).
+    * @returns observable array of successful operations metrics matched to requested parameters.
+    */
     public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getAmountOfSuccessfulOperations(periodInSeconds, loadStepId, numericMetricValueType).pipe(
             map((metrics: MongooseMetric[]) => {
                 var internalMetricName: string = undefined;
-                switch (numericMetricValueType) { 
-                    case (NumbericMetricValueType.LAST): { 
+                switch (numericMetricValueType) {
+                    case (NumbericMetricValueType.LAST): {
                         internalMetricName = InternalMetricNames.SUCCESSFUL_OPERATIONS_LAST;
                         break;
                     }
-                    case (NumbericMetricValueType.MEAN): { 
+                    case (NumbericMetricValueType.MEAN): {
                         internalMetricName = InternalMetricNames.SUCCESSFUL_OPERATIONS_MEAN;
                         break;
                     }
-                    default: { 
+                    default: {
                         throw new Error(`Internal metric name for numeric metric type ${numericMetricValueType} hasn't been found for successful operations.`)
                     }
                 }

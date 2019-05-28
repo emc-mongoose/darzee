@@ -5,18 +5,17 @@ import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao
 import { formatDate } from "@angular/common";
 import { MongooseMetric } from "../mongoose-metric.model";
 import { InternalMetricNames } from "../internal-metric-names";
-import { MongooseMetrics } from "src/app/core/services/mongoose-api-models/MongooseMetrics";
-import { NumbericMetricValueType } from "../mongoose-chart-interface/numeric-metric-value-type";
 
+/**
+ * Throughtput chart for BasicChart component.
+ */
 export class MongooseThroughputChart implements MongooseChart {
-
 
     private readonly SUCCESSFUL_OPERATIONS_MEAN_DATASET_INDEX = 0;
     private readonly SUCCESSFUL_OPERATIONS_LAST_DATASET_INDEX = 1;
 
     private readonly FAILED_OPERATIONS_MEAN_DATASET_INDEX = 2;
     private readonly FAILED_OPERATIONS_LAST_DATASET_INDEX = 3;
-
 
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
@@ -35,7 +34,7 @@ export class MongooseThroughputChart implements MongooseChart {
         this.chartLegend = chartLegend;
         this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
-        this.shouldShiftChart = shouldShiftChart; 
+        this.shouldShiftChart = shouldShiftChart;
 
         let successfulOperationsMeanDataset = new MongooseChartDataset([], 'Successful operations, mean');
         let successfulOperationsLastDataset = new MongooseChartDataset([], 'Successful operations, last');
@@ -56,41 +55,41 @@ export class MongooseThroughputChart implements MongooseChart {
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
         var throughtputChartTimestamps: string[] = [];
 
-        var failedOperationsMetricsMean: string[] = []; 
-        var failedOperationsMetricsLast: string[] = []; 
+        var failedOperationsMetricsMean: string[] = [];
+        var failedOperationsMetricsLast: string[] = [];
 
         var successfulOperationsMetricsMean: string[] = [];
         var successfulOperationsMetricsLast: string[] = [];
 
-        metrics.forEach((metric: MongooseMetric) => { 
+        metrics.forEach((metric: MongooseMetric) => {
             const metricValue = metric.getValue();
             const metricName = metric.getName();
 
-            switch(metricName) { 
-                case InternalMetricNames.SUCCESSFUL_OPERATIONS_MEAN: { 
+            switch (metricName) {
+                case InternalMetricNames.SUCCESSFUL_OPERATIONS_MEAN: {
                     successfulOperationsMetricsMean.push(metricValue);
                     throughtputChartTimestamps.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
                     break;
                 }
-                case InternalMetricNames.SUCCESSFUL_OPERATIONS_LAST: { 
+                case InternalMetricNames.SUCCESSFUL_OPERATIONS_LAST: {
                     successfulOperationsMetricsLast.push(metricValue);
                     break;
                 }
-                case InternalMetricNames.FAILED_OPERATIONS_MEAN: { 
+                case InternalMetricNames.FAILED_OPERATIONS_MEAN: {
                     failedOperationsMetricsMean.push(metricValue);
                     break;
                 }
-                case InternalMetricNames.FAILED_OPERATIONS_LAST: { 
+                case InternalMetricNames.FAILED_OPERATIONS_LAST: {
                     failedOperationsMetricsLast.push(metricValue);
                     break;
                 }
-                default: { 
+                default: {
                     console.error(`Internal metricname hasn't been found for metric ${metricName}`);
                     break;
                 }
             }
         })
-        this.chartLabels = throughtputChartTimestamps; 
+        this.chartLabels = throughtputChartTimestamps;
 
         this.updateChartData(successfulOperationsMetricsMean, InternalMetricNames.SUCCESSFUL_OPERATIONS_MEAN);
         this.updateChartData(successfulOperationsMetricsLast, InternalMetricNames.SUCCESSFUL_OPERATIONS_LAST);
@@ -113,26 +112,26 @@ export class MongooseThroughputChart implements MongooseChart {
      * 
      * @param numericMetricValueType - MEAN or LAST successful / faield operations amount.
      */
-    private updateChartData(metricValues: string[], metricName: string) { 
-        let relatedChartIndex: number = undefined; 
-        switch(metricName) { 
-            case InternalMetricNames.SUCCESSFUL_OPERATIONS_MEAN: { 
+    private updateChartData(metricValues: string[], metricName: string) {
+        let relatedChartIndex: number = undefined;
+        switch (metricName) {
+            case InternalMetricNames.SUCCESSFUL_OPERATIONS_MEAN: {
                 relatedChartIndex = this.SUCCESSFUL_OPERATIONS_MEAN_DATASET_INDEX;
                 break;
             }
-            case InternalMetricNames.SUCCESSFUL_OPERATIONS_LAST: { 
+            case InternalMetricNames.SUCCESSFUL_OPERATIONS_LAST: {
                 relatedChartIndex = this.SUCCESSFUL_OPERATIONS_LAST_DATASET_INDEX;
                 break;
             }
-            case InternalMetricNames.FAILED_OPERATIONS_MEAN: { 
+            case InternalMetricNames.FAILED_OPERATIONS_MEAN: {
                 relatedChartIndex = this.FAILED_OPERATIONS_MEAN_DATASET_INDEX;
                 break;
             }
-            case InternalMetricNames.FAILED_OPERATIONS_LAST: { 
+            case InternalMetricNames.FAILED_OPERATIONS_LAST: {
                 relatedChartIndex = this.FAILED_OPERATIONS_LAST_DATASET_INDEX;
                 break;
             }
-            default: { 
+            default: {
                 console.error(`Unable to find chart index for thoughtput metric ${metricName}`);
                 break;
             }
@@ -140,7 +139,7 @@ export class MongooseThroughputChart implements MongooseChart {
         this.chartData[relatedChartIndex].setChartData(metricValues);
     }
 
-    private configureChartOptions() { 
+    private configureChartOptions() {
         const lightGreenColorRgb: string = "rgb(21, 171, 16)";
         this.chartData[this.SUCCESSFUL_OPERATIONS_LAST_DATASET_INDEX].setChartColor(lightGreenColorRgb);
 
@@ -152,8 +151,6 @@ export class MongooseThroughputChart implements MongooseChart {
 
         const darkRedColorRgb: string = "rgb(103, 0, 0)";
         this.chartData[this.FAILED_OPERATIONS_MEAN_DATASET_INDEX].setChartColor(darkRedColorRgb);
+    }
 
-
-      }
-    
 }

@@ -23,11 +23,10 @@ export class MongooseChartOptions {
         }]
     }
 
-    public title: any =  {
+    public title: any = {
         display: true,
         text: ''
     }
-
 
     constructor(shouldScaleShowVerticalLines: boolean = false, isResponsive: boolean = true) {
         this.scaleShowVerticalLines = shouldScaleShowVerticalLines;
@@ -49,15 +48,14 @@ export class MongooseChartOptions {
                 throw new Error(`requested axis "${axis}" hasn't been found.`);
             }
         }
-
     }
 
     /**
      * Title will be displayed above the chart.
      * @param title a title of chart. 
      */
-    public setChartTitle(title: string) { 
-        this.title.text = title; 
+    public setChartTitle(title: string) {
+        this.title.text = title;
     }
 }
 

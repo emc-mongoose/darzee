@@ -1,5 +1,9 @@
 import { ChartPoint } from "./chart-point.model";
 
+/**
+ * Class that contains chart options for BasicChart component. 
+ * Options matches ng-chart2 library requirements.
+ */
 export class MongooseChartDataset {
     // NOTE: Fields are public since they should match ng-chart2 library naming 
     // link: https://github.com/valor-software/ng2-charts
@@ -36,12 +40,10 @@ export class MongooseChartDataset {
         }
     }
 
-
     constructor(data: any[], label: string) {
         this.data = data;
         this.label = label;
     }
-
 
     // MARK: - Public 
 

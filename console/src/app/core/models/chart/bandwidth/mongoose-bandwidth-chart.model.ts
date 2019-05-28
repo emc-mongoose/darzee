@@ -11,7 +11,6 @@ export class MongooseBandwidthChart implements MongooseChart {
     private readonly MEAN_BANDWIDTH_DATASET_INDEX = 0;
     private readonly LAST_BANDWIDTH_DATASET_INDEX = 1;
 
-
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
     chartType: string;
@@ -68,7 +67,6 @@ export class MongooseBandwidthChart implements MongooseChart {
         this.chartLabels = bandwidthChartTimeLabels;
     }
 
-
     shouldDrawChart(): boolean {
         return this.isChartDataValid;
     }
@@ -78,10 +76,10 @@ export class MongooseBandwidthChart implements MongooseChart {
         return (this.chartLabels.length >= maxAmountOfPointsInGraph);
     }
 
-    private configureChartOptions() { 
+    private configureChartOptions() {
         const mediumBlueColorRgb: string = "rgb(0,0,205)";
         this.chartData[this.LAST_BANDWIDTH_DATASET_INDEX].setChartColor(mediumBlueColorRgb);
-        
+
         const chartTitle: string = `Amount of bytes processed by Mongoose, bytes per second`;
         this.chartOptions.setChartTitle(chartTitle);
     }
