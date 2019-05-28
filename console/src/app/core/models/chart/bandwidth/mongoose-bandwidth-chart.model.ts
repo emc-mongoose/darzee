@@ -6,6 +6,9 @@ import { MongooseMetric } from "../mongoose-metric.model";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
 import { InternalMetricNames } from "../internal-metric-names";
 
+/**
+ * Bandwidth chart for BasicChart component.
+ */
 export class MongooseBandwidthChart implements MongooseChart {
 
     private readonly MEAN_BANDWIDTH_DATASET_INDEX = 0;
@@ -80,7 +83,7 @@ export class MongooseBandwidthChart implements MongooseChart {
         const mediumBlueColorRgb: string = "rgb(0,0,205)";
         this.chartData[this.LAST_BANDWIDTH_DATASET_INDEX].setChartColor(mediumBlueColorRgb);
 
-        const chartTitle: string = `Amount of bytes processed by Mongoose, bytes per second`;
+        let chartTitle: string = `Amount of bytes processed by Mongoose, bytes per second`;
         this.chartOptions.setChartTitle(chartTitle);
     }
 

@@ -89,7 +89,6 @@ export class NodesComponent implements OnInit {
   }
 
   private isipValid(entredIpAddress: string) {
-    console.log(`Enterd IP Address: ${this.entredIpAddress}`)
     const regExpr = new
       RegExp('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\:([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$');
     entredIpAddress = entredIpAddress.trim();
@@ -109,7 +108,6 @@ export class NodesComponent implements OnInit {
 
     // NOTE: Finding alert by message in alerts array
     let alertIndex = this.getAlertIndex(inactiveNodeAlert);
-    console.log(`alertIndex: ${alertIndex}`)
     let isAlertExist: boolean = (alertIndex >= 0);
 
     if (!isAlertExist) {

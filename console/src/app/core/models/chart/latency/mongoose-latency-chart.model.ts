@@ -98,7 +98,7 @@ export class MongooseLatencyChart implements MongooseChart {
         const greenColorRgb: string = MongooseChartDataset.MIN_CHART_DEFAULT_LINE_COLOR_RGB;
         this.chartData[this.MIN_LATENCY_DATASET_INDEX].setChartColor(greenColorRgb);
 
-        const chartTitle: string = "Mongoose's operations latency";
+        let chartTitle: string = "Mongoose's operations latency, seconds";
         this.chartOptions.setChartTitle(chartTitle);
     }
 

@@ -105,7 +105,6 @@ export class ChartsProviderService {
       for (var byteRateCollection of byteRateMetricCollections) { 
         fetchedByteRateMetrics = fetchedByteRateMetrics.concat(byteRateCollection);
       }
-      console.log(`fetchedByteRateMetrics: ${fetchedByteRateMetrics}`)
       this.bandwidthChart.updateChart(loadStepId, fetchedByteRateMetrics);
     });
   }

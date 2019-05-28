@@ -11,7 +11,6 @@ import { MongooseChartDao } from "./mongoose-chart-interface/mongoose-chart-dao.
  */
 export class MongooseChartsRepository {
 
-    private readonly BASIC_MONGOOSE_CHART_OPTIONS: MongooseChartOptions = new MongooseChartOptions();
     private readonly BASIC_MONGOOSE_CHART_LABELS: string[] = [];
     private readonly BASIC_MONGOOSE_CHART_TYPE: string = "line";
     // NOTE: determining whether the legend should be shown or not (depends on the boolean value)
@@ -61,11 +60,13 @@ export class MongooseChartsRepository {
     }
 
     private createMongooseLatencyChart(): MongooseLatencyChart {
-        return new MongooseLatencyChart(this.BASIC_MONGOOSE_CHART_OPTIONS, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
+        let latencyChartOptions: MongooseChartOptions = new MongooseChartOptions();
+        return new MongooseLatencyChart(latencyChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
     }
 
     private createMongooseThroughtputChart(): MongooseThroughputChart {
-        return new MongooseThroughputChart(this.BASIC_MONGOOSE_CHART_OPTIONS, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
+        let throughtputChartOptions: MongooseChartOptions = new MongooseChartOptions();
+        return new MongooseThroughputChart(throughtputChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
     }
 
     private createMongooseBandwidthChart(): MongooseBandwidthChart {

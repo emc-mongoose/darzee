@@ -59,7 +59,6 @@ export class MongooseDurationChart implements MongooseChart {
         let metricName = InternalMetricNames.MEAN_DURATION;
         metrics.forEach(durationMetric => {
             metricName = durationMetric.getName();
-            console.log(`duration metric name: ${metricName}`);
             let durationMetricValue = durationMetric.getValue();
             switch (metricName) {
                 case (InternalMetricNames.MEAN_DURATION): {
@@ -115,7 +114,7 @@ export class MongooseDurationChart implements MongooseChart {
         const greenColorRgb: string = "rgb(46, 204, 113)";
         this.chartData[this.MIN_DURATION_DATASET_INDEX].setChartColor(greenColorRgb);
 
-        const chartTitle: string = "Mongoose's operations duration";
+        let chartTitle: string = "Mongoose's operations duration";
         this.chartOptions.setChartTitle(chartTitle);
     }
 }

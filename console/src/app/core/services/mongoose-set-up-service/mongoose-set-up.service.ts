@@ -94,7 +94,6 @@ export class MongooseSetUpService {
 
   // NOTE: Adding Mongoose nodes (while node selection)
   public addNode(node: MongooseRunNode) {
-    console.log(`node ${node.getResourceLocation()} will be eventually added.`)
     this.mongooseSetupInfoModel.addRunNode(node);
   }
 

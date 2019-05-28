@@ -151,6 +151,9 @@ export class MongooseThroughputChart implements MongooseChart {
 
         const darkRedColorRgb: string = "rgb(103, 0, 0)";
         this.chartData[this.FAILED_OPERATIONS_MEAN_DATASET_INDEX].setChartColor(darkRedColorRgb);
+    
+        let chartTitle: string = `Amount of operations performed by Mongoose, operations per second`;
+        this.chartOptions.setChartTitle(chartTitle);
     }
 
 }
