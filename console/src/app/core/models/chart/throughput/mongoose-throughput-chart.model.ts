@@ -111,7 +111,7 @@ export class MongooseThroughputChart implements MongooseChart {
      * 
      * @param numericMetricValueType - MEAN or LAST successful / faield operations amount.
      */
-    private updateChartData(metricVakyes: string[], metricName: string) { 
+    private updateChartData(metricValues: string[], metricName: string) { 
         let relatedChartIndex: number = undefined; 
         switch(metricName) { 
             case InternalMetricNames.SUCCESSFUL_OPERATIONS_MEAN: { 
@@ -135,7 +135,7 @@ export class MongooseThroughputChart implements MongooseChart {
                 break;
             }
         }
-        this.chartData[relatedChartIndex].setChartData(metrics);
+        this.chartData[relatedChartIndex].setChartData(metricValues);
     }
 
 }

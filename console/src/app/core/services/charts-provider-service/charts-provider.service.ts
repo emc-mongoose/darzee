@@ -111,12 +111,31 @@ export class ChartsProviderService {
   }
 
   private updateThoughputChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getAmountOfSuccessfulOperations(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((sucessfulOperationsMetrics: MongooseMetric[]) => {
-      this.mongooseChartDao.getAmountOfFailedOperations(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((failedOperationsMetrics: MongooseMetric[]) => {
-        let concatenatedThoughtputRelatedMetrics = sucessfulOperationsMetrics.concat(failedOperationsMetrics);
-        this.throughputChart.updateChart(loadStepId, concatenatedThoughtputRelatedMetrics);
-      })
-    })
+    var thoughtputMetricsPool$: Observable<MongooseMetric[]>[] = [];
+   
+    let meanSuccessfulOperationMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getAmountOfSuccessfulOperations(perdiodOfLatencyUpdateSecs, loadStepId, NumbericMetricValueType.MEAN);
+    thoughtputMetricsPool$.push(meanSuccessfulOperationMetrics$);
+
+    let lastSuccessfulOperationMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getAmountOfSuccessfulOperations(perdiodOfLatencyUpdateSecs, loadStepId, NumbericMetricValueType.LAST);
+    thoughtputMetricsPool$.push(lastSuccessfulOperationMetrics$);
+
+    let meanFailedOperationMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getAmountOfFailedOperations(perdiodOfLatencyUpdateSecs, loadStepId, NumbericMetricValueType.MEAN);
+    thoughtputMetricsPool$.push(meanFailedOperationMetrics$);
+
+    let lastFailedOperationMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getAmountOfFailedOperations(perdiodOfLatencyUpdateSecs, loadStepId, NumbericMetricValueType.LAST);
+    thoughtputMetricsPool$.push(lastFailedOperationMetrics$);
+
+    forkJoin(...thoughtputMetricsPool$).subscribe(
+      (fetchedMetrics: [MongooseMetric[]]) => {
+        let concatenatedMetric: MongooseMetric[] = [];
+
+        for (let metricCollection of fetchedMetrics) { 
+          concatenatedMetric = concatenatedMetric.concat(metricCollection);
+        }
+
+        this.throughputChart.updateChart(loadStepId, concatenatedMetric);
+      }
+    )
   }
 
   private configureMongooseCharts() {
