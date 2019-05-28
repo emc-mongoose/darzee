@@ -8,7 +8,9 @@ import { InternalMetricNames } from "../internal-metric-names";
 
 export class MongooseBandwidthChart implements MongooseChart {
 
-    private readonly BANDWIDTH_DATASET_INDEX = 0;
+    private readonly MEAN_BANDWIDTH_DATASET_INDEX = 0;
+    private readonly LAST_BANDWIDTH_DATASET_INDEX = 0;
+
 
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
@@ -28,23 +30,38 @@ export class MongooseBandwidthChart implements MongooseChart {
         this.isChartDataValid = true;
         this.shouldShiftChart = shouldShiftChart;
 
-        let bandwidthDataset = new MongooseChartDataset([], 'Byte per second');
-        this.chartData = [bandwidthDataset];
+        let meanBandwidthDataset = new MongooseChartDataset([], 'Byte per second, mean');
+        let lastBandwidthDataset = new MongooseChartDataset([], 'Byte per second, last');
+        this.chartData = [meanBandwidthDataset, lastBandwidthDataset];
     }
 
     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
-        let bandwidthMetricName = InternalMetricNames.BANDWIDTH;
-        var bandwidthChartValues: string[] = [];
+        var meanBandwidthChartValues: string[] = [];
+        var lastBandwidthChartValues: string[] = [];
         var bandwidthChartTimeLabels: string[] = []
         metrics.forEach((metric: MongooseMetric) => {
-            if (metric.getName() != bandwidthMetricName) {
-                return;
-            }
-            bandwidthChartValues.push(metric.getValue());
-            bandwidthChartTimeLabels.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
+            console.log(`[bandwidth] metric: ${JSON.stringify(metric)}`)
+            const metricName = metric.getName();
+            let metricValue = metric.getValue();
+            switch (metricName) { 
+                case (InternalMetricNames.BANDWIDTH_LAST): { 
+                    lastBandwidthChartValues.push(metricValue);
+                    break;
+                }
+                case (InternalMetricNames.BANDWIDTH_MEAN): { 
+                    meanBandwidthChartValues.push(metricValue);
+                    bandwidthChartTimeLabels.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
+                }
+                default: { 
+                    console.error(`Unable to found matching internal name for bandwidth metric ${metricName}`);
+                    return;
+                }
+            }            
         });
 
-        this.chartData[this.BANDWIDTH_DATASET_INDEX].setChartData(bandwidthChartValues);
+        this.chartData[this.MEAN_BANDWIDTH_DATASET_INDEX].setChartData(meanBandwidthChartValues);
+        this.chartData[this.LAST_BANDWIDTH_DATASET_INDEX].setChartData(lastBandwidthChartValues);
+
         this.chartLabels = bandwidthChartTimeLabels;
     }
 

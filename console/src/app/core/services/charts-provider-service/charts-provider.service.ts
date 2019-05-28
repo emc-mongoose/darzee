@@ -8,6 +8,8 @@ import { MongooseLatencyChart } from '../../models/chart/latency/mongoose-latenc
 import { MongooseBandwidthChart } from '../../models/chart/bandwidth/mongoose-bandwidth-chart.model';
 import { MongooseThroughputChart } from '../../models/chart/throughput/mongoose-throughput-chart.model';
 import { MetricValueType } from '../../models/chart/mongoose-chart-interface/metric-value-type';
+import { Observable, forkJoin } from 'rxjs';
+import { NumbericMetricValueType } from '../../models/chart/mongoose-chart-interface/numeric-metric-value-type';
 
 
 @Injectable({
@@ -90,8 +92,21 @@ export class ChartsProviderService {
 
 
   private updateBandwidthChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    this.mongooseChartDao.getBandWidth(perdiodOfLatencyUpdateSecs, loadStepId).subscribe((byteRateMean: MongooseMetric[]) => {
-      this.bandwidthChart.updateChart(loadStepId, byteRateMean);
+    let bandwidthMetricPool$: any[] = [];
+    let meanBandwidthMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getBandWidth(perdiodOfLatencyUpdateSecs, loadStepId, NumbericMetricValueType.MEAN); 
+    bandwidthMetricPool$.push(meanBandwidthMetrics$);
+
+    let lastBandwidthMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getBandWidth(perdiodOfLatencyUpdateSecs, loadStepId, NumbericMetricValueType.LAST); 
+    bandwidthMetricPool$.push(lastBandwidthMetrics$);
+
+    forkJoin(...bandwidthMetricPool$).subscribe((byteRateMetricCollections: [MongooseMetric[]]) => {
+      // NOTE: Concatenating fetched metrics because of the updateChart() function specification.
+      let fetchedByteRateMetrics: MongooseMetric[] = [];
+      for (var byteRateCollection of byteRateMetricCollections) { 
+        fetchedByteRateMetrics = fetchedByteRateMetrics.concat(byteRateCollection);
+      }
+      console.log(`fetchedByteRateMetrics: ${fetchedByteRateMetrics}`)
+      this.bandwidthChart.updateChart(loadStepId, fetchedByteRateMetrics);
     });
   }
 

@@ -4,6 +4,7 @@ import { MongooseMetric } from '../mongoose-metric.model';
 import { map } from 'rxjs/operators';
 import { InternalMetricNames } from '../internal-metric-names';
 import { MetricValueType } from './metric-value-type';
+import { NumbericMetricValueType } from './numeric-metric-value-type';
 
 export class MongooseChartDao {
 
@@ -56,6 +57,9 @@ export class MongooseChartDao {
                             internalMetricName = InternalMetricNames.LATENCY_MEAN;
                             break;
                         }
+                        default: { 
+                            throw new Error(`Internal metric name for metric type ${metricValueType} hasn't been found for latency.`)
+                        }
                     }
                 metrics.forEach(metric => {
                     metric.setName(internalMetricName);
@@ -65,12 +69,32 @@ export class MongooseChartDao {
         );
     }
 
-    public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-        return this.chartDataProvider.getBandWidth(periodInSeconds, loadStepId).pipe(
+    /**
+     * Provides metric from data provider. 
+     * Data provider should impliment @interface MongooseChartDataProvider
+     * @param numericMetricValueType for bandwidth can be LAST (mean the last gathered) or MEAN (mean value).
+     * @returns observable array of metrics matched to requested parameters.
+     */
+    public getBandWidth(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
+        return this.chartDataProvider.getBandWidth(periodInSeconds, loadStepId, numericMetricValueType).pipe(
             map((metrics: MongooseMetric[]) => {
+                var internalMetricName: string = undefined;
+                switch (numericMetricValueType) { 
+                    case (NumbericMetricValueType.LAST): { 
+                        internalMetricName = InternalMetricNames.BANDWIDTH_LAST;
+                        break;
+                    }
+                    case (NumbericMetricValueType.MEAN): { 
+                        internalMetricName = InternalMetricNames.BANDWIDTH_MEAN;
+                        break;
+                    }
+                    default: { 
+                        throw new Error(`Internal metric name for numeric metric type ${numericMetricValueType} hasn't been found for bandwidth.`)
+                    }
+                }
                 metrics.forEach(metric => {
-                    metric.setName(InternalMetricNames.BANDWIDTH);
-                })
+                    metric.setName(internalMetricName);
+                });
                 return metrics;
             })
         );

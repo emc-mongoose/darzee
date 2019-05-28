@@ -9,6 +9,7 @@ import { PrometheusResponseParser } from './prometheus-response.parser';
 import { HttpUtils } from 'src/app/common/HttpUtils';
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
 import { MetricValueType } from '../../models/chart/mongoose-chart-interface/metric-value-type';
+import { NumbericMetricValueType } from '../../models/chart/mongoose-chart-interface/numeric-metric-value-type';
 
 
 @Injectable({
@@ -29,9 +30,15 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
 
   private readonly SUCCESS_OPERATIONS_RATE_MEAN_METRIC_NAME = "mongoose_success_op_rate_mean";
+  private readonly SUCCESS_OPERATIONS_RATE_LAST_METRIC_NAME = "mongoose_success_op_rate_last";
+
   private readonly FAILED_OPERATIONS_RATE_MEAN_METRIC_NAME = "mongoose_failed_op_rate_mean";
+  private readonly FAILED_OPERATIONS_RATE_LAST_METRIC_NAME = "mongoose_failed_op_rate_last";
+
 
   private readonly BYTE_RATE_MEAN_METRIC_NAME = "mongoose_byte_rate_mean";
+  private readonly BYTE_RATE_LAST_METRIC_NAME = "mongoose_byte_rate_last";
+
 
 
   // NOTE: Symbols used for queryting Prometheus for value of metric with specific labels. They ...
@@ -97,6 +104,9 @@ export class PrometheusApiService implements MongooseChartDataProvider {
         metricName = this.MIN_DURATION_METRIC_NAME;
         break;
       }
+      default: {
+        throw new Error(`Metric value type ${metricValueType} hasn't been found for duration.`);
+      }
     }
 
     return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
@@ -137,6 +147,9 @@ export class PrometheusApiService implements MongooseChartDataProvider {
         metricName = this.MIN_LATENCY_METRIC_NAME;
         break;
       }
+      default: {
+        throw new Error(`Metric value type ${metricValueType} hasn't been found for latency.`);
+      }
     }
     return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawMinLatencyQueryResponse => {
@@ -145,8 +158,22 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     )
   }
 
-  public getBandWidth(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-    return this.runQuery(`${this.BYTE_RATE_MEAN_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+  public getBandWidth(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
+    let metricName = this.BYTE_RATE_MEAN_METRIC_NAME; 
+    switch (numericMetricValueType) { 
+      case (NumbericMetricValueType.MEAN): { 
+        metricName = this.BYTE_RATE_MEAN_METRIC_NAME; 
+        break;
+      }
+      case (NumbericMetricValueType.LAST): { 
+        metricName = this.BYTE_RATE_LAST_METRIC_NAME;
+        break;
+      } 
+      default: {
+        throw new Error(`Metric value type ${numericMetricValueType} hasn't been found for bandwidth.`);
+      }
+    }
+    return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawByteRateResponse => {
         return this.prometheusResponseParser.getMongooseMetricsArray(rawByteRateResponse);
       })
