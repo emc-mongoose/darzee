@@ -14,8 +14,8 @@ export class MongooseThroughputChart implements MongooseChart {
     private readonly SUCCESSFUL_OPERATIONS_MEAN_DATASET_INDEX = 0;
     private readonly SUCCESSFUL_OPERATIONS_LAST_DATASET_INDEX = 1;
 
-    private readonly FAILED_OPERATIONS_MEAN_DATASET_INDEX = 3;
-    private readonly FAILED_OPERATIONS_LAST_DATASET_INDEX = 4;
+    private readonly FAILED_OPERATIONS_MEAN_DATASET_INDEX = 2;
+    private readonly FAILED_OPERATIONS_LAST_DATASET_INDEX = 3;
 
 
     chartOptions: MongooseChartOptions;
