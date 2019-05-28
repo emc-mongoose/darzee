@@ -73,7 +73,7 @@ export class MongooseChartDao {
      * Provides metric from data provider. 
      * Data provider should impliment @interface MongooseChartDataProvider
      * @param numericMetricValueType for bandwidth can be LAST (mean the last gathered) or MEAN (mean value).
-     * @returns observable array of metrics matched to requested parameters.
+     * @returns observable array of bandwidth metrics matched to requested parameters.
      */
     public getBandWidth(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getBandWidth(periodInSeconds, loadStepId, numericMetricValueType).pipe(
@@ -100,22 +100,62 @@ export class MongooseChartDao {
         );
     }
 
+     /**
+     * Provides metric from data provider. 
+     * Data provider should impliment @interface MongooseChartDataProvider
+     * @param numericMetricValueType for bandwidth can be LAST (mean the last gathered) or MEAN (mean value).
+     * @returns observable array of failed operation metrics matched to requested parameters.
+     */
     public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId, numericMetricValueType).pipe(
             map((metrics: MongooseMetric[]) => {
+                var internalMetricName: string = undefined;
+                switch (numericMetricValueType) { 
+                    case (NumbericMetricValueType.LAST): { 
+                        internalMetricName = InternalMetricNames.FAILED_OPERATIONS_LAST;
+                        break;
+                    }
+                    case (NumbericMetricValueType.MEAN): { 
+                        internalMetricName = InternalMetricNames.FAILED_OPERATIONS_MEAN;
+                        break;
+                    }
+                    default: { 
+                        throw new Error(`Internal metric name for numeric metric type ${numericMetricValueType} hasn't been found for failed operations.`)
+                    }
+                }
                 metrics.forEach(metric => {
-                    metric.setName(InternalMetricNames.FAILED_OPERATIONS);
+                    metric.setName(internalMetricName);
                 })
                 return metrics;
             })
         );
     }
 
+     /**
+     * Provides metric from data provider. 
+     * Data provider should impliment @interface MongooseChartDataProvider
+     * @param numericMetricValueType for bandwidth can be LAST (mean the last gathered) or MEAN (mean value).
+     * @returns observable array of successful operations metrics matched to requested parameters.
+     */
     public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getAmountOfSuccessfulOperations(periodInSeconds, loadStepId, numericMetricValueType).pipe(
             map((metrics: MongooseMetric[]) => {
+                var internalMetricName: string = undefined;
+                switch (numericMetricValueType) { 
+                    case (NumbericMetricValueType.LAST): { 
+                        internalMetricName = InternalMetricNames.SUCCESSFUL_OPERATIONS_LAST;
+                        break;
+                    }
+                    case (NumbericMetricValueType.MEAN): { 
+                        internalMetricName = InternalMetricNames.SUCCESSFUL_OPERATIONS_MEAN;
+                        break;
+                    }
+                    default: { 
+                        throw new Error(`Internal metric name for numeric metric type ${numericMetricValueType} hasn't been found for successful operations.`)
+                    }
+                }
                 metrics.forEach(metric => {
-                    metric.setName(InternalMetricNames.SUCCESSFUL_OPERATIONS);
+                    metric.setName(internalMetricName);
                 })
                 return metrics;
             })

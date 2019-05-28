@@ -15,6 +15,10 @@ export class InternalMetricNames {
     static readonly BANDWIDTH_MEAN = "bandwidth_mean";
     static readonly BANDWIDTH_LAST = "bandwidth_last";
 
-    static readonly FAILED_OPERATIONS = "failed_operations";
-    static readonly SUCCESSFUL_OPERATIONS = "successful_operations";
+    static readonly FAILED_OPERATIONS_MEAN = "failed_operations_mean";
+    static readonly FAILED_OPERATIONS_LAST = "failed_operations_last";
+
+    static readonly SUCCESSFUL_OPERATIONS_MEAN = "successful_operations_mean";
+    static readonly SUCCESSFUL_OPERATIONS_LAST = "successful_operations_last";
+
 }
