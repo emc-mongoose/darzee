@@ -116,16 +116,46 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     );
   }
 
-  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-    return this.runQuery(`${this.FAILED_OPERATIONS_RATE_MEAN_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
+    let metricName: string = "";
+    switch (numericMetricValueType) { 
+      case (NumbericMetricValueType.MEAN): { 
+        metricName = this.FAILED_OPERATIONS_RATE_MEAN_METRIC_NAME; 
+        break;
+      }
+      case (NumbericMetricValueType.LAST): { 
+        metricName = this.FAILED_OPERATIONS_RATE_LAST_METRIC_NAME;
+        break;
+      } 
+      default: {
+        throw new Error(`Metric value type ${numericMetricValueType} hasn't been found for failed operations.`);
+      }
+    }
+
+    return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawFailedlOperationsResponse => {
         return this.prometheusResponseParser.getMongooseMetricsArray(rawFailedlOperationsResponse);
       })
     )
   }
 
-  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-    return this.runQuery(`${this.SUCCESS_OPERATIONS_RATE_MEAN_METRIC_NAME}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
+    let metricName: string = "";
+    switch (numericMetricValueType) { 
+      case (NumbericMetricValueType.MEAN): { 
+        metricName = this.SUCCESS_OPERATIONS_RATE_MEAN_METRIC_NAME; 
+        break;
+      }
+      case (NumbericMetricValueType.LAST): { 
+        metricName = this.SUCCESS_OPERATIONS_RATE_LAST_METRIC_NAME;
+        break;
+      } 
+      default: {
+        throw new Error(`Metric value type ${numericMetricValueType} hasn't been found for failed operations.`);
+      }
+    }
+
+    return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map(rawSuccessfulOperationsResponse => {
         return this.prometheusResponseParser.getMongooseMetricsArray(rawSuccessfulOperationsResponse);
       })

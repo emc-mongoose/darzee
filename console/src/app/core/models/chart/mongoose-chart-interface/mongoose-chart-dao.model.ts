@@ -100,8 +100,8 @@ export class MongooseChartDao {
         );
     }
 
-    public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-        return this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId).pipe(
+    public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
+        return this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId, numericMetricValueType).pipe(
             map((metrics: MongooseMetric[]) => {
                 metrics.forEach(metric => {
                     metric.setName(InternalMetricNames.FAILED_OPERATIONS);
@@ -111,8 +111,8 @@ export class MongooseChartDao {
         );
     }
 
-    public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
-        return this.chartDataProvider.getAmountOfSuccessfulOperations(periodInSeconds, loadStepId).pipe(
+    public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
+        return this.chartDataProvider.getAmountOfSuccessfulOperations(periodInSeconds, loadStepId, numericMetricValueType).pipe(
             map((metrics: MongooseMetric[]) => {
                 metrics.forEach(metric => {
                     metric.setName(InternalMetricNames.SUCCESSFUL_OPERATIONS);
