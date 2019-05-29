@@ -1,10 +1,11 @@
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { MongooseChartDataProvider } from './mongoose-chart-data-provider.interface';
 import { MongooseMetric } from '../mongoose-metric.model';
 import { map } from 'rxjs/operators';
 import { InternalMetricNames } from '../internal-metric-names';
 import { MetricValueType } from './metric-value-type';
 import { NumbericMetricValueType } from './numeric-metric-value-type';
+import { ChartPoint } from './chart-point.model';
 
 /**
  * Data access object for Mongoose charts' related data. 
@@ -44,25 +45,37 @@ export class MongooseChartDao {
         );
     }
 
-    public getConcurrency(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
-        return this.chartDataProvider.getConcurrency(periodInSeconds, loadStepId, numericMetricValueType).pipe(
-            map((metrics: MongooseMetric[]) => {
-                let internalMetricName: string = undefined;
-                switch (numericMetricValueType) {
-                    case (NumbericMetricValueType.LAST): {
-                        internalMetricName = InternalMetricNames.CONCURRENCY_LAST;
-                        break;
-                    }
-                    default: {
-                        throw new Error(`Internal metric name for metric type ${numericMetricValueType} hasn't been found for concurrency.`)
-                    }
+    public getConcurrencyChartPoints(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<ChartPoint[]> {
+        let concurrencyMetrics$: Observable<MongooseMetric[]> = this.chartDataProvider.getConcurrency(periodInSeconds, loadStepId, numericMetricValueType);
+        let elapsedTimeValues$: Observable<MongooseMetric[]> = this.chartDataProvider.getElapsedTimeValue(periodInSeconds, loadStepId);
+
+        return forkJoin(concurrencyMetrics$, elapsedTimeValues$).pipe(
+            map((concurrencyChartData: any[]) => { 
+                const concurrencyMetricsIndex: number = 0;
+                const elapsedTimeMetricsIndex: number = 1;
+
+                let concurrencyValues: MongooseMetric[] = concurrencyChartData[concurrencyMetricsIndex];
+                let elapsedTimeMetricsValues: MongooseMetric[] = concurrencyChartData[elapsedTimeMetricsIndex];
+
+                let hasEnoughtValuesForChart: boolean = (concurrencyValues.length == elapsedTimeMetricsValues.length); 
+                if (!hasEnoughtValuesForChart) { 
+                    throw new Error(`Unable to build concurrency chart due to lack of metrics. Concurrency metrics amount: ${concurrencyValues.length}, while matching time metrics amount of: ${elapsedTimeMetricsValues.length}`);
                 }
-                metrics.forEach(metric => {
-                    metric.setName(internalMetricName);
-                });
-                return metrics;
+
+                let concurrencyChartPoints: ChartPoint[] = [];
+                for (var i: number = 0; i < elapsedTimeMetricsValues.length; i++) {
+                    let timestamp: MongooseMetric = elapsedTimeMetricsValues[i];
+                    let concurrencyMetric: MongooseMetric = concurrencyValues[i];
+                    
+                    let x: number = new Number(timestamp.getValue()) as number;
+                    let y: number = new Number(concurrencyMetric.getValue()) as number;
+                    let chartPoint: ChartPoint = new ChartPoint(x, y);
+
+                    concurrencyChartPoints.push(chartPoint);
+                }
+                return concurrencyChartPoints;
             })
-        )
+        );
     }
 
     public getLatency(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
