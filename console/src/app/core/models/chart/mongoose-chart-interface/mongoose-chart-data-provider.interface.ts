@@ -25,4 +25,6 @@ export interface MongooseChartDataProvider {
 
     getConcurrency(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]>;
 
+    getElapsedTimeValue(periodInSeconds: number, loadStepId: string, numericMetricValueType): Observable<MongooseMetric[]>;
+
 }

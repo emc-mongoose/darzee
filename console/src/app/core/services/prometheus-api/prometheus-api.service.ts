@@ -38,6 +38,8 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   private readonly BYTE_RATE_MEAN_METRIC_NAME = "mongoose_byte_rate_mean";
   private readonly BYTE_RATE_LAST_METRIC_NAME = "mongoose_byte_rate_last";
 
+  private readonly ELAPSED_TIME_VALUE_METRIC_NAME = "mongoose_elapsed_time_value";
+
   // NOTE: Symbols used for queryting Prometheus for value of metric with specific labels. They ...
   // ... are listed within the labels list. 
   readonly METRIC_LABELS_LIST_START_SYMBOL = "{";
@@ -76,6 +78,15 @@ export class PrometheusApiService implements MongooseChartDataProvider {
           return of(false);
         }
       )
+    )
+  }
+
+  getElapsedTimeValue(periodInSeconds: number, loadStepId: string, numericMetricValueType: any): Observable<MongooseMetric[]> {
+    let metricName = this.ELAPSED_TIME_VALUE_METRIC_NAME;
+    return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+      map (rawConcurrencyResponse => {
+        return this.prometheusResponseParser.getMongooseMetricsArray(rawConcurrencyResponse);
+      })
     )
   }
 
