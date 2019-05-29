@@ -1,8 +1,5 @@
 import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
-import { MongooseMetric } from "../mongoose-metric.model";
-import { InternalMetricNames } from "../internal-metric-names";
-import { formatDate } from "@angular/common";
 import { MongooseTestChartDataset } from "../mongoose-chart-interface/mongoose-test-chart-dataset.model";
 import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
@@ -11,6 +8,16 @@ import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interf
  * Concurrency chart for BasicChart component.
  */
 export class MongooseConcurrencyChart implements MongooseChart { 
+
+    /**
+     * Make sure to update @param LAST_CONCURRENT_METRICS_DATASET_INDEX, @param MEAN_CONCURRENT_METRICS_DATASET_INDEX in case ...
+     * ... @param chartData order changes.
+     * @param LAST_CONCURRENT_METRICS_DATASET_INDEX index of data array for "concurrent_last" metrics chart
+     * @param MEAN_CONCURRENT_METRICS_DATASET_INDEX index of data array for "concurrent_mean" metrics chart
+     */
+    private readonly LAST_CONCURRENT_METRICS_DATASET_INDEX = 0;
+    private readonly MEAN_CONCURRENT_METRICS_DATASET_INDEX = 1;
+
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
     chartType: string;
@@ -32,9 +39,11 @@ export class MongooseConcurrencyChart implements MongooseChart {
         this.shouldShiftChart = shouldShiftChart;
 
         let concurrencyLastDatasetInitialValue = new MongooseTestChartDataset([], 'Concurrency, last');
+        let concurrentMeanDatasetInitialValue = new MongooseTestChartDataset([], "Concurrent, mean");
 
         var concurrencyChartDataset: MongooseTestChartDataset[] = [];
         concurrencyChartDataset.push(concurrencyLastDatasetInitialValue);
+        concurrencyChartDataset.push(concurrentMeanDatasetInitialValue);
 
         this.chartData = concurrencyChartDataset;
 
@@ -49,17 +58,6 @@ export class MongooseConcurrencyChart implements MongooseChart {
             let timestamp = chartPoint.getX() as unknown; 
             labels.push(timestamp as string);
         }
-        // var concurrencyLastMetrics: any[] = [];
-
-        // var updatedLabels: any[] = [];
-
-        // let metricName = InternalMetricNames.MEAN_DURATION;
-        // metrics.forEach(concurrencyMetric => {
-        //     metricName = concurrencyMetric.getName();
-        //     let durationMetricValue = concurrencyMetric.getValue();
-            
-        //     updatedLabels.push(formatDate(Math.round(concurrencyMetric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
-        // });
         this.chartLabels = labels;
 
 
