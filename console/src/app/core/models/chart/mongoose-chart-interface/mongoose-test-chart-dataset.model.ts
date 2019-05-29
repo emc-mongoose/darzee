@@ -1,7 +1,8 @@
 import { ChartPoint } from "./chart-point.model";
 
 /**
- * Chart that tests point addition with ChartPoint class. TO BE DELETED
+ * Class that contains chart options for BasicChart component. 
+ * Options matches ng-chart2 library requirements.
  */
 export class MongooseTestChartDataset {
     // NOTE: Fields are public since they should match ng-chart2 library naming 
@@ -23,7 +24,6 @@ export class MongooseTestChartDataset {
     private readonly CHART_POINT_RADIUS_PX = 0;
 
     public data: ChartPoint[] = [];
-    // public points: ChartPoint[] = [];
     public label: string = "";
 
     public lineTension: number = this.ZERO_CURVE_LINE_TENSION;
@@ -44,16 +44,6 @@ export class MongooseTestChartDataset {
         this.label = label;
     }
 
-    // MARK: - Public 
-
-    // public appendDatasetWithNewValue(newValue: string) {
-    //     const emptyValue = "";
-    //     if (newValue == emptyValue) {
-    //         newValue = this.getPreviousValueFromDataset(this);
-    //     }
-    //     this.data.push(newValue);
-    // }
-
     public setChartData(data: any[]) {
         this.data = data;
     }
@@ -70,12 +60,4 @@ export class MongooseTestChartDataset {
     public setChartColor(colorRgba: string) {
         this.borderColor = colorRgba;
     }
-
-    // MARK: - Private 
-
-    // private getPreviousValueFromDataset(dataset: MongooseTestChartDataset): string {
-    //     let previosValueIndex = dataset.data.length - 1;
-    //     let previosValue = dataset.data[previosValueIndex];
-    //     return previosValue;
-    // }
 }
