@@ -4,6 +4,7 @@ import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao
 import { MongooseMetric } from "../mongoose-metric.model";
 import { MetricValueType } from "./metric-value-type";
 import { NumbericMetricValueType } from "./numeric-metric-value-type";
+import { ChartPoint } from "./chart-point.model";
 
 export interface MongooseChart {
     chartOptions: MongooseChartOptions;
@@ -19,15 +20,13 @@ export interface MongooseChart {
     shouldShiftChart: boolean; 
 
     mongooseChartDao: MongooseChartDao;
-    // TODO: Change updateChart(...) method back to normal.
     /**
      * 
      * @param recordLoadStepId load step ID of metrics provided for chart.
      * @param metrics array of data for chart.
      * @param metricType type of metric (e.g.: min, mean, max, last, etc.)
      */
-    updateChart(recordLoadStepId: string, metrics: any[], metricType?: MetricValueType | NumbericMetricValueType);
-    //     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]);
+    updateChart(recordLoadStepId: string, metrics: ChartPoint[] | MongooseMetric[], metricType?: MetricValueType | NumbericMetricValueType);
 
     shouldDrawChart(): boolean;
 }
