@@ -8,11 +8,18 @@ export interface MongooseChart {
     chartLabels: string[];
     chartType: string;
     chartLegend: boolean;
-    chartData: MongooseChartDataset[];
+    // TODO: Change back to MongooseChartDataset[]
+    chartData: any[];
+
+    //     chartData: MongooseChartDataset[];
+
     isChartDataValid: boolean;
     shouldShiftChart: boolean; 
 
     mongooseChartDao: MongooseChartDao;
-    updateChart(recordLoadStepId: string, metrics: MongooseMetric[]);
+    // TODO: Change updateChart(...) method back to normal.
+    updateChart(recordLoadStepId: string, metrics: any[]);
+    //     updateChart(recordLoadStepId: string, metrics: MongooseMetric[]);
+
     shouldDrawChart(): boolean;
 }

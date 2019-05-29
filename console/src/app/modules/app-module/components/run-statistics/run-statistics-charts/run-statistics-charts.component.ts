@@ -122,6 +122,7 @@ export class RunStatisticsChartsComponent implements OnInit {
     chartsList.set("Bandwidth", this.chartsProviderService.getBandwidthChart());
     chartsList.set("Throughtput", this.chartsProviderService.getThoughputChart());
     chartsList.set("Latency", this.chartsProviderService.getLatencyChart());
+    chartsList.set("Concurrency", this.chartsProviderService.getConcurrencyChart());
 
     // NOTE: Chart is being shifted after specific amount of values if Mongoose run is ...
     // ... still in process.

@@ -5,16 +5,18 @@ import { InternalMetricNames } from "../internal-metric-names";
 import { formatDate } from "@angular/common";
 import { MongooseTestChartDataset } from "../mongoose-chart-interface/mongoose-test-chart-dataset.model";
 import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
+import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
 
 /**
  * Concurrency chart for BasicChart component.
  */
-export class MongooseConcurrencyChart { 
+export class MongooseConcurrencyChart implements MongooseChart { 
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
     chartType: string;
     chartLegend: boolean;
     chartData: MongooseTestChartDataset[];
+
     mongooseChartDao: MongooseChartDao;
     isChartDataValid: boolean;
     shouldShiftChart: boolean;
@@ -39,11 +41,11 @@ export class MongooseConcurrencyChart {
         this.configureChartOptions();
     }
 
-    updateChart(recordLoadStepId: string, chartPoints: ChartPoint[]) {
+    updateChart(recordLoadStepId: string, metrics: ChartPoint[]) {
 
-        this.chartData[0].points = chartPoints;
+        this.chartData[0].points = metrics;
         let labels: string[] = [];
-        for (var chartPoint of chartPoints) { 
+        for (var chartPoint of metrics) { 
             let timestamp = chartPoint.getX() as unknown; 
             labels.push(timestamp as string);
         }
