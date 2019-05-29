@@ -81,7 +81,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     )
   }
 
-  getElapsedTimeValue(periodInSeconds: number, loadStepId: string, numericMetricValueType: any): Observable<MongooseMetric[]> {
+  getElapsedTimeValue(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     let metricName = this.ELAPSED_TIME_VALUE_METRIC_NAME;
     return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
       map (rawConcurrencyResponse => {

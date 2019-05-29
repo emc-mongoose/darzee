@@ -99,9 +99,9 @@ export class ChartsProviderService {
   }
 
   private updateConcurrencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType = NumbericMetricValueType.LAST) { 
-    this.mongooseChartDao.getConcurrency(perdiodOfLatencyUpdateSecs, loadStepId, numericMetricValueType).subscribe(
-      (metricValues: MongooseMetric[]) => { 
-        let chartPoints: ChartPoint[] = this.getChartPointsFromMetric(metricValues);
+    this.mongooseChartDao.getConcurrencyChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, numericMetricValueType).subscribe(
+      (chartPoints: ChartPoint[]) => { 
+        // let chartPoints: ChartPoint[] = this.getChartPointsFromMetric(metricValues);
         this.concurrencyChart.updateChart(loadStepId, chartPoints);
       }
     )
