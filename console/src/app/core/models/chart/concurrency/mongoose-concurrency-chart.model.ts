@@ -51,8 +51,7 @@ export class MongooseConcurrencyChart implements MongooseChart {
     }
 
     updateChart(recordLoadStepId: string, metrics: ChartPoint[]) {
-
-        this.chartData[0].data = metrics;
+        this.chartData[this.LAST_CONCURRENT_METRICS_DATASET_INDEX].data = metrics;
         let labels: string[] = [];
         for (var chartPoint of metrics) { 
             let timestamp = chartPoint.getX() as unknown; 
