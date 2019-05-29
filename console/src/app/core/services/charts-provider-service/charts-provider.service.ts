@@ -11,6 +11,7 @@ import { MetricValueType } from '../../models/chart/mongoose-chart-interface/met
 import { Observable, forkJoin } from 'rxjs';
 import { NumbericMetricValueType } from '../../models/chart/mongoose-chart-interface/numeric-metric-value-type';
 import { ChartPoint } from '../../models/chart/mongoose-chart-interface/chart-point.model';
+import { MongooseConcurrencyChart } from '../../models/chart/concurrency/mongoose-concurrency-chart.model';
 
 
 @Injectable({
@@ -25,6 +26,7 @@ export class ChartsProviderService {
   private latencyChart: MongooseLatencyChart;
   private bandwidthChart: MongooseBandwidthChart;
   private throughputChart: MongooseThroughputChart;
+  private concurrencyChart: MongooseConcurrencyChart;
 
   constructor(prometheusApiService: PrometheusApiService) {
     // NOTE: Prometheus API service is data provider for Mongoose Charts.
@@ -49,6 +51,10 @@ export class ChartsProviderService {
 
   public getLatencyChart(): MongooseLatencyChart {
     return this.latencyChart;
+  }
+
+  public getConcurrencyChart(): MongooseConcurrencyChart { 
+    return this.concurrencyChart; 
   }
 
   public updateCharts(perdiodOfLatencyUpdateSeconds: number, loadStepId: string) {
@@ -158,8 +164,8 @@ export class ChartsProviderService {
   private getChartPointsFromMetric(mongooseMetrics: MongooseMetric[]): ChartPoint[] { 
     let chartPoints: ChartPoint[] = [];
     for (let mongooseMetric of mongooseMetrics) { 
-      const x = mongooseMetric.getTimestamp();
-      const y = mongooseMetric.getValue();
+      const x: number = mongooseMetric.getTimestamp();
+      const y: number = new Number(mongooseMetric.getValue()) as number;
       const chartPoint = new ChartPoint(x, y);
 
       chartPoints.push(chartPoint);
