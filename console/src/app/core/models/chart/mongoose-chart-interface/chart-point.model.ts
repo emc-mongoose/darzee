@@ -6,4 +6,8 @@ export class ChartPoint {
         this.x = x; 
         this.y = y;
     }
+
+    public getX(): number { 
+        return this.x; 
+    }
 }

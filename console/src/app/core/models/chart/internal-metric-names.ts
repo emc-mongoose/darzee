@@ -3,6 +3,8 @@
  * ... names of metrics within third-party services like Prometheus.
  */
 export class InternalMetricNames { 
+    static readonly CONCURRENCY_LAST = "concurrency_last";
+    
     static readonly LATENCY_MAX = "latency_max";
     static readonly LATENCY_MIN = "latency_min";    
     static readonly LATENCY_MEAN = "latency_mean";

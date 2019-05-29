@@ -23,4 +23,6 @@ export interface MongooseChartDataProvider {
    */
     getBandWidth(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]>;
 
+    getConcurrency(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]>;
+
 }

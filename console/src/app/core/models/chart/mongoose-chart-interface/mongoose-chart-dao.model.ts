@@ -44,6 +44,27 @@ export class MongooseChartDao {
         );
     }
 
+    public getConcurrency(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
+        return this.chartDataProvider.getConcurrency(periodInSeconds, loadStepId, numericMetricValueType).pipe(
+            map((metrics: MongooseMetric[]) => {
+                let internalMetricName: string = undefined;
+                switch (numericMetricValueType) {
+                    case (NumbericMetricValueType.LAST): {
+                        internalMetricName = InternalMetricNames.CONCURRENCY_LAST;
+                        break;
+                    }
+                    default: {
+                        throw new Error(`Internal metric name for metric type ${numericMetricValueType} hasn't been found for concurrency.`)
+                    }
+                }
+                metrics.forEach(metric => {
+                    metric.setName(internalMetricName);
+                });
+                return metrics;
+            })
+        )
+    }
+
     public getLatency(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
         return this.chartDataProvider.getLatency(periodInSeconds, loadStepId, metricValueType).pipe(
             map((metrics: MongooseMetric[]) => {

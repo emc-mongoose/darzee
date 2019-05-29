@@ -19,6 +19,8 @@ import { NumbericMetricValueType } from '../../models/chart/mongoose-chart-inter
 
 export class PrometheusApiService implements MongooseChartDataProvider {
 
+  private readonly LAST_CONCURRENCY_METRIC_NAME = "mongoose_concurrency_last";
+
   private readonly MAX_LATENCY_METRIC_NAME = "mongoose_latency_max";
   private readonly MIN_LATENCY_METRIC_NAME = "mongoose_latency_min";
   private readonly MEAN_LATENCY_METRIC_NAME = "mongoose_latency_mean";
@@ -83,6 +85,26 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   public setHostIpAddress(prometheusHostIpAddress: string) {
     this.currentPrometheusAddress = prometheusHostIpAddress;
   }
+
+  getConcurrency(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
+    let metricName: string = "";
+    switch (numericMetricValueType) { 
+      case (NumbericMetricValueType.LAST): { 
+        metricName = this.LAST_CONCURRENCY_METRIC_NAME; 
+        break;
+      }
+      default: { 
+        throw new Error(`Metric value type ${numericMetricValueType} hasn't been found for concurrency.`);
+      }
+    }
+
+    return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
+      map (rawConcurrencyResponse => {
+        return this.prometheusResponseParser.getMongooseMetricsArray(rawConcurrencyResponse);
+      })
+    )
+  }
+
 
   public getDuration(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
     let metricName = this.MEAN_DURATION_METRIC_NAME;
