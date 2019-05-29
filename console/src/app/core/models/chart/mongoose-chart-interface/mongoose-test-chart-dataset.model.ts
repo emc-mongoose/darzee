@@ -22,8 +22,8 @@ export class MongooseTestChartDataset {
     private readonly CHART_LINE_WIDTH_PX = 1;
     private readonly CHART_POINT_RADIUS_PX = 0;
 
-    public data: any[] = [];
-    public points: ChartPoint[] = [];
+    public data: ChartPoint[] = [];
+    // public points: ChartPoint[] = [];
     public label: string = "";
 
     public lineTension: number = this.ZERO_CURVE_LINE_TENSION;
@@ -46,13 +46,13 @@ export class MongooseTestChartDataset {
 
     // MARK: - Public 
 
-    public appendDatasetWithNewValue(newValue: string) {
-        const emptyValue = "";
-        if (newValue == emptyValue) {
-            newValue = this.getPreviousValueFromDataset(this);
-        }
-        this.data.push(newValue);
-    }
+    // public appendDatasetWithNewValue(newValue: string) {
+    //     const emptyValue = "";
+    //     if (newValue == emptyValue) {
+    //         newValue = this.getPreviousValueFromDataset(this);
+    //     }
+    //     this.data.push(newValue);
+    // }
 
     public setChartData(data: any[]) {
         this.data = data;
@@ -73,9 +73,9 @@ export class MongooseTestChartDataset {
 
     // MARK: - Private 
 
-    private getPreviousValueFromDataset(dataset: MongooseTestChartDataset): string {
-        let previosValueIndex = dataset.data.length - 1;
-        let previosValue = dataset.data[previosValueIndex];
-        return previosValue;
-    }
+    // private getPreviousValueFromDataset(dataset: MongooseTestChartDataset): string {
+    //     let previosValueIndex = dataset.data.length - 1;
+    //     let previosValue = dataset.data[previosValueIndex];
+    //     return previosValue;
+    // }
 }

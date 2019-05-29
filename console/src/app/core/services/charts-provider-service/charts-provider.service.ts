@@ -101,6 +101,7 @@ export class ChartsProviderService {
   private updateConcurrencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType = NumbericMetricValueType.LAST) { 
     this.mongooseChartDao.getConcurrencyChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, numericMetricValueType).subscribe(
       (chartPoints: ChartPoint[]) => { 
+        console.log(`Concurrency chart has been updated. Content: ${JSON.stringify(this.concurrencyChart.chartData[0])}`)
         // let chartPoints: ChartPoint[] = this.getChartPointsFromMetric(metricValues);
         this.concurrencyChart.updateChart(loadStepId, chartPoints);
       }
