@@ -9,7 +9,7 @@ import { PrometheusResponseParser } from './prometheus-response.parser';
 import { HttpUtils } from 'src/app/common/HttpUtils';
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
 import { MetricValueType } from '../../models/chart/mongoose-chart-interface/metric-value-type';
-import { NumbericMetricValueType } from '../../models/chart/mongoose-chart-interface/numeric-metric-value-type';
+import { NumericMetricValueType } from '../../models/chart/mongoose-chart-interface/numeric-metric-value-type';
 
 
 @Injectable({
@@ -85,7 +85,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   getElapsedTimeValue(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     let metricName = this.ELAPSED_TIME_VALUE_METRIC_NAME;
     return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
-      map (rawConcurrencyResponse => {
+      map(rawConcurrencyResponse => {
         return this.prometheusResponseParser.getMongooseMetricsArray(rawConcurrencyResponse);
       })
     )
@@ -98,24 +98,24 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     this.currentPrometheusAddress = prometheusHostIpAddress;
   }
 
-  getConcurrency(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
+  getConcurrency(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<MongooseMetric[]> {
     let metricName: string = "";
-    switch (numericMetricValueType) { 
-      case (NumbericMetricValueType.LAST): { 
-        metricName = this.LAST_CONCURRENCY_METRIC_NAME; 
+    switch (numericMetricValueType) {
+      case (NumericMetricValueType.LAST): {
+        metricName = this.LAST_CONCURRENCY_METRIC_NAME;
         break;
       }
-      case (NumbericMetricValueType.MEAN): { 
+      case (NumericMetricValueType.MEAN): {
         metricName = this.MEAN_CONCURRENCY_METRIC_NAME;
         break;
       }
-      default: { 
+      default: {
         throw new Error(`Metric value type ${numericMetricValueType} hasn't been found for concurrency.`);
       }
     }
 
     return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}[${periodInSeconds}s]`).pipe(
-      map (rawConcurrencyResponse => {
+      map(rawConcurrencyResponse => {
         return this.prometheusResponseParser.getMongooseMetricsArray(rawConcurrencyResponse);
       })
     )
@@ -149,14 +149,14 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     );
   }
 
-  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
+  public getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<MongooseMetric[]> {
     let metricName: string = "";
     switch (numericMetricValueType) {
-      case (NumbericMetricValueType.MEAN): {
+      case (NumericMetricValueType.MEAN): {
         metricName = this.FAILED_OPERATIONS_RATE_MEAN_METRIC_NAME;
         break;
       }
-      case (NumbericMetricValueType.LAST): {
+      case (NumericMetricValueType.LAST): {
         metricName = this.FAILED_OPERATIONS_RATE_LAST_METRIC_NAME;
         break;
       }
@@ -172,14 +172,14 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     )
   }
 
-  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
+  public getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<MongooseMetric[]> {
     let metricName: string = "";
     switch (numericMetricValueType) {
-      case (NumbericMetricValueType.MEAN): {
+      case (NumericMetricValueType.MEAN): {
         metricName = this.SUCCESS_OPERATIONS_RATE_MEAN_METRIC_NAME;
         break;
       }
-      case (NumbericMetricValueType.LAST): {
+      case (NumericMetricValueType.LAST): {
         metricName = this.SUCCESS_OPERATIONS_RATE_LAST_METRIC_NAME;
         break;
       }
@@ -221,14 +221,14 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     )
   }
 
-  public getBandWidth(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]> {
+  public getBandWidth(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<MongooseMetric[]> {
     let metricName = this.BYTE_RATE_MEAN_METRIC_NAME;
     switch (numericMetricValueType) {
-      case (NumbericMetricValueType.MEAN): {
+      case (NumericMetricValueType.MEAN): {
         metricName = this.BYTE_RATE_MEAN_METRIC_NAME;
         break;
       }
-      case (NumbericMetricValueType.LAST): {
+      case (NumericMetricValueType.LAST): {
         metricName = this.BYTE_RATE_LAST_METRIC_NAME;
         break;
       }

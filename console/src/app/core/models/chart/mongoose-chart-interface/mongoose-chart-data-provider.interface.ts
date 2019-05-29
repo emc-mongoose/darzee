@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 import { MongooseMetric } from "../mongoose-metric.model";
 import { MetricValueType } from "./metric-value-type";
-import { NumbericMetricValueType } from "./numeric-metric-value-type";
+import { NumericMetricValueType } from "./numeric-metric-value-type";
 
 /**
  * Describes necessary function for provider of Mongoose metrics.
@@ -24,7 +24,7 @@ export interface MongooseChartDataProvider {
     * @param loadStepId Mongoose's load step ID for a specific run.
     * @param numericMetricValueType Type of byte rate metric (mean, last).
     */
-  getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]>;
+  getAmountOfFailedOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<MongooseMetric[]>;
 
   /** 
    * @returns Amount of successful operations performed by Mongoose from given period.
@@ -33,7 +33,7 @@ export interface MongooseChartDataProvider {
     * @param loadStepId Mongoose's load step ID for a specific run.
     * @param numericMetricValueType Type of byte rate metric (mean, last).
     */
-  getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]>;
+  getAmountOfSuccessfulOperations(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<MongooseMetric[]>;
 
   /** 
    * @returns Latency-related Mongoose's metrics.
@@ -51,7 +51,7 @@ export interface MongooseChartDataProvider {
     * @param loadStepId Mongoose's load step ID for a specific run.
     * @param numericMetricValueType Type of byte rate metric (mean, last).
     */
-  getBandWidth(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]>;
+  getBandWidth(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<MongooseMetric[]>;
 
   /**
    * @returns Concurrency-related Mongoose's metrics.
@@ -60,7 +60,7 @@ export interface MongooseChartDataProvider {
     * @param loadStepId Mongoose's load step ID for a specific run.
     * @param numericMetricValueType Type of concurrency metric (mean, last).
     */
-  getConcurrency(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType): Observable<MongooseMetric[]>;
+  getConcurrency(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<MongooseMetric[]>;
 
 
   /**

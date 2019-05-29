@@ -2,7 +2,7 @@ import { MongooseChartOptions } from "./mongoose-chart-options";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
 import { MongooseMetric } from "../mongoose-metric.model";
 import { MetricValueType } from "./metric-value-type";
-import { NumbericMetricValueType } from "./numeric-metric-value-type";
+import { NumericMetricValueType } from "./numeric-metric-value-type";
 import { ChartPoint } from "./chart-point.model";
 
 export interface MongooseChart {
@@ -16,7 +16,7 @@ export interface MongooseChart {
     //     chartData: MongooseChartDataset[];
 
     isChartDataValid: boolean;
-    shouldShiftChart: boolean; 
+    shouldShiftChart: boolean;
 
     mongooseChartDao: MongooseChartDao;
     /**
@@ -25,7 +25,7 @@ export interface MongooseChart {
      * @param metrics array of data for chart.
      * @param metricType type of metric (e.g.: min, mean, max, last, etc.)
      */
-    updateChart(recordLoadStepId: string, metrics: ChartPoint[] | MongooseMetric[], metricType?: MetricValueType | NumbericMetricValueType);
+    updateChart(recordLoadStepId: string, metrics: ChartPoint[] | MongooseMetric[], metricType?: MetricValueType | NumericMetricValueType);
 
     shouldDrawChart(): boolean;
 }
