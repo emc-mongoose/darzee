@@ -22,7 +22,6 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   private readonly LAST_CONCURRENCY_METRIC_NAME = "mongoose_concurrency_last";
   private readonly MEAN_CONCURRENCY_METRIC_NAME = "mongoose_concurrency_mean";
 
-
   private readonly MAX_LATENCY_METRIC_NAME = "mongoose_latency_max";
   private readonly MIN_LATENCY_METRIC_NAME = "mongoose_latency_min";
   private readonly MEAN_LATENCY_METRIC_NAME = "mongoose_latency_mean";
