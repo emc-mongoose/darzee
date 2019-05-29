@@ -10,6 +10,7 @@ import { MongooseThroughputChart } from '../../models/chart/throughput/mongoose-
 import { MetricValueType } from '../../models/chart/mongoose-chart-interface/metric-value-type';
 import { Observable, forkJoin } from 'rxjs';
 import { NumbericMetricValueType } from '../../models/chart/mongoose-chart-interface/numeric-metric-value-type';
+import { ChartPoint } from '../../models/chart/mongoose-chart-interface/chart-point.model';
 
 
 @Injectable({
@@ -90,6 +91,14 @@ export class ChartsProviderService {
     })
   }
 
+  private updateConcurrencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType) { 
+    this.mongooseChartDao.getConcurrency(perdiodOfLatencyUpdateSecs, loadStepId, numericMetricValueType).subscribe(
+      (metricValues: MongooseMetric[]) => { 
+        let chartPoints: ChartPoint[] = this.getChartPointsFromMetric(metricValues);
+        
+      }
+    )
+  }
 
   private updateBandwidthChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
     let bandwidthMetricPool$: any[] = [];
@@ -146,4 +155,16 @@ export class ChartsProviderService {
     this.throughputChart = mongooseChartRepository.getThoughputChart();
   }
 
+  private getChartPointsFromMetric(mongooseMetrics: MongooseMetric[]): ChartPoint[] { 
+    let chartPoints: ChartPoint[] = [];
+    for (let mongooseMetric of mongooseMetrics) { 
+      const x = mongooseMetric.getTimestamp();
+      const y = mongooseMetric.getValue();
+      const chartPoint = new ChartPoint(x, y);
+
+      chartPoints.push(chartPoint);
+    }
+
+    return chartPoints;
+  }
 }
