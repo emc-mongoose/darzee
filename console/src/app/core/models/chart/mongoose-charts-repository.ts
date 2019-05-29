@@ -4,6 +4,7 @@ import { MongooseLatencyChart } from "./latency/mongoose-latency-chart.model";
 import { MongooseThroughputChart } from "./throughput/mongoose-throughput-chart.model";
 import { MongooseBandwidthChart } from "./bandwidth/mongoose-bandwidth-chart.model";
 import { MongooseChartDao } from "./mongoose-chart-interface/mongoose-chart-dao.model";
+import { MongooseConcurrencyChart } from "./concurrency/mongoose-concurrency-chart.model";
 
 /**
  * Repository of different Mongoose metrics charts. 
@@ -22,6 +23,7 @@ export class MongooseChartsRepository {
     private latencyChart: MongooseLatencyChart;
     private thoughputChart: MongooseThroughputChart;
     private bandwidthChart: MongooseBandwidthChart;
+    private concurrencyChart: MongooseConcurrencyChart;
 
     constructor(mongooseChartDao: MongooseChartDao) {
         this.mongooseChartDao = mongooseChartDao;
@@ -45,6 +47,10 @@ export class MongooseChartsRepository {
         return this.bandwidthChart;
     }
 
+    public getConcurrencyChart(): MongooseConcurrencyChart { 
+        return this.concurrencyChart;
+    }
+
     // MARK: - Private 
 
     private setUpCharts() {
@@ -52,6 +58,7 @@ export class MongooseChartsRepository {
         this.latencyChart = this.createMongooseLatencyChart();
         this.thoughputChart = this.createMongooseThroughtputChart();
         this.bandwidthChart = this.createMongooseBandwidthChart();
+        this.concurrencyChart = this.createConcurrencyChart();
     }
 
     private createMongooseDurationChart(): MongooseDurationChart {
@@ -72,6 +79,11 @@ export class MongooseChartsRepository {
     private createMongooseBandwidthChart(): MongooseBandwidthChart {
         let bandwidthChartOptions: MongooseChartOptions = this.getLogarithmicOptionsForChart();
         return new MongooseBandwidthChart(bandwidthChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
+    }
+
+    private createConcurrencyChart(): MongooseConcurrencyChart { 
+        let concurrenyChartOptions: MongooseChartOptions = new MongooseChartOptions();
+        return new MongooseConcurrencyChart(concurrenyChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
     }
 
     /**
