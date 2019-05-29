@@ -62,6 +62,7 @@ export class ChartsProviderService {
     this.updateLatencyChart(perdiodOfLatencyUpdateSeconds, loadStepId);
     this.updateBandwidthChart(perdiodOfLatencyUpdateSeconds, loadStepId);
     this.updateThoughputChart(perdiodOfLatencyUpdateSeconds, loadStepId);
+    this.updateConcurrencyChart(perdiodOfLatencyUpdateSeconds, loadStepId);
   }
 
   public drawStatisCharts(secondsSinceCurrentDate: number, loadStepId: string) {
@@ -97,11 +98,11 @@ export class ChartsProviderService {
     })
   }
 
-  private updateConcurrencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType) { 
+  private updateConcurrencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType = NumbericMetricValueType.LAST) { 
     this.mongooseChartDao.getConcurrency(perdiodOfLatencyUpdateSecs, loadStepId, numericMetricValueType).subscribe(
       (metricValues: MongooseMetric[]) => { 
         let chartPoints: ChartPoint[] = this.getChartPointsFromMetric(metricValues);
-        
+        this.concurrencyChart.updateChart(loadStepId, chartPoints);
       }
     )
   }
@@ -159,6 +160,7 @@ export class ChartsProviderService {
     this.latencyChart = mongooseChartRepository.getLatencyChart();
     this.bandwidthChart = mongooseChartRepository.getBandwidthChart();
     this.throughputChart = mongooseChartRepository.getThoughputChart();
+    this.concurrencyChart = mongooseChartRepository.getConcurrencyChart();
   }
 
   private getChartPointsFromMetric(mongooseMetrics: MongooseMetric[]): ChartPoint[] { 
