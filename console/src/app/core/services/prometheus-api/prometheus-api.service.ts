@@ -20,6 +20,8 @@ import { NumbericMetricValueType } from '../../models/chart/mongoose-chart-inter
 export class PrometheusApiService implements MongooseChartDataProvider {
 
   private readonly LAST_CONCURRENCY_METRIC_NAME = "mongoose_concurrency_last";
+  private readonly MEAN_CONCURRENCY_METRIC_NAME = "mongoose_concurrency_mean";
+
 
   private readonly MAX_LATENCY_METRIC_NAME = "mongoose_latency_max";
   private readonly MIN_LATENCY_METRIC_NAME = "mongoose_latency_min";
@@ -102,6 +104,10 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     switch (numericMetricValueType) { 
       case (NumbericMetricValueType.LAST): { 
         metricName = this.LAST_CONCURRENCY_METRIC_NAME; 
+        break;
+      }
+      case (NumbericMetricValueType.MEAN): { 
+        metricName = this.MEAN_CONCURRENCY_METRIC_NAME;
         break;
       }
       default: { 

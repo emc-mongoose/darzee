@@ -99,13 +99,15 @@ export class ChartsProviderService {
   }
 
   private updateConcurrencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, numericMetricValueType: NumbericMetricValueType = NumbericMetricValueType.LAST) { 
-    this.mongooseChartDao.getConcurrencyChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, numericMetricValueType).subscribe(
-      (chartPoints: ChartPoint[]) => { 
-        console.log(`Concurrency chart has been updated. Content: ${JSON.stringify(this.concurrencyChart.chartData[0])}`)
-        // let chartPoints: ChartPoint[] = this.getChartPointsFromMetric(metricValues);
-        this.concurrencyChart.updateChart(loadStepId, chartPoints);
-      }
-    )
+    Object.values(NumbericMetricValueType).forEach(concurrencyMetricType => { 
+      this.mongooseChartDao.getConcurrencyChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, concurrencyMetricType).subscribe(
+        (chartPoints: ChartPoint[]) => { 
+          console.log(`Concurrency chart has been updated. Content: ${JSON.stringify(this.concurrencyChart.chartData[0])}`)
+          this.concurrencyChart.updateChart(loadStepId, chartPoints, concurrencyMetricType);
+        }
+      )
+    })
+    
   }
 
   private updateBandwidthChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {

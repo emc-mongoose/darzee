@@ -3,6 +3,7 @@ import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao
 import { MongooseTestChartDataset } from "../mongoose-chart-interface/mongoose-test-chart-dataset.model";
 import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
+import { NumbericMetricValueType } from "../mongoose-chart-interface/numeric-metric-value-type";
 
 /**
  * Concurrency chart for BasicChart component.
@@ -50,8 +51,22 @@ export class MongooseConcurrencyChart implements MongooseChart {
         this.configureChartOptions();
     }
 
-    updateChart(recordLoadStepId: string, metrics: ChartPoint[]) {
-        this.chartData[this.LAST_CONCURRENT_METRICS_DATASET_INDEX].data = metrics;
+    updateChart(recordLoadStepId: string, metrics: ChartPoint[], numericMetricValueType: NumbericMetricValueType) {
+        let chartIndex: number = undefined; 
+        switch (numericMetricValueType) { 
+            case (NumbericMetricValueType.LAST): { 
+                chartIndex = this.LAST_CONCURRENT_METRICS_DATASET_INDEX;
+                break;
+            }
+            case (NumbericMetricValueType.MEAN): { 
+                chartIndex = this.MEAN_CONCURRENT_METRICS_DATASET_INDEX;
+                break;
+            }
+            default: { 
+                throw new Error(`Unable to find specified metric type ${numericMetricValueType} for Concurrency chart.`);
+            }
+        }
+        this.chartData[chartIndex].data = metrics;
         let labels: string[] = [];
         for (var chartPoint of metrics) { 
             let timestamp = chartPoint.getX() as unknown; 
