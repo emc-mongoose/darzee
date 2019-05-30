@@ -37,7 +37,6 @@ export class ChartsProviderService {
 
   // MARK: - Public
 
-
   public getDurationChart(): MongooseDurationChart {
     return this.durationChart;
   }
@@ -58,12 +57,17 @@ export class ChartsProviderService {
     return this.concurrencyChart;
   }
 
-  public updateCharts(perdiodOfLatencyUpdateSeconds: number, loadStepId: string) {
-    this.updateDurationChart(perdiodOfLatencyUpdateSeconds, loadStepId);
-    this.updateLatencyChart(perdiodOfLatencyUpdateSeconds, loadStepId);
-    this.updateBandwidthChart(perdiodOfLatencyUpdateSeconds, loadStepId);
-    this.updateThoughputChart(perdiodOfLatencyUpdateSeconds, loadStepId);
-    this.updateConcurrencyChart(perdiodOfLatencyUpdateSeconds, loadStepId);
+  /**
+   * Update every existing chart within the service.
+   * @param perdiodOfUpdateSecs specification how far back in time values should be fetched, seconds 
+   * @param loadStepId Mongoose's run laod step identifier 
+   */
+  public updateCharts(perdiodOfUpdateSecs: number, loadStepId: string) {
+    this.updateDurationChart(perdiodOfUpdateSecs, loadStepId);
+    this.updateLatencyChart(perdiodOfUpdateSecs, loadStepId);
+    this.updateBandwidthChart(perdiodOfUpdateSecs, loadStepId);
+    this.updateThoughputChart(perdiodOfUpdateSecs, loadStepId);
+    this.updateConcurrencyChart(perdiodOfUpdateSecs, loadStepId);
   }
 
   public drawStatisCharts(secondsSinceCurrentDate: number, loadStepId: string) {
@@ -73,9 +77,9 @@ export class ChartsProviderService {
 
   // MARK: - Private
 
-  private updateLatencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
+  private updateLatencyChart(perdiodOfUpdateSecs: number, loadStepId: string) {
     Object.values(MetricValueType).forEach(latencyMetricType => {
-      this.mongooseChartDao.getLatencyChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, latencyMetricType).subscribe(
+      this.mongooseChartDao.getLatencyChartPoints(perdiodOfUpdateSecs, loadStepId, latencyMetricType).subscribe(
         (chartPoints: ChartPoint[]) => {
           this.latencyChart.updateChart(loadStepId, chartPoints, latencyMetricType);
         }
@@ -83,19 +87,19 @@ export class ChartsProviderService {
     });
   }
 
-  private updateDurationChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, metricValueType: MetricValueType = MetricValueType.MEAN) {
+  private updateDurationChart(perdiodOfUpdateSecs: number, loadStepId: string, metricValueType: MetricValueType = MetricValueType.MEAN) {
     // NOTE: Metric value type could be min ,max or mean 
     Object.values(MetricValueType).forEach(metricValueType => {
-      this.mongooseChartDao.getDurationChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, metricValueType).subscribe(
+      this.mongooseChartDao.getDurationChartPoints(perdiodOfUpdateSecs, loadStepId, metricValueType).subscribe(
         ((durationChartPoints: ChartPoint[]) => {
           this.durationChart.updateChart(loadStepId, durationChartPoints, metricValueType);
         }));
     });
   }
 
-  private updateConcurrencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, numericMetricValueType: NumericMetricValueType = NumericMetricValueType.LAST) {
+  private updateConcurrencyChart(perdiodOfUpdateSecs: number, loadStepId: string, numericMetricValueType: NumericMetricValueType = NumericMetricValueType.LAST) {
     Object.values(NumericMetricValueType).forEach(concurrencyMetricType => {
-      this.mongooseChartDao.getConcurrencyChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, concurrencyMetricType).subscribe(
+      this.mongooseChartDao.getConcurrencyChartPoints(perdiodOfUpdateSecs, loadStepId, concurrencyMetricType).subscribe(
         (chartPoints: ChartPoint[]) => {
           this.concurrencyChart.updateChart(loadStepId, chartPoints, concurrencyMetricType);
         }
@@ -104,9 +108,9 @@ export class ChartsProviderService {
 
   }
 
-  private updateBandwidthChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
+  private updateBandwidthChart(periodOfUpdateSecs: number, loadStepId: string) {
     Object.values(NumericMetricValueType).forEach(bandwidthMetricType => {
-      this.mongooseChartDao.getBandwidthChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, bandwidthMetricType).subscribe(
+      this.mongooseChartDao.getBandwidthChartPoints(periodOfUpdateSecs, loadStepId, bandwidthMetricType).subscribe(
         (chartPoints: ChartPoint[]) => {
           this.bandwidthChart.updateChart(loadStepId, chartPoints, bandwidthMetricType);
         }

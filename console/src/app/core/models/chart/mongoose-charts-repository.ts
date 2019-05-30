@@ -16,8 +16,6 @@ export class MongooseChartsRepository {
     // NOTE: determining whether the legend should be shown or not (depends on the boolean value)
     private readonly BASIC_MONGOOSE_CHART_LEGEND_MODE: boolean = true;
 
-
-
     private durationChart: MongooseDurationChart;
     private latencyChart: MongooseLatencyChart;
     private thoughputChart: MongooseThroughputChart;
