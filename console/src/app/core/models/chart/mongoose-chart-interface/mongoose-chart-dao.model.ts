@@ -29,34 +29,39 @@ export class MongooseChartDao {
         return this.getMatchingElapsedTimeForMetrics(periodInSeconds, loadStepId, concurrencyMetrics$);
     }
 
-    public getLatency(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
-        return this.chartDataProvider.getLatency(periodInSeconds, loadStepId, metricValueType).pipe(
-            map((metrics: MongooseMetric[]) => {
-                let internalMetricName = InternalMetricNames.LATENCY_MEAN;
-                switch (metricValueType) {
-                    case (MetricValueType.MAX): {
-                        internalMetricName = InternalMetricNames.LATENCY_MAX;
-                        break;
-                    }
-                    case (MetricValueType.MIN): {
-                        internalMetricName = InternalMetricNames.LATENCY_MIN;
-                        break;
-                    }
-                    case (MetricValueType.MEAN): {
-                        internalMetricName = InternalMetricNames.LATENCY_MEAN;
-                        break;
-                    }
-                    default: {
-                        throw new Error(`Internal metric name for metric type ${metricValueType} hasn't been found for latency.`)
-                    }
-                }
-                metrics.forEach(metric => {
-                    metric.setName(internalMetricName);
-                });
-                return metrics;
-            })
-        );
+    public getLatencyChartPoints(periodInSeconds: number, loadStepId: string, metricValue: MetricValueType): Observable<ChartPoint[]> { 
+        let latencyMetrics$: Observable<MongooseMetric[]> = this.chartDataProvider.getLatency(periodInSeconds, loadStepId, metricValue);
+        return this.getMatchingElapsedTimeForMetrics(periodInSeconds, loadStepId, latencyMetrics$);
     }
+
+    // public getLatency(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
+    //     return this.chartDataProvider.getLatency(periodInSeconds, loadStepId, metricValueType).pipe(
+    //         map((metrics: MongooseMetric[]) => {
+    //             let internalMetricName = InternalMetricNames.LATENCY_MEAN;
+    //             switch (metricValueType) {
+    //                 case (MetricValueType.MAX): {
+    //                     internalMetricName = InternalMetricNames.LATENCY_MAX;
+    //                     break;
+    //                 }
+    //                 case (MetricValueType.MIN): {
+    //                     internalMetricName = InternalMetricNames.LATENCY_MIN;
+    //                     break;
+    //                 }
+    //                 case (MetricValueType.MEAN): {
+    //                     internalMetricName = InternalMetricNames.LATENCY_MEAN;
+    //                     break;
+    //                 }
+    //                 default: {
+    //                     throw new Error(`Internal metric name for metric type ${metricValueType} hasn't been found for latency.`)
+    //                 }
+    //             }
+    //             metrics.forEach(metric => {
+    //                 metric.setName(internalMetricName);
+    //             });
+    //             return metrics;
+    //         })
+    //     );
+    // }
 
     /**
      * Provides metric from data provider. 
