@@ -136,16 +136,4 @@ export class ChartsProviderService {
     this.concurrencyChart = mongooseChartRepository.getConcurrencyChart();
   }
 
-  private getChartPointsFromMetric(mongooseMetrics: MongooseMetric[]): ChartPoint[] {
-    let chartPoints: ChartPoint[] = [];
-    for (let mongooseMetric of mongooseMetrics) {
-      const x: number = mongooseMetric.getTimestamp();
-      const y: number = new Number(mongooseMetric.getValue()) as number;
-      const chartPoint = new ChartPoint(x, y);
-
-      chartPoints.push(chartPoint);
-    }
-    return chartPoints;
-  }
-
 }
