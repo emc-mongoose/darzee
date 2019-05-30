@@ -1,10 +1,6 @@
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
 import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
-import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
-import { formatDate } from "@angular/common";
-import { MongooseMetric } from "../mongoose-metric.model";
-import { InternalMetricNames } from "../internal-metric-names";
 import { MongooseOperationResult } from "../mongoose-chart-interface/mongoose-operation-result-type";
 import { NumericMetricValueType } from "../mongoose-chart-interface/numeric-metric-value-type";
 import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
@@ -26,16 +22,14 @@ export class MongooseThroughputChart implements MongooseChart {
     chartLegend: boolean;
     chartData: MongooseChartDataset[];
     isChartDataValid: boolean;
-    mongooseChartDao: MongooseChartDao;
     shouldShiftChart: boolean;
 
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao, shouldShiftChart: boolean = false) {
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, shouldShiftChart: boolean = false) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
         this.chartLegend = chartLegend;
-        this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
         this.shouldShiftChart = shouldShiftChart;
 

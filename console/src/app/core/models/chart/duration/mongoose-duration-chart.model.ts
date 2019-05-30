@@ -1,7 +1,6 @@
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
 import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
-import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
 import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
 import { MetricValueType } from "../mongoose-chart-interface/metric-value-type";
 
@@ -19,17 +18,15 @@ export class MongooseDurationChart implements MongooseChart {
     chartType: string;
     chartLegend: boolean;
     chartData: MongooseChartDataset[];
-    mongooseChartDao: MongooseChartDao;
     isChartDataValid: boolean;
     shouldShiftChart: boolean;
 
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao, shouldShiftChart: boolean = false) {
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, shouldShiftChart: boolean = false) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
         this.chartLegend = chartLegend;
-        this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
         this.shouldShiftChart = shouldShiftChart;
 

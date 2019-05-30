@@ -16,7 +16,6 @@ export interface MongooseChart {
     isChartDataValid: boolean;
     shouldShiftChart: boolean;
 
-    mongooseChartDao: MongooseChartDao;
     /**
      * 
      * @param recordLoadStepId load step ID of metrics provided for chart.
