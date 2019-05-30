@@ -19,30 +19,35 @@ export class MongooseChartDao {
         this.chartDataProvider = dataProvider;
     }
 
-    public getDuration(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
-        return this.chartDataProvider.getDuration(periodInSeconds, loadStepId, metricValueType).pipe(
-            map((durationMetrics: MongooseMetric[]) => {
-                durationMetrics.forEach(metric => {
-                    let internalMetricName = InternalMetricNames.MEAN_DURATION;
-                    switch (metricValueType) {
-                        case (MetricValueType.MAX): {
-                            internalMetricName = InternalMetricNames.MAX_DURATION;
-                            break;
-                        }
-                        case (MetricValueType.MIN): {
-                            internalMetricName = InternalMetricNames.MIN_DURATION;
-                            break;
-                        }
-                        case (MetricValueType.MEAN): {
-                            internalMetricName = InternalMetricNames.MEAN_DURATION;
-                            break;
-                        }
-                    }
-                    metric.setName(internalMetricName);
-                });
-                return durationMetrics;
-            })
-        );
+    // public getDuration(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
+    //     return this.chartDataProvider.getDuration(periodInSeconds, loadStepId, metricValueType).pipe(
+    //         map((durationMetrics: MongooseMetric[]) => {
+    //             durationMetrics.forEach(metric => {
+    //                 let internalMetricName = InternalMetricNames.MEAN_DURATION;
+    //                 switch (metricValueType) {
+    //                     case (MetricValueType.MAX): {
+    //                         internalMetricName = InternalMetricNames.MAX_DURATION;
+    //                         break;
+    //                     }
+    //                     case (MetricValueType.MIN): {
+    //                         internalMetricName = InternalMetricNames.MIN_DURATION;
+    //                         break;
+    //                     }
+    //                     case (MetricValueType.MEAN): {
+    //                         internalMetricName = InternalMetricNames.MEAN_DURATION;
+    //                         break;
+    //                     }
+    //                 }
+    //                 metric.setName(internalMetricName);
+    //             });
+    //             return durationMetrics;
+    //         })
+    //     );
+    // }
+
+    public getDurationChartPoints(periodInSeconds: number, loadStepId: string, metricValue: MetricValueType): Observable<ChartPoint[]> {
+        let durationMetrics$: Observable<MongooseMetric[]> = this.chartDataProvider.getDuration(periodInSeconds, loadStepId, metricValue);
+        return this.getMatchingElapsedTimeForMetrics(periodInSeconds, loadStepId, durationMetrics$);
     }
 
     public getConcurrencyChartPoints(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<ChartPoint[]> {
@@ -50,15 +55,15 @@ export class MongooseChartDao {
         let elapsedTimeValues$: Observable<MongooseMetric[]> = this.chartDataProvider.getElapsedTimeValue(periodInSeconds, loadStepId);
 
         return forkJoin(concurrencyMetrics$, elapsedTimeValues$).pipe(
-            map((concurrencyChartData: any[]) => { 
+            map((concurrencyChartData: any[]) => {
                 const concurrencyMetricsIndex: number = 0;
                 const elapsedTimeMetricsIndex: number = 1;
 
                 let concurrencyValues: MongooseMetric[] = concurrencyChartData[concurrencyMetricsIndex];
                 let elapsedTimeMetricsValues: MongooseMetric[] = concurrencyChartData[elapsedTimeMetricsIndex];
 
-                let hasEnoughtValuesForChart: boolean = (concurrencyValues.length == elapsedTimeMetricsValues.length); 
-                if (!hasEnoughtValuesForChart) { 
+                let hasEnoughtValuesForChart: boolean = (concurrencyValues.length == elapsedTimeMetricsValues.length);
+                if (!hasEnoughtValuesForChart) {
                     throw new Error(`Unable to build concurrency chart due to lack of metrics. Concurrency metrics amount: ${concurrencyValues.length}, while matching time metrics amount of: ${elapsedTimeMetricsValues.length}`);
                 }
 
@@ -66,7 +71,7 @@ export class MongooseChartDao {
                 for (var i: number = 0; i < elapsedTimeMetricsValues.length; i++) {
                     let timestamp: MongooseMetric = elapsedTimeMetricsValues[i];
                     let concurrencyMetric: MongooseMetric = concurrencyValues[i];
-                    
+
                     let x: number = new Number(timestamp.getValue()) as number;
                     let y: number = new Number(concurrencyMetric.getValue()) as number;
                     let chartPoint: ChartPoint = new ChartPoint(x, y);
@@ -196,6 +201,38 @@ export class MongooseChartDao {
                     metric.setName(internalMetricName);
                 })
                 return metrics;
+            })
+        );
+    }
+
+    private getMatchingElapsedTimeForMetrics(periodInSeconds: number, loadStepId: string, metrics$: Observable<MongooseMetric[]>): Observable<ChartPoint[]> { 
+        let elapsedTimeValues$: Observable<MongooseMetric[]> = this.chartDataProvider.getElapsedTimeValue(periodInSeconds, loadStepId);
+
+        return forkJoin(metrics$, elapsedTimeValues$).pipe(
+            map((concurrencyChartData: any[]) => {
+                const metricsIndex: number = 0;
+                const elapsedTimeMetricsIndex: number = 1;
+
+                let concurrencyValues: MongooseMetric[] = concurrencyChartData[metricsIndex];
+                let elapsedTimeMetricsValues: MongooseMetric[] = concurrencyChartData[elapsedTimeMetricsIndex];
+
+                let hasEnoughtValuesForChart: boolean = (concurrencyValues.length == elapsedTimeMetricsValues.length);
+                if (!hasEnoughtValuesForChart) {
+                    throw new Error(`Unable to build concurrency chart due to lack of metrics. Concurrency metrics amount: ${concurrencyValues.length}, while matching time metrics amount of: ${elapsedTimeMetricsValues.length}`);
+                }
+
+                let concurrencyChartPoints: ChartPoint[] = [];
+                for (var i: number = 0; i < elapsedTimeMetricsValues.length; i++) {
+                    let timestamp: MongooseMetric = elapsedTimeMetricsValues[i];
+                    let concurrencyMetric: MongooseMetric = concurrencyValues[i];
+
+                    let x: number = new Number(timestamp.getValue()) as number;
+                    let y: number = new Number(concurrencyMetric.getValue()) as number;
+                    let chartPoint: ChartPoint = new ChartPoint(x, y);
+
+                    concurrencyChartPoints.push(chartPoint);
+                }
+                return concurrencyChartPoints;
             })
         );
     }

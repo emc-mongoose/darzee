@@ -12,9 +12,7 @@ export interface MongooseChart {
     chartLegend: boolean;
     // TODO: Change back to MongooseChartDataset[]
     chartData: any[];
-
-    //     chartData: MongooseChartDataset[];
-
+    
     isChartDataValid: boolean;
     shouldShiftChart: boolean;
 

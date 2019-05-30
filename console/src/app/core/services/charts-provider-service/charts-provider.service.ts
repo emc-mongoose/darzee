@@ -91,9 +91,9 @@ export class ChartsProviderService {
   private updateDurationChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, metricValueType: MetricValueType = MetricValueType.MEAN) {
     // NOTE: Metric value type could be min ,max or mean 
     Object.values(MetricValueType).forEach(metricValueType => {
-      this.mongooseChartDao.getDuration(perdiodOfLatencyUpdateSecs, loadStepId, metricValueType).subscribe(
-        ((durationMetrics: MongooseMetric[]) => {
-          this.durationChart.updateChart(loadStepId, durationMetrics);
+      this.mongooseChartDao.getDurationChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, metricValueType).subscribe(
+        ((durationChartPoints: ChartPoint[]) => {
+          // this.durationChart.updateChart(loadStepId, durationMetrics);
         }));
     })
   }
