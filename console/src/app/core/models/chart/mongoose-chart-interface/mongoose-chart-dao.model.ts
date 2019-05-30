@@ -19,32 +19,6 @@ export class MongooseChartDao {
         this.chartDataProvider = dataProvider;
     }
 
-    // public getDuration(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
-    //     return this.chartDataProvider.getDuration(periodInSeconds, loadStepId, metricValueType).pipe(
-    //         map((durationMetrics: MongooseMetric[]) => {
-    //             durationMetrics.forEach(metric => {
-    //                 let internalMetricName = InternalMetricNames.MEAN_DURATION;
-    //                 switch (metricValueType) {
-    //                     case (MetricValueType.MAX): {
-    //                         internalMetricName = InternalMetricNames.MAX_DURATION;
-    //                         break;
-    //                     }
-    //                     case (MetricValueType.MIN): {
-    //                         internalMetricName = InternalMetricNames.MIN_DURATION;
-    //                         break;
-    //                     }
-    //                     case (MetricValueType.MEAN): {
-    //                         internalMetricName = InternalMetricNames.MEAN_DURATION;
-    //                         break;
-    //                     }
-    //                 }
-    //                 metric.setName(internalMetricName);
-    //             });
-    //             return durationMetrics;
-    //         })
-    //     );
-    // }
-
     public getDurationChartPoints(periodInSeconds: number, loadStepId: string, metricValue: MetricValueType): Observable<ChartPoint[]> {
         let durationMetrics$: Observable<MongooseMetric[]> = this.chartDataProvider.getDuration(periodInSeconds, loadStepId, metricValue);
         return this.getMatchingElapsedTimeForMetrics(periodInSeconds, loadStepId, durationMetrics$);

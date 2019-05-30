@@ -93,7 +93,7 @@ export class ChartsProviderService {
     Object.values(MetricValueType).forEach(metricValueType => {
       this.mongooseChartDao.getDurationChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, metricValueType).subscribe(
         ((durationChartPoints: ChartPoint[]) => {
-          // this.durationChart.updateChart(loadStepId, durationMetrics);
+          this.durationChart.updateChart(loadStepId, durationChartPoints, metricValueType);
         }));
     })
   }
