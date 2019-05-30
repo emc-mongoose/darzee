@@ -104,20 +104,13 @@ export class ChartsProviderService {
   }
 
   private updateBandwidthChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    let bandwidthMetricPool$: any[] = [];
-    let meanBandwidthMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getBandWidth(perdiodOfLatencyUpdateSecs, loadStepId, NumericMetricValueType.MEAN);
-    bandwidthMetricPool$.push(meanBandwidthMetrics$);
 
-    let lastBandwidthMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getBandWidth(perdiodOfLatencyUpdateSecs, loadStepId, NumericMetricValueType.LAST);
-    bandwidthMetricPool$.push(lastBandwidthMetrics$);
-
-    forkJoin(...bandwidthMetricPool$).subscribe((byteRateMetricCollections: [MongooseMetric[]]) => {
-      // NOTE: Concatenating fetched metrics because of the updateChart() function specification.
-      let fetchedByteRateMetrics: MongooseMetric[] = [];
-      for (var byteRateCollection of byteRateMetricCollections) {
-        fetchedByteRateMetrics = fetchedByteRateMetrics.concat(byteRateCollection);
-      }
-      this.bandwidthChart.updateChart(loadStepId, fetchedByteRateMetrics);
+    Object.values(NumericMetricValueType).forEach(bandwidthMetricType => {
+      this.mongooseChartDao.getBandwidthChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, bandwidthMetricType).subscribe(
+        (chartPoints: ChartPoint[]) => {
+          this.concurrencyChart.updateChart(loadStepId, chartPoints, bandwidthMetricType);
+        }
+      )
     });
   }
 

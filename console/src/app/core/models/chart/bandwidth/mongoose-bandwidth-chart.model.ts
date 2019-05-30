@@ -5,6 +5,8 @@ import { formatDate } from "@angular/common";
 import { MongooseMetric } from "../mongoose-metric.model";
 import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
 import { InternalMetricNames } from "../internal-metric-names";
+import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
+import { NumericMetricValueType } from "../mongoose-chart-interface/numeric-metric-value-type";
 
 /**
  * Bandwidth chart for BasicChart component.
@@ -38,36 +40,29 @@ export class MongooseBandwidthChart implements MongooseChart {
         this.configureChartOptions();
     }
 
-    updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
-        var meanBandwidthChartValues: string[] = [];
-        var lastBandwidthChartValues: string[] = [];
-        var bandwidthChartTimeLabels: string[] = []
-        metrics.forEach((metric: MongooseMetric) => {
-            const metricName = metric.getName();
-            let metricValue = metric.getValue();
-
-            switch (metricName) {
-                case (InternalMetricNames.BANDWIDTH_LAST): {
-                    lastBandwidthChartValues.push(metricValue);
-                    break;
-                }
-                case (InternalMetricNames.BANDWIDTH_MEAN): {
-                    meanBandwidthChartValues.push(metricValue);
-                    bandwidthChartTimeLabels.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
-
-                    break;
-                }
-                default: {
-                    console.error(`Unable to find matching internal name for bandwidth metric ${metricName}`);
-                    return;
-                }
+    updateChart(recordLoadStepId: string, metrics: ChartPoint[], numericMetricValueType: NumericMetricValueType) {
+        let chartIndex: number = undefined;
+        switch (numericMetricValueType) {
+            case (NumericMetricValueType.LAST): {
+                chartIndex = this.LAST_BANDWIDTH_DATASET_INDEX;
+                break;
             }
+            case (NumericMetricValueType.MEAN): {
+                chartIndex = this.MEAN_BANDWIDTH_DATASET_INDEX;
+                break;
+            }
+            default: {
+                throw new Error(`Unable to find specified metric type ${numericMetricValueType} for Concurrency chart.`);
+            }
+        }
 
-        });
-        this.chartData[this.MEAN_BANDWIDTH_DATASET_INDEX].setChartData(meanBandwidthChartValues);
-        this.chartData[this.LAST_BANDWIDTH_DATASET_INDEX].setChartData(lastBandwidthChartValues);
-
-        this.chartLabels = bandwidthChartTimeLabels;
+        this.chartData[chartIndex].data = metrics;
+        let labels: string[] = [];
+        for (var chartPoint of metrics) {
+            let timestamp = chartPoint.getX() as unknown;
+            labels.push(timestamp as string);
+        }
+        this.chartLabels = labels;
     }
 
     shouldDrawChart(): boolean {
