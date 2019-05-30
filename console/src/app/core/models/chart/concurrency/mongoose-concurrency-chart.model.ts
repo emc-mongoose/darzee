@@ -1,8 +1,8 @@
-import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
-import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
-import { MongooseTestChartDataset } from "../mongoose-chart-interface/mongoose-test-chart-dataset.model";
-import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
+import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
+import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
+import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
+import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
 import { NumericMetricValueType } from "../mongoose-chart-interface/numeric-metric-value-type";
 
 /**
@@ -23,7 +23,7 @@ export class MongooseConcurrencyChart implements MongooseChart {
     chartLabels: string[];
     chartType: string;
     chartLegend: boolean;
-    chartData: MongooseTestChartDataset[];
+    chartData: MongooseChartDataset[];
 
     mongooseChartDao: MongooseChartDao;
     isChartDataValid: boolean;
@@ -39,10 +39,10 @@ export class MongooseConcurrencyChart implements MongooseChart {
         this.isChartDataValid = true;
         this.shouldShiftChart = shouldShiftChart;
 
-        let concurrencyLastDatasetInitialValue = new MongooseTestChartDataset([], 'Concurrency, last');
-        let concurrentMeanDatasetInitialValue = new MongooseTestChartDataset([], "Concurrent, mean");
+        let concurrencyLastDatasetInitialValue = new MongooseChartDataset([], 'Concurrency, last');
+        let concurrentMeanDatasetInitialValue = new MongooseChartDataset([], "Concurrent, mean");
 
-        var concurrencyChartDataset: MongooseTestChartDataset[] = [];
+        var concurrencyChartDataset: MongooseChartDataset[] = [];
         concurrencyChartDataset.push(concurrencyLastDatasetInitialValue);
         concurrencyChartDataset.push(concurrentMeanDatasetInitialValue);
 
