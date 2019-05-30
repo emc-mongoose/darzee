@@ -66,9 +66,8 @@ export class MongooseDurationChart implements MongooseChart {
                 chartLineIndex = this.MIN_DURATION_DATASET_INDEX;
                 break;
             }
-            default: { 
-                throw new Error(`Unable to find specified metric type ${metricType} for duration chart.`);
-
+            default: {
+                throw new Error(`Unable to find specified metric type ${metricType} for Duration chart.`);
             }
         }
         this.chartData[chartLineIndex].data = metrics;

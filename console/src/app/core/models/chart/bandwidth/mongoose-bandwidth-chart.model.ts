@@ -52,7 +52,7 @@ export class MongooseBandwidthChart implements MongooseChart {
                 break;
             }
             default: {
-                throw new Error(`Unable to find specified metric type ${numericMetricValueType} for Concurrency chart.`);
+                throw new Error(`Unable to find specified metric type ${numericMetricValueType} for Bandwidth chart.`);
             }
         }
 

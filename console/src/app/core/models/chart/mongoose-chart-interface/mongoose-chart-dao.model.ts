@@ -6,6 +6,7 @@ import { InternalMetricNames } from '../internal-metric-names';
 import { MetricValueType } from './metric-value-type';
 import { NumericMetricValueType } from './numeric-metric-value-type';
 import { ChartPoint } from './chart-point.model';
+import { MongooseOperationResult } from './mongoose-operation-result-type';
 
 /**
  * Data access object for Mongoose charts' related data. 
@@ -37,6 +38,19 @@ export class MongooseChartDao {
     public getBandwidthChartPoints(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<ChartPoint[]> { 
         let bandwidthMetrics$: Observable<MongooseMetric[]> = this.chartDataProvider.getBandWidth(periodInSeconds, loadStepId, numericMetricValueType);
         return this.getMatchingElapsedTimeForMetrics(periodInSeconds, loadStepId, bandwidthMetrics$);
+    }
+
+    public getThroughtputChartPoints(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType, operationResultType: MongooseOperationResult): Observable<ChartPoint[]> { 
+
+        let throughtputMetrics$: Observable<MongooseMetric[]> = undefined; 
+        const isSuccessfulOperation: boolean = (operationResultType == MongooseOperationResult.SUCCESSFUL);
+        if (isSuccessfulOperation) { 
+            throughtputMetrics$ = this.chartDataProvider.getAmountOfSuccessfulOperations(periodInSeconds, loadStepId, numericMetricValueType);
+        } else { 
+            throughtputMetrics$ = this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId, numericMetricValueType);
+        }
+
+        return this.getMatchingElapsedTimeForMetrics(periodInSeconds, loadStepId, throughtputMetrics$);
     }
 
     /**

@@ -60,7 +60,7 @@ export class MongooseLatencyChart implements MongooseChart {
                 break;
             }
             default: { 
-                throw new Error(`Unable to find specified metric type ${metricType} for duration chart.`);
+                throw new Error(`Unable to find specified metric type ${metricType} for Latency chart.`);
 
             }
         }

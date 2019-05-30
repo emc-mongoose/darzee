@@ -73,8 +73,6 @@ export class MongooseConcurrencyChart implements MongooseChart {
             labels.push(timestamp as string);
         }
         this.chartLabels = labels;
-
-
     }
 
     public shouldDrawChart(): boolean {

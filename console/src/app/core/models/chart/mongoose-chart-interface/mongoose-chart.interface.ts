@@ -12,7 +12,7 @@ export interface MongooseChart {
     chartLegend: boolean;
     // TODO: Change back to MongooseChartDataset[]
     chartData: any[];
-    
+
     isChartDataValid: boolean;
     shouldShiftChart: boolean;
 
@@ -23,7 +23,7 @@ export interface MongooseChart {
      * @param metrics array of data for chart.
      * @param metricType type of metric (e.g.: min, mean, max, last, etc.)
      */
-    updateChart(recordLoadStepId: string, metrics: ChartPoint[] | MongooseMetric[], metricType?: MetricValueType | NumericMetricValueType);
+    updateChart(recordLoadStepId: string, metrics: ChartPoint[] | MongooseMetric[], metricType?: MetricValueType | NumericMetricValueType, ...additionalChartParameters: any);
 
     shouldDrawChart(): boolean;
 }
