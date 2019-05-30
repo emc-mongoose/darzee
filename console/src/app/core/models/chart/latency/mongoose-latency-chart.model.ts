@@ -45,10 +45,6 @@ export class MongooseLatencyChart implements MongooseChart {
 
     updateChart(recordLoadStepId: string, metrics: ChartPoint[], metricType: MetricValueType) {
 
-        var maxLatencyMetricValues = [];
-        var minLatencyMetricValues = [];
-        var meanLatencyMetricValues = [];
-
         let chartLineIndex: number = undefined;
         switch (metricType) {
             case (MetricValueType.MEAN): {
@@ -77,38 +73,6 @@ export class MongooseLatencyChart implements MongooseChart {
             labels.push(timestamp as string);
         }
         this.chartLabels = labels;
-
-
-        // var latencyChartTimestamps: string[] = [];
-
-        // let maxLatencyMetricName = InternalMetricNames.LATENCY_MAX;
-        // let minLatencyMetricName = InternalMetricNames.LATENCY_MIN;
-        // let meanLatencyMetricName = InternalMetricNames.LATENCY_MEAN;
-        // metrics.forEach(metric => {
-        //     let metricValue: string = metric.getValue();
-        //     let metricName: string = metric.getName();
-        //     switch (metricName) {
-        //         case maxLatencyMetricName: {
-        //             maxLatencyMetricValues.push(metricValue);
-        //             break;
-        //         }
-        //         case minLatencyMetricName: {
-        //             let metricTimestamp: string = formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US');
-        //             latencyChartTimestamps.push(metricTimestamp);
-        //             minLatencyMetricValues.push(metricValue);
-        //             break;
-        //         }
-        //         case meanLatencyMetricName: {
-        //             meanLatencyMetricValues.push(metricValue);
-        //             break;
-        //         }
-        //     }
-        // });
-
-        // this.chartLabels = latencyChartTimestamps;
-        // this.chartData[this.MAX_LATENCY_DATASET_INDEX].setChartData(maxLatencyMetricValues);
-        // this.chartData[this.MIN_LATENCY_DATASET_INDEX].setChartData(minLatencyMetricValues);
-        // this.chartData[this.MEAN_LATENCY_DATASET_INDEX].setChartData(maxLatencyMetricValues);
     }
 
     shouldDrawChart(): boolean {
