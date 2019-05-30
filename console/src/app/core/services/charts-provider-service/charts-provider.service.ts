@@ -108,7 +108,7 @@ export class ChartsProviderService {
     Object.values(NumericMetricValueType).forEach(bandwidthMetricType => {
       this.mongooseChartDao.getBandwidthChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, bandwidthMetricType).subscribe(
         (chartPoints: ChartPoint[]) => {
-          this.concurrencyChart.updateChart(loadStepId, chartPoints, bandwidthMetricType);
+          this.bandwidthChart.updateChart(loadStepId, chartPoints, bandwidthMetricType);
         }
       )
     });
