@@ -3,7 +3,6 @@ import { MongooseChartOptions, MongooseChartAxesType } from "./mongoose-chart-in
 import { MongooseLatencyChart } from "./latency/mongoose-latency-chart.model";
 import { MongooseThroughputChart } from "./throughput/mongoose-throughput-chart.model";
 import { MongooseBandwidthChart } from "./bandwidth/mongoose-bandwidth-chart.model";
-import { MongooseChartDao } from "./mongoose-chart-interface/mongoose-chart-dao.model";
 import { MongooseConcurrencyChart } from "./concurrency/mongoose-concurrency-chart.model";
 
 /**
@@ -17,7 +16,7 @@ export class MongooseChartsRepository {
     // NOTE: determining whether the legend should be shown or not (depends on the boolean value)
     private readonly BASIC_MONGOOSE_CHART_LEGEND_MODE: boolean = true;
 
-    private mongooseChartDao: MongooseChartDao;
+
 
     private durationChart: MongooseDurationChart;
     private latencyChart: MongooseLatencyChart;
@@ -25,8 +24,7 @@ export class MongooseChartsRepository {
     private bandwidthChart: MongooseBandwidthChart;
     private concurrencyChart: MongooseConcurrencyChart;
 
-    constructor(mongooseChartDao: MongooseChartDao) {
-        this.mongooseChartDao = mongooseChartDao;
+    constructor() {
         this.setUpCharts();
     }
 

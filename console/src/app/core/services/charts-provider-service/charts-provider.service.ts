@@ -127,7 +127,7 @@ export class ChartsProviderService {
   }
 
   private configureMongooseCharts() {
-    let mongooseChartRepository = new MongooseChartsRepository(this.mongooseChartDao);
+    let mongooseChartRepository = new MongooseChartsRepository();
 
     this.durationChart = mongooseChartRepository.getDurationChart();
     this.latencyChart = mongooseChartRepository.getLatencyChart();
