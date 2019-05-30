@@ -26,35 +26,7 @@ export class MongooseChartDao {
 
     public getConcurrencyChartPoints(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<ChartPoint[]> {
         let concurrencyMetrics$: Observable<MongooseMetric[]> = this.chartDataProvider.getConcurrency(periodInSeconds, loadStepId, numericMetricValueType);
-        let elapsedTimeValues$: Observable<MongooseMetric[]> = this.chartDataProvider.getElapsedTimeValue(periodInSeconds, loadStepId);
-
-        return forkJoin(concurrencyMetrics$, elapsedTimeValues$).pipe(
-            map((concurrencyChartData: any[]) => {
-                const concurrencyMetricsIndex: number = 0;
-                const elapsedTimeMetricsIndex: number = 1;
-
-                let concurrencyValues: MongooseMetric[] = concurrencyChartData[concurrencyMetricsIndex];
-                let elapsedTimeMetricsValues: MongooseMetric[] = concurrencyChartData[elapsedTimeMetricsIndex];
-
-                let hasEnoughtValuesForChart: boolean = (concurrencyValues.length == elapsedTimeMetricsValues.length);
-                if (!hasEnoughtValuesForChart) {
-                    throw new Error(`Unable to build concurrency chart due to lack of metrics. Concurrency metrics amount: ${concurrencyValues.length}, while matching time metrics amount of: ${elapsedTimeMetricsValues.length}`);
-                }
-
-                let concurrencyChartPoints: ChartPoint[] = [];
-                for (var i: number = 0; i < elapsedTimeMetricsValues.length; i++) {
-                    let timestamp: MongooseMetric = elapsedTimeMetricsValues[i];
-                    let concurrencyMetric: MongooseMetric = concurrencyValues[i];
-
-                    let x: number = new Number(timestamp.getValue()) as number;
-                    let y: number = new Number(concurrencyMetric.getValue()) as number;
-                    let chartPoint: ChartPoint = new ChartPoint(x, y);
-
-                    concurrencyChartPoints.push(chartPoint);
-                }
-                return concurrencyChartPoints;
-            })
-        );
+        return this.getMatchingElapsedTimeForMetrics(periodInSeconds, loadStepId, concurrencyMetrics$);
     }
 
     public getLatency(periodInSeconds: number, loadStepId: string, metricValueType: MetricValueType): Observable<MongooseMetric[]> {
