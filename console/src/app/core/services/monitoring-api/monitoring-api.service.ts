@@ -16,6 +16,7 @@ import { ResourceLoader } from "@angular/compiler";
 import { ResourceLocatorType } from "../../models/address-type";
 import { MongooseRunNode } from "../../models/mongoose-run-node.model";
 import { PrometheusError } from "src/app/common/Exceptions/PrometheusError";
+import { MongooseMetric } from "../../models/chart/mongoose-metric.model";
 
 
 @Injectable({
@@ -111,13 +112,23 @@ export class MonitoringApiService {
     var targetLabels = new Map<String, String>();
     targetLabels.set(targetMetricLabels, targetRecord.getLoadStepId());
 
-    return this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels).pipe(
-      map(runRecordsResponse => {
-        let prometheusQueryResult = this.extractRunRecordsFromMetricLabels(runRecordsResponse);
-        let firstElementIndex = 0;
-        return prometheusQueryResult[firstElementIndex].getDuration();
+    const latestValueTmePeriod: number = 0;
+    return this.prometheusApiService.getElapsedTimeValue(latestValueTmePeriod, targetRecord.getLoadStepId() as string).pipe(
+      map((rawDurationMetric: MongooseMetric[]) => { 
+        const firstValueIndex: number = 0;
+        const duration: string = rawDurationMetric[firstValueIndex].getValue();
+        console.log(`Fetched duration is: ${duration}`)
+        return duration;
       })
-    )
+    );
+
+    // return this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels).pipe(
+    //   map(runRecordsResponse => {
+    //     let prometheusQueryResult = this.extractRunRecordsFromMetricLabels(runRecordsResponse);
+    //     let firstElementIndex = 0;
+    //     return prometheusQueryResult[firstElementIndex].getDuration();
+    //   })
+    // )
   }
 
   public getLogApiEndpoint(displayingLogName: String): String {
