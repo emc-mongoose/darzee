@@ -17,7 +17,7 @@ export class MongooseConcurrencyChart implements MongooseChart {
      */
 
     private readonly Y_AXIS_CHART_TITLE: string = "Concurrency value";
-    private readonly X_AXIS_CHART_TITLE: string = "Seconds";
+    private readonly X_AXIS_CHART_TITLE: string = MongooseChartOptions.ELAPSED_TIME_AXES_DEFAULT_TAG;
 
     private readonly MEAN_CONCURRENT_METRICS_DATASET_INDEX = 0;
     private readonly LAST_CONCURRENT_METRICS_DATASET_INDEX = 1;
