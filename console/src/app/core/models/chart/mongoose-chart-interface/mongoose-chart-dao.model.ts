@@ -49,10 +49,16 @@ export class MongooseChartDao {
         } else { 
             throughtputMetrics$ = this.chartDataProvider.getAmountOfFailedOperations(periodInSeconds, loadStepId, numericMetricValueType);
         }
-
         return this.getMatchingElapsedTimeForMetrics(periodInSeconds, loadStepId, throughtputMetrics$);
     }
 
+    /**
+     * Assigns time points to provided run's @param metrics$ 
+     * @param periodInSeconds specification how far back in time values should be fetched, seconds 
+     * @param loadStepId run's load step ID
+     * @param metrics$ fetched metrics. Those metris will be used as OY values.
+     * @returns Chart point. OX metrics is run's elapsed time, OY is @param metrics$.
+     */
     private getMatchingElapsedTimeForMetrics(periodInSeconds: number, loadStepId: string, metrics$: Observable<MongooseMetric[]>): Observable<ChartPoint[]> { 
         let elapsedTimeValues$: Observable<MongooseMetric[]> = this.chartDataProvider.getElapsedTimeValue(periodInSeconds, loadStepId);
 
@@ -70,6 +76,9 @@ export class MongooseChartDao {
                 }
 
                 let concurrencyChartPoints: ChartPoint[] = [];
+                let initialPoint: ChartPoint = this.getInitialChartPoint();
+                concurrencyChartPoints.push(initialPoint);
+
                 for (var i: number = 0; i < elapsedTimeMetricsValues.length; i++) {
                     let timestamp: MongooseMetric = elapsedTimeMetricsValues[i];
                     let concurrencyMetric: MongooseMetric = concurrencyValues[i];
@@ -83,6 +92,15 @@ export class MongooseChartDao {
                 return concurrencyChartPoints;
             })
         );
+    }
+
+    /**
+     * @returns (0; 0) chart point 
+     */
+    private getInitialChartPoint(): ChartPoint { 
+        const initialX: number = 0;
+        const initialY: number = 0;
+        return new ChartPoint(initialX ,initialY);
     }
 
 }
