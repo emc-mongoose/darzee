@@ -12,9 +12,10 @@ export class MongooseDurationChart implements MongooseChart {
     private readonly Y_AXIS_CHART_TITLE: string = "Milliseconds";
     private readonly X_AXIS_CHART_TITLE: string = "Seconds";
 
-    private readonly MEAN_DURATION_DATASET_INDEX = 0;
-    private readonly MIN_DURATION_DATASET_INDEX = 1;
-    private readonly MAX_DURATION_DATASET_INDEX = 2;
+    private readonly MIN_DURATION_DATASET_INDEX = 0;
+    private readonly MAX_DURATION_DATASET_INDEX = 1;
+    private readonly MEAN_DURATION_DATASET_INDEX = 2;
+
 
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
@@ -33,14 +34,15 @@ export class MongooseDurationChart implements MongooseChart {
         this.isChartDataValid = true;
         this.shouldShiftChart = shouldShiftChart;
 
-        let durationChartDatasetInitialValue = new MongooseChartDataset([], 'Mean duration');
         let minDurationChartDatasetInitialValue = new MongooseChartDataset([], "Min duration");
         let maxDurationChartDatasetInitialValue = new MongooseChartDataset([], "Max duration");
+        let durationChartDatasetInitialValue = new MongooseChartDataset([], 'Mean duration');
+
 
         var durationChartDataset: MongooseChartDataset[] = [];
-        durationChartDataset.push(durationChartDatasetInitialValue);
         durationChartDataset.push(minDurationChartDatasetInitialValue);
         durationChartDataset.push(maxDurationChartDatasetInitialValue);
+        durationChartDataset.push(durationChartDatasetInitialValue);
 
         this.chartData = durationChartDataset;
 
@@ -88,14 +90,10 @@ export class MongooseDurationChart implements MongooseChart {
     }
 
     private configureChartOptions() {
-        const redColorRgb: string = "rgb(255, 0, 0)";
-        this.chartData[this.MAX_DURATION_DATASET_INDEX].setChartColor(redColorRgb);
-
-        const darkOrangeColorRgb: string = "rgb(255,140,0)";
-        this.chartData[this.MEAN_DURATION_DATASET_INDEX].setChartColor(darkOrangeColorRgb);
-
-        const greenColorRgb: string = "rgb(46, 204, 113)";
-        this.chartData[this.MIN_DURATION_DATASET_INDEX].setChartColor(greenColorRgb);
+        
+        this.chartData[this.MAX_DURATION_DATASET_INDEX].setChartColor(MongooseChartOptions.MAX_VALUE_DEFAULT_COLOR_RGB);
+        this.chartData[this.MEAN_DURATION_DATASET_INDEX].setChartColor(MongooseChartOptions.MEAN_VALUE_DEFAULT_COLOR_RGB);
+        this.chartData[this.MIN_DURATION_DATASET_INDEX].setChartColor(MongooseChartOptions.MIN_VALUE_DEFAUT_COLOR_RGB);
 
         let chartTitle: string = "Mongoose's operations duration, milliseconds per second";
         this.chartOptions.setChartTitle(chartTitle);
