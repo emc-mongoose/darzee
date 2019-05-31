@@ -16,6 +16,7 @@ import { ResourceLoader } from "@angular/compiler";
 import { ResourceLocatorType } from "../../models/address-type";
 import { MongooseRunNode } from "../../models/mongoose-run-node.model";
 import { PrometheusError } from "src/app/common/Exceptions/PrometheusError";
+import { MongooseMetric } from "../../models/chart/mongoose-metric.model";
 
 
 @Injectable({
@@ -98,26 +99,16 @@ export class MonitoringApiService {
   }
 
   // NOTE: Fetching duration for the target run record 
-  public getDuration(targetRecord: MongooseRunRecord): Observable<any> {
+  public getDuration(loadStepId: string): Observable<any> {
 
-    // NOTE: Duration won't change if Mongoose run has finished. 
-    if (targetRecord.getStatus() == MongooseRunStatus.Finished) {
-      return;
-    }
-
-    let targetMetrics = MongooseMetrics.PrometheusMetrics.DURATION;
-    let targetMetricLabels = MongooseMetrics.PrometheusMetricLabels.ID;
-
-    var targetLabels = new Map<String, String>();
-    targetLabels.set(targetMetricLabels, targetRecord.getLoadStepId());
-
-    return this.prometheusApiService.getDataForMetricWithLabels(targetMetrics, targetLabels).pipe(
-      map(runRecordsResponse => {
-        let prometheusQueryResult = this.extractRunRecordsFromMetricLabels(runRecordsResponse);
-        let firstElementIndex = 0;
-        return prometheusQueryResult[firstElementIndex].getDuration();
+    const latestValueTmePeriod: number = 0;
+    return this.prometheusApiService.getElapsedTimeValue(latestValueTmePeriod, loadStepId).pipe(
+      map((rawDurationMetric: MongooseMetric[]) => { 
+        const lastFoundValueIndex: number = rawDurationMetric.length - 1;
+        const duration: string = rawDurationMetric[lastFoundValueIndex].getValue();
+        return duration;
       })
-    )
+    );
   }
 
   public getLogApiEndpoint(displayingLogName: String): String {
@@ -187,6 +178,7 @@ export class MonitoringApiService {
       map(
         metricsArray => {
           let runRecords: MongooseRunRecord[] = this.extractRunRecordsFromMetricLabels(metricsArray);
+
           // NOTE: Records are being sorted for order retaining. This ...
           // ... is useful while updating Run Records table. 
           runRecords = this.sortMongooseRecordsByStartTime(runRecords);
@@ -255,8 +247,7 @@ export class MonitoringApiService {
       let computedRunData = rawMongooseRunData[processingRunIndex][valuesTag];
 
       // MARK: - Retrieving computed data.
-      let durationIndex = 1;
-      let duration = computedRunData[durationIndex];
+      let duration$: Observable<any> = this.getDuration(loadStepId);
 
       let entryNode = undefined;
       try {
@@ -268,7 +259,7 @@ export class MonitoringApiService {
       }
       const mongooseRunStatus$ = this.getStatusForMongooseRecord(entryNode);
 
-      let currentRunRecord = new MongooseRunRecord(loadStepId, mongooseRunStatus$, startTime, nodesList, duration, userComment, entryNode);
+      let currentRunRecord = new MongooseRunRecord(loadStepId, mongooseRunStatus$, startTime, nodesList, duration$, userComment, entryNode);
       runRecords.push(currentRunRecord);
     }
 

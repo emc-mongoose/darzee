@@ -1,33 +1,35 @@
 <table class="table">
 
-     <!-- MARK: - Column headers -->
+  <!-- MARK: - Column headers -->
 
-    <thead class="thead-light">
-      <tr>
-        <th scope="col" *ngFor="let header of columnHeaders"> {{ header }} </th>
-      </tr>
-    </thead>
+  <thead class="thead-light">
+    <tr>
+      <th scope="col" *ngFor="let header of columnHeaders" style="white-space: nowrap;">
+          <p style="word-wrap: break-word; width: 100%"> {{ header }} </p>
 
-   <!-- MARK: - Column content -->
+      </th>
+    </tr>
+  </thead>
 
-    <tbody>
-      <tr *ngFor="let runRecord of mongooseRunRecords">
-        <th scope="row"> 
-          <app-mongoose-run-status-icon [runStatus]="runRecord.getStatus()"
-           (click)="onRunStatusIconClicked(runRecord)">
-              {{ runRecord.getStatus() }}
-              
-          </app-mongoose-run-status-icon>
-        </th>
+  <!-- MARK: - Column content -->
 
-        <td> {{ this.getDisplayingTimeForRecord(runRecord) }} </td>
-        <td> 
-          <a *ngFor="let node of runRecord.getNodesList()">
-            {{ node }}
-          </a>
-        </td>
-        <td> {{ runRecord.getDuration() }} </td>
-        <td> {{ runRecord.getComment() }} </td>
-      </tr>
-    </tbody>
-  </table>
+  <tbody>
+    <tr *ngFor="let runRecord of mongooseRunRecords">
+      <th scope="row">
+        <app-mongoose-run-status-icon [runStatus]="runRecord.getStatus()" (click)="onRunStatusIconClicked(runRecord)">
+          {{ runRecord.getStatus() }}
+
+        </app-mongoose-run-status-icon>
+      </th>
+
+      <td> {{ this.getDisplayingTimeForRecord(runRecord) }} </td>
+      <td>
+        <a *ngFor="let node of runRecord.getNodesList()">
+          {{ node }}
+        </a>
+      </td>
+      <td> {{ runRecord.getDuration() }} </td>
+      <td> {{ runRecord.getComment() }} </td>
+    </tr>
+  </tbody>
+</table>

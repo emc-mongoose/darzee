@@ -21,7 +21,7 @@ export class RunsTableComponent implements OnInit {
     "Status",
     "Start time",
     "Nodes",
-    "Duration",
+    "Duration [s]",
     "Comment"
   ];
 

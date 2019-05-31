@@ -84,7 +84,7 @@ export class LocalStorageService {
     })[firstFoundEntryIndex] || "";
     let matchingEntryNodeAddress: string = MongooseRunEntryNode.EMPTY_ADDRESS;
     try {
-      let matchingEntryNodeInstance = this.getEntryNodeFromObject(matchingEntryFromLocalStorage);
+      let matchingEntryNodeInstance: MongooseRunEntryNode = this.getEntryNodeFromObject(matchingEntryFromLocalStorage);
       matchingEntryNodeAddress = matchingEntryNodeInstance.getEntryNodeAddress();
     } catch (castException) {
       console.error(`Unable to cast object to entry node.`);

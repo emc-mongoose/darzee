@@ -18,7 +18,7 @@ export class HttpUtils {
         const localhostKeyword: string = HttpUtils.LOCALHOST_KEYWORD;
         const hasLocalhostKeyword: boolean = ipAddress.includes(localhostKeyword);
         if (!hasLocalhostKeyword) {
-            console.error(`${ipAddress} doesn't contain any key words and will be trated as an IP address to be checked.`)
+            // console.error(`${ipAddress} doesn't contain any key words and will be trated as an IP address to be checked.`)
             let ipValidationRegex: RegExp = new RegExp(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
             return ipValidationRegex.test(ipAddress);
         }
