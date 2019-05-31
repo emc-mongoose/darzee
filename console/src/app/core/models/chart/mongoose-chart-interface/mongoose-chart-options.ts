@@ -6,10 +6,13 @@ export class MongooseChartOptions {
     private static readonly DARK_ORANGE_COLOR_RGB: string = "rgb(255,140,0)";
     private static readonly RED_COLOR_RGB: string = "rgb(255, 0, 0)";
     private static readonly GREEN_COLOR_RGB: string = "rgb(46, 204, 113)";
+    private static readonly MEDIUM_BLUE_COLOR_RGB: string = "rgb(0,0,205)";;
 
     public static readonly MEAN_VALUE_DEFAULT_COLOR_RGB = MongooseChartOptions.DARK_ORANGE_COLOR_RGB;
     public static readonly MAX_VALUE_DEFAULT_COLOR_RGB = MongooseChartOptions.RED_COLOR_RGB;
     public static readonly MIN_VALUE_DEFAUT_COLOR_RGB: string = MongooseChartOptions.GREEN_COLOR_RGB;
+
+    public static readonly LAST_VALUE_DEFAULT_COLOR_RGB: string = MongooseChartOptions.MEDIUM_BLUE_COLOR_RGB;
     /**
      * @param CHART_DEFAULT_TYPE specifies default type of chart drawn via ChartJS library. "Linear" is a default value.
      */

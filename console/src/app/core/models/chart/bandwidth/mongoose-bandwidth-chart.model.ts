@@ -72,8 +72,7 @@ export class MongooseBandwidthChart implements MongooseChart {
     }
 
     private configureChartOptions() {
-        const mediumBlueColorRgb: string = "rgb(0,0,205)";
-        this.chartData[this.LAST_BANDWIDTH_DATASET_INDEX].setChartColor(mediumBlueColorRgb);
+        this.chartData[this.LAST_BANDWIDTH_DATASET_INDEX].setChartColor(MongooseChartOptions.LAST_VALUE_DEFAULT_COLOR_RGB);
 
         let chartTitle: string = `Amount of bytes processed by Mongoose, MBs per second`;
         this.chartOptions.setChartTitle(chartTitle);

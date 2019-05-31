@@ -86,8 +86,7 @@ export class MongooseConcurrencyChart implements MongooseChart {
     }
 
     private configureChartOptions() {
-        const mediumBlueColorRgb: string = "rgb(0,0,205)";
-        this.chartData[this.LAST_CONCURRENT_METRICS_DATASET_INDEX].setChartColor(mediumBlueColorRgb);
+        this.chartData[this.LAST_CONCURRENT_METRICS_DATASET_INDEX].setChartColor(MongooseChartOptions.LAST_VALUE_DEFAULT_COLOR_RGB);
 
         let chartTitle: string = "Mongoose's concurrent operations";
         this.chartOptions.setChartTitle(chartTitle);
