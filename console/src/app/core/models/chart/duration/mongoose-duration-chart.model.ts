@@ -91,8 +91,8 @@ export class MongooseDurationChart implements MongooseChart {
         const redColorRgb: string = "rgb(255, 0, 0)";
         this.chartData[this.MAX_DURATION_DATASET_INDEX].setChartColor(redColorRgb);
 
-        const yellowColorRgb: string = "rgba(247, 202, 24, 1)";
-        this.chartData[this.MEAN_DURATION_DATASET_INDEX].setChartColor(yellowColorRgb);
+        const darkOrangeColorRgb: string = "rgb(255,140,0)";
+        this.chartData[this.MEAN_DURATION_DATASET_INDEX].setChartColor(darkOrangeColorRgb);
 
         const greenColorRgb: string = "rgb(46, 204, 113)";
         this.chartData[this.MIN_DURATION_DATASET_INDEX].setChartColor(greenColorRgb);
