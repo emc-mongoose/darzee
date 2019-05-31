@@ -1,5 +1,5 @@
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
-import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
+import { MongooseChartOptions, MongooseChartAxesType } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
 import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
 import { NumericMetricValueType } from "../mongoose-chart-interface/numeric-metric-value-type";
@@ -15,6 +15,10 @@ export class MongooseConcurrencyChart implements MongooseChart {
      * @param LAST_CONCURRENT_METRICS_DATASET_INDEX index of data array for "concurrent_last" metrics chart
      * @param MEAN_CONCURRENT_METRICS_DATASET_INDEX index of data array for "concurrent_mean" metrics chart
      */
+
+    private readonly Y_AXIS_CHART_TITLE: string = "Concurrency value";
+    private readonly X_AXIS_CHART_TITLE: string = "Seconds";
+
     private readonly LAST_CONCURRENT_METRICS_DATASET_INDEX = 0;
     private readonly MEAN_CONCURRENT_METRICS_DATASET_INDEX = 1;
 
@@ -87,5 +91,12 @@ export class MongooseConcurrencyChart implements MongooseChart {
 
         let chartTitle: string = "Mongoose's concurrent operations";
         this.chartOptions.setChartTitle(chartTitle);
+        
+        this.configureAxes();
+    }
+
+    private configureAxes() { 
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.Y, this.Y_AXIS_CHART_TITLE, true);
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.X, this.X_AXIS_CHART_TITLE, true);
     }
 }

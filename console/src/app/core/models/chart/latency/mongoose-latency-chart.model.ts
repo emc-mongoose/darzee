@@ -1,5 +1,5 @@
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
-import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
+import { MongooseChartOptions, MongooseChartAxesType } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
 import { MetricValueType } from "../mongoose-chart-interface/metric-value-type";
 import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
@@ -8,6 +8,9 @@ import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
  * Latency chart for BasicChart component.
  */
 export class MongooseLatencyChart implements MongooseChart {
+
+    private readonly Y_AXIS_CHART_TITLE: string = "Milliseconds";
+    private readonly X_AXIS_CHART_TITLE: string = "Seconds";
 
     private readonly MAX_LATENCY_DATASET_INDEX = 0;
     private readonly MIN_LATENCY_DATASET_INDEX = 1;
@@ -90,6 +93,13 @@ export class MongooseLatencyChart implements MongooseChart {
 
         let chartTitle: string = "Mongoose's operations latency, seconds";
         this.chartOptions.setChartTitle(chartTitle);
+
+        this.configureAxes();
+    }
+
+    private configureAxes() { 
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.Y, this.Y_AXIS_CHART_TITLE, true);
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.X, this.X_AXIS_CHART_TITLE, true);
     }
 
 }

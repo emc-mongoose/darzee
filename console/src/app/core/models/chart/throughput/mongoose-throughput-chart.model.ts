@@ -1,5 +1,5 @@
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
-import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
+import { MongooseChartOptions, MongooseChartAxesType } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
 import { MongooseOperationResult } from "../mongoose-chart-interface/mongoose-operation-result-type";
 import { NumericMetricValueType } from "../mongoose-chart-interface/numeric-metric-value-type";
@@ -9,6 +9,9 @@ import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
  * Throughtput chart for BasicChart component.
  */
 export class MongooseThroughputChart implements MongooseChart {
+
+    private readonly Y_AXIS_CHART_TITLE: string = "Operations per second";
+    private readonly X_AXIS_CHART_TITLE: string = "Seconds";
 
     private readonly SUCCESSFUL_OPERATIONS_MEAN_DATASET_INDEX = 0;
     private readonly SUCCESSFUL_OPERATIONS_LAST_DATASET_INDEX = 1;
@@ -86,6 +89,7 @@ export class MongooseThroughputChart implements MongooseChart {
 
         let chartTitle: string = `Amount of operations performed by Mongoose, operations per second`;
         this.chartOptions.setChartTitle(chartTitle);
+        this.configureAxes();
     }
 
     private getIndexForResultType(numericMetricValueType: NumericMetricValueType, operationResultType: MongooseOperationResult): number { 
@@ -102,6 +106,10 @@ export class MongooseThroughputChart implements MongooseChart {
                 throw new Error(`Unable to find matching Rhgouthput chart dataset for operation "${operationResultType}, ${numericMetricValueType}`);
             }
         }
+    }
 
+    private configureAxes() { 
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.Y, this.Y_AXIS_CHART_TITLE, true);
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.X, this.X_AXIS_CHART_TITLE, true);
     }
 }
