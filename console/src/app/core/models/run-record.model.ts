@@ -14,23 +14,24 @@ export class MongooseRunRecord implements OnDestroy {
     private readonly entryNode: MongooseRunEntryNode;
     private loadStepId: String = "";
 
-    private duration: string;
+    private currentDuration: string = "";
+    private duration$: Observable<string>;
+
     private statusSubscription: Subscription = new Subscription();
     private currentStatus: MongooseRunStatus = MongooseRunStatus.Unavailable;
     private status$: Observable<MongooseRunStatus>;
 
     // MARK: - Lifecycle 
 
-    constructor(loadStepId: String, mongooseRunStatus$: Observable<MongooseRunStatus>, startTime: String, nodes: String[], duration: string, comment: String, entryNode: MongooseRunEntryNode) {
+    constructor(loadStepId: String, mongooseRunStatus$: Observable<MongooseRunStatus>, startTime: String, nodes: String[], duration$: Observable<string>, comment: String, entryNode: MongooseRunEntryNode) {
         this.loadStepId = loadStepId;
         this.startTime = startTime;
         this.nodes = nodes;
-        this.duration = duration;
         this.comment = comment;
 
         this.status$ = mongooseRunStatus$;
         this.entryNode = entryNode;
-        this.statusSubscription.add(mongooseRunStatus$.subscribe(
+        this.statusSubscription.add(this.status$.subscribe(
             fetchedStatus => {
                 this.currentStatus = fetchedStatus;
             },
@@ -39,6 +40,13 @@ export class MongooseRunRecord implements OnDestroy {
                 this.currentStatus = MongooseRunStatus.Finished;
             }
         ));
+
+        this.duration$ = duration$;
+        this.statusSubscription.add(this.duration$.subscribe(
+            (fetchedDuration: string) => { 
+                this.currentDuration = fetchedDuration;
+            }
+        ))
     }
 
     ngOnDestroy(): void {
@@ -57,10 +65,10 @@ export class MongooseRunRecord implements OnDestroy {
     }
 
     public getDuration(): string {
-        if (this.duration == "") {
+        if (this.currentDuration == "") {
             return this.DEFAULT_VALUE;
         }
-        return this.duration;
+        return this.currentDuration;
     }
 
     public getRunId(): String {
@@ -88,11 +96,11 @@ export class MongooseRunRecord implements OnDestroy {
     }
 
     public getDuraton(): string {
-        return this.duration;
+        return this.currentDuration;
     }
 
     public setDuration(updatedDuration: string) {
-        this.duration = updatedDuration;
+        this.currentDuration = updatedDuration;
     }
 
     public getEntryNodeAddress(): string {

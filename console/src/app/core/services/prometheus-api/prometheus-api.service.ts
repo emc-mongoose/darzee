@@ -87,11 +87,13 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     const latestValueTimePeriod: number = 0;
 
     let periodQueryComponent: string = undefined;
-    if (periodInSeconds == latestValueTimePeriod) { 
-      const emptyValue: string = "";
-      periodQueryComponent = emptyValue;
-    } else { 
+    if (periodInSeconds == latestValueTimePeriod) {
+      // NOTE: Retrieving every found metric from specified period of years for Mongoose run elapsed time. 
+      const periodOfYears: number = 1;
+      periodQueryComponent = `[${periodOfYears}y]`;
+    } else {
       periodQueryComponent = `[${periodInSeconds}s]`;
+
     }
     return this.runQuery(`${metricName}{load_step_id="${loadStepId}"}${periodQueryComponent}`).pipe(
       map(rawConcurrencyResponse => {
