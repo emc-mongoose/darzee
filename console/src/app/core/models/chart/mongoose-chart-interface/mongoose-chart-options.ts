@@ -3,11 +3,22 @@
  */
 export class MongooseChartOptions {
 
+    private static readonly DARK_ORANGE_COLOR_RGB: string = "rgb(255,140,0)";
+    private static readonly RED_COLOR_RGB: string = "rgb(255, 0, 0)";
+    private static readonly GREEN_COLOR_RGB: string = "rgb(46, 204, 113)";
+    private static readonly MEDIUM_BLUE_COLOR_RGB: string = "rgb(0,0,205)";;
+
+    public static readonly MEAN_VALUE_DEFAULT_COLOR_RGB = MongooseChartOptions.DARK_ORANGE_COLOR_RGB;
+    public static readonly MAX_VALUE_DEFAULT_COLOR_RGB = MongooseChartOptions.RED_COLOR_RGB;
+    public static readonly MIN_VALUE_DEFAUT_COLOR_RGB: string = MongooseChartOptions.GREEN_COLOR_RGB;
+
+    public static readonly LAST_VALUE_DEFAULT_COLOR_RGB: string = MongooseChartOptions.MEDIUM_BLUE_COLOR_RGB;
     /**
      * @param CHART_DEFAULT_TYPE specifies default type of chart drawn via ChartJS library. "Linear" is a default value.
      */
     public static readonly CHART_DEFAULT_TYPE = "linear";
     public static readonly LOGARITHMIC_CHART_TYPE = "logarithmic";
+    public static readonly DEAULT_Y_AXIS_TITLE = "";
     // NOTE: Fields are public since they should match ng-chart2 library naming 
     // link: https://github.com/valor-software/ng2-charts
     public scaleShowVerticalLines: boolean = false;
@@ -19,7 +30,17 @@ export class MongooseChartOptions {
 
     public scales: any = {
         yAxes: [{
-            type: MongooseChartOptions.CHART_DEFAULT_TYPE
+            type: MongooseChartOptions.CHART_DEFAULT_TYPE,
+            scaleLabel: {
+                display: true,
+                labelString: MongooseChartOptions.DEAULT_Y_AXIS_TITLE
+            },
+        }],
+        xAxes: [{
+            scaleLabel: {
+                display: true,
+                labelString: MongooseChartOptions.DEAULT_Y_AXIS_TITLE
+            },
         }]
     }
 
@@ -56,6 +77,26 @@ export class MongooseChartOptions {
      */
     public setChartTitle(title: string) {
         this.title.text = title;
+    }
+
+    public setAxisLabel(axis: MongooseChartAxesType, label: string, shouldDisplay: boolean) {
+        const axesInstance: any = this.getAxis(axis);
+        axesInstance.scaleLabel.labelString = label;
+        axesInstance.scaleLabel.shouldDisplay = shouldDisplay;
+    }
+
+    private getAxis(axis: MongooseChartAxesType): any {
+        switch (axis) {
+            case (MongooseChartAxesType.Y): {
+                return this.scales.yAxes[0]
+            }
+            case (MongooseChartAxesType.X): {
+                return this.scales.xAxes[0];
+            }
+            default: {
+                throw new Error(`requested axis "${axis}" hasn't been found.`);
+            }
+        }
     }
 }
 

@@ -14,7 +14,7 @@ export class MongooseChartDataset {
      * @param MAX_CHART_DEFAULT_LINE_COLOR_RGBA - red - default color for MAX line on charts.
      */
     public static readonly MEAN_CHART_DEFAULT_LINE_COLOR_RGBA = "rgba(247, 202, 24, 1)";
-    public static readonly MIN_CHART_DEFAULT_LINE_COLOR_RGB = "rgb(255, 0, 0)";
+    public static readonly MIN_CHART_DEFAULT_LINE_COLOR_RGB = "rgb(255, 0, sa0)";
     public static readonly MAX_CHART_DEFAULT_LINE_COLOR_RGB = "rgb(46, 204, 113)";
 
     private readonly ZERO_CURVE_LINE_TENSION = 0;
@@ -23,8 +23,7 @@ export class MongooseChartDataset {
     private readonly CHART_LINE_WIDTH_PX = 1;
     private readonly CHART_POINT_RADIUS_PX = 0;
 
-    public data: any[] = [];
-    public points: ChartPoint[] = [];
+    public data: ChartPoint[] = [];
     public label: string = "";
 
     public lineTension: number = this.ZERO_CURVE_LINE_TENSION;
@@ -45,16 +44,6 @@ export class MongooseChartDataset {
         this.label = label;
     }
 
-    // MARK: - Public 
-
-    public appendDatasetWithNewValue(newValue: string) {
-        const emptyValue = "";
-        if (newValue == emptyValue) {
-            newValue = this.getPreviousValueFromDataset(this);
-        }
-        this.data.push(newValue);
-    }
-
     public setChartData(data: any[]) {
         this.data = data;
     }
@@ -70,13 +59,5 @@ export class MongooseChartDataset {
      */
     public setChartColor(colorRgba: string) {
         this.borderColor = colorRgba;
-    }
-
-    // MARK: - Private 
-
-    private getPreviousValueFromDataset(dataset: MongooseChartDataset): string {
-        let previosValueIndex = dataset.data.length - 1;
-        let previosValue = dataset.data[previosValueIndex];
-        return previosValue;
     }
 }

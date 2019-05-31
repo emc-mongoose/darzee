@@ -1,15 +1,17 @@
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
-import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
+import { MongooseChartOptions, MongooseChartAxesType } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
-import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
-import { formatDate } from "@angular/common";
-import { MongooseMetric } from "../mongoose-metric.model";
-import { InternalMetricNames } from "../internal-metric-names";
+import { MongooseOperationResult } from "../mongoose-chart-interface/mongoose-operation-result-type";
+import { NumericMetricValueType } from "../mongoose-chart-interface/numeric-metric-value-type";
+import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
 
 /**
  * Throughtput chart for BasicChart component.
  */
 export class MongooseThroughputChart implements MongooseChart {
+
+    private readonly Y_AXIS_CHART_TITLE: string = "Operations per second";
+    private readonly X_AXIS_CHART_TITLE: string = "Seconds";
 
     private readonly SUCCESSFUL_OPERATIONS_MEAN_DATASET_INDEX = 0;
     private readonly SUCCESSFUL_OPERATIONS_LAST_DATASET_INDEX = 1;
@@ -23,24 +25,23 @@ export class MongooseThroughputChart implements MongooseChart {
     chartLegend: boolean;
     chartData: MongooseChartDataset[];
     isChartDataValid: boolean;
-    mongooseChartDao: MongooseChartDao;
     shouldShiftChart: boolean;
 
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao, shouldShiftChart: boolean = false) {
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, shouldShiftChart: boolean = false) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
         this.chartLegend = chartLegend;
-        this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
         this.shouldShiftChart = shouldShiftChart;
 
         let successfulOperationsMeanDataset = new MongooseChartDataset([], 'Successful operations, mean');
         let successfulOperationsLastDataset = new MongooseChartDataset([], 'Successful operations, last');
 
-        let failedOperationsMeanDataset = new MongooseChartDataset([], 'Failed operations, last');
         let failedOperationsLastDataset = new MongooseChartDataset([], 'Failed operations, mean');
+
+        let failedOperationsMeanDataset = new MongooseChartDataset([], 'Failed operations, last');
 
         this.chartData = [successfulOperationsMeanDataset, successfulOperationsLastDataset, failedOperationsMeanDataset, failedOperationsLastDataset];
 
@@ -52,50 +53,16 @@ export class MongooseThroughputChart implements MongooseChart {
      * @param recordLoadStepId 
      * @param metrics Metrics array with both successful and failed operations, both mean and last. 
      */
-    updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
-        var throughtputChartTimestamps: string[] = [];
+    updateChart(recordLoadStepId: string, metrics: ChartPoint[], numericMetricValueType: NumericMetricValueType, operationResultType: MongooseOperationResult) {
+        let relatedChartIndex: number = this.getIndexForResultType(numericMetricValueType, operationResultType);
+        this.chartData[relatedChartIndex].data = metrics;
 
-        var failedOperationsMetricsMean: string[] = [];
-        var failedOperationsMetricsLast: string[] = [];
-
-        var successfulOperationsMetricsMean: string[] = [];
-        var successfulOperationsMetricsLast: string[] = [];
-
-        metrics.forEach((metric: MongooseMetric) => {
-            const metricValue = metric.getValue();
-            const metricName = metric.getName();
-
-            switch (metricName) {
-                case InternalMetricNames.SUCCESSFUL_OPERATIONS_MEAN: {
-                    successfulOperationsMetricsMean.push(metricValue);
-                    throughtputChartTimestamps.push(formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US'));
-                    break;
-                }
-                case InternalMetricNames.SUCCESSFUL_OPERATIONS_LAST: {
-                    successfulOperationsMetricsLast.push(metricValue);
-                    break;
-                }
-                case InternalMetricNames.FAILED_OPERATIONS_MEAN: {
-                    failedOperationsMetricsMean.push(metricValue);
-                    break;
-                }
-                case InternalMetricNames.FAILED_OPERATIONS_LAST: {
-                    failedOperationsMetricsLast.push(metricValue);
-                    break;
-                }
-                default: {
-                    console.error(`Internal metricname hasn't been found for metric ${metricName}`);
-                    break;
-                }
-            }
-        })
-        this.chartLabels = throughtputChartTimestamps;
-
-        this.updateChartData(successfulOperationsMetricsMean, InternalMetricNames.SUCCESSFUL_OPERATIONS_MEAN);
-        this.updateChartData(successfulOperationsMetricsLast, InternalMetricNames.SUCCESSFUL_OPERATIONS_LAST);
-
-        this.updateChartData(failedOperationsMetricsMean, InternalMetricNames.FAILED_OPERATIONS_MEAN);
-        this.updateChartData(failedOperationsMetricsLast, InternalMetricNames.FAILED_OPERATIONS_LAST);
+        let labels: string[] = [];
+        for (var chartPoint of metrics) {
+            let timestamp = chartPoint.getX() as unknown;
+            labels.push(timestamp as string);
+        }
+        this.chartLabels = labels;
     }
 
     shouldDrawChart(): boolean {
@@ -105,38 +72,6 @@ export class MongooseThroughputChart implements MongooseChart {
     private shouldShift(): boolean {
         const maxAmountOfPointsInGraph = 20;
         return (this.chartLabels.length >= maxAmountOfPointsInGraph);
-    }
-
-    /**
-     * Updates specific chart with @param metrics values.
-     * 
-     * @param numericMetricValueType - MEAN or LAST successful / faield operations amount.
-     */
-    private updateChartData(metricValues: string[], metricName: string) {
-        let relatedChartIndex: number = undefined;
-        switch (metricName) {
-            case InternalMetricNames.SUCCESSFUL_OPERATIONS_MEAN: {
-                relatedChartIndex = this.SUCCESSFUL_OPERATIONS_MEAN_DATASET_INDEX;
-                break;
-            }
-            case InternalMetricNames.SUCCESSFUL_OPERATIONS_LAST: {
-                relatedChartIndex = this.SUCCESSFUL_OPERATIONS_LAST_DATASET_INDEX;
-                break;
-            }
-            case InternalMetricNames.FAILED_OPERATIONS_MEAN: {
-                relatedChartIndex = this.FAILED_OPERATIONS_MEAN_DATASET_INDEX;
-                break;
-            }
-            case InternalMetricNames.FAILED_OPERATIONS_LAST: {
-                relatedChartIndex = this.FAILED_OPERATIONS_LAST_DATASET_INDEX;
-                break;
-            }
-            default: {
-                console.error(`Unable to find chart index for thoughtput metric ${metricName}`);
-                break;
-            }
-        }
-        this.chartData[relatedChartIndex].setChartData(metricValues);
     }
 
     private configureChartOptions() {
@@ -151,9 +86,30 @@ export class MongooseThroughputChart implements MongooseChart {
 
         const darkRedColorRgb: string = "rgb(103, 0, 0)";
         this.chartData[this.FAILED_OPERATIONS_MEAN_DATASET_INDEX].setChartColor(darkRedColorRgb);
-    
+
         let chartTitle: string = `Amount of operations performed by Mongoose, operations per second`;
         this.chartOptions.setChartTitle(chartTitle);
+        this.configureAxes();
     }
 
+    private getIndexForResultType(numericMetricValueType: NumericMetricValueType, operationResultType: MongooseOperationResult): number { 
+        const isSuccessful: boolean = (operationResultType == MongooseOperationResult.SUCCESSFUL);
+        switch (numericMetricValueType) { 
+            case (NumericMetricValueType.LAST): { 
+                return isSuccessful ? this.SUCCESSFUL_OPERATIONS_LAST_DATASET_INDEX : this.FAILED_OPERATIONS_LAST_DATASET_INDEX;
+                break;
+            }
+            case (NumericMetricValueType.MEAN): { 
+                return isSuccessful ? this.SUCCESSFUL_OPERATIONS_MEAN_DATASET_INDEX : this.FAILED_OPERATIONS_MEAN_DATASET_INDEX;
+            }
+            default: { 
+                throw new Error(`Unable to find matching Rhgouthput chart dataset for operation "${operationResultType}, ${numericMetricValueType}`);
+            }
+        }
+    }
+
+    private configureAxes() { 
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.Y, this.Y_AXIS_CHART_TITLE, true);
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.X, this.X_AXIS_CHART_TITLE, true);
+    }
 }

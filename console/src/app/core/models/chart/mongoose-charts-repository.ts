@@ -3,7 +3,6 @@ import { MongooseChartOptions, MongooseChartAxesType } from "./mongoose-chart-in
 import { MongooseLatencyChart } from "./latency/mongoose-latency-chart.model";
 import { MongooseThroughputChart } from "./throughput/mongoose-throughput-chart.model";
 import { MongooseBandwidthChart } from "./bandwidth/mongoose-bandwidth-chart.model";
-import { MongooseChartDao } from "./mongoose-chart-interface/mongoose-chart-dao.model";
 import { MongooseConcurrencyChart } from "./concurrency/mongoose-concurrency-chart.model";
 
 /**
@@ -17,16 +16,13 @@ export class MongooseChartsRepository {
     // NOTE: determining whether the legend should be shown or not (depends on the boolean value)
     private readonly BASIC_MONGOOSE_CHART_LEGEND_MODE: boolean = true;
 
-    private mongooseChartDao: MongooseChartDao;
-
     private durationChart: MongooseDurationChart;
     private latencyChart: MongooseLatencyChart;
     private thoughputChart: MongooseThroughputChart;
     private bandwidthChart: MongooseBandwidthChart;
     private concurrencyChart: MongooseConcurrencyChart;
 
-    constructor(mongooseChartDao: MongooseChartDao) {
-        this.mongooseChartDao = mongooseChartDao;
+    constructor() {
         this.setUpCharts();
     }
 
@@ -63,27 +59,27 @@ export class MongooseChartsRepository {
 
     private createMongooseDurationChart(): MongooseDurationChart {
         let durationChartOptions: MongooseChartOptions = this.getLogarithmicOptionsForChart();
-        return new MongooseDurationChart(durationChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
+        return new MongooseDurationChart(durationChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE);
     }
 
     private createMongooseLatencyChart(): MongooseLatencyChart {
         let latencyChartOptions: MongooseChartOptions = new MongooseChartOptions();
-        return new MongooseLatencyChart(latencyChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
+        return new MongooseLatencyChart(latencyChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE);
     }
 
     private createMongooseThroughtputChart(): MongooseThroughputChart {
         let throughtputChartOptions: MongooseChartOptions = new MongooseChartOptions();
-        return new MongooseThroughputChart(throughtputChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
+        return new MongooseThroughputChart(throughtputChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE);
     }
 
     private createMongooseBandwidthChart(): MongooseBandwidthChart {
         let bandwidthChartOptions: MongooseChartOptions = this.getLogarithmicOptionsForChart();
-        return new MongooseBandwidthChart(bandwidthChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
+        return new MongooseBandwidthChart(bandwidthChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE);
     }
 
     private createConcurrencyChart(): MongooseConcurrencyChart { 
         let concurrenyChartOptions: MongooseChartOptions = new MongooseChartOptions();
-        return new MongooseConcurrencyChart(concurrenyChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE, this.mongooseChartDao);
+        return new MongooseConcurrencyChart(concurrenyChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE);
     }
 
     /**

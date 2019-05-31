@@ -12,6 +12,7 @@ import { Observable, forkJoin } from 'rxjs';
 import { NumericMetricValueType } from '../../models/chart/mongoose-chart-interface/numeric-metric-value-type';
 import { ChartPoint } from '../../models/chart/mongoose-chart-interface/chart-point.model';
 import { MongooseConcurrencyChart } from '../../models/chart/concurrency/mongoose-concurrency-chart.model';
+import { MongooseOperationResult } from '../../models/chart/mongoose-chart-interface/mongoose-operation-result-type';
 
 
 @Injectable({
@@ -36,7 +37,6 @@ export class ChartsProviderService {
 
   // MARK: - Public
 
-
   public getDurationChart(): MongooseDurationChart {
     return this.durationChart;
   }
@@ -57,12 +57,17 @@ export class ChartsProviderService {
     return this.concurrencyChart;
   }
 
-  public updateCharts(perdiodOfLatencyUpdateSeconds: number, loadStepId: string) {
-    this.updateDurationChart(perdiodOfLatencyUpdateSeconds, loadStepId);
-    this.updateLatencyChart(perdiodOfLatencyUpdateSeconds, loadStepId);
-    this.updateBandwidthChart(perdiodOfLatencyUpdateSeconds, loadStepId);
-    this.updateThoughputChart(perdiodOfLatencyUpdateSeconds, loadStepId);
-    this.updateConcurrencyChart(perdiodOfLatencyUpdateSeconds, loadStepId);
+  /**
+   * Update every existing chart within the service.
+   * @param perdiodOfUpdateSecs specification how far back in time values should be fetched, seconds 
+   * @param loadStepId Mongoose's run laod step identifier 
+   */
+  public updateCharts(perdiodOfUpdateSecs: number, loadStepId: string) {
+    this.updateDurationChart(perdiodOfUpdateSecs, loadStepId);
+    this.updateLatencyChart(perdiodOfUpdateSecs, loadStepId);
+    this.updateBandwidthChart(perdiodOfUpdateSecs, loadStepId);
+    this.updateThoughputChart(perdiodOfUpdateSecs, loadStepId);
+    this.updateConcurrencyChart(perdiodOfUpdateSecs, loadStepId);
   }
 
   public drawStatisCharts(secondsSinceCurrentDate: number, loadStepId: string) {
@@ -72,35 +77,29 @@ export class ChartsProviderService {
 
   // MARK: - Private
 
-  private updateLatencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    Object.values(MetricValueType).forEach(metricValueType => {
-      this.mongooseChartDao.getLatency(perdiodOfLatencyUpdateSecs, loadStepId, MetricValueType.MAX).subscribe((maxLatencyResult: MongooseMetric[]) => {
-        this.mongooseChartDao.getLatency(perdiodOfLatencyUpdateSecs, loadStepId, MetricValueType.MIN).subscribe((minLatencyResult: MongooseMetric[]) => {
-          this.mongooseChartDao.getLatency(perdiodOfLatencyUpdateSecs, loadStepId, MetricValueType.MEAN).subscribe((meanLatencyResult: MongooseMetric[]) => {
-            // NOTE: Concadentation of the arrays due tothe specific logic of updating (based on the internal names)
-            let concatenatedMetrics = maxLatencyResult.concat(minLatencyResult).concat(meanLatencyResult);
-            this.latencyChart.updateChart(loadStepId, concatenatedMetrics);
-          })
-
-        });
-      });
-    })
-
+  private updateLatencyChart(perdiodOfUpdateSecs: number, loadStepId: string) {
+    Object.values(MetricValueType).forEach(latencyMetricType => {
+      this.mongooseChartDao.getLatencyChartPoints(perdiodOfUpdateSecs, loadStepId, latencyMetricType).subscribe(
+        (chartPoints: ChartPoint[]) => {
+          this.latencyChart.updateChart(loadStepId, chartPoints, latencyMetricType);
+        }
+      )
+    });
   }
 
-  private updateDurationChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, metricValueType: MetricValueType = MetricValueType.MEAN) {
+  private updateDurationChart(perdiodOfUpdateSecs: number, loadStepId: string, metricValueType: MetricValueType = MetricValueType.MEAN) {
     // NOTE: Metric value type could be min ,max or mean 
     Object.values(MetricValueType).forEach(metricValueType => {
-      this.mongooseChartDao.getDuration(perdiodOfLatencyUpdateSecs, loadStepId, metricValueType).subscribe(
-        ((durationMetrics: MongooseMetric[]) => {
-          this.durationChart.updateChart(loadStepId, durationMetrics);
+      this.mongooseChartDao.getDurationChartPoints(perdiodOfUpdateSecs, loadStepId, metricValueType).subscribe(
+        ((durationChartPoints: ChartPoint[]) => {
+          this.durationChart.updateChart(loadStepId, durationChartPoints, metricValueType);
         }));
-    })
+    });
   }
 
-  private updateConcurrencyChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string, numericMetricValueType: NumericMetricValueType = NumericMetricValueType.LAST) {
+  private updateConcurrencyChart(perdiodOfUpdateSecs: number, loadStepId: string, numericMetricValueType: NumericMetricValueType = NumericMetricValueType.LAST) {
     Object.values(NumericMetricValueType).forEach(concurrencyMetricType => {
-      this.mongooseChartDao.getConcurrencyChartPoints(perdiodOfLatencyUpdateSecs, loadStepId, concurrencyMetricType).subscribe(
+      this.mongooseChartDao.getConcurrencyChartPoints(perdiodOfUpdateSecs, loadStepId, concurrencyMetricType).subscribe(
         (chartPoints: ChartPoint[]) => {
           this.concurrencyChart.updateChart(loadStepId, chartPoints, concurrencyMetricType);
         }
@@ -109,72 +108,36 @@ export class ChartsProviderService {
 
   }
 
-  private updateBandwidthChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    let bandwidthMetricPool$: any[] = [];
-    let meanBandwidthMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getBandWidth(perdiodOfLatencyUpdateSecs, loadStepId, NumericMetricValueType.MEAN);
-    bandwidthMetricPool$.push(meanBandwidthMetrics$);
-
-    let lastBandwidthMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getBandWidth(perdiodOfLatencyUpdateSecs, loadStepId, NumericMetricValueType.LAST);
-    bandwidthMetricPool$.push(lastBandwidthMetrics$);
-
-    forkJoin(...bandwidthMetricPool$).subscribe((byteRateMetricCollections: [MongooseMetric[]]) => {
-      // NOTE: Concatenating fetched metrics because of the updateChart() function specification.
-      let fetchedByteRateMetrics: MongooseMetric[] = [];
-      for (var byteRateCollection of byteRateMetricCollections) {
-        fetchedByteRateMetrics = fetchedByteRateMetrics.concat(byteRateCollection);
-      }
-      this.bandwidthChart.updateChart(loadStepId, fetchedByteRateMetrics);
+  private updateBandwidthChart(periodOfUpdateSecs: number, loadStepId: string) {
+    Object.values(NumericMetricValueType).forEach(bandwidthMetricType => {
+      this.mongooseChartDao.getBandwidthChartPoints(periodOfUpdateSecs, loadStepId, bandwidthMetricType).subscribe(
+        (chartPoints: ChartPoint[]) => {
+          this.bandwidthChart.updateChart(loadStepId, chartPoints, bandwidthMetricType);
+        }
+      )
     });
   }
 
-  private updateThoughputChart(perdiodOfLatencyUpdateSecs: number, loadStepId: string) {
-    var thoughtputMetricsPool$: Observable<MongooseMetric[]>[] = [];
-
-    let meanSuccessfulOperationMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getAmountOfSuccessfulOperations(perdiodOfLatencyUpdateSecs, loadStepId, NumericMetricValueType.MEAN);
-    thoughtputMetricsPool$.push(meanSuccessfulOperationMetrics$);
-
-    let lastSuccessfulOperationMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getAmountOfSuccessfulOperations(perdiodOfLatencyUpdateSecs, loadStepId, NumericMetricValueType.LAST);
-    thoughtputMetricsPool$.push(lastSuccessfulOperationMetrics$);
-
-    let meanFailedOperationMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getAmountOfFailedOperations(perdiodOfLatencyUpdateSecs, loadStepId, NumericMetricValueType.MEAN);
-    thoughtputMetricsPool$.push(meanFailedOperationMetrics$);
-
-    let lastFailedOperationMetrics$: Observable<MongooseMetric[]> = this.mongooseChartDao.getAmountOfFailedOperations(perdiodOfLatencyUpdateSecs, loadStepId, NumericMetricValueType.LAST);
-    thoughtputMetricsPool$.push(lastFailedOperationMetrics$);
-
-    forkJoin(...thoughtputMetricsPool$).subscribe(
-      (fetchedMetrics: [MongooseMetric[]]) => {
-        let concatenatedMetric: MongooseMetric[] = [];
-
-        for (let metricCollection of fetchedMetrics) {
-          concatenatedMetric = concatenatedMetric.concat(metricCollection);
-        }
-
-        this.throughputChart.updateChart(loadStepId, concatenatedMetric);
-      }
-    )
+  private updateThoughputChart(periodOfUpdateSecs: number, loadStepId: string) {
+    Object.values(MongooseOperationResult).forEach((mongooseOperationResultType: MongooseOperationResult) => { 
+      Object.values(NumericMetricValueType).forEach((numericMetricType: NumericMetricValueType) => { 
+        this.mongooseChartDao.getThroughtputChartPoints(periodOfUpdateSecs, loadStepId, numericMetricType, mongooseOperationResultType).subscribe(
+          (chartPoints: ChartPoint[]) => {
+            this.throughputChart.updateChart(loadStepId, chartPoints, numericMetricType, mongooseOperationResultType);
+          }
+        )
+      })
+    });
   }
 
   private configureMongooseCharts() {
-    let mongooseChartRepository = new MongooseChartsRepository(this.mongooseChartDao);
+    let mongooseChartRepository = new MongooseChartsRepository();
 
     this.durationChart = mongooseChartRepository.getDurationChart();
     this.latencyChart = mongooseChartRepository.getLatencyChart();
     this.bandwidthChart = mongooseChartRepository.getBandwidthChart();
     this.throughputChart = mongooseChartRepository.getThoughputChart();
     this.concurrencyChart = mongooseChartRepository.getConcurrencyChart();
-  }
-
-  private getChartPointsFromMetric(mongooseMetrics: MongooseMetric[]): ChartPoint[] {
-    let chartPoints: ChartPoint[] = [];
-    for (let mongooseMetric of mongooseMetrics) {
-      const x: number = mongooseMetric.getTimestamp();
-      const y: number = new Number(mongooseMetric.getValue()) as number;
-      const chartPoint = new ChartPoint(x, y);
-
-      chartPoints.push(chartPoint);
-    }
-    return chartPoints;
   }
 
 }

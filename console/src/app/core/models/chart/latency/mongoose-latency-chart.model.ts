@@ -1,18 +1,20 @@
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
-import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
+import { MongooseChartOptions, MongooseChartAxesType } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
-import { formatDate } from "@angular/common";
-import { MongooseMetric } from "../mongoose-metric.model";
-import { MongooseChartDao } from "../mongoose-chart-interface/mongoose-chart-dao.model";
-import { InternalMetricNames } from "../internal-metric-names";
+import { MetricValueType } from "../mongoose-chart-interface/metric-value-type";
+import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
+import { MongooseDurationChart } from "../duration/mongoose-duration-chart.model";
 
 /**
  * Latency chart for BasicChart component.
  */
 export class MongooseLatencyChart implements MongooseChart {
 
-    private readonly MAX_LATENCY_DATASET_INDEX = 0;
-    private readonly MIN_LATENCY_DATASET_INDEX = 1;
+    private readonly Y_AXIS_CHART_TITLE: string = "Milliseconds";
+    private readonly X_AXIS_CHART_TITLE: string = "Seconds";
+
+    private readonly MIN_LATENCY_DATASET_INDEX = 0;
+    private readonly MAX_LATENCY_DATASET_INDEX = 1;
     private readonly MEAN_LATENCY_DATASET_INDEX = 2;
 
     chartOptions: MongooseChartOptions;
@@ -21,62 +23,54 @@ export class MongooseLatencyChart implements MongooseChart {
     chartLegend: boolean;
     chartData: MongooseChartDataset[];
     isChartDataValid: boolean;
-    mongooseChartDao: MongooseChartDao;
     shouldShiftChart: boolean;
 
-    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, mongooseChartDao: MongooseChartDao, shouldShiftChart: boolean = false) {
+    constructor(chartOptions: MongooseChartOptions, chartLabels: string[], chartType: string, chartLegend: boolean, shouldShiftChart: boolean = false) {
         this.chartOptions = chartOptions;
         this.chartLabels = chartLabels;
         this.chartType = chartType;
         this.chartLegend = chartLegend;
-        this.mongooseChartDao = mongooseChartDao;
         this.isChartDataValid = true;
         this.shouldShiftChart = shouldShiftChart;
 
-        let meanLatencyDataset = new MongooseChartDataset([], 'Mean latency');
-        let maxLatencyDataset = new MongooseChartDataset([], 'Max latency');
         let minLatencyDataset = new MongooseChartDataset([], 'Min latency');
+        let maxLatencyDataset = new MongooseChartDataset([], 'Max latency');
+        let meanLatencyDataset = new MongooseChartDataset([], 'Mean latency');
 
-        this.chartData = [maxLatencyDataset, minLatencyDataset, meanLatencyDataset];
+        this.chartData = [minLatencyDataset, maxLatencyDataset, meanLatencyDataset];
         this.configureChartOptions();
     }
 
-    updateChart(recordLoadStepId: string, metrics: MongooseMetric[]) {
+    updateChart(recordLoadStepId: string, metrics: ChartPoint[], metricType: MetricValueType) {
 
-        var maxLatencyMetricValues = [];
-        var minLatencyMetricValues = [];
-        var meanLatencyMetricValues = [];
-
-        var latencyChartTimestamps: string[] = [];
-
-        let maxLatencyMetricName = InternalMetricNames.LATENCY_MAX;
-        let minLatencyMetricName = InternalMetricNames.LATENCY_MIN;
-        let meanLatencyMetricName = InternalMetricNames.LATENCY_MEAN;
-        metrics.forEach(metric => {
-            let metricValue: string = metric.getValue();
-            let metricName: string = metric.getName();
-            switch (metricName) {
-                case maxLatencyMetricName: {
-                    maxLatencyMetricValues.push(metricValue);
-                    break;
-                }
-                case minLatencyMetricName: {
-                    let metricTimestamp: string = formatDate(Math.round(metric.getTimestamp() * 1000), 'mediumTime', 'en-US');
-                    latencyChartTimestamps.push(metricTimestamp);
-                    minLatencyMetricValues.push(metricValue);
-                    break;
-                }
-                case meanLatencyMetricName: {
-                    meanLatencyMetricValues.push(metricValue);
-                    break;
-                }
+        let chartLineIndex: number = undefined;
+        switch (metricType) {
+            case (MetricValueType.MEAN): {
+                chartLineIndex = this.MEAN_LATENCY_DATASET_INDEX;
+                break;
             }
-        });
+            case (MetricValueType.MAX): {
+                chartLineIndex = this.MAX_LATENCY_DATASET_INDEX;
+                break;
+            }
+            case (MetricValueType.MIN): {
+                chartLineIndex = this.MIN_LATENCY_DATASET_INDEX;
+                break;
+            }
+            default: {
+                throw new Error(`Unable to find specified metric type ${metricType} for Latency chart.`);
 
-        this.chartLabels = latencyChartTimestamps;
-        this.chartData[this.MAX_LATENCY_DATASET_INDEX].setChartData(maxLatencyMetricValues);
-        this.chartData[this.MIN_LATENCY_DATASET_INDEX].setChartData(minLatencyMetricValues);
-        this.chartData[this.MEAN_LATENCY_DATASET_INDEX].setChartData(maxLatencyMetricValues);
+            }
+        }
+
+        this.chartData[chartLineIndex].data = metrics;
+
+        let labels: string[] = [];
+        for (var chartPoint of metrics) {
+            let timestamp = chartPoint.getX() as unknown;
+            labels.push(timestamp as string);
+        }
+        this.chartLabels = labels;
     }
 
     shouldDrawChart(): boolean {
@@ -89,17 +83,20 @@ export class MongooseLatencyChart implements MongooseChart {
     }
 
     private configureChartOptions() {
-        const redColorRgb: string = MongooseChartDataset.MAX_CHART_DEFAULT_LINE_COLOR_RGB;
-        this.chartData[this.MAX_LATENCY_DATASET_INDEX].setChartColor(redColorRgb);
 
-        const yellowColorRgb: string = MongooseChartDataset.MEAN_CHART_DEFAULT_LINE_COLOR_RGBA;
-        this.chartData[this.MEAN_LATENCY_DATASET_INDEX].setChartColor(yellowColorRgb);
-
-        const greenColorRgb: string = MongooseChartDataset.MIN_CHART_DEFAULT_LINE_COLOR_RGB;
-        this.chartData[this.MIN_LATENCY_DATASET_INDEX].setChartColor(greenColorRgb);
+        this.chartData[this.MAX_LATENCY_DATASET_INDEX].setChartColor(MongooseChartOptions.MAX_VALUE_DEFAULT_COLOR_RGB);
+        this.chartData[this.MEAN_LATENCY_DATASET_INDEX].setChartColor(MongooseChartOptions.MEAN_VALUE_DEFAULT_COLOR_RGB);
+        this.chartData[this.MIN_LATENCY_DATASET_INDEX].setChartColor(MongooseChartOptions.MIN_VALUE_DEFAUT_COLOR_RGB);
 
         let chartTitle: string = "Mongoose's operations latency, seconds";
         this.chartOptions.setChartTitle(chartTitle);
+
+        this.configureAxes();
+    }
+
+    private configureAxes() {
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.Y, this.Y_AXIS_CHART_TITLE, true);
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.X, this.X_AXIS_CHART_TITLE, true);
     }
 
 }
