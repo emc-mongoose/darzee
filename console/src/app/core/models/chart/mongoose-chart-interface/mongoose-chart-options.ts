@@ -12,7 +12,7 @@ export class MongooseChartOptions {
     public static readonly MAX_VALUE_DEFAULT_COLOR_RGB = MongooseChartOptions.RED_COLOR_RGB;
     public static readonly MIN_VALUE_DEFAUT_COLOR_RGB: string = MongooseChartOptions.GREEN_COLOR_RGB;
 
-    public static readonly SHOULD_ALLOW_NEGATIVE_VALUES_FOR_Y_AXES: boolean = false; 
+    public static readonly SHOULD_ALLOW_NEGATIVE_VALUES_FOR_AXES: boolean = false; 
 
     public static readonly LAST_VALUE_DEFAULT_COLOR_RGB: string = MongooseChartOptions.MEDIUM_BLUE_COLOR_RGB;
     /**
@@ -38,7 +38,7 @@ export class MongooseChartOptions {
                 labelString: MongooseChartOptions.DEAULT_Y_AXIS_TITLE
             },
             ticks: {
-                beginAtZero: !MongooseChartOptions.SHOULD_ALLOW_NEGATIVE_VALUES_FOR_Y_AXES
+                beginAtZero: !MongooseChartOptions.SHOULD_ALLOW_NEGATIVE_VALUES_FOR_AXES
             }
         }],
         xAxes: [{
@@ -46,6 +46,9 @@ export class MongooseChartOptions {
                 display: true,
                 labelString: MongooseChartOptions.DEAULT_Y_AXIS_TITLE
             },
+            ticks: {
+                beginAtZero: !MongooseChartOptions.SHOULD_ALLOW_NEGATIVE_VALUES_FOR_AXES
+            }
         }]
     }
 
