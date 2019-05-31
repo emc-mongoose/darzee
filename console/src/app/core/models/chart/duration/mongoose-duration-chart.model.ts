@@ -1,5 +1,5 @@
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
-import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
+import { MongooseChartOptions, MongooseChartAxesType } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
 import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
 import { MetricValueType } from "../mongoose-chart-interface/metric-value-type";
@@ -8,6 +8,9 @@ import { MetricValueType } from "../mongoose-chart-interface/metric-value-type";
  * Latency chart for BasicChart component.
  */
 export class MongooseDurationChart implements MongooseChart {
+
+    private readonly Y_AXIS_CHART_TITLE: string = "Milliseconds";
+    private readonly X_AXIS_CHART_TITLE: string = "Seconds";
 
     private readonly MEAN_DURATION_DATASET_INDEX = 0;
     private readonly MIN_DURATION_DATASET_INDEX = 1;
@@ -94,7 +97,10 @@ export class MongooseDurationChart implements MongooseChart {
         const greenColorRgb: string = "rgb(46, 204, 113)";
         this.chartData[this.MIN_DURATION_DATASET_INDEX].setChartColor(greenColorRgb);
 
-        let chartTitle: string = "Mongoose's operations duration, seconds";
+        let chartTitle: string = "Mongoose's operations duration, milliseconds per second";
         this.chartOptions.setChartTitle(chartTitle);
+
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.Y, this.Y_AXIS_CHART_TITLE, true);
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.X, this.X_AXIS_CHART_TITLE, true);
     }
 }
