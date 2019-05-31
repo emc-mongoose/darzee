@@ -1,5 +1,5 @@
 import { MongooseChart } from "../mongoose-chart-interface/mongoose-chart.interface";
-import { MongooseChartOptions } from "../mongoose-chart-interface/mongoose-chart-options";
+import { MongooseChartOptions, MongooseChartAxesType } from "../mongoose-chart-interface/mongoose-chart-options";
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
 import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
 import { NumericMetricValueType } from "../mongoose-chart-interface/numeric-metric-value-type";
@@ -8,6 +8,9 @@ import { NumericMetricValueType } from "../mongoose-chart-interface/numeric-metr
  * Bandwidth chart for BasicChart component.
  */
 export class MongooseBandwidthChart implements MongooseChart {
+
+    private readonly Y_AXIS_CHART_TITLE: string = "MBs per second";
+    private readonly X_AXIS_CHART_TITLE: string = "Seconds";
 
     private readonly MEAN_BANDWIDTH_DATASET_INDEX = 0;
     private readonly LAST_BANDWIDTH_DATASET_INDEX = 1;
@@ -28,8 +31,8 @@ export class MongooseBandwidthChart implements MongooseChart {
         this.isChartDataValid = true;
         this.shouldShiftChart = shouldShiftChart;
 
-        let meanBandwidthDataset = new MongooseChartDataset([], 'Byte per second, mean');
-        let lastBandwidthDataset = new MongooseChartDataset([], 'Byte per second, last');
+        let meanBandwidthDataset = new MongooseChartDataset([], 'MBs per second, mean');
+        let lastBandwidthDataset = new MongooseChartDataset([], 'MBs per second, last');
         this.chartData = [meanBandwidthDataset, lastBandwidthDataset];
         this.configureChartOptions();
     }
@@ -72,8 +75,15 @@ export class MongooseBandwidthChart implements MongooseChart {
         const mediumBlueColorRgb: string = "rgb(0,0,205)";
         this.chartData[this.LAST_BANDWIDTH_DATASET_INDEX].setChartColor(mediumBlueColorRgb);
 
-        let chartTitle: string = `Amount of bytes processed by Mongoose, bytes per second`;
+        let chartTitle: string = `Amount of bytes processed by Mongoose, MBs per second`;
         this.chartOptions.setChartTitle(chartTitle);
+
+        this.configureAxes();
+    }
+    
+    private configureAxes() { 
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.Y, this.Y_AXIS_CHART_TITLE, true);
+        this.chartOptions.setAxisLabel(MongooseChartAxesType.X, this.X_AXIS_CHART_TITLE, true);
     }
 
 }
