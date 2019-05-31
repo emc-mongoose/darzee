@@ -11,7 +11,7 @@ import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
 export class MongooseThroughputChart implements MongooseChart {
 
     private readonly Y_AXIS_CHART_TITLE: string = "Operations per second";
-    private readonly X_AXIS_CHART_TITLE: string = "Seconds";
+    private readonly X_AXIS_CHART_TITLE: string = MongooseChartOptions.ELAPSED_TIME_AXES_DEFAULT_TAG;
 
     private readonly SUCCESSFUL_OPERATIONS_MEAN_DATASET_INDEX = 0;
     private readonly SUCCESSFUL_OPERATIONS_LAST_DATASET_INDEX = 1;

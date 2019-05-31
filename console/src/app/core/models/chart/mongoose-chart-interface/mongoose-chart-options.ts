@@ -11,7 +11,7 @@ export class MongooseChartOptions {
     public static readonly MEAN_VALUE_DEFAULT_COLOR_RGB = MongooseChartOptions.DARK_ORANGE_COLOR_RGB;
     public static readonly MAX_VALUE_DEFAULT_COLOR_RGB = MongooseChartOptions.RED_COLOR_RGB;
     public static readonly MIN_VALUE_DEFAUT_COLOR_RGB: string = MongooseChartOptions.GREEN_COLOR_RGB;
-
+    public static readonly ELAPSED_TIME_AXES_DEFAULT_TAG: string = "Elapsed time since load step start, seconds"
     public static readonly SHOULD_ALLOW_NEGATIVE_VALUES_FOR_AXES: boolean = false; 
 
     public static readonly LAST_VALUE_DEFAULT_COLOR_RGB: string = MongooseChartOptions.MEDIUM_BLUE_COLOR_RGB;
