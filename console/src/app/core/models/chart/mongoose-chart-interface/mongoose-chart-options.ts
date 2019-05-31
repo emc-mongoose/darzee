@@ -8,6 +8,7 @@ export class MongooseChartOptions {
      */
     public static readonly CHART_DEFAULT_TYPE = "linear";
     public static readonly LOGARITHMIC_CHART_TYPE = "logarithmic";
+    public static readonly DEAULT_Y_AXIS_TITLE = ""; 
     // NOTE: Fields are public since they should match ng-chart2 library naming 
     // link: https://github.com/valor-software/ng2-charts
     public scaleShowVerticalLines: boolean = false;
@@ -19,7 +20,11 @@ export class MongooseChartOptions {
 
     public scales: any = {
         yAxes: [{
-            type: MongooseChartOptions.CHART_DEFAULT_TYPE
+            type: MongooseChartOptions.CHART_DEFAULT_TYPE,
+            scaleLabel: {
+                display: true,
+                labelString: MongooseChartOptions.DEAULT_Y_AXIS_TITLE
+              },
         }]
     }
 
@@ -56,6 +61,23 @@ export class MongooseChartOptions {
      */
     public setChartTitle(title: string) {
         this.title.text = title;
+    }
+
+    public setAxisLabel(axis: MongooseChartAxesType, label: string, shouldDisplay: boolean) { 
+        const axesInstance: any = this.getAxis(axis);
+        axesInstance.scaleLabel.labelString = label;
+        axesInstance.scaleLabel.shouldDisplay = shouldDisplay;
+    }
+
+    private getAxis(axis: MongooseChartAxesType): any { 
+        switch (axis) {
+            case (MongooseChartAxesType.Y): {
+                return this.scales.yAxes[0]
+            }
+            default: {
+                throw new Error(`requested axis "${axis}" hasn't been found.`);
+            }
+        }
     }
 }
 
