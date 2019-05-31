@@ -19,8 +19,8 @@ export class MongooseConcurrencyChart implements MongooseChart {
     private readonly Y_AXIS_CHART_TITLE: string = "Concurrency value";
     private readonly X_AXIS_CHART_TITLE: string = "Seconds";
 
-    private readonly LAST_CONCURRENT_METRICS_DATASET_INDEX = 0;
-    private readonly MEAN_CONCURRENT_METRICS_DATASET_INDEX = 1;
+    private readonly MEAN_CONCURRENT_METRICS_DATASET_INDEX = 0;
+    private readonly LAST_CONCURRENT_METRICS_DATASET_INDEX = 1;
 
     chartOptions: MongooseChartOptions;
     chartLabels: string[];
@@ -40,12 +40,12 @@ export class MongooseConcurrencyChart implements MongooseChart {
         this.isChartDataValid = true;
         this.shouldShiftChart = shouldShiftChart;
 
-        let concurrencyLastDatasetInitialValue = new MongooseChartDataset([], 'Concurrency, last');
         let concurrentMeanDatasetInitialValue = new MongooseChartDataset([], "Concurrent, mean");
+        let concurrencyLastDatasetInitialValue = new MongooseChartDataset([], 'Concurrency, last');
 
         var concurrencyChartDataset: MongooseChartDataset[] = [];
-        concurrencyChartDataset.push(concurrencyLastDatasetInitialValue);
         concurrencyChartDataset.push(concurrentMeanDatasetInitialValue);
+        concurrencyChartDataset.push(concurrencyLastDatasetInitialValue);
 
         this.chartData = concurrencyChartDataset;
 
