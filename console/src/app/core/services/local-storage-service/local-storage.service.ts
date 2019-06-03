@@ -63,15 +63,30 @@ export class LocalStorageService {
    * Saved Mongoose run node (regardless whether it's an entry node or not) into local storage.
    * @param nodeAddress saving node's address.
    */
-  public saveMongooseRunNode(nodeAddress: string) {
-    let currentStoredMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
+  public saveMongooseRunNode(savingNodeAddress: string) {
+    const mongooseNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
 
+    let currentStoredMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
+    var isNodeDuplicate: boolean = false;
+    currentStoredMongooseRunNodes.forEach((storedRunNode: MongooseStoredRunNode) => { 
+      if (storedRunNode.address == savingNodeAddress) { 
+        // NOTE: Remove "hidden" status if node has been added again.
+        storedRunNode.isHidden = false; 
+        isNodeDuplicate = true; 
+      }
+    });
+
+    if (isNodeDuplicate) { 
+      // NOTE: Returning if saving node is already exist and its appearence status has been changed to non-hidden.
+      this.storage.set(mongooseNodesLocalStorageKey, currentStoredMongooseRunNodes);
+      return; 
+    }
+    
     // NOTE: Node is not hidden by default.
     const shouldHideNewNode: boolean = false;
-    let newRunNode: MongooseStoredRunNode = new MongooseStoredRunNode(nodeAddress, shouldHideNewNode);
+    let newRunNode: MongooseStoredRunNode = new MongooseStoredRunNode(savingNodeAddress, shouldHideNewNode);
     currentStoredMongooseRunNodes.push(newRunNode);
 
-    const mongooseNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
     this.storage.set(mongooseNodesLocalStorageKey, currentStoredMongooseRunNodes);
   }
 
