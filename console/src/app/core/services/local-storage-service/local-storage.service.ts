@@ -124,11 +124,11 @@ export class LocalStorageService {
    * Hidden status mean the node address won't be displaying within 'Nodes' selection table.
    * @param nodeAddress address of node to be removed from nodes table.
    */
-  public changeNodeAddressHidingStatus(removingNodeAddress: string, isHidden: boolean) {
+  public changeNodeAddressHidingStatus(targetNodeAddress: string, isHidden: boolean) {
     let storedMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
     storedMongooseRunNodes.forEach(
       (runNode: MongooseStoredRunNode) => {
-        if (runNode.address == removingNodeAddress) {
+        if (runNode.address == targetNodeAddress) {
           runNode.isHidden = isHidden;
         }
       }
