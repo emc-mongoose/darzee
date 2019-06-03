@@ -11,8 +11,9 @@ import { Variable } from '@angular/compiler/src/render3/r3_ast';
 })
 export class LocalStorageService {
 
-  readonly ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY = "mongoose-darzee-entry-node-to-run-id-map";
-  readonly PROMETHEUS_HOST_ADDRESS_LOCAL_STORAGE_KEY = "mongoose-darzee-prometheus-host";
+  private readonly ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY = "mongoose-darzee-entry-node-to-run-id-map";
+  private readonly PROMETHEUS_HOST_ADDRESS_LOCAL_STORAGE_KEY = "mongoose-darzee-prometheus-host";
+  private readonly HIDDEN_NODES_ADDRESSES_LOCAL_STORAGE_KEY = "mongoose-darzee-hidden-node-addresses";
 
   private mongooseRunEntryNodes$: BehaviorSubject<MongooseRunEntryNode[]> = new BehaviorSubject<MongooseRunEntryNode[]>([]);
 
@@ -26,7 +27,8 @@ export class LocalStorageService {
    * @param runId identifier of Mongoose run.
    */
   public saveToLocalStorage(runEntryNodeAddress: string, runId: string) {
-    const currentEntryNodeMapAsObject: Object[] = this.storage.get(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY) || [];
+    const entryNodesMapLocalStorageKey: string = this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY;
+    const currentEntryNodeMapAsObject: Object[] = this.storage.get(entryNodesMapLocalStorageKey) || [];
 
     let convertedEntryNodesMap: MongooseRunEntryNode[] = [];
     currentEntryNodeMapAsObject.forEach((rawEntryNode: Object) => {
@@ -41,7 +43,7 @@ export class LocalStorageService {
     convertedEntryNodesMap.push(newMongooseRunInstance);
     this.mongooseRunEntryNodes$.next(convertedEntryNodesMap);
 
-    this.storage.set(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY, convertedEntryNodesMap);
+    this.storage.set(entryNodesMapLocalStorageKey, convertedEntryNodesMap);
   }
 
   /**
@@ -55,6 +57,27 @@ export class LocalStorageService {
     this.storage.set(this.PROMETHEUS_HOST_ADDRESS_LOCAL_STORAGE_KEY, updatedArrayOfPrometheusHosts);
   }
 
+
+  /**
+   * Prevents node from displaying within "Nodes" screen in case of removal.
+   * @param nodeAddress address of node to be removed from nodes table.
+   */
+  public markNodeAddressNonDisplaying(nodeAddress: string) {
+    const hiddenNodesLocalStorageKey: string = this.HIDDEN_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
+    let currentNonDisplayingNodesList: string[] = this.storage.get(hiddenNodesLocalStorageKey) || [];
+    currentNonDisplayingNodesList.push(nodeAddress);
+    this.storage.set(hiddenNodesLocalStorageKey, currentNonDisplayingNodesList);
+  }
+
+  /**
+   * Checks nodes that were marked as hidden (e.g.: removed from node's screen.)
+   * @returns list of hidden node addresses from local storage.
+   */
+  public getHiddenNodeAddresses(): string[] {
+    const hiddenNodesLocalStorageKey: string = this.HIDDEN_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
+    const hiddenNodeAddressesList: string[] = this.storage.get(hiddenNodesLocalStorageKey) || [];
+    return hiddenNodeAddressesList;
+  }
 
   /**
    * @returns Prometheus' server host address retrieved from local storage.
@@ -112,7 +135,7 @@ export class LocalStorageService {
         return nodeAddresses;
       }));
   }
-  
+
   // MARK: - Private 
 
   private getEntryNodeFromObject(object: any) {
