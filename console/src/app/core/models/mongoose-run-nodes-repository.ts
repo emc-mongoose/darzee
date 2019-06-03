@@ -34,6 +34,7 @@ export class MongooseRunNodesRepository {
             }
             return (node.getResourceLocation() != mongooseRunNode.getResourceLocation());
         });
+        this.mongooseRunNodes = filredNodesList;
         this.availableMongooseNodes$.next(filredNodesList);
     }
 
@@ -48,7 +49,7 @@ export class MongooseRunNodesRepository {
 
     private hasMongooseRunNodeBeenSaved(mongooseRunNode: MongooseRunNode): boolean {
         var isNodeSaved = false;
-        this.availableMongooseNodes$.getValue().forEach(node => {
+        this.mongooseRunNodes.forEach(node => {
             let isLocationSame = (node.getResourceLocation() == mongooseRunNode.getResourceLocation());
             let isResourceTypeSame = (node.getResourceType() == mongooseRunNode.getResourceType());
             let isNodeSame = (isLocationSame && isResourceTypeSame);
