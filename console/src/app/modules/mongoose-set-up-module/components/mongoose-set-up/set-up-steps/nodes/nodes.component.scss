@@ -59,6 +59,11 @@
   width: calc(1%);
 }
 
+.column-nodes-removal { 
+  /* NOTE: Setting minimal width in order to make the column wrap its content */
+  width: calc(1%);
+}
+
 .column-nodes-type {
   /* NOTE: Setting minimal width in order to make the column wrap its content */
   width: calc(1%);

@@ -11,6 +11,7 @@
         <th scope="col" class="column-nodes-check">Run</th>
         <th scope="col" class="column-nodes-type">Type</th>
         <th scope="col" class="column-nodes-address">Address</th>
+        <th scope="col" class="column-nodes-removal">Remove</th>
       </tr>
     </thead>
 
@@ -28,6 +29,10 @@
         </th>
         <td> {{ savedNode.resourceType }} </td>
         <td> {{ savedNode.resourceLocation }} </td>
+        <td>
+            <span class="table-remove"><button type="button"
+                class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
+          </td>
       </tr>
     </tbody>
   </table>
