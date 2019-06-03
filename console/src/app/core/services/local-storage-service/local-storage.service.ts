@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MongooseStoredRunNode } from './mongoose-stored-run-node.model';
 import { MongooseRunNode } from '../../models/mongoose-run-node.model';
+import { ResourceLocatorType } from '../../models/address-type';
 
 
 @Injectable({
@@ -17,6 +18,7 @@ export class LocalStorageService {
   private readonly STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY = "mongoose-darzee-stored-node-addresses";
 
   private mongooseRunEntryNodes$: BehaviorSubject<MongooseRunEntryNode[]> = new BehaviorSubject<MongooseRunEntryNode[]>([]);
+  private mongooseStoredNodes$: BehaviorSubject<MongooseStoredRunNode[]> = new BehaviorSubject<MongooseStoredRunNode[]>([]);
 
   constructor(@Inject(LOCAL_STORAGE) private storage: StorageService) { }
 
@@ -67,15 +69,8 @@ export class LocalStorageService {
     const mongooseNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
 
     let currentStoredMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
-    var isNodeDuplicate: boolean = false;
-    currentStoredMongooseRunNodes.forEach((storedRunNode: MongooseStoredRunNode) => { 
-      if (storedRunNode.address == savingNodeAddress) { 
-        // NOTE: Remove "hidden" status if node has been added again.
-        storedRunNode.isHidden = false; 
-        isNodeDuplicate = true; 
-      }
-    });
-
+   
+    const isNodeDuplicate: boolean = this.hasStoredRunNodeBeenSaved(savingNodeAddress);
     if (isNodeDuplicate) { 
       // NOTE: Returning if saving node is already exist and its appearence status has been changed to non-hidden.
       this.storage.set(mongooseNodesLocalStorageKey, currentStoredMongooseRunNodes);
@@ -241,6 +236,14 @@ export class LocalStorageService {
       throw new Error(`Unable to get mongoose node address from local storage entry.`);
     }
     return new MongooseStoredRunNode(address, isHidden);
+  }
+
+  private hasStoredRunNodeBeenSaved(newStoredNodeAddress: string): boolean { 
+    const storedRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
+    const isNodeExist: boolean = storedRunNodes.some((storedRunNode: MongooseStoredRunNode) => { 
+      return (storedRunNode.address == newStoredNodeAddress);
+    });
+    return isNodeExist;
   }
 
 }
