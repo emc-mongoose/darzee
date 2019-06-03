@@ -59,9 +59,20 @@ export class LocalStorageService {
   }
 
 
-  public saveMongooseRunNode(nodeAddress: string) { 
-    const nodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
+  /**
+   * Saved Mongoose run node (regardless whether it's an entry node or not) into local storage.
+   * @param nodeAddress saving node's address.
+   */
+  public saveMongooseRunNode(nodeAddress: string) {
+    let currentStoredMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
 
+    // NOTE: Node is not hidden by default.
+    const shouldHideNewNode: boolean = false; 
+    let newRunNode: MongooseStoredRunNode = new MongooseStoredRunNode(nodeAddress, shouldHideNewNode);
+    currentStoredMongooseRunNodes.push(newRunNode);
+
+    const mongooseNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
+    this.storage.set(mongooseNodesLocalStorageKey, currentStoredMongooseRunNodes);
   }
 
   /**
@@ -69,20 +80,21 @@ export class LocalStorageService {
    * Note that some nodes could be non-entry.
    * @returns list of Mongoose run nodes found within local storage.
    */
-  public getStoredMongooseNodes(): MongooseStoredRunNode[] { 
+  public getStoredMongooseNodes(): MongooseStoredRunNode[] {
     const mongooseNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
     let foundNodes: object[] = this.storage.get(mongooseNodesLocalStorageKey) || [];
     var storedMongooseNodes: MongooseStoredRunNode[] = [];
-    foundNodes.forEach((rawFoundNode: object) => { 
+    foundNodes.forEach((rawFoundNode: object) => {
       try {
         let currentMongooseNode: MongooseStoredRunNode = this.getStoredNodeInstanceFromObject(rawFoundNode);
         storedMongooseNodes.push(currentMongooseNode);
-      } catch (caseException) { 
+      } catch (caseException) {
         console.error(`Unable to convert fond node ${JSON.stringify(rawFoundNode)} to Mongooose node instance.`);
       }
     })
     return storedMongooseNodes;
   }
+
   /**
    * Changed Mongoose run node address' status. 
    * Hidden status mean the node address won't be displaying within 'Nodes' selection table.
@@ -90,15 +102,15 @@ export class LocalStorageService {
    */
   public changeNodeAddressHidingStatus(removingNodeAddress: string, isHidden: boolean) {
     let storedMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
-    
+
     const updatingNode: MongooseStoredRunNode = new MongooseStoredRunNode(removingNodeAddress, isHidden);
-    if (!storedMongooseRunNodes.includes(updatingNode)) { 
+    if (!storedMongooseRunNodes.includes(updatingNode)) {
       storedMongooseRunNodes.push(updatingNode);
-    } else { 
+    } else {
       storedMongooseRunNodes.forEach(
-        (runNode: MongooseStoredRunNode) => { 
-          if (runNode.address == removingNodeAddress) { 
-            runNode.isHidden = isHidden; 
+        (runNode: MongooseStoredRunNode) => {
+          if (runNode.address == removingNodeAddress) {
+            runNode.isHidden = isHidden;
           }
         }
       );
@@ -115,8 +127,12 @@ export class LocalStorageService {
   public getHiddenNodeAddresses(): string[] {
     const hiddenNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
     var hiddenNodeAddresses: string[] = [];
-    hiddenNodes.forEach((hiddenNode: MongooseStoredRunNode) => { 
-      let currentHiddenNodeAddress: string = hiddenNode.address;
+    hiddenNodes.forEach((storedRunNode: MongooseStoredRunNode) => {
+      if (!storedRunNode.isHidden) { 
+        // NOTE: Returning only hidden nodes.
+        return;
+      }
+      let currentHiddenNodeAddress: string = storedRunNode.address;
       hiddenNodeAddresses.push(currentHiddenNodeAddress);
     });
     return hiddenNodeAddresses;
@@ -190,10 +206,10 @@ export class LocalStorageService {
     return new MongooseRunEntryNode(nodeAddress, runId);
   }
 
-  private getStoredNodeInstanceFromObject(object: any): MongooseStoredRunNode { 
-    let address: string = object.address; 
+  private getStoredNodeInstanceFromObject(object: any): MongooseStoredRunNode {
+    let address: string = object.address;
     let isHidden: boolean = object.isHidden;
-    if ((address == undefined) || (isHidden == undefined)) { 
+    if ((address == undefined) || (isHidden == undefined)) {
       throw new Error(`Unable to get mongoose node address from local storage entry.`);
     }
     return new MongooseStoredRunNode(address, isHidden);

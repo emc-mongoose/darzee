@@ -50,6 +50,10 @@ export class MongooseDataSharedServiceService {
     if (mongooseRunNode.getResourceLocation() == emptyAddress) {
       throw new Error(`Mongoose run node's address couldn't be empty.`);
     }
+
+    const savingNodeAddress: string = mongooseRunNode.getResourceLocation();
+    this.localStorageService.saveMongooseRunNode(savingNodeAddress);
+  
     this.mongooseNodesRepository.addMongooseRunNode(mongooseRunNode);
   }
 
