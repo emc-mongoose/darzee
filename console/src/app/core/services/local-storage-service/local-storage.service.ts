@@ -90,13 +90,22 @@ export class LocalStorageService {
    */
   public changeNodeAddressHidingStatus(removingNodeAddress: string, isHidden: boolean) {
     let storedMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
-    storedMongooseRunNodes.forEach(
-      (runNode: MongooseStoredRunNode) => { 
-        if (runNode.address == removingNodeAddress) { 
-          runNode.isHidden = isHidden; 
+    
+    const updatingNode: MongooseStoredRunNode = new MongooseStoredRunNode(removingNodeAddress, isHidden);
+    if (!storedMongooseRunNodes.includes(updatingNode)) { 
+      storedMongooseRunNodes.push(updatingNode);
+    } else { 
+      storedMongooseRunNodes.forEach(
+        (runNode: MongooseStoredRunNode) => { 
+          if (runNode.address == removingNodeAddress) { 
+            runNode.isHidden = isHidden; 
+          }
         }
-      }
-    );
+      );
+    }
+    const storedMongooseRunNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
+    this.storage.set(storedMongooseRunNodesLocalStorageKey, storedMongooseRunNodes);
+
   }
 
   /**
