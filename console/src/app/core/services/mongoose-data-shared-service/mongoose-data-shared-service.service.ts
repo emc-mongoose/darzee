@@ -18,7 +18,7 @@ export class MongooseDataSharedServiceService {
     try {
       this.setupMongooseNodesRepository();
     } catch (nodeExistError) {
-
+      console.error(`An error has occured while setting up Mongoose nodes repositroy.`);
     }
   }
 

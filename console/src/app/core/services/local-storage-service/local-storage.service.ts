@@ -44,7 +44,6 @@ export class LocalStorageService {
     this.storage.set(this.ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY, convertedEntryNodesMap);
   }
 
-
   /**
    * 
    * Saves Prometheus' @param address into local storage.
@@ -103,8 +102,8 @@ export class LocalStorageService {
         var nodeAddresses: string[] = [];
         runEntryNodes.forEach((runEntryNode: Object) => {
           try {
-            let entryNodeInstance = this.getEntryNodeFromObject(runEntryNode);
-            let entryNodeAddress = entryNodeInstance.getEntryNodeAddress();
+            let entryNodeInstance: MongooseRunEntryNode = this.getEntryNodeFromObject(runEntryNode);
+            let entryNodeAddress: string = entryNodeInstance.getEntryNodeAddress();
             nodeAddresses.push(entryNodeAddress);
           } catch (castException) {
             console.error(`Unable to cast object to entry node.`);
@@ -113,6 +112,7 @@ export class LocalStorageService {
         return nodeAddresses;
       }));
   }
+  
   // MARK: - Private 
 
   private getEntryNodeFromObject(object: any) {

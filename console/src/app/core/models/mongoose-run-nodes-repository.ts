@@ -6,7 +6,7 @@ export class MongooseRunNodesRepository {
     private availableMongooseNodes$: BehaviorSubject<MongooseRunNode[]> = new BehaviorSubject<MongooseRunNode[]>([])
     private mongooseRunNodes: MongooseRunNode[] = [];
 
-    constructor(initialNodes: MongooseRunNode[] = []) { 
+    constructor(initialNodes: MongooseRunNode[] = []) {
         this.addMultipleNodes(initialNodes);
     }
 
@@ -27,21 +27,21 @@ export class MongooseRunNodesRepository {
     }
 
 
-    deleteMongooseRunNode(mongooseRunNode: MongooseRunNode) {
-        let filredNodesList = this.availableMongooseNodes$.getValue().filter(node => { 
-            if (node.getResourceType() != mongooseRunNode.getResourceType()) { 
+    public deleteMongooseRunNode(mongooseRunNode: MongooseRunNode) {
+        let filredNodesList = this.availableMongooseNodes$.getValue().filter(node => {
+            if (node.getResourceType() != mongooseRunNode.getResourceType()) {
                 // NOTE: No noeed to compare nodes if their resources have different types. 
-                return true; 
+                return true;
             }
-            return (node.getResourceLocation() != mongooseRunNode.getResourceLocation()); 
+            return (node.getResourceLocation() != mongooseRunNode.getResourceLocation());
         });
         this.availableMongooseNodes$.next(filredNodesList);
-      }
+    }
 
     // MARK: - Private 
 
-    private addMultipleNodes(mongooseNodes: MongooseRunNode[]) { 
-        mongooseNodes.forEach(mongooseNode => { 
+    private addMultipleNodes(mongooseNodes: MongooseRunNode[]) {
+        mongooseNodes.forEach(mongooseNode => {
             this.mongooseRunNodes.push(mongooseNode);
             this.availableMongooseNodes$.next(this.mongooseRunNodes);
         })
