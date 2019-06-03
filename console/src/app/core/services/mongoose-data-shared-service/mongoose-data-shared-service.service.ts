@@ -53,7 +53,7 @@ export class MongooseDataSharedServiceService {
 
     const savingNodeAddress: string = mongooseRunNode.getResourceLocation();
     this.localStorageService.saveMongooseRunNode(savingNodeAddress);
-  
+
     this.mongooseNodesRepository.addMongooseRunNode(mongooseRunNode);
   }
 
@@ -63,7 +63,7 @@ export class MongooseDataSharedServiceService {
    */
   public deleteMongooseRunNode(mongooseRunNode: MongooseRunNode) {
     const removedNodeAddress: string = mongooseRunNode.getResourceLocation();
-    const shouldHideRemovalNodeAddress: boolean = true; 
+    const shouldHideRemovalNodeAddress: boolean = true;
     this.localStorageService.changeNodeAddressHidingStatus(removedNodeAddress, shouldHideRemovalNodeAddress);
     this.mongooseNodesRepository.deleteMongooseRunNode(mongooseRunNode);
   }
@@ -78,8 +78,16 @@ export class MongooseDataSharedServiceService {
           return;
         }
         updatedEntryNodesList.forEach((entryNodeAddress: string) => {
+          // NOTE: Saving entry node addresses from local storage.
           let entryNodeInstance = new MongooseRunNode(entryNodeAddress, ResourceLocatorType.IP);
           this.mongooseNodesRepository.addMongooseRunNode(entryNodeInstance);
+        });
+
+        let storedNodeAddresses: string[] = this.localStorageService.getStoredMongooseNodesAddresses();
+        storedNodeAddresses.forEach((nodeAddress: string) => {
+          // NOTE: Saving node addresses from local storage.;
+          let nodeInstance: MongooseRunNode = new MongooseRunNode(nodeAddress, ResourceLocatorType.IP);
+          this.mongooseNodesRepository.addMongooseRunNode(nodeInstance);
         });
       }
     );

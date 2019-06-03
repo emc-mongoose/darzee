@@ -67,7 +67,7 @@ export class LocalStorageService {
     let currentStoredMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
 
     // NOTE: Node is not hidden by default.
-    const shouldHideNewNode: boolean = false; 
+    const shouldHideNewNode: boolean = false;
     let newRunNode: MongooseStoredRunNode = new MongooseStoredRunNode(nodeAddress, shouldHideNewNode);
     currentStoredMongooseRunNodes.push(newRunNode);
 
@@ -93,6 +93,19 @@ export class LocalStorageService {
       }
     })
     return storedMongooseNodes;
+  }
+
+  public getStoredMongooseNodesAddresses(): string[] {
+    let storedNodeAddresses: string[] = [];
+
+    let storedRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
+    storedRunNodes.forEach((storedRunNode: MongooseStoredRunNode) => {
+      const currentStoredNodeAddress: string = storedRunNode.address;
+      storedNodeAddresses.push(currentStoredNodeAddress);
+    });
+
+    return storedNodeAddresses;
+
   }
 
   /**
@@ -128,7 +141,7 @@ export class LocalStorageService {
     const hiddenNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
     var hiddenNodeAddresses: string[] = [];
     hiddenNodes.forEach((storedRunNode: MongooseStoredRunNode) => {
-      if (!storedRunNode.isHidden) { 
+      if (!storedRunNode.isHidden) {
         // NOTE: Returning only hidden nodes.
         return;
       }
