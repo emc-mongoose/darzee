@@ -104,9 +104,13 @@ export class LocalStorageService {
    * @returns list of hidden node addresses from local storage.
    */
   public getHiddenNodeAddresses(): string[] {
-    const hiddenNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
-    const hiddenNodeAddressesList: string[] = this.storage.get(hiddenNodesLocalStorageKey) || [];
-    return hiddenNodeAddressesList;
+    const hiddenNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
+    var hiddenNodeAddresses: string[] = [];
+    hiddenNodes.forEach((hiddenNode: MongooseStoredRunNode) => { 
+      let currentHiddenNodeAddress: string = hiddenNode.address;
+      hiddenNodeAddresses.push(currentHiddenNodeAddress);
+    });
+    return hiddenNodeAddresses;
   }
 
   /**
