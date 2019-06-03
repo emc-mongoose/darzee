@@ -49,6 +49,8 @@ export class NodesComponent implements OnInit {
     let newMongooseNode = new MongooseRunNode(this.entredIpAddress);
     try {
       this.mongooseDataSharedService.addMongooseRunNode(newMongooseNode);
+      const emptyValue: string = "";
+      this.entredIpAddress = emptyValue; 
     } catch (error) {
       console.log(`Requested Mongoose run node won't be saved. Details: ${error}`);
       alert(`Requested Mongoose run node won't be saved. Details: ${error}`);
