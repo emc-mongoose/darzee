@@ -69,14 +69,15 @@ export class LocalStorageService {
     const mongooseNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
 
     let currentStoredMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
-   
+
     const isNodeDuplicate: boolean = this.hasStoredRunNodeBeenSaved(savingNodeAddress);
-    if (isNodeDuplicate) { 
+    if (isNodeDuplicate) {
       // NOTE: Returning if saving node is already exist and its appearence status has been changed to non-hidden.
-      this.storage.set(mongooseNodesLocalStorageKey, currentStoredMongooseRunNodes);
-      return; 
+      const updatedHidingStatus: boolean = false; 
+      this.changeNodeAddressHidingStatus(savingNodeAddress, updatedHidingStatus);
+      return;
     }
-    
+
     // NOTE: Node is not hidden by default.
     const shouldHideNewNode: boolean = false;
     let newRunNode: MongooseStoredRunNode = new MongooseStoredRunNode(savingNodeAddress, shouldHideNewNode);
@@ -125,22 +126,15 @@ export class LocalStorageService {
    */
   public changeNodeAddressHidingStatus(removingNodeAddress: string, isHidden: boolean) {
     let storedMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
-
-    const updatingNode: MongooseStoredRunNode = new MongooseStoredRunNode(removingNodeAddress, isHidden);
-    if (!storedMongooseRunNodes.includes(updatingNode)) {
-      storedMongooseRunNodes.push(updatingNode);
-    } else {
-      storedMongooseRunNodes.forEach(
-        (runNode: MongooseStoredRunNode) => {
-          if (runNode.address == removingNodeAddress) {
-            runNode.isHidden = isHidden;
-          }
+    storedMongooseRunNodes.forEach(
+      (runNode: MongooseStoredRunNode) => {
+        if (runNode.address == removingNodeAddress) {
+          runNode.isHidden = isHidden;
         }
-      );
-    }
+      }
+    );
     const storedMongooseRunNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
     this.storage.set(storedMongooseRunNodesLocalStorageKey, storedMongooseRunNodes);
-
   }
 
   /**
@@ -238,9 +232,9 @@ export class LocalStorageService {
     return new MongooseStoredRunNode(address, isHidden);
   }
 
-  private hasStoredRunNodeBeenSaved(newStoredNodeAddress: string): boolean { 
+  private hasStoredRunNodeBeenSaved(newStoredNodeAddress: string): boolean {
     const storedRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
-    const isNodeExist: boolean = storedRunNodes.some((storedRunNode: MongooseStoredRunNode) => { 
+    const isNodeExist: boolean = storedRunNodes.some((storedRunNode: MongooseStoredRunNode) => {
       return (storedRunNode.address == newStoredNodeAddress);
     });
     return isNodeExist;
