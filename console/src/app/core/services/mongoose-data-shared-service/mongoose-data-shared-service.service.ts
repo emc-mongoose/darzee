@@ -59,7 +59,8 @@ export class MongooseDataSharedServiceService {
    */
   public deleteMongooseRunNode(mongooseRunNode: MongooseRunNode) {
     const removedNodeAddress: string = mongooseRunNode.getResourceLocation();
-    this.localStorageService.markNodeAddressNonDisplaying(removedNodeAddress);
+    const shouldHideRemovalNodeAddress: boolean = true; 
+    this.localStorageService.changeNodeAddressHidingStatus(removedNodeAddress, shouldHideRemovalNodeAddress);
     this.mongooseNodesRepository.deleteMongooseRunNode(mongooseRunNode);
   }
 

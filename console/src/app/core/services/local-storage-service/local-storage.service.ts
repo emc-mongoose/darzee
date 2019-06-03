@@ -4,6 +4,7 @@ import { MongooseRunEntryNode } from './MongooseRunEntryNode';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MongooseStoredRunNode } from './mongoose-stored-run-node.model';
+import { MongooseRunNode } from '../../models/mongoose-run-node.model';
 
 
 @Injectable({
@@ -69,18 +70,33 @@ export class LocalStorageService {
    * @returns list of Mongoose run nodes found within local storage.
    */
   public getStoredMongooseNodes(): MongooseStoredRunNode[] { 
-    const nodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
-    let currentNonDisplayingNodesList: string[] = this.storage.get(nodesLocalStorageKey) || [];
+    const mongooseNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
+    let foundNodes: object[] = this.storage.get(mongooseNodesLocalStorageKey) || [];
+    var storedMongooseNodes: MongooseStoredRunNode[] = [];
+    foundNodes.forEach((rawFoundNode: object) => { 
+      try {
+        let currentMongooseNode: MongooseStoredRunNode = this.getStoredNodeInstanceFromObject(rawFoundNode);
+        storedMongooseNodes.push(currentMongooseNode);
+      } catch (caseException) { 
+        console.error(`Unable to convert fond node ${JSON.stringify(rawFoundNode)} to Mongooose node instance.`);
+      }
+    })
+    return storedMongooseNodes;
   }
   /**
-   * Prevents node from displaying within "Nodes" screen in case of removal.
+   * Changed Mongoose run node address' status. 
+   * Hidden status mean the node address won't be displaying within 'Nodes' selection table.
    * @param nodeAddress address of node to be removed from nodes table.
    */
-  public markNodeAddressNonDisplaying(nodeAddress: string) {
-    const nodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
-    let currentNonDisplayingNodesList: string[] = this.storage.get(nodesLocalStorageKey) || [];
-    currentNonDisplayingNodesList.push(nodeAddress);
-    this.storage.set(nodesLocalStorageKey, currentNonDisplayingNodesList);
+  public changeNodeAddressHidingStatus(removingNodeAddress: string, isHidden: boolean) {
+    let storedMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
+    storedMongooseRunNodes.forEach(
+      (runNode: MongooseStoredRunNode) => { 
+        if (runNode.address == removingNodeAddress) { 
+          runNode.isHidden = isHidden; 
+        }
+      }
+    );
   }
 
   /**
@@ -88,7 +104,7 @@ export class LocalStorageService {
    * @returns list of hidden node addresses from local storage.
    */
   public getHiddenNodeAddresses(): string[] {
-    const hiddenNodesLocalStorageKey: string = this.HIDDEN_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
+    const hiddenNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
     const hiddenNodeAddressesList: string[] = this.storage.get(hiddenNodesLocalStorageKey) || [];
     return hiddenNodeAddressesList;
   }
