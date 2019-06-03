@@ -58,6 +58,14 @@ export class NodesComponent implements OnInit {
     }
   }
 
+  /**
+   * Handle node removal. 
+   * @param savedNode will be removed from nodes list.
+   */
+  public onRunNodeRemoveClicked(savedNode: MongooseRunNode) { 
+    this.mongooseDataSharedService.deleteMongooseRunNode(savedNode);
+  }
+
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
     let isNodeLocatedByIp: boolean = (selectedNode.getResourceType() == ResourceLocatorType.IP);
     // NOTE: Add noode if check mark has been set, remove if unset    
@@ -90,9 +98,6 @@ export class NodesComponent implements OnInit {
     this.inactiveNodeAlerts.splice(closedAlertIndex, 1);
   }
 
-  public onRunNodeRemoveClicked(savedNode: MongooseRunNode) { 
-    console.log(`Node ${JSON.stringify(savedNode)} will be removed.`)
-  }
 
   private isipValid(entredIpAddress: string) {
     const regExpr = new

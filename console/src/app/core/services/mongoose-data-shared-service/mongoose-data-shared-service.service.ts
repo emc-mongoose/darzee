@@ -44,7 +44,7 @@ export class MongooseDataSharedServiceService {
   }
 
   /**
-   * Removes @param mongooseRunNode into Mongoose run nodes rpeository.
+   * Removes @param mongooseRunNode into Mongoose run nodes repository..
    * @param mongooseRunNode run node to be removed.
    */
   public deleteMongooseRunNode(mongooseRunNode: MongooseRunNode) {
