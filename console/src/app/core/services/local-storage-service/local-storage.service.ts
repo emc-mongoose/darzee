@@ -3,7 +3,7 @@ import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 import { MongooseRunEntryNode } from './MongooseRunEntryNode';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Variable } from '@angular/compiler/src/render3/r3_ast';
+import { MongooseStoredRunNode } from './mongoose-stored-run-node.model';
 
 
 @Injectable({
@@ -13,7 +13,7 @@ export class LocalStorageService {
 
   private readonly ENTRY_NODE_TO_RUN_ID_MAP_STORAGE_KEY = "mongoose-darzee-entry-node-to-run-id-map";
   private readonly PROMETHEUS_HOST_ADDRESS_LOCAL_STORAGE_KEY = "mongoose-darzee-prometheus-host";
-  private readonly HIDDEN_NODES_ADDRESSES_LOCAL_STORAGE_KEY = "mongoose-darzee-hidden-node-addresses";
+  private readonly STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY = "mongoose-darzee-stored-node-addresses";
 
   private mongooseRunEntryNodes$: BehaviorSubject<MongooseRunEntryNode[]> = new BehaviorSubject<MongooseRunEntryNode[]>([]);
 
@@ -58,15 +58,29 @@ export class LocalStorageService {
   }
 
 
+  public saveMongooseRunNode(nodeAddress: string) { 
+    const nodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
+
+  }
+
+  /**
+   * Retrieves stored Mongoose nodes from local storge.
+   * Note that some nodes could be non-entry.
+   * @returns list of Mongoose run nodes found within local storage.
+   */
+  public getStoredMongooseNodes(): MongooseStoredRunNode[] { 
+    const nodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
+    let currentNonDisplayingNodesList: string[] = this.storage.get(nodesLocalStorageKey) || [];
+  }
   /**
    * Prevents node from displaying within "Nodes" screen in case of removal.
    * @param nodeAddress address of node to be removed from nodes table.
    */
   public markNodeAddressNonDisplaying(nodeAddress: string) {
-    const hiddenNodesLocalStorageKey: string = this.HIDDEN_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
-    let currentNonDisplayingNodesList: string[] = this.storage.get(hiddenNodesLocalStorageKey) || [];
+    const nodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
+    let currentNonDisplayingNodesList: string[] = this.storage.get(nodesLocalStorageKey) || [];
     currentNonDisplayingNodesList.push(nodeAddress);
-    this.storage.set(hiddenNodesLocalStorageKey, currentNonDisplayingNodesList);
+    this.storage.set(nodesLocalStorageKey, currentNonDisplayingNodesList);
   }
 
   /**
@@ -138,13 +152,22 @@ export class LocalStorageService {
 
   // MARK: - Private 
 
-  private getEntryNodeFromObject(object: any) {
+  private getEntryNodeFromObject(object: any): MongooseRunEntryNode {
     let nodeAddress = object.entryNodeAddress;
     let runId = object.runId;
     if ((nodeAddress == undefined) || (runId == undefined)) {
       throw new Error(`Unable to get entry node address from local storage entry.`)
     }
     return new MongooseRunEntryNode(nodeAddress, runId);
+  }
+
+  private getStoredNodeInstanceFromObject(object: any): MongooseStoredRunNode { 
+    let address: string = object.address; 
+    let isHidden: boolean = object.isHidden;
+    if ((address == undefined) || (isHidden == undefined)) { 
+      throw new Error(`Unable to get mongoose node address from local storage entry.`);
+    }
+    return new MongooseStoredRunNode(address, isHidden);
   }
 
 }

@@ -18,10 +18,9 @@ export class MongooseRunNodesRepository {
 
     public addMongooseRunNode(mongooseRunNode: MongooseRunNode) {
         if (this.hasMongooseRunNodeBeenSaved(mongooseRunNode)) {
-            // console.error(`Node with address "${mongooseRunNode.getResourceLocation()}" is already exist.`);
+            console.error(`Node with address "${mongooseRunNode.getResourceLocation()}" is already exist.`);
             return;
         }
-
         this.mongooseRunNodes.push(mongooseRunNode);
         this.availableMongooseNodes$.next(this.mongooseRunNodes);
     }
