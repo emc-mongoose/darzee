@@ -61,6 +61,9 @@ export class NodesComponent implements OnInit {
   // MARK: - Public 
 
   public onAddIpButtonClicked(entredIpAddress: string): void {
+    // NOTE: trimming accident whitespaces
+    this.entredIpAddress = this.entredIpAddress.replace(/\s/g, ""); 
+
     let newMongooseNode = new MongooseRunNode(this.entredIpAddress);
     try {
       const savingNodeAddress: string = newMongooseNode.getResourceLocation();
@@ -90,7 +93,6 @@ export class NodesComponent implements OnInit {
    * @param savedNode will be removed from nodes list.
    */
   public onRunNodeRemoveClicked(savedNode: MongooseRunNode) {
-    this.mongooseDataSharedService.deleteMongooseRunNode(savedNode);
     const removedNodeAddress: string = savedNode.getResourceLocation();
 
     let hasNodeBeenSavedToLocalStorage: boolean = this.localStorageService.getStoredMongooseNodes().some((storedNode: MongooseStoredRunNode) => {
@@ -101,6 +103,8 @@ export class NodesComponent implements OnInit {
     if (!hasNodeBeenSavedToLocalStorage) {
       this.localStorageService.saveMongooseRunNode(removedNodeAddress);
     }
+
+    this.mongooseDataSharedService.deleteMongooseRunNode(savedNode);
   }
 
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
