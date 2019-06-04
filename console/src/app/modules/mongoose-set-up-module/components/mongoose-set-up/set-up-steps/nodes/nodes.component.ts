@@ -70,7 +70,7 @@ export class NodesComponent implements OnInit {
          if (HttpUtils.matchesIpv4AddressWithoutPort(savingNodeAddress)) {
              this.entredIpAddress = HttpUtils.addPortToIp(this.entredIpAddress, this.IP_DEFAULT_PORT);
          } else { 
-          alert(`Entered IP address is not valid.`)
+          alert(`IP address ${this.entredIpAddress} is not valid. Please, provide a valid one.`);
           return; 
          }
      } 
