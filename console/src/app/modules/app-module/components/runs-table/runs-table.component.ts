@@ -40,6 +40,9 @@ export class RunsTableComponent implements OnInit {
 
   ngOnInit() {
 
+    if (this.mongooseDataSharedServiceService.shouldWaintForNewRun) { 
+      console.log("should wait")
+    }
     this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(
       updatedRecords => {
         this.handleRecordsUpdate(updatedRecords);

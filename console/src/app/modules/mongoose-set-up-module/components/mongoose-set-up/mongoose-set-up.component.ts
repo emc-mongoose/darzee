@@ -97,7 +97,10 @@ export class MongooseSetUpComponent implements OnInit {
         // ... it won't be implimented, map them here. If you want to get ...
         // ... load step id, you can do it via mongoose set up service. 
         console.log("Launched Mongoose run with run ID: ", mongooseRunId);
+        
+        // NOTE: Loading spinning bar. It will disappear once Mongoose run will be loaded.
         this.mongooseDataSharedServiceService.shouldWaintForNewRun = true; 
+
         // NOTE: If run ID has been returned from the server, Mongoose run has started
         let hasMongooseSuccessfullyStarted = (mongooseRunId != undefined);
         if (!hasMongooseSuccessfullyStarted) {
