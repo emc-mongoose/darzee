@@ -92,23 +92,23 @@ export class MongooseThroughputChart implements MongooseChart {
         this.configureAxes();
     }
 
-    private getIndexForResultType(numericMetricValueType: NumericMetricValueType, operationResultType: MongooseOperationResult): number { 
+    private getIndexForResultType(numericMetricValueType: NumericMetricValueType, operationResultType: MongooseOperationResult): number {
         const isSuccessful: boolean = (operationResultType == MongooseOperationResult.SUCCESSFUL);
-        switch (numericMetricValueType) { 
-            case (NumericMetricValueType.LAST): { 
+        switch (numericMetricValueType) {
+            case (NumericMetricValueType.LAST): {
                 return isSuccessful ? this.SUCCESSFUL_OPERATIONS_LAST_DATASET_INDEX : this.FAILED_OPERATIONS_LAST_DATASET_INDEX;
                 break;
             }
-            case (NumericMetricValueType.MEAN): { 
+            case (NumericMetricValueType.MEAN): {
                 return isSuccessful ? this.SUCCESSFUL_OPERATIONS_MEAN_DATASET_INDEX : this.FAILED_OPERATIONS_MEAN_DATASET_INDEX;
             }
-            default: { 
+            default: {
                 throw new Error(`Unable to find matching Rhgouthput chart dataset for operation "${operationResultType}, ${numericMetricValueType}`);
             }
         }
     }
 
-    private configureAxes() { 
+    private configureAxes() {
         this.chartOptions.setAxisLabel(MongooseChartAxesType.Y, this.Y_AXIS_CHART_TITLE, true);
         this.chartOptions.setAxisLabel(MongooseChartAxesType.X, this.X_AXIS_CHART_TITLE, true);
     }

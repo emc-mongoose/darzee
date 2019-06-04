@@ -90,7 +90,7 @@ export class MongooseDurationChart implements MongooseChart {
     }
 
     private configureChartOptions() {
-        
+
         this.chartData[this.MAX_DURATION_DATASET_INDEX].setChartColor(MongooseChartOptions.MAX_VALUE_DEFAULT_COLOR_RGB);
         this.chartData[this.MEAN_DURATION_DATASET_INDEX].setChartColor(MongooseChartOptions.MEAN_VALUE_DEFAULT_COLOR_RGB);
         this.chartData[this.MIN_DURATION_DATASET_INDEX].setChartColor(MongooseChartOptions.MIN_VALUE_DEFAUT_COLOR_RGB);
@@ -101,7 +101,7 @@ export class MongooseDurationChart implements MongooseChart {
         this.configureAxes();
     }
 
-    private configureAxes() { 
+    private configureAxes() {
         this.chartOptions.setAxisLabel(MongooseChartAxesType.Y, this.Y_AXIS_CHART_TITLE, true);
         this.chartOptions.setAxisLabel(MongooseChartAxesType.X, this.X_AXIS_CHART_TITLE, true);
     }

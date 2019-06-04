@@ -90,11 +90,11 @@ export class MongooseConcurrencyChart implements MongooseChart {
 
         let chartTitle: string = "Mongoose's concurrent operations";
         this.chartOptions.setChartTitle(chartTitle);
-        
+
         this.configureAxes();
     }
 
-    private configureAxes() { 
+    private configureAxes() {
         this.chartOptions.setAxisLabel(MongooseChartAxesType.Y, this.Y_AXIS_CHART_TITLE, true);
         this.chartOptions.setAxisLabel(MongooseChartAxesType.X, this.X_AXIS_CHART_TITLE, true);
     }

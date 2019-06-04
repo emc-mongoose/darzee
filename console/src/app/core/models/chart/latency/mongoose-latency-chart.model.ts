@@ -3,7 +3,6 @@ import { MongooseChartOptions, MongooseChartAxesType } from "../mongoose-chart-i
 import { MongooseChartDataset } from "../mongoose-chart-interface/mongoose-chart-dataset.model";
 import { MetricValueType } from "../mongoose-chart-interface/metric-value-type";
 import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
-import { MongooseDurationChart } from "../duration/mongoose-duration-chart.model";
 
 /**
  * Latency chart for BasicChart component.
