@@ -13,6 +13,8 @@ import { map } from 'rxjs/operators';
 })
 export class MongooseDataSharedServiceService {
 
+  public shouldWaintForNewRun: boolean = false; 
+
   private mongooseNodesRepository: MongooseRunNodesRepository = new MongooseRunNodesRepository();
 
   constructor(private localStorageService: LocalStorageService) {

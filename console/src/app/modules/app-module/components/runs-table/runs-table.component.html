@@ -13,12 +13,24 @@
 
   <!-- MARK: - Column content -->
 
+ 
   <tbody>
+   <tr *ngIf="this.shouldAppearLoadSpinner()">
+     <!-- NOTE: Colspan should be equal to amount of overlaying columns. -->
+      <td align="center" colspan="5">
+          <!-- NOTE: Loading spinner. It appears if a Mongoose run has been launched, but its metrics ...
+          ... weren't exported to Prometheus yet. -->
+          <button class="btn btn-light" style="width: calc(50%);">
+              <span class="spinner-border spinner-border-sm"></span>
+              Loading Mongoose run..
+            </button>
+        </td>
+   </tr>
+    
     <tr *ngFor="let runRecord of mongooseRunRecords">
       <th scope="row">
         <app-mongoose-run-status-icon [runStatus]="runRecord.getStatus()" (click)="onRunStatusIconClicked(runRecord)">
           {{ runRecord.getStatus() }}
-
         </app-mongoose-run-status-icon>
       </th>
 

@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { Constants } from '../../../../common/constants';
 import { MongooseSetUpService } from '../../../../core/services/mongoose-set-up-service/mongoose-set-up.service';
 import { NodesComponent } from './set-up-steps/nodes/nodes.component';
+import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 
 @Component({
   selector: 'app-mongoose-set-up',
@@ -37,7 +38,8 @@ export class MongooseSetUpComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private mongooseSetUpService: MongooseSetUpService) {
+    private mongooseSetUpService: MongooseSetUpService,
+    private mongooseDataSharedServiceService: MongooseDataSharedServiceService) {
     this.initSetUpTabs();
     let defaultTabNumber = 0;
     this.openUpTab(defaultTabNumber);
@@ -95,6 +97,9 @@ export class MongooseSetUpComponent implements OnInit {
         // ... it won't be implimented, map them here. If you want to get ...
         // ... load step id, you can do it via mongoose set up service. 
         console.log("Launched Mongoose run with run ID: ", mongooseRunId);
+        
+        // NOTE: Loading spinning bar. It will disappear once Mongoose run will be loaded.
+        this.mongooseDataSharedServiceService.shouldWaintForNewRun = true; 
 
         // NOTE: If run ID has been returned from the server, Mongoose run has started
         let hasMongooseSuccessfullyStarted = (mongooseRunId != undefined);

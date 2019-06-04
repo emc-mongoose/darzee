@@ -1,15 +1,14 @@
-import { Component, OnInit, TemplateRef, ViewChild, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { MongooseRunStatus } from 'src/app/core/models/mongoose-run-status';
-import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
-import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
-import { MongooseRunTab } from './model/monoose-run-tab.model';
-import { slideAnimation } from 'src/app/core/animations';
-import { Observable, Subscription, BehaviorSubject } from 'rxjs';
-import { MongooseRunRecordCounter } from 'src/app/core/models/run-record-counter';
-import { PrometheusError } from 'src/app/common/Exceptions/PrometheusError';
-import { BasicChartComponent } from '../../run-statistics/run-statistics-charts/basic-chart/basic-chart.component';
-import { MongooseRunStatusIconComponent } from '../mongoose-run-status-icon/mongoose-run-status-icon.component';
-import { PrometheusErrorComponent } from '../../common/prometheus-error/prometheus-error.component';
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
+import { slideAnimation } from "src/app/core/animations";
+import { MongooseRunTab } from "./model/monoose-run-tab.model";
+import { MongooseRunRecord } from "src/app/core/models/run-record.model";
+import { BehaviorSubject, Subscription, Observable } from "rxjs";
+import { MonitoringApiService } from "src/app/core/services/monitoring-api/monitoring-api.service";
+import { MongooseDataSharedServiceService } from "src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service";
+import { PrometheusError } from "src/app/common/Exceptions/PrometheusError";
+import { PrometheusErrorComponent } from "../../common/prometheus-error/prometheus-error.component";
+import { MongooseRunRecordCounter } from "src/app/core/models/run-record-counter";
+import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
 
 @Component({
   selector: 'app-runs-table-root',
@@ -27,7 +26,6 @@ export class RunsTableRootComponent implements OnInit {
   public runTabs: MongooseRunTab[] = [];
   public currentActiveTab: MongooseRunTab;
 
-
   private displayingRunRecords: MongooseRunRecord[] = [];
 
   private mongooseRunTabs$: BehaviorSubject<MongooseRunTab[]> = new BehaviorSubject<MongooseRunTab[]>([]);
@@ -36,17 +34,26 @@ export class RunsTableRootComponent implements OnInit {
 
   private mongooseRecordsSubscription: Subscription = new Subscription();
   private monitoringApiServiceSubscriptions: Subscription = new Subscription();
+  private recordUpdatingTimer: any;
+
+  private hasInitializedRecord: boolean = false; 
+
 
   // MARK: - Lifecycle
 
   constructor(private monitoringApiService: MonitoringApiService,
-    private resolver: ComponentFactoryResolver) {
+    private resolver: ComponentFactoryResolver,
+    private mongooseDataSharedServiceService: MongooseDataSharedServiceService) {
     this.setUpInitialTabs();
     this.initializeTabsRecordsData();
   }
 
 
   ngOnInit() {
+    if (this.mongooseDataSharedServiceService.shouldWaintForNewRun) { 
+      this.observeLaunchedRunRecord = this.observeLaunchedRunRecord.bind(this);
+      this.recordUpdatingTimer = setInterval(this.observeLaunchedRunRecord, 2000);
+    }
     this.setUpRecordsData();
   }
 
@@ -56,6 +63,16 @@ export class RunsTableRootComponent implements OnInit {
     this.mongooseRunTabs$.unsubscribe();
   }
 
+  private observeLaunchedRunRecord() { 
+    this.monitoringApiService.getMongooseRunRecords().subscribe(
+      (fetchedRecord: MongooseRunRecord[]) => { 
+        console.log(`fetchedRecord.length: ${fetchedRecord.length}, this.filtredRecords$.getValue().length: ${this.filtredRecords$.getValue().length}`)
+        if (fetchedRecord.length != this.filtredRecords$.getValue().length) { 
+          this.mongooseDataSharedServiceService.shouldWaintForNewRun = false; 
+        }
+      }
+    );
+  }
   // MARK: - Public 
 
   public getDesiredRecords(): Observable<MongooseRunRecord[]> {
@@ -141,7 +158,6 @@ export class RunsTableRootComponent implements OnInit {
     let emptyMongooseRunRecords: MongooseRunRecord[] = [];
     this.runTabs = this.getTabsForRecords(emptyMongooseRunRecords);
     if (this.runTabs.length <= 0) {
-      // TODO: Change logic of displaying records
       this.displayingRunRecords = [];
       return;
     }
@@ -158,9 +174,18 @@ export class RunsTableRootComponent implements OnInit {
       let targetStatus = tab.getStatus();
       this.monitoringApiServiceSubscriptions.add(
         this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(targetStatus).subscribe(
-          records => {
+          (records: MongooseRunRecord[]) => {
+            if (records.length == this.filtredRecords$.getValue().length) { 
+              return; 
+            }
+
+            if ((records.length != this.filtredRecords$.getValue().length) && this.hasInitializedRecord) { 
+              this.mongooseDataSharedServiceService.shouldWaintForNewRun = false; 
+              clearInterval(this.recordUpdatingTimer);
+            }
             console.log("Records have been changed.");
             this.filtredRecords$.next(records);
+            this.hasInitializedRecord = true; 
           },
           error => {
             console.error(`Unable to filter records by status "${targetStatus}. Details: ${error}"`);
