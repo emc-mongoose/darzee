@@ -19,7 +19,6 @@ export class MongooseRunNodesRepository {
     public addMongooseRunNode(mongooseRunNode: MongooseRunNode, hasNodeBeenHiddenFromNodesList: boolean = false) {
         if (this.hasMongooseRunNodeBeenSaved(mongooseRunNode) && (!hasNodeBeenHiddenFromNodesList)) {
             // NOTE: Don't add node address if it's already exist.
-            console.log(`Noe ${JSON.stringify(mongooseRunNode)} is already exist.`)
             return;
         }
         this.mongooseRunNodes.push(mongooseRunNode);
@@ -30,7 +29,7 @@ export class MongooseRunNodesRepository {
     public deleteMongooseRunNode(mongooseRunNode: MongooseRunNode) {
         let filredNodesList = this.availableMongooseNodes$.getValue().filter(node => {
             if (node.getResourceType() != mongooseRunNode.getResourceType()) {
-                // NOTE: No noeed to compare nodes if their resources have different types. 
+                // NOTE: No need to compare nodes if their resources have different types. 
                 return true;
             }
             return (node.getResourceLocation() != mongooseRunNode.getResourceLocation());

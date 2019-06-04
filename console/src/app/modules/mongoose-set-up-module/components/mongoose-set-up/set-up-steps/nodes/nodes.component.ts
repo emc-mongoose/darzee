@@ -39,16 +39,15 @@ export class NodesComponent implements OnInit {
     private mongooseDataSharedService: MongooseDataSharedServiceService,
     private localStorageService: LocalStorageService
   ) {
-    this.configureSharedDataService();
     this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes().pipe(
-      map((nodes: MongooseRunNode[]) => { 
+      map((nodes: MongooseRunNode[]) => {
         const hiddenNodes: string[] = this.localStorageService.getHiddenNodeAddresses();
         nodes.forEach((node: MongooseRunNode) => {
-          if (hiddenNodes.includes(node.getResourceLocation())) { 
+          if (hiddenNodes.includes(node.getResourceLocation())) {
             this.mongooseDataSharedService.deleteMongooseRunNode(node);
           }
         })
-        return nodes; 
+        return nodes;
       })
     );
   }
@@ -94,12 +93,12 @@ export class NodesComponent implements OnInit {
     this.mongooseDataSharedService.deleteMongooseRunNode(savedNode);
     const removedNodeAddress: string = savedNode.getResourceLocation();
 
-    let hasNodeBeenSavedToLocalStorage: boolean = this.localStorageService.getStoredMongooseNodes().some((storedNode: MongooseStoredRunNode) => { 
+    let hasNodeBeenSavedToLocalStorage: boolean = this.localStorageService.getStoredMongooseNodes().some((storedNode: MongooseStoredRunNode) => {
       const currentStoredNodeAddres: string = storedNode.address;
       return (removedNodeAddress == currentStoredNodeAddres);
     });
 
-    if (!hasNodeBeenSavedToLocalStorage) { 
+    if (!hasNodeBeenSavedToLocalStorage) {
       this.localStorageService.saveMongooseRunNode(removedNodeAddress);
     }
   }
@@ -172,6 +171,4 @@ export class NodesComponent implements OnInit {
       }));
   }
 
-  private configureSharedDataService() {
-  }
 }

@@ -18,7 +18,6 @@ export class LocalStorageService {
   private readonly STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY = "mongoose-darzee-stored-node-addresses";
 
   private mongooseRunEntryNodes$: BehaviorSubject<MongooseRunEntryNode[]> = new BehaviorSubject<MongooseRunEntryNode[]>([]);
-  private mongooseStoredNodes$: BehaviorSubject<MongooseStoredRunNode[]> = new BehaviorSubject<MongooseStoredRunNode[]>([]);
 
   constructor(@Inject(LOCAL_STORAGE) private storage: StorageService) { }
 
@@ -66,17 +65,13 @@ export class LocalStorageService {
    * @param nodeAddress saving node's address.
    */
   public saveMongooseRunNode(savingNodeAddress: string) {
-    console.log(`local storage. Saving node: ${savingNodeAddress}`)
     const mongooseNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
 
     let currentStoredMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
 
     const isNodeDuplicate: boolean = this.hasStoredRunNodeBeenSaved(savingNodeAddress);
     if (isNodeDuplicate) {
-      console.log(`local storage. Node is duplicate.`)
       // // NOTE: Returning if saving node is already exist and its appearence status has been changed to non-hidden.
-      // const updatedHidingStatus: boolean = false; 
-      // this.changeNodeAddressHidingStatus(savingNodeAddress, updatedHidingStatus);
       return;
     }
 
@@ -116,9 +111,7 @@ export class LocalStorageService {
       const currentStoredNodeAddress: string = storedRunNode.address;
       storedNodeAddresses.push(currentStoredNodeAddress);
     });
-
     return storedNodeAddresses;
-
   }
 
   /**
@@ -127,13 +120,11 @@ export class LocalStorageService {
    * @param nodeAddress address of node to be removed from nodes table.
    */
   public changeNodeAddressHidingStatus(targetNodeAddress: string, isHidden: boolean) {
-    console.log(`changeNodeAddressHidingStatus`)
     let storedMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
     storedMongooseRunNodes.forEach(
       (runNode: MongooseStoredRunNode) => {
         if (runNode.address == targetNodeAddress) {
           runNode.isHidden = isHidden;
-          console.log(`runNode ${JSON.stringify(runNode)} will be hidden.`)
         }
       }
     );
