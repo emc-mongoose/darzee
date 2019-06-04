@@ -66,12 +66,14 @@ export class LocalStorageService {
    * @param nodeAddress saving node's address.
    */
   public saveMongooseRunNode(savingNodeAddress: string) {
+    console.log(`local storage. Saving node: ${savingNodeAddress}`)
     const mongooseNodesLocalStorageKey: string = this.STORING_NODES_ADDRESSES_LOCAL_STORAGE_KEY;
 
     let currentStoredMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
 
     const isNodeDuplicate: boolean = this.hasStoredRunNodeBeenSaved(savingNodeAddress);
     if (isNodeDuplicate) {
+      console.log(`local storage. Node is duplicate.`)
       // // NOTE: Returning if saving node is already exist and its appearence status has been changed to non-hidden.
       // const updatedHidingStatus: boolean = false; 
       // this.changeNodeAddressHidingStatus(savingNodeAddress, updatedHidingStatus);

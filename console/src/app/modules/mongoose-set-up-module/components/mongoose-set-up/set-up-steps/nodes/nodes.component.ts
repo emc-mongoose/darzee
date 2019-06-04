@@ -10,6 +10,8 @@ import { MongooseSetupStep } from 'src/app/modules/mongoose-set-up-module/interf
 import { InactiveNodeAlert } from './incative-node-alert.interface';
 import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
 import { map } from 'rxjs/operators';
+import { elementContainerEnd } from '@angular/core/src/render3';
+import { MongooseStoredRunNode } from 'src/app/core/services/local-storage-service/mongoose-stored-run-node.model';
 
 @Component({
   selector: 'app-nodes',
@@ -67,6 +69,7 @@ export class NodesComponent implements OnInit {
       const hiddenNodes: string[] = this.localStorageService.getHiddenNodeAddresses();
       const isNodeHidden: boolean = hiddenNodes.includes(savingNodeAddress);
       if (isNodeHidden) {
+        console.log(`node is hidden ${entredIpAddress}`)
         const shouldHideNode: boolean = false;
         this.localStorageService.changeNodeAddressHidingStatus(savingNodeAddress, shouldHideNode);
       } else {
@@ -89,6 +92,16 @@ export class NodesComponent implements OnInit {
    */
   public onRunNodeRemoveClicked(savedNode: MongooseRunNode) {
     this.mongooseDataSharedService.deleteMongooseRunNode(savedNode);
+    const removedNodeAddress: string = savedNode.getResourceLocation();
+
+    let hasNodeBeenSavedToLocalStorage: boolean = this.localStorageService.getStoredMongooseNodes().some((storedNode: MongooseStoredRunNode) => { 
+      const currentStoredNodeAddres: string = storedNode.address;
+      return (removedNodeAddress == currentStoredNodeAddres);
+    });
+
+    if (!hasNodeBeenSavedToLocalStorage) { 
+      this.localStorageService.saveMongooseRunNode(removedNodeAddress);
+    }
   }
 
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
