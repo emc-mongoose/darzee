@@ -18,9 +18,8 @@ export class HttpUtils {
         const localhostKeyword: string = HttpUtils.LOCALHOST_KEYWORD;
         const hasLocalhostKeyword: boolean = ipAddress.includes(localhostKeyword);
         if (!hasLocalhostKeyword) {
-            // console.error(`${ipAddress} doesn't contain any key words and will be trated as an IP address to be checked.`)
-            let ipValidationRegex: RegExp = new RegExp(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
-            return ipValidationRegex.test(ipAddress);
+            const ipV4Pattern: RegExp = new RegExp("(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)");
+            return ipV4Pattern.test(ipAddress);
         }
         const emptyString = "";
         const portNumberAndKeywordDelimiter = ":";
@@ -33,7 +32,16 @@ export class HttpUtils {
 
         const portNumber = Number(remaningAddressWithoutKeywords);
         return (!isNaN(portNumber) && (portNumber <= HttpUtils.PORT_NUMBER_UPPER_BOUND));
+    }
 
+    /**
+     * Check if given IP address contains port.
+     * @param ipAddress IP address to be checked.
+     * @returns true if provided IP address has port.
+     */
+    public static containsPort(ipAddress: string): boolean { 
+        const ipAddressWithoutPortPattern: RegExp = new RegExp('[0-9]+(?:\.[0-9]+){3}');
+        return (ipAddressWithoutPortPattern.test(ipAddress));
     }
 
     /**
