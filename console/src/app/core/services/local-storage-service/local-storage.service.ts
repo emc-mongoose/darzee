@@ -72,9 +72,9 @@ export class LocalStorageService {
 
     const isNodeDuplicate: boolean = this.hasStoredRunNodeBeenSaved(savingNodeAddress);
     if (isNodeDuplicate) {
-      // NOTE: Returning if saving node is already exist and its appearence status has been changed to non-hidden.
-      const updatedHidingStatus: boolean = false; 
-      this.changeNodeAddressHidingStatus(savingNodeAddress, updatedHidingStatus);
+      // // NOTE: Returning if saving node is already exist and its appearence status has been changed to non-hidden.
+      // const updatedHidingStatus: boolean = false; 
+      // this.changeNodeAddressHidingStatus(savingNodeAddress, updatedHidingStatus);
       return;
     }
 
@@ -125,11 +125,13 @@ export class LocalStorageService {
    * @param nodeAddress address of node to be removed from nodes table.
    */
   public changeNodeAddressHidingStatus(targetNodeAddress: string, isHidden: boolean) {
+    console.log(`changeNodeAddressHidingStatus`)
     let storedMongooseRunNodes: MongooseStoredRunNode[] = this.getStoredMongooseNodes();
     storedMongooseRunNodes.forEach(
       (runNode: MongooseStoredRunNode) => {
         if (runNode.address == targetNodeAddress) {
           runNode.isHidden = isHidden;
+          console.log(`runNode ${JSON.stringify(runNode)} will be hidden.`)
         }
       }
     );

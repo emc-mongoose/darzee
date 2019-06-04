@@ -8,6 +8,8 @@ import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose
 import { ResourceLocatorType } from 'src/app/core/models/address-type';
 import { MongooseSetupStep } from 'src/app/modules/mongoose-set-up-module/interfaces/mongoose-setup-step.interface';
 import { InactiveNodeAlert } from './incative-node-alert.interface';
+import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nodes',
@@ -32,9 +34,21 @@ export class NodesComponent implements OnInit {
   constructor(
     private mongooseSetUpService: MongooseSetUpService,
     private controlApiService: ControlApiService,
-    private mongooseDataSharedService: MongooseDataSharedServiceService
+    private mongooseDataSharedService: MongooseDataSharedServiceService,
+    private localStorageService: LocalStorageService
   ) {
-    this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes();
+    this.configureSharedDataService();
+    this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes().pipe(
+      map((nodes: MongooseRunNode[]) => { 
+        const hiddenNodes: string[] = this.localStorageService.getHiddenNodeAddresses();
+        nodes.forEach((node: MongooseRunNode) => {
+          if (hiddenNodes.includes(node.getResourceLocation())) { 
+            this.mongooseDataSharedService.deleteMongooseRunNode(node);
+          }
+        })
+        return nodes; 
+      })
+    );
   }
 
   ngOnInit() { }
@@ -48,9 +62,20 @@ export class NodesComponent implements OnInit {
   public onAddIpButtonClicked(entredIpAddress: string): void {
     let newMongooseNode = new MongooseRunNode(this.entredIpAddress);
     try {
-      this.mongooseDataSharedService.addMongooseRunNode(newMongooseNode);
+      const savingNodeAddress: string = newMongooseNode.getResourceLocation();
+
+      const hiddenNodes: string[] = this.localStorageService.getHiddenNodeAddresses();
+      const isNodeHidden: boolean = hiddenNodes.includes(savingNodeAddress);
+      if (isNodeHidden) {
+        const shouldHideNode: boolean = false;
+        this.localStorageService.changeNodeAddressHidingStatus(savingNodeAddress, shouldHideNode);
+      } else {
+        this.localStorageService.saveMongooseRunNode(savingNodeAddress);
+      }
+      this.mongooseDataSharedService.addMongooseRunNode(newMongooseNode, isNodeHidden);
+
       const emptyValue: string = "";
-      this.entredIpAddress = emptyValue; 
+      this.entredIpAddress = emptyValue;
     } catch (error) {
       console.log(`Requested Mongoose run node won't be saved. Details: ${error}`);
       alert(`Requested Mongoose run node won't be saved. Details: ${error}`);
@@ -62,7 +87,7 @@ export class NodesComponent implements OnInit {
    * Handle node removal. 
    * @param savedNode will be removed from nodes list.
    */
-  public onRunNodeRemoveClicked(savedNode: MongooseRunNode) { 
+  public onRunNodeRemoveClicked(savedNode: MongooseRunNode) {
     this.mongooseDataSharedService.deleteMongooseRunNode(savedNode);
   }
 
@@ -71,7 +96,7 @@ export class NodesComponent implements OnInit {
     // NOTE: Add noode if check mark has been set, remove if unset    
     let hasNodeBeenSelected: boolean = this.mongooseSetUpService.isNodeExist(selectedNode);
 
-    if (hasNodeBeenSelected) { 
+    if (hasNodeBeenSelected) {
       // NOTE: Remove node it checkmark has been unset.
       this.mongooseSetUpService.removeNode(selectedNode);
     }
@@ -132,5 +157,8 @@ export class NodesComponent implements OnInit {
       (alert: InactiveNodeAlert) => {
         return (alert.message == inactiveNodeAlert.message);
       }));
+  }
+
+  private configureSharedDataService() {
   }
 }
