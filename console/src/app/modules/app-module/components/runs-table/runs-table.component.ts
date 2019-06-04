@@ -33,16 +33,11 @@ export class RunsTableComponent implements OnInit {
   private statusUpdateSubscription: Subscription = new Subscription();
 
   constructor(private router: Router,
-    private monitoringApiService: MonitoringApiService,
     private mongooseDataSharedServiceService: MongooseDataSharedServiceService) { }
 
   // MARK: - Lifecycle 
 
   ngOnInit() {
-
-    if (this.mongooseDataSharedServiceService.shouldWaintForNewRun) { 
-      console.log("should wait")
-    }
     this.runRecordsSubscription = this.mongooseRunRecords$.subscribe(
       updatedRecords => {
         this.handleRecordsUpdate(updatedRecords);
