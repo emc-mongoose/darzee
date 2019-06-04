@@ -43,7 +43,7 @@ export class MongooseRunRecord implements OnDestroy {
 
         this.duration$ = duration$;
         this.statusSubscription.add(this.duration$.subscribe(
-            (fetchedDuration: string) => { 
+            (fetchedDuration: string) => {
                 this.currentDuration = fetchedDuration;
             }
         ))
@@ -110,6 +110,5 @@ export class MongooseRunRecord implements OnDestroy {
     public setEntryNodeAddress(entryNodeAddress: string) {
         this.entryNode.setEntryNodeAddress(entryNodeAddress);
     }
-    // MARK: - Private 
 
 }

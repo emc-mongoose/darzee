@@ -34,8 +34,7 @@ export class RunStatisticsChartsComponent implements OnInit {
   // NOTE: isChartDrawActive is used to check whether the chart should be dispalyed within the UI.
   private isChartDrawActive: boolean = true;
   private availableCharts: Map<string, MongooseChart>;
-
-
+  
 
   constructor(private monitoringApiService: MonitoringApiService,
     private chartsProviderService: ChartsProviderService,
@@ -118,10 +117,10 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   private getAvailableCharts(): Map<string, MongooseChart> {
     var chartsList = new Map<string, MongooseChart>();
-    chartsList.set("Duration", this.chartsProviderService.getDurationChart());
-    chartsList.set("Bandwidth", this.chartsProviderService.getBandwidthChart());
     chartsList.set("Throughtput", this.chartsProviderService.getThoughputChart());
+    chartsList.set("Bandwidth", this.chartsProviderService.getBandwidthChart());
     chartsList.set("Latency", this.chartsProviderService.getLatencyChart());
+    chartsList.set("Duration", this.chartsProviderService.getDurationChart());
     chartsList.set("Concurrency", this.chartsProviderService.getConcurrencyChart());
 
     // NOTE: Chart is being shifted after specific amount of values if Mongoose run is ...
