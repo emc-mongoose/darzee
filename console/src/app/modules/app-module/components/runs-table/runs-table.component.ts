@@ -6,6 +6,7 @@ import { MonitoringApiService } from '../../../../core/services/monitoring-api/m
 import { timer, Observable, Subscription } from 'rxjs';
 
 import { MongooseRunStatus } from '../../../../core/models/mongoose-run-status';
+import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 
 @Component({
   selector: 'app-runs-table',
@@ -32,7 +33,8 @@ export class RunsTableComponent implements OnInit {
   private statusUpdateSubscription: Subscription = new Subscription();
 
   constructor(private router: Router,
-    private monitoringApiService: MonitoringApiService) { }
+    private monitoringApiService: MonitoringApiService,
+    private mongooseDataSharedServiceService: MongooseDataSharedServiceService) { }
 
   // MARK: - Lifecycle 
 
@@ -53,6 +55,10 @@ export class RunsTableComponent implements OnInit {
   }
 
   // MARK: - Public 
+
+  public shouldAppearLoadSpinner(): boolean {
+    return this.mongooseDataSharedServiceService.shouldWaintForNewRun;
+  }
 
   public getDisplayingTimeForRecord(record: MongooseRunRecord): string { 
     let unixEpochStartTime = record.getStartTime(); 

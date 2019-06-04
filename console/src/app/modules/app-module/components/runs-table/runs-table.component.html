@@ -14,11 +14,17 @@
   <!-- MARK: - Column content -->
 
   <tbody>
+    <tr>
+      <th *ngIf="this.shouldAppearLoadSpinner()">
+          <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+      </th>
+    </tr>
     <tr *ngFor="let runRecord of mongooseRunRecords">
       <th scope="row">
         <app-mongoose-run-status-icon [runStatus]="runRecord.getStatus()" (click)="onRunStatusIconClicked(runRecord)">
           {{ runRecord.getStatus() }}
-
         </app-mongoose-run-status-icon>
       </th>
 
