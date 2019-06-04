@@ -40,8 +40,8 @@ export class HttpUtils {
      * @returns true if provided IP address has port.
      */
     public static matchesIpv4AddressWithoutPort(ipAddress: string): boolean { 
-        const ipAddressWithoutPortPattern: RegExp = new RegExp('[0-9]+(?:\.[0-9]+){3}');
-        return (ipAddressWithoutPortPattern.test(ipAddress));
+        // NOTE: Check IP address to match pattern "xxx.xxx.xxx.xxx".
+        return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ipAddress);
     }
 
     /**
@@ -53,5 +53,14 @@ export class HttpUtils {
         let isIpValid: boolean = HttpUtils.isIpAddressValid(mongooseAddress);
         let isIpPointsToLocalhost: boolean = mongooseAddress.includes("localhost");
         return ((isIpValid) || (isIpPointsToLocalhost));
+    }
+
+    public static addPortToIp(ipAddress: string, port: number): string { 
+        const lastSymbolIndex: number = (ipAddress.length - 1);
+        const ipAndPortDelimiter: string = ':';
+        if (ipAddress[lastSymbolIndex] == ipAndPortDelimiter) { 
+            return (ipAddress + port);
+        }
+        return (ipAddress + ipAndPortDelimiter + port);
     }
 }

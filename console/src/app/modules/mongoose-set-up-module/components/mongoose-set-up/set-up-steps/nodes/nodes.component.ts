@@ -12,6 +12,7 @@ import { LocalStorageService } from 'src/app/core/services/local-storage-service
 import { map } from 'rxjs/operators';
 import { elementContainerEnd } from '@angular/core/src/render3';
 import { MongooseStoredRunNode } from 'src/app/core/services/local-storage-service/mongoose-stored-run-node.model';
+import { HttpUtils } from 'src/app/common/HttpUtils';
 
 @Component({
   selector: 'app-nodes',
@@ -20,15 +21,14 @@ import { MongooseStoredRunNode } from 'src/app/core/services/local-storage-servi
   providers: []
 })
 export class NodesComponent implements OnInit {
+  private readonly IP_DEFAULT_PORT: number = 9999;
 
   public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>();
   public inactiveNodeAlerts: InactiveNodeAlert[] = [];
-
-  displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
-
-  entredIpAddress = '';
-  nodeConfig: any = null;
-  error: HttpErrorResponse = null;
+  public displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
+  public entredIpAddress = '';
+  public nodeConfig: any = null;
+  public error: HttpErrorResponse = null;
 
   private slaveNodesSubscription: Subscription = new Subscription();
 
@@ -64,6 +64,17 @@ export class NodesComponent implements OnInit {
     // NOTE: trimming accident whitespaces
     this.entredIpAddress = this.entredIpAddress.replace(/\s/g, ""); 
 
+     // TODO: Validate IP address here
+     const savingNodeAddress: string = this.entredIpAddress;
+     if (!HttpUtils.isIpAddressValid(savingNodeAddress)) {
+         if (HttpUtils.matchesIpv4AddressWithoutPort(savingNodeAddress)) {
+             this.entredIpAddress = HttpUtils.addPortToIp(this.entredIpAddress, this.IP_DEFAULT_PORT);
+         } else { 
+          alert(`Entered IP address is not valid.`)
+          return; 
+         }
+     } 
+
     let newMongooseNode = new MongooseRunNode(this.entredIpAddress);
     try {
       const savingNodeAddress: string = newMongooseNode.getResourceLocation();
@@ -71,7 +82,6 @@ export class NodesComponent implements OnInit {
       const hiddenNodes: string[] = this.localStorageService.getHiddenNodeAddresses();
       const isNodeHidden: boolean = hiddenNodes.includes(savingNodeAddress);
       if (isNodeHidden) {
-        console.log(`node is hidden ${entredIpAddress}`)
         const shouldHideNode: boolean = false;
         this.localStorageService.changeNodeAddressHidingStatus(savingNodeAddress, shouldHideNode);
       } else {
