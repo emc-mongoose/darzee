@@ -18,7 +18,7 @@ export class HttpUtils {
         const localhostKeyword: string = HttpUtils.LOCALHOST_KEYWORD;
         const hasLocalhostKeyword: boolean = ipAddress.includes(localhostKeyword);
         if (!hasLocalhostKeyword) {
-            const ipV4Pattern: RegExp = new RegExp("(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)");
+            const ipV4Pattern: RegExp = new RegExp("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$");
             return ipV4Pattern.test(ipAddress);
         }
         const emptyString = "";
@@ -39,7 +39,7 @@ export class HttpUtils {
      * @param ipAddress IP address to be checked.
      * @returns true if provided IP address has port.
      */
-    public static containsPort(ipAddress: string): boolean { 
+    public static matchesIpv4AddressWithoutPort(ipAddress: string): boolean { 
         const ipAddressWithoutPortPattern: RegExp = new RegExp('[0-9]+(?:\.[0-9]+){3}');
         return (ipAddressWithoutPortPattern.test(ipAddress));
     }
