@@ -2,7 +2,8 @@
  * Specifies options for BasicChart drawn via ChartJS library.
  */
 export class MongooseChartOptions {
-    private readonly MAXIMAL_AMOUNT_OF_LABELS_IN_CHART: number = 20;
+
+    private static readonly AMOUNT_OF_DIGITS_AFTER_DECIMAL_POINTS_LBL: number = 1;
 
     private static readonly DARK_ORANGE_COLOR_RGB: string = "rgb(255,140,0)";
     private static readonly RED_COLOR_RGB: string = "rgb(255, 0, 0)";
@@ -13,9 +14,12 @@ export class MongooseChartOptions {
     public static readonly MAX_VALUE_DEFAULT_COLOR_RGB = MongooseChartOptions.RED_COLOR_RGB;
     public static readonly MIN_VALUE_DEFAUT_COLOR_RGB: string = MongooseChartOptions.GREEN_COLOR_RGB;
     public static readonly ELAPSED_TIME_AXES_DEFAULT_TAG: string = "Elapsed time since load step start, seconds"
-    public static readonly SHOULD_ALLOW_NEGATIVE_VALUES_FOR_AXES: boolean = false; 
+    public static readonly SHOULD_ALLOW_NEGATIVE_VALUES_FOR_AXES: boolean = false;
 
     public static readonly LAST_VALUE_DEFAULT_COLOR_RGB: string = MongooseChartOptions.MEDIUM_BLUE_COLOR_RGB;
+
+    private readonly MAXIMAL_AMOUNT_OF_LABELS_IN_CHART: number = 10;
+
     /**
      * @param CHART_DEFAULT_TYPE specifies default type of chart drawn via ChartJS library. "Linear" is a default value.
      */
@@ -50,10 +54,11 @@ export class MongooseChartOptions {
             ticks: {
                 beginAtZero: !MongooseChartOptions.SHOULD_ALLOW_NEGATIVE_VALUES_FOR_AXES,
                 maxTicksLimit: this.MAXIMAL_AMOUNT_OF_LABELS_IN_CHART,
-                callback: function(value, index, values) {
-                    let label: number = Math.round(value / 10) * 10;
-                    return label;
-                }
+                callback: function (value, index, values) {
+                    // NOTE: Converting OX axes labels.
+                    return value.toExponential(MongooseChartOptions.AMOUNT_OF_DIGITS_AFTER_DECIMAL_POINTS_LBL) + " ";
+                },
+                maxRotation: 0
             }
         }]
     }

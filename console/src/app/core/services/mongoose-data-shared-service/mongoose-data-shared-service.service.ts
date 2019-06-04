@@ -7,6 +7,7 @@ import { MongooseRunNodesRepository } from '../../models/mongoose-run-nodes-repo
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
 import { MongooseRunEntryNode } from '../local-storage-service/MongooseRunEntryNode';
 import { map } from 'rxjs/operators';
+import { HttpUtils } from 'src/app/common/HttpUtils';
 
 @Injectable({
   providedIn: 'root'
@@ -52,12 +53,14 @@ export class MongooseDataSharedServiceService {
    */
   public addMongooseRunNode(mongooseRunNode: MongooseRunNode, hasNodesBeenHiddenFromNodesList: boolean = false) {
     const emptyAddress = "";
-    if (mongooseRunNode.getResourceLocation() == emptyAddress) {
+    const savingNodeLocation: string = mongooseRunNode.getResourceLocation();
+    if (savingNodeLocation == emptyAddress) {
       throw new Error(`Mongoose run node's address couldn't be empty.`);
     }
     if (hasNodesBeenHiddenFromNodesList) { 
       this.mongooseNodesRepository.deleteMongooseRunNode(mongooseRunNode);
     }
+
     this.mongooseNodesRepository.addMongooseRunNode(mongooseRunNode);
   }
 

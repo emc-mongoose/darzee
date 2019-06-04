@@ -66,7 +66,6 @@ export class RunsTableRootComponent implements OnInit {
   private observeLaunchedRunRecord() { 
     this.monitoringApiService.getMongooseRunRecords().subscribe(
       (fetchedRecord: MongooseRunRecord[]) => { 
-        console.log(`fetchedRecord.length: ${fetchedRecord.length}, this.filtredRecords$.getValue().length: ${this.filtredRecords$.getValue().length}`)
         if (fetchedRecord.length != this.filtredRecords$.getValue().length) { 
           this.mongooseDataSharedServiceService.shouldWaintForNewRun = false; 
         }
