@@ -2,6 +2,7 @@
  * Specifies options for BasicChart drawn via ChartJS library.
  */
 export class MongooseChartOptions {
+    private readonly MAXIMAL_AMOUNT_OF_LABELS_IN_CHART: number = 20;
 
     private static readonly DARK_ORANGE_COLOR_RGB: string = "rgb(255,140,0)";
     private static readonly RED_COLOR_RGB: string = "rgb(255, 0, 0)";
@@ -47,14 +48,15 @@ export class MongooseChartOptions {
                 labelString: MongooseChartOptions.DEAULT_Y_AXIS_TITLE
             },
             ticks: {
-                beginAtZero: !MongooseChartOptions.SHOULD_ALLOW_NEGATIVE_VALUES_FOR_AXES
+                beginAtZero: !MongooseChartOptions.SHOULD_ALLOW_NEGATIVE_VALUES_FOR_AXES,
+                maxTicksLimit: this.MAXIMAL_AMOUNT_OF_LABELS_IN_CHART
             }
         }]
     }
 
     public title: any = {
         display: true,
-        text: ''
+        text: this.MAXIMAL_AMOUNT_OF_LABELS_IN_CHART
     }
 
     constructor(shouldScaleShowVerticalLines: boolean = false, isResponsive: boolean = true) {
