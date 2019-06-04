@@ -6,7 +6,7 @@ export class MongooseRunNodesRepository {
     private availableMongooseNodes$: BehaviorSubject<MongooseRunNode[]> = new BehaviorSubject<MongooseRunNode[]>([])
     private mongooseRunNodes: MongooseRunNode[] = [];
 
-    constructor(initialNodes: MongooseRunNode[] = []) { 
+    constructor(initialNodes: MongooseRunNode[] = []) {
         this.addMultipleNodes(initialNodes);
     }
 
@@ -16,32 +16,32 @@ export class MongooseRunNodesRepository {
         return this.availableMongooseNodes$.asObservable();
     }
 
-    public addMongooseRunNode(mongooseRunNode: MongooseRunNode) {
-        if (this.hasMongooseRunNodeBeenSaved(mongooseRunNode)) {
-            // console.error(`Node with address "${mongooseRunNode.getResourceLocation()}" is already exist.`);
+    public addMongooseRunNode(mongooseRunNode: MongooseRunNode, hasNodeBeenHiddenFromNodesList: boolean = false) {
+        if (this.hasMongooseRunNodeBeenSaved(mongooseRunNode) && (!hasNodeBeenHiddenFromNodesList)) {
+            // NOTE: Don't add node address if it's already exist.
             return;
         }
-
         this.mongooseRunNodes.push(mongooseRunNode);
         this.availableMongooseNodes$.next(this.mongooseRunNodes);
     }
 
 
-    deleteMongooseRunNode(mongooseRunNode: MongooseRunNode) {
-        let filredNodesList = this.availableMongooseNodes$.getValue().filter(node => { 
-            if (node.getResourceType() != mongooseRunNode.getResourceType()) { 
-                // NOTE: No noeed to compare nodes if their resources have different types. 
-                return true; 
+    public deleteMongooseRunNode(mongooseRunNode: MongooseRunNode) {
+        let filredNodesList = this.availableMongooseNodes$.getValue().filter(node => {
+            if (node.getResourceType() != mongooseRunNode.getResourceType()) {
+                // NOTE: No need to compare nodes if their resources have different types. 
+                return true;
             }
-            return (node.getResourceLocation() != mongooseRunNode.getResourceLocation()); 
+            return (node.getResourceLocation() != mongooseRunNode.getResourceLocation());
         });
+        this.mongooseRunNodes = filredNodesList;
         this.availableMongooseNodes$.next(filredNodesList);
-      }
+    }
 
     // MARK: - Private 
 
-    private addMultipleNodes(mongooseNodes: MongooseRunNode[]) { 
-        mongooseNodes.forEach(mongooseNode => { 
+    private addMultipleNodes(mongooseNodes: MongooseRunNode[]) {
+        mongooseNodes.forEach(mongooseNode => {
             this.mongooseRunNodes.push(mongooseNode);
             this.availableMongooseNodes$.next(this.mongooseRunNodes);
         })
