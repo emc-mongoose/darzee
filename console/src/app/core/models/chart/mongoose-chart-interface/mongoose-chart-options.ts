@@ -49,7 +49,11 @@ export class MongooseChartOptions {
             },
             ticks: {
                 beginAtZero: !MongooseChartOptions.SHOULD_ALLOW_NEGATIVE_VALUES_FOR_AXES,
-                maxTicksLimit: this.MAXIMAL_AMOUNT_OF_LABELS_IN_CHART
+                maxTicksLimit: this.MAXIMAL_AMOUNT_OF_LABELS_IN_CHART,
+                callback: function(value, index, values) {
+                    let label: number = Math.round(value / 10) * 10;
+                    return label;
+                }
             }
         }]
     }
