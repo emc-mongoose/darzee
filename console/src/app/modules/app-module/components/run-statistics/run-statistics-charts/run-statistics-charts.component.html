@@ -11,18 +11,6 @@
   <label class="custom-control-label" for="logarithmicScalingSwitch">Logarithmic scaling</label>
 </div>
 
-<!-- NOTE: Area for displaying Mongoose charts -->
-<ng-container *ngIf="this.shouldDisplayLoadingSpinner()">
-  <div class="alert alert-primary" role="alert">
-    <button class="btn" type="button" disabled>
-      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      Constructing charts..
-    </button>
-  </div>
-
-
-</ng-container>
-
 <div id="displaying-charts-area" class="card">
   <div class="card-body">
     <!-- NOTE: Actual chart -->
@@ -30,7 +18,15 @@
   </div>
 </div>
 
-
+<!-- NOTE: Area for displaying Mongoose charts -->
+<div *ngIf="this.shouldDisplayLoadingSpinner()">
+    <div class="alert alert-light" role="alert">
+      <button class="btn" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+  
 <!-- MARK: - Templates -->
 
 <ng-template #chartsNotAvailable>
