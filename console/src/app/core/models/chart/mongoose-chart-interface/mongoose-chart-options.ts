@@ -90,6 +90,17 @@ export class MongooseChartOptions {
         }
     }
 
+    public isAxisScaledLogarithmically(axis: MongooseChartAxesType): boolean { 
+        switch (axis) {
+            case (MongooseChartAxesType.Y): {
+                return (this.scales.yAxes[0].type == MongooseChartOptions.LOGARITHMIC_CHART_TYPE);
+            }
+            default: {
+                throw new Error(`requested axis "${axis}" hasn't been found.`);
+            }
+        }
+    }
+
     /**
      * Title will be displayed above the chart.
      * @param title a title of chart. 
