@@ -42,7 +42,8 @@ export class RunStatisticsChartsComponent implements OnInit {
     private chartsProviderService: ChartsProviderService,
     private resolver: ComponentFactoryResolver,
     private route: ActivatedRoute,
-    private router: Router) { }
+    private router: Router,
+    ) { }
 
   // MARK: - Lifecycle 
 
