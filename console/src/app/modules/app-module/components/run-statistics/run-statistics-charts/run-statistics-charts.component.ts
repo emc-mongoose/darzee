@@ -109,6 +109,9 @@ export class RunStatisticsChartsComponent implements OnInit {
     return this.chartTabs;
   }
 
+  public onSwitchStateChange() { 
+    alert(`Switch state change`)
+  }
   // MARK: - Private 
 
   private configureChartsRepository() {
