@@ -16,9 +16,9 @@ import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose
 
 export class RunsTableComponent implements OnInit {
 
-  readonly EMPTY_FIELD_DEFAULT_TAG = "-";
-
-  readonly columnHeaders = [
+  public readonly MONGOOSE_LOADING_RUN_MSG = "Loading Mongoose run. This can take up to 20 seconds.."
+  public readonly EMPTY_FIELD_DEFAULT_TAG = "-";
+  public readonly columnHeaders = [
     "Status",
     "Start time",
     "Nodes",

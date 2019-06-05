@@ -21,7 +21,7 @@ export let slideAnimation = trigger('slide',
 )
 
 // NOTE: Bounce animations 
-const BOUNCE_IN_ANIM_TIMING_MS= 300;
+const BOUNCE_IN_ANIM_TIMING_MS= 500;
 const basicBounce = animation(
     animate(
         '{{ timing }}ms ease-out',
