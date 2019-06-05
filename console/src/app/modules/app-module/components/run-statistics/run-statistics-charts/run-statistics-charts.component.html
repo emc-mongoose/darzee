@@ -6,12 +6,16 @@
   </li>
 </ul>
 
+<div class="custom-control custom-switch" style="margin-left: calc(2%);">
+    <input #logarithmicScalingSwitch type="checkbox" class="custom-control-input" id="logarithmicScalingSwitch" (click)="onSwitchStateChange()">
+    <label class="custom-control-label" for="logarithmicScalingSwitch">Logarithmic scaling</label>
+  </div>
 
 <!-- NOTE: Area for displaying Mongoose charts -->
 <div id="displaying-charts-area" class="card">
   <div class="card-body">
     <!-- NOTE: Actual chart -->
-    <template #chartContainer ></template>
+    <template #chartContainer ></template>g8
   </div>
 </div>
 
