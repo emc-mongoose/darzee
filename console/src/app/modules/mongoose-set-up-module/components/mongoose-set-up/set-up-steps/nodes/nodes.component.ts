@@ -144,6 +144,21 @@ export class NodesComponent implements OnInit {
 
   }
 
+  public getCustomClassForNode(node: MongooseRunNode): string {
+    let mongooseEntryNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
+    const noCustomClassTag: string = "";
+    if (mongooseEntryNode == undefined) { 
+      return noCustomClassTag;
+    }
+    const entryNodeAddress: string = mongooseEntryNode.getResourceLocation();
+    if (entryNodeAddress == node.getResourceLocation()) {
+      const entryNodeClass: string = "entry-node";
+      console.log('return custom class pf entry node')
+      return entryNodeClass;
+    }
+    return noCustomClassTag;
+  }
+
   public onAlertClosed(closedAlert: InactiveNodeAlert) {
     let closedAlertIndex = this.getAlertIndex(closedAlert);
     this.inactiveNodeAlerts.splice(closedAlertIndex, 1);

@@ -22,7 +22,7 @@
         <th scope="row">
           <div class="checkbox">
               <input type="checkbox" id="{{ savedNode.getResourceLocation() }}" class="custom-control-input"
-               style="visibility: hidden;" (click)="onRunNodeSelect(savedNode)">
+               style="visibility: hidden;" (click)="onRunNodeSelect(savedNode)" [ngClass]="this.getCustomClassForNode(savedNode)">
               <label for="{{ savedNode.getResourceLocation() }}" class="custom-control-label"></label>
           </div>
 

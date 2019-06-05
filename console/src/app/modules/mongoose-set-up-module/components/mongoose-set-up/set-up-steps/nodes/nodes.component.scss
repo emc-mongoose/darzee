@@ -59,7 +59,7 @@
   width: calc(1%);
 }
 
-.column-nodes-removal { 
+.column-nodes-removal {
   /* NOTE: Setting minimal width in order to make the column wrap its content */
   width: calc(1%);
 }
@@ -71,14 +71,11 @@
 
 $CHECKBOX_DIAMETER: 25px;
 $CHECKBOX_BACKGROUND_COLOR-selected: #356cd2;
-// $CHECKBOX_CHECK_MARK_COLOR: #fff;
-// $CHECKBOX_SELECTED_COLOR: #1dbf26;
 $CHECKBOX_BACKGROUND_COLOR: #c9f6c9;
-$CHECKBOX_CHECK_MARK_COLOR: #5CB85C;
+$CHECKBOX_CHECK_MARK_COLOR: #5cb85c;
 
 $CHECKBOX_SELECTED_COLOR: #fff;
-$CHECKBOX_SELECTED_BORDER_COLOR: #5CB85C;
-
+$CHECKBOX_SELECTED_BORDER_COLOR: #5cb85c;
 
 .checkbox:not(last-of-type) {
   // NOTE: Cirlle
@@ -138,7 +135,9 @@ $CHECKBOX_SELECTED_BORDER_COLOR: #5CB85C;
       background-color: ($CHECKBOX_SELECTED_COLOR);
       border-color: ($CHECKBOX_SELECTED_BORDER_COLOR);
     }
-
   }
+}
 
+.entry-node {
+  background-color: yellow;
 }
