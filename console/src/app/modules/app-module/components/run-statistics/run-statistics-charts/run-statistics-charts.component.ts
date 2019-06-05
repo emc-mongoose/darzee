@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef } from "@angular/core";
 import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
 import { Subscription } from "rxjs";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
@@ -10,6 +10,7 @@ import { MongooseRouteParamsParser } from "src/app/core/models/mongoose-route-pa
 import { RoutesList } from "../../../Routing/routes-list";
 import { BasicChartComponent } from "./basic-chart/basic-chart.component";
 import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
+import { MongooseChartOptions, MongooseChartAxesType } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart-options";
 
 
 
@@ -23,6 +24,7 @@ import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
 export class RunStatisticsChartsComponent implements OnInit {
 
   @ViewChild('chartContainer', { read: ViewContainerRef }) chartContainerReference: ViewContainerRef;
+  @ViewChild('logarithmicScalingSwitch') logarithmicScalingSwitch: ElementRef; 
 
   public displayingMongooseChart: MongooseChart;
 
@@ -102,6 +104,7 @@ export class RunStatisticsChartsComponent implements OnInit {
 
     const selectedTabName = selectedTab.getName() as string;
     this.displayingMongooseChart = this.availableCharts.get(selectedTabName);
+    this.logarithmicScalingSwitch.nativeElement.checked = this.isLogarithmicScalingSwitchChecked();
     this.createChartComponent(this.displayingMongooseChart);
   }
 
@@ -110,7 +113,18 @@ export class RunStatisticsChartsComponent implements OnInit {
   }
 
   public onSwitchStateChange() { 
-    alert(`Switch state change`)
+    const isChartScaledLogarithmically: boolean = this.isLogarithmicScalingSwitchChecked();
+    const updatedChartType: string = isChartScaledLogarithmically ? MongooseChartOptions.CHART_DEFAULT_TYPE : MongooseChartOptions.LOGARITHMIC_CHART_TYPE;
+    const yAxis: MongooseChartAxesType = MongooseChartAxesType.Y;
+    let updatedChartComponent: MongooseChart = this.displayingMongooseChart;
+    updatedChartComponent.chartOptions.setAxisChartType(updatedChartType, yAxis);
+    this.createChartComponent(updatedChartComponent);
+  }
+
+  public isLogarithmicScalingSwitchChecked(): boolean { 
+    const yAxis: MongooseChartAxesType = MongooseChartAxesType.Y;
+    console.log(`has log scaling: ${this.displayingMongooseChart.chartOptions.isAxisScaledLogarithmically(yAxis)}`)
+    return this.displayingMongooseChart.chartOptions.isAxisScaledLogarithmically(yAxis);
   }
   // MARK: - Private 
 
@@ -194,6 +208,7 @@ export class RunStatisticsChartsComponent implements OnInit {
     const factory = this.resolver.resolveComponentFactory(BasicChartComponent);
     const chartComponentReference = this.chartContainerReference.createComponent(factory);
     chartComponentReference.instance.chart = this.displayingMongooseChart;
+    this.logarithmicScalingSwitch.nativeElement.checked = this.isLogarithmicScalingSwitchChecked();
   }
 
   private drawDynamicChart(record: MongooseRunRecord) {
