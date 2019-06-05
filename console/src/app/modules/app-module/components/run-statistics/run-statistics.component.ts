@@ -76,6 +76,7 @@ export class RunStatisticsComponent implements OnInit {
 
   // MARK: - Public 
 
+
   public switchTab(targetTab: BasicTab) {
     this.statisticTabs.forEach(section => {
       if (targetTab.isEqual(section)) {

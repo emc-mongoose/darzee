@@ -20,7 +20,6 @@ import { MongooseOperationResult } from '../../models/chart/mongoose-chart-inter
 })
 export class ChartsProviderService {
 
-
   private mongooseChartDao: MongooseChartDao;
 
   private durationChart: MongooseDurationChart;
@@ -29,6 +28,8 @@ export class ChartsProviderService {
   private throughputChart: MongooseThroughputChart;
   private concurrencyChart: MongooseConcurrencyChart;
 
+  private hasLoadedAnyChart: boolean = false; 
+
   constructor(prometheusApiService: PrometheusApiService) {
     // NOTE: Prometheus API service is data provider for Mongoose Charts.
     this.mongooseChartDao = new MongooseChartDao(prometheusApiService);
@@ -36,6 +37,10 @@ export class ChartsProviderService {
   }
 
   // MARK: - Public
+
+  public hasChartsLoaded(): boolean { 
+    return this.hasLoadedAnyChart; 
+  }
 
   public getDurationChart(): MongooseDurationChart {
     return this.durationChart;
@@ -81,6 +86,7 @@ export class ChartsProviderService {
     Object.values(MetricValueType).forEach(latencyMetricType => {
       this.mongooseChartDao.getLatencyChartPoints(perdiodOfUpdateSecs, loadStepId, latencyMetricType).subscribe(
         (chartPoints: ChartPoint[]) => {
+          this.hasLoadedAnyChart = true;
           this.latencyChart.updateChart(loadStepId, chartPoints, latencyMetricType);
         }
       )
@@ -92,6 +98,7 @@ export class ChartsProviderService {
     Object.values(MetricValueType).forEach(metricValueType => {
       this.mongooseChartDao.getDurationChartPoints(perdiodOfUpdateSecs, loadStepId, metricValueType).subscribe(
         ((durationChartPoints: ChartPoint[]) => {
+          this.hasLoadedAnyChart = true;
           this.durationChart.updateChart(loadStepId, durationChartPoints, metricValueType);
         }));
     });
@@ -101,6 +108,7 @@ export class ChartsProviderService {
     Object.values(NumericMetricValueType).forEach(concurrencyMetricType => {
       this.mongooseChartDao.getConcurrencyChartPoints(perdiodOfUpdateSecs, loadStepId, concurrencyMetricType).subscribe(
         (chartPoints: ChartPoint[]) => {
+          this.hasLoadedAnyChart = true;
           this.concurrencyChart.updateChart(loadStepId, chartPoints, concurrencyMetricType);
         }
       )
@@ -112,6 +120,7 @@ export class ChartsProviderService {
     Object.values(NumericMetricValueType).forEach(bandwidthMetricType => {
       this.mongooseChartDao.getBandwidthChartPoints(periodOfUpdateSecs, loadStepId, bandwidthMetricType).subscribe(
         (chartPoints: ChartPoint[]) => {
+          this.hasLoadedAnyChart = true;
           this.bandwidthChart.updateChart(loadStepId, chartPoints, bandwidthMetricType);
         }
       )
@@ -123,6 +132,7 @@ export class ChartsProviderService {
       Object.values(NumericMetricValueType).forEach((numericMetricType: NumericMetricValueType) => { 
         this.mongooseChartDao.getThroughtputChartPoints(periodOfUpdateSecs, loadStepId, numericMetricType, mongooseOperationResultType).subscribe(
           (chartPoints: ChartPoint[]) => {
+            this.hasLoadedAnyChart = true; 
             this.throughputChart.updateChart(loadStepId, chartPoints, numericMetricType, mongooseOperationResultType);
           }
         )

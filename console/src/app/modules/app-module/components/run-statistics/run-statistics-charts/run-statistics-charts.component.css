@@ -1,13 +1,17 @@
-
-  .card { 
-    margin: calc(1%) calc(5%);
-    color: white;
+.card {
+  margin: calc(1%) calc(5%);
+  color: white;
 }
 
-.metric-item { 
-    color: #040030;
+.metric-item {
+  color: #040030;
 }
 
-.selected-metric-item { 
-    color: #33b5e5;
+.selected-metric-item {
+  color: #33b5e5;
+}
+
+.alert {
+  margin: calc(5%) calc(5%);
+  text-align: center;
 }
