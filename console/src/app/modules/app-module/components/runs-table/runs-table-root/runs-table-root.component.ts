@@ -36,7 +36,7 @@ export class RunsTableRootComponent implements OnInit {
   private monitoringApiServiceSubscriptions: Subscription = new Subscription();
   private recordUpdatingTimer: any;
 
-  private hasInitializedRecord: boolean = false; 
+  private hasInitializedRecord: boolean = false;
 
 
   // MARK: - Lifecycle
@@ -50,7 +50,7 @@ export class RunsTableRootComponent implements OnInit {
 
 
   ngOnInit() {
-    if (this.mongooseDataSharedServiceService.shouldWaintForNewRun) { 
+    if (this.mongooseDataSharedServiceService.shouldWaintForNewRun) {
       this.observeLaunchedRunRecord = this.observeLaunchedRunRecord.bind(this);
       this.recordUpdatingTimer = setInterval(this.observeLaunchedRunRecord, 2000);
     }
@@ -63,11 +63,11 @@ export class RunsTableRootComponent implements OnInit {
     this.mongooseRunTabs$.unsubscribe();
   }
 
-  private observeLaunchedRunRecord() { 
+  private observeLaunchedRunRecord() {
     this.monitoringApiService.getMongooseRunRecords().subscribe(
-      (fetchedRecord: MongooseRunRecord[]) => { 
-        if (fetchedRecord.length != this.filtredRecords$.getValue().length) { 
-          this.mongooseDataSharedServiceService.shouldWaintForNewRun = false; 
+      (fetchedRecord: MongooseRunRecord[]) => {
+        if (fetchedRecord.length != this.filtredRecords$.getValue().length) {
+          this.mongooseDataSharedServiceService.shouldWaintForNewRun = false;
         }
       }
     );
@@ -101,8 +101,8 @@ export class RunsTableRootComponent implements OnInit {
   }
 
 
-  public hasSavedRunRecords(): boolean {
-    return (this.displayingRunRecords.length > 0);
+  public shouldDisplayRecords(): boolean {
+    return (this.filtredRecords$.getValue().length > 0);
   }
 
   public getDisplayingRunRecords() {
@@ -174,17 +174,17 @@ export class RunsTableRootComponent implements OnInit {
       this.monitoringApiServiceSubscriptions.add(
         this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(targetStatus).subscribe(
           (records: MongooseRunRecord[]) => {
-            if (records.length == this.filtredRecords$.getValue().length) { 
-              return; 
+            if (records.length == this.filtredRecords$.getValue().length) {
+              return;
             }
 
-            if ((records.length != this.filtredRecords$.getValue().length) && this.hasInitializedRecord) { 
-              this.mongooseDataSharedServiceService.shouldWaintForNewRun = false; 
+            if ((records.length != this.filtredRecords$.getValue().length) && this.hasInitializedRecord) {
+              this.mongooseDataSharedServiceService.shouldWaintForNewRun = false;
               clearInterval(this.recordUpdatingTimer);
             }
             console.log("Records have been changed.");
             this.filtredRecords$.next(records);
-            this.hasInitializedRecord = true; 
+            this.hasInitializedRecord = true;
           },
           error => {
             console.error(`Unable to filter records by status "${targetStatus}. Details: ${error}"`);
