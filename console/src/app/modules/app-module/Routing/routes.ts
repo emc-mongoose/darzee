@@ -15,17 +15,19 @@ import { BasicChartComponent } from "../components/run-statistics/run-statistics
 
 export const routes: Routes = [
 
-     // MARK: - Mongoose Set Up pages
-     { path: RoutesList.MONGOOSE_SETUP, component: MongooseSetUpComponent, children: SETUP_ROUTES},
+  // MARK: - Mongoose Set Up pages
+  { path: RoutesList.MONGOOSE_SETUP, component: MongooseSetUpComponent, children: SETUP_ROUTES },
 
-    { path: RoutesList.RUN_STATISTICS + '/:' + RouteParams.ID, component: RunStatisticsComponent,
-      children: [
-        { path: RoutesList.RUN_LOGS, component: RunStatisticLogsComponent},
-        { path: RoutesList.RUN_CHARTS, component: RunStatisticsChartsComponent}
-      ] },
-    { path: RoutesList.SCENARIO, component: ScenariosComponent},
-    { path: "", redirectTo: RoutesList.RUNS, pathMatch: 'full'},
-    { path: RoutesList.MONGOOSE_COMFIGURATION, component: ConfigurationEditingRootComponent},
-  
-    { path: "**", component: RunsTableRootComponent }
-  ];
+  {
+    path: RoutesList.RUN_STATISTICS + '/:' + RouteParams.ID, component: RunStatisticsComponent,
+    children: [
+      { path: RoutesList.RUN_LOGS, component: RunStatisticLogsComponent },
+      { path: RoutesList.RUN_CHARTS, component: RunStatisticsChartsComponent }
+    ]
+  },
+  { path: RoutesList.NODES, component: NodesComponent },
+  { path: "", redirectTo: RoutesList.RUNS, pathMatch: 'full' },
+  { path: RoutesList.MONGOOSE_COMFIGURATION, component: ConfigurationEditingRootComponent },
+
+  { path: "**", component: RunsTableRootComponent }
+];
