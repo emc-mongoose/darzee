@@ -24,7 +24,7 @@ import { MongooseChartOptions, MongooseChartAxesType } from "src/app/core/models
 export class RunStatisticsChartsComponent implements OnInit {
 
   @ViewChild('chartContainer', { read: ViewContainerRef }) chartContainerReference: ViewContainerRef;
-  @ViewChild('logarithmicScalingSwitch') logarithmicScalingSwitch: ElementRef; 
+  @ViewChild('logarithmicScalingSwitch') logarithmicScalingSwitch: ElementRef;
 
   public displayingMongooseChart: MongooseChart;
 
@@ -36,7 +36,7 @@ export class RunStatisticsChartsComponent implements OnInit {
   // NOTE: isChartDrawActive is used to check whether the chart should be dispalyed within the UI.
   private isChartDrawActive: boolean = true;
   private availableCharts: Map<string, MongooseChart>;
-  
+
 
   constructor(private monitoringApiService: MonitoringApiService,
     private chartsProviderService: ChartsProviderService,
@@ -112,7 +112,7 @@ export class RunStatisticsChartsComponent implements OnInit {
     return this.chartTabs;
   }
 
-  public onSwitchStateChange() { 
+  public onSwitchStateChange() {
     const isChartScaledLogarithmically: boolean = this.isLogarithmicScalingSwitchChecked();
     const updatedChartType: string = isChartScaledLogarithmically ? MongooseChartOptions.CHART_DEFAULT_TYPE : MongooseChartOptions.LOGARITHMIC_CHART_TYPE;
     const yAxis: MongooseChartAxesType = MongooseChartAxesType.Y;
@@ -121,7 +121,7 @@ export class RunStatisticsChartsComponent implements OnInit {
     this.createChartComponent(updatedChartComponent);
   }
 
-  public isLogarithmicScalingSwitchChecked(): boolean { 
+  public isLogarithmicScalingSwitchChecked(): boolean {
     const yAxis: MongooseChartAxesType = MongooseChartAxesType.Y;
     console.log(`has log scaling: ${this.displayingMongooseChart.chartOptions.isAxisScaledLogarithmically(yAxis)}`)
     return this.displayingMongooseChart.chartOptions.isAxisScaledLogarithmically(yAxis);
