@@ -78,6 +78,11 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   // MARK: - Public 
 
+
+  public shouldDisplayLoadingSpinner(): boolean { 
+    return !this.chartsProviderService.hasChartsLoaded();
+  }
+
   public drawChart(record: MongooseRunRecord = this.processingRecord) {
     if (record == undefined) {
       console.error(`Unable to draw chart for an undefined record.`);

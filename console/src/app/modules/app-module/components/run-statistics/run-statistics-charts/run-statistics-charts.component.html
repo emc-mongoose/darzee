@@ -12,10 +12,16 @@
 </div>
 
 <!-- NOTE: Area for displaying Mongoose charts -->
+<ng-container *ngIf="this.shouldDisplayLoadingSpinner()">
+  <div class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</ng-container>
+
 <div id="displaying-charts-area" class="card">
   <div class="card-body">
     <!-- NOTE: Actual chart -->
-    <template #chartContainer></template>g8
+    <template #chartContainer></template>
   </div>
 </div>
 
