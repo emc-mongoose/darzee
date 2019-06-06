@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Constants } from 'src/app/common/constants';
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import { map, filter, tap, catchError } from 'rxjs/operators';
 import { MongooseChartDataProvider } from '../../models/chart/mongoose-chart-interface/mongoose-chart-data-provider.interface';
 import { MongooseMetric } from '../../models/chart/mongoose-metric.model';
@@ -48,7 +48,8 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   readonly METRIC_LABELS_LIST_END_SYMBOL = "}";
 
   readonly prometheusResponseParser: PrometheusResponseParser = new PrometheusResponseParser();
-  private currentPrometheusAddress: string = this.DEFAULT_PROMETHEUS_IP;
+  
+  private address: BehaviorSubject<string> = new BehaviorSubject<string>(this.DEFAULT_PROMETHEUS_IP);
 
   // MARK: - Lifecycle 
 
@@ -84,7 +85,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     )
   }
 
-  getElapsedTimeValue(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
+  public getElapsedTimeValue(periodInSeconds: number, loadStepId: string): Observable<MongooseMetric[]> {
     let metricName = this.ELAPSED_TIME_VALUE_METRIC_NAME;
     const latestValueTimePeriod: number = 0;
 
@@ -106,12 +107,13 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   /**
    * Sets @param prometheusHostIpAddress as a Prometheus' host for HTTP requests.
+   * WARNING: Could be deprecated in case of implementing data retrieving from multiple Prometheus' nodes.
    */
   public setHostIpAddress(prometheusHostIpAddress: string) {
-    this.currentPrometheusAddress = prometheusHostIpAddress;
+    this.address.next(prometheusHostIpAddress);
   }
 
-  getConcurrency(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<MongooseMetric[]> {
+  public getConcurrency(periodInSeconds: number, loadStepId: string, numericMetricValueType: NumericMetricValueType): Observable<MongooseMetric[]> {
     let metricName: string = "";
     switch (numericMetricValueType) {
       case (NumericMetricValueType.LAST): {
@@ -260,7 +262,8 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
   public runQuery(query: String): Observable<any> {
     let queryRequest = "query?query=";
-    return this.httpClient.get(this.getPrometheusApiBase(this.currentPrometheusAddress) + queryRequest + query, Constants.Http.JSON_CONTENT_TYPE).pipe(
+    const currentPrometheusAddress: string = this.address.getValue();
+    return this.httpClient.get(this.getPrometheusApiBase(currentPrometheusAddress) + queryRequest + query, Constants.Http.JSON_CONTENT_TYPE).pipe(
       map((rawResponse: any) => this.extractResultPayload(rawResponse))
     );
   }
@@ -327,6 +330,14 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     return labelsOfMetric;
   }
 
+  /**
+   * @returns current address of target Prmetheus' node.
+   * WARNING: Could be deprecated in case of implementing data retrieving from multiple Prometheus nodes.
+   */
+  public getCurrentAddress(): Observable<string> { 
+    return this.address.asObservable();
+  }
+
 
   /**
    * @param prometheusAddress Address for which API base will be returned.
@@ -334,8 +345,9 @@ export class PrometheusApiService implements MongooseChartDataProvider {
    */
   private getPrometheusApiBase(prometheusAddress: string): string {
     const apiBasicEndpoint = "/api/v1/";
-    if (this.currentPrometheusAddress.includes(Constants.Http.HTTP_PREFIX)) {
-      return (this.currentPrometheusAddress + apiBasicEndpoint);
+    const currentPrometheusAddress: string = this.address.getValue();
+    if (currentPrometheusAddress.includes(Constants.Http.HTTP_PREFIX)) {
+      return (currentPrometheusAddress + apiBasicEndpoint);
     }
     return (Constants.Http.HTTP_PREFIX + prometheusAddress + apiBasicEndpoint);
   }
@@ -347,10 +359,10 @@ export class PrometheusApiService implements MongooseChartDataProvider {
    */
   private setupPromtheusEntryNode() {
     const prometheusLocalStorageAddress: string = this.localStorageService.getPrometheusHostAddress();
-    const defualtPrometheusAddress: string = this.currentPrometheusAddress;
+    const defualtPrometheusAddress: string = this.address.getValue();
     const isPrometheusIpDefault: boolean = (defualtPrometheusAddress == this.DEFAULT_PROMETHEUS_IP);
     if (!isPrometheusIpDefault) {
-      this.currentPrometheusAddress = prometheusLocalStorageAddress;
+      this.address.next(prometheusLocalStorageAddress);
       return;
     }
 
@@ -363,7 +375,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
         if (!isPrometheusCustomIpValid) {
           return;
         }
-        this.currentPrometheusAddress = prometheusLocalStorageAddress;
+        this.address.next(prometheusLocalStorageAddress);
         return;
       }
     )
