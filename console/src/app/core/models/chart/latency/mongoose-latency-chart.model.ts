@@ -9,7 +9,7 @@ import { ChartPoint } from "../mongoose-chart-interface/chart-point.model";
  */
 export class MongooseLatencyChart implements MongooseChart {
 
-    private readonly Y_AXIS_CHART_TITLE: string = "Milliseconds";
+    private readonly Y_AXIS_CHART_TITLE: string = "Seconds";
     private readonly X_AXIS_CHART_TITLE: string = MongooseChartOptions.ELAPSED_TIME_AXES_DEFAULT_TAG;
 
     private readonly MIN_LATENCY_DATASET_INDEX = 0;

@@ -22,6 +22,7 @@ import { HttpUtils } from 'src/app/common/HttpUtils';
 })
 export class NodesComponent implements OnInit {
   private readonly IP_DEFAULT_PORT: number = 9999;
+  private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
 
   public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>();
   public inactiveNodeAlerts: InactiveNodeAlert[] = [];
@@ -152,8 +153,7 @@ export class NodesComponent implements OnInit {
     }
     const entryNodeAddress: string = mongooseEntryNode.getResourceLocation();
     if (entryNodeAddress == node.getResourceLocation()) {
-      const entryNodeClass: string = "entry-node";
-      console.log('return custom class pf entry node')
+      const entryNodeClass: string = this.ENTRY_NODE_CUSTOM_CLASS;
       return entryNodeClass;
     }
     return noCustomClassTag;
