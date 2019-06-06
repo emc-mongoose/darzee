@@ -19,6 +19,7 @@ import { NumericMetricValueType } from '../../models/chart/mongoose-chart-interf
 
 export class PrometheusApiService implements MongooseChartDataProvider {
 
+  private readonly DEFAULT_PROMETHEUS_IP: string = Constants.Configuration.PROMETHEUS_IP;
   private readonly LAST_CONCURRENCY_METRIC_NAME = "mongoose_concurrency_last";
   private readonly MEAN_CONCURRENCY_METRIC_NAME = "mongoose_concurrency_mean";
 
@@ -47,7 +48,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   readonly METRIC_LABELS_LIST_END_SYMBOL = "}";
 
   readonly prometheusResponseParser: PrometheusResponseParser = new PrometheusResponseParser();
-  private currentPrometheusAddress: string = Constants.Configuration.PROMETHEUS_IP;
+  private currentPrometheusAddress: string = this.DEFAULT_PROMETHEUS_IP;
 
   // MARK: - Lifecycle 
 
@@ -65,6 +66,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
    */
   public isAvailable(prometheusAddress: string): Observable<boolean> {
     if (!HttpUtils.isIpAddressValid(prometheusAddress)) {
+      console.error(`Prometheus address ${prometheusAddress} is not valid.`);
       return of(false);
     }
     const configurationEndpoint: string = 'status/config';
@@ -344,14 +346,27 @@ export class PrometheusApiService implements MongooseChartDataProvider {
    * ... local browser's storage.
    */
   private setupPromtheusEntryNode() {
-    let isPrometheusConfiguredIpValid = HttpUtils.isIpAddressValid(this.currentPrometheusAddress);
-    if (isPrometheusConfiguredIpValid) {
-      // NOTE: Reaching this block means .env file contains ...
-      // ... a valid configuration of Prometheus.
+    const prometheusLocalStorageAddress: string = this.localStorageService.getPrometheusHostAddress();
+    const defualtPrometheusAddress: string = this.currentPrometheusAddress;
+    const isPrometheusIpDefault: boolean = (defualtPrometheusAddress == this.DEFAULT_PROMETHEUS_IP);
+    if (!isPrometheusIpDefault) {
+      this.currentPrometheusAddress = prometheusLocalStorageAddress;
       return;
     }
-    let prometheusLocalStorageAddress: string = this.localStorageService.getPrometheusHostAddress();
-    this.currentPrometheusAddress = prometheusLocalStorageAddress;
+
+    this.isAvailable(defualtPrometheusAddress).subscribe(
+      (isDefaultAddressAvailable: boolean) => {
+        if (isDefaultAddressAvailable) {
+          return;
+        }
+        const isPrometheusCustomIpValid: boolean = HttpUtils.isIpAddressValid(prometheusLocalStorageAddress);
+        if (!isPrometheusCustomIpValid) {
+          return;
+        }
+        this.currentPrometheusAddress = prometheusLocalStorageAddress;
+        return;
+      }
+    )
   }
 
 }
