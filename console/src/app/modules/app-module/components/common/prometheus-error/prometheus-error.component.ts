@@ -27,6 +27,9 @@ export class PrometheusErrorComponent implements OnInit {
   private readonly DEFAULT_PROMETHEUS_NODE_ADDRESS = "localhost";
   private readonly DEFAULT_PROMETHEUS_NODE_PORT = "9090";
 
+  /**
+   * @param prometheusResourceLocation address of Prometheus displaying within the alert.
+   */
   public prometheusResourceLocation: string = "";
   public currentEnteredText: string = "";
   public focus$ = new Subject<string>();
@@ -111,9 +114,9 @@ export class PrometheusErrorComponent implements OnInit {
       this.prometheusApiService.isAvailable(prometheusAddress).subscribe(
         (isPrometheusAvailable: boolean) => {
           this.isLoadingInProgress = false;
+          this.prometheusResourceLocation = prometheusAddress;
           if (!isPrometheusAvailable) {
             alert(`Prometheus is not available on ${prometheusAddress}`);
-            this.prometheusResourceLocation = prometheusAddress;
             return;
           }
           // NOTE: Saving Prometheus' address if true.
