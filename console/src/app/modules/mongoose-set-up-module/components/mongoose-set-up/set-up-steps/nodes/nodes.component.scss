@@ -137,3 +137,9 @@ $CHECKBOX_SELECTED_BORDER_COLOR: #5cb85c;
     }
   }
 }
+
+#entry-node-tag { 
+  border-color: $CHECKBOX_BACKGROUND_COLOR;
+  border: 1px $CHECKBOX_BACKGROUND_COLOR solid;
+  font-weight: normal;
+}
