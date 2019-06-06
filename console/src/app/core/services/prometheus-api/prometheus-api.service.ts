@@ -65,7 +65,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
    * @param prometheusAddress IP address of Prometheus server.
    * @returns true if Prometheus is available on @param prometheusAddress . 
    */
-  public isAvailable(prometheusAddress: string): Observable<boolean> {
+  public isAvailable(prometheusAddress: string = this.address.getValue()): Observable<boolean> {
     if (!HttpUtils.isIpAddressValid(prometheusAddress)) {
       return of(false);
     }

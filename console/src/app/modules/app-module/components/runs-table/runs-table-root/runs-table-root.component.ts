@@ -9,6 +9,7 @@ import { PrometheusError } from "src/app/common/Exceptions/PrometheusError";
 import { PrometheusErrorComponent } from "../../common/prometheus-error/prometheus-error.component";
 import { MongooseRunRecordCounter } from "src/app/core/models/run-record-counter";
 import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
+import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
 
 @Component({
   selector: 'app-runs-table-root',
@@ -43,7 +44,8 @@ export class RunsTableRootComponent implements OnInit {
 
   constructor(private monitoringApiService: MonitoringApiService,
     private resolver: ComponentFactoryResolver,
-    private mongooseDataSharedServiceService: MongooseDataSharedServiceService) {
+    private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
+    private prometheusApiService: PrometheusApiService) {
     this.setUpInitialTabs();
     this.initializeTabsRecordsData();
   }
@@ -54,7 +56,7 @@ export class RunsTableRootComponent implements OnInit {
       this.observeLaunchedRunRecord = this.observeLaunchedRunRecord.bind(this);
       this.recordUpdatingTimer = setInterval(this.observeLaunchedRunRecord, 2000);
     }
-    this.setUpRecordsData();
+    this.setupComponent();
   }
 
   ngOnDestroy() {
@@ -197,6 +199,15 @@ export class RunsTableRootComponent implements OnInit {
   }
 
 
+  private setupComponent() { 
+    this.mongooseRecordsSubscription.add(
+      this.prometheusApiService.isAvailable().subscribe(
+        (isPrometheusAvailable: boolean) => { 
+          this.setUpRecordsData();
+        }
+      )
+    )
+  }
   /**
    * Retrieves existing records from Prometheus. 
    * Note that it will display every existing record on the screen without ...
