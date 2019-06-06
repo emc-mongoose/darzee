@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef } from "@angular/core";
 import { slideAnimation } from "src/app/core/animations";
 import { MongooseRunTab } from "./model/monoose-run-tab.model";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
@@ -44,6 +44,7 @@ export class RunsTableRootComponent implements OnInit {
   constructor(private monitoringApiService: MonitoringApiService,
     private resolver: ComponentFactoryResolver,
     private mongooseDataSharedServiceService: MongooseDataSharedServiceService) {
+    this.setUpInteractionWithDataProvider();
     this.setUpInitialTabs();
     this.initializeTabsRecordsData();
   }
@@ -66,6 +67,8 @@ export class RunsTableRootComponent implements OnInit {
   private observeLaunchedRunRecord() {
     this.monitoringApiService.getMongooseRunRecords().subscribe(
       (fetchedRecord: MongooseRunRecord[]) => {
+        console.log(`observeLaunchedRunRecord subscription`);
+
         if (fetchedRecord.length != this.filtredRecords$.getValue().length) {
           this.mongooseDataSharedServiceService.shouldWaintForNewRun = false;
         }
@@ -195,6 +198,18 @@ export class RunsTableRootComponent implements OnInit {
     });
   }
 
+  private setUpInteractionWithDataProvider() {
+    this.mongooseRecordsSubscription.add(
+      this.monitoringApiService.getDataProviderUpdatedAddress().subscribe(
+        (dataProviderUpdatedAddress: string) => {
+          this.setUpRecordsData();
+          // this.errorMessageComponent.element.nativeElement.hidden = true; 
+          this.monitoringApiService.getMongooseRunRecords();
+        }
+      )
+    )
+  }
+
   /**
    * Retrieves existing records from Prometheus. 
    * Note that it will display every existing record on the screen without ...
@@ -214,6 +229,7 @@ export class RunsTableRootComponent implements OnInit {
 
         let misleadingMsg = `Unable to load Mongoose run records. Details: `;
         let errorDetails = JSON.stringify(error);
+
         console.error(misleadingMsg + errorDetails);
       }
     )

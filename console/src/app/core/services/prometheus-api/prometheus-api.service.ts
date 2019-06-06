@@ -67,7 +67,6 @@ export class PrometheusApiService implements MongooseChartDataProvider {
    */
   public isAvailable(prometheusAddress: string): Observable<boolean> {
     if (!HttpUtils.isIpAddressValid(prometheusAddress)) {
-      console.error(`Prometheus address ${prometheusAddress} is not valid.`);
       return of(false);
     }
     const configurationEndpoint: string = 'status/config';
