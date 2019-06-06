@@ -346,7 +346,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   private setupPromtheusEntryNode() {
     let isPrometheusConfiguredIpValid = HttpUtils.isIpAddressValid(this.currentPrometheusAddress);
     if (isPrometheusConfiguredIpValid) {
-      // NPTE: Reaching this block means .env file contains ...
+      // NOTE: Reaching this block means .env file contains ...
       // ... a valid configuration of Prometheus.
       return;
     }

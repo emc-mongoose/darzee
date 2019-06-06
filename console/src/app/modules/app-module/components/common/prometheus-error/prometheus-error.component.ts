@@ -121,6 +121,8 @@ export class PrometheusErrorComponent implements OnInit {
           }
           // NOTE: Saving Prometheus' address if true.
           this.localStorageService.savePrometheusHostAddress(prometheusAddress);
+          // NOTE: Updating Prometheus' address.
+          this.prometheusApiService.setHostIpAddress(prometheusAddress);
           this.onPrometheusLoad.emit();
         }
       )
