@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef, ComponentRef } from "@angular/core";
 import { slideAnimation } from "src/app/core/animations";
 import { MongooseRunTab } from "./model/monoose-run-tab.model";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
@@ -37,7 +37,7 @@ export class RunsTableRootComponent implements OnInit {
   private recordUpdatingTimer: any;
 
   private hasInitializedRecord: boolean = false;
-
+  private errorComponentsReferences: ComponentRef<any>[] = [];
 
   // MARK: - Lifecycle
 
@@ -67,8 +67,6 @@ export class RunsTableRootComponent implements OnInit {
   private observeLaunchedRunRecord() {
     this.monitoringApiService.getMongooseRunRecords().subscribe(
       (fetchedRecord: MongooseRunRecord[]) => {
-        console.log(`observeLaunchedRunRecord subscription`);
-
         if (fetchedRecord.length != this.filtredRecords$.getValue().length) {
           this.mongooseDataSharedServiceService.shouldWaintForNewRun = false;
         }
@@ -127,6 +125,7 @@ export class RunsTableRootComponent implements OnInit {
     if (error instanceof PrometheusError) {
       const factory = this.resolver.resolveComponentFactory(PrometheusErrorComponent);
       const errorComponentReference = this.errorMessageComponent.createComponent(factory);
+      this.errorComponentsReferences.push(errorComponentReference);
       errorComponentReference.instance.onPrometheusLoad.subscribe(
         onPrometheusClosed => {
           this.errorMessageComponent.clear();
@@ -203,7 +202,10 @@ export class RunsTableRootComponent implements OnInit {
       this.monitoringApiService.getDataProviderUpdatedAddress().subscribe(
         (dataProviderUpdatedAddress: string) => {
           this.setUpRecordsData();
-          // this.errorMessageComponent.element.nativeElement.hidden = true; 
+          // NOTE: Destroying error components due to fixing of the problem.
+          this.errorComponentsReferences.forEach(componentReference => {
+            componentReference.destroy();
+          })
           this.monitoringApiService.getMongooseRunRecords();
         }
       )
