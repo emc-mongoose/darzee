@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef, ComponentRef } from "@angular/core";
 import { slideAnimation } from "src/app/core/animations";
 import { MongooseRunTab } from "./model/monoose-run-tab.model";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
@@ -9,6 +9,7 @@ import { PrometheusError } from "src/app/common/Exceptions/PrometheusError";
 import { PrometheusErrorComponent } from "../../common/prometheus-error/prometheus-error.component";
 import { MongooseRunRecordCounter } from "src/app/core/models/run-record-counter";
 import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
+import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
 
 @Component({
   selector: 'app-runs-table-root',
@@ -37,13 +38,14 @@ export class RunsTableRootComponent implements OnInit {
   private recordUpdatingTimer: any;
 
   private hasInitializedRecord: boolean = false;
-
+  private errorComponentsReferences: ComponentRef<any>[] = [];
 
   // MARK: - Lifecycle
 
   constructor(private monitoringApiService: MonitoringApiService,
     private resolver: ComponentFactoryResolver,
-    private mongooseDataSharedServiceService: MongooseDataSharedServiceService) {
+    private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
+    private prometheusApiService: PrometheusApiService) {
     this.setUpInitialTabs();
     this.initializeTabsRecordsData();
   }
@@ -54,7 +56,7 @@ export class RunsTableRootComponent implements OnInit {
       this.observeLaunchedRunRecord = this.observeLaunchedRunRecord.bind(this);
       this.recordUpdatingTimer = setInterval(this.observeLaunchedRunRecord, 2000);
     }
-    this.setUpRecordsData();
+    this.setupComponent();
   }
 
   ngOnDestroy() {
@@ -124,6 +126,7 @@ export class RunsTableRootComponent implements OnInit {
     if (error instanceof PrometheusError) {
       const factory = this.resolver.resolveComponentFactory(PrometheusErrorComponent);
       const errorComponentReference = this.errorMessageComponent.createComponent(factory);
+      this.errorComponentsReferences.push(errorComponentReference);
       errorComponentReference.instance.onPrometheusLoad.subscribe(
         onPrometheusClosed => {
           this.errorMessageComponent.clear();
@@ -195,6 +198,16 @@ export class RunsTableRootComponent implements OnInit {
     });
   }
 
+
+  private setupComponent() { 
+    this.mongooseRecordsSubscription.add(
+      this.prometheusApiService.isAvailable().subscribe(
+        (isPrometheusAvailable: boolean) => { 
+          this.setUpRecordsData();
+        }
+      )
+    )
+  }
   /**
    * Retrieves existing records from Prometheus. 
    * Note that it will display every existing record on the screen without ...
@@ -214,6 +227,7 @@ export class RunsTableRootComponent implements OnInit {
 
         let misleadingMsg = `Unable to load Mongoose run records. Details: `;
         let errorDetails = JSON.stringify(error);
+
         console.error(misleadingMsg + errorDetails);
       }
     )

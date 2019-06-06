@@ -27,6 +27,9 @@ export class PrometheusErrorComponent implements OnInit {
   private readonly DEFAULT_PROMETHEUS_NODE_ADDRESS = "localhost";
   private readonly DEFAULT_PROMETHEUS_NODE_PORT = "9090";
 
+  /**
+   * @param prometheusResourceLocation address of Prometheus displaying within the alert.
+   */
   public prometheusResourceLocation: string = "";
   public currentEnteredText: string = "";
   public focus$ = new Subject<string>();
@@ -40,13 +43,15 @@ export class PrometheusErrorComponent implements OnInit {
   constructor(private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
     private prometheusApiService: PrometheusApiService,
     private localStorageService: LocalStorageService) {
-    let prometheusBaseAddress: string = environment.prometheusIp;
-    let prometheusPort: string = environment.prometheusPort;
-    this.prometheusResourceLocation = `${prometheusBaseAddress}:${prometheusPort}`;
+    this.setUpComponent();
   }
 
   ngOnInit() {
     this.subscribeToPossiblePrometheusRunNodes();
+  }
+
+  ngOnDestroy() {
+    this.activeSubscriptions.unsubscribe();
   }
 
   /**
@@ -92,7 +97,7 @@ export class PrometheusErrorComponent implements OnInit {
           availableRunNodes.forEach((runNode: MongooseRunNode) => {
             availableRunNodeAddressess.push(runNode.getResourceLocation());
           });
-          // NODE: Adding default Prometheus address.
+          // NOTE: Adding default Prometheus address.
           let defaultPrometheusAddress = `${this.DEFAULT_PROMETHEUS_NODE_ADDRESS}:${this.DEFAULT_PROMETHEUS_NODE_PORT}`;
           availableRunNodeAddressess.push(defaultPrometheusAddress);
           this.possiblePrometheusNodesList = availableRunNodeAddressess as string[];
@@ -111,17 +116,35 @@ export class PrometheusErrorComponent implements OnInit {
       this.prometheusApiService.isAvailable(prometheusAddress).subscribe(
         (isPrometheusAvailable: boolean) => {
           this.isLoadingInProgress = false;
+          this.prometheusResourceLocation = prometheusAddress;
           if (!isPrometheusAvailable) {
             alert(`Prometheus is not available on ${prometheusAddress}`);
-            this.prometheusResourceLocation = prometheusAddress;
             return;
           }
           // NOTE: Saving Prometheus' address if true.
           this.localStorageService.savePrometheusHostAddress(prometheusAddress);
+          // NOTE: Updating Prometheus' address.
+          this.prometheusApiService.setHostIpAddress(prometheusAddress);
           this.onPrometheusLoad.emit();
         }
       )
     )
+  }
+
+  private setUpComponent() {
+    let prometheusBaseAddress: string = environment.prometheusIp;
+    let prometheusPort: string = environment.prometheusPort;
+    this.activeSubscriptions.add(
+      // NOTE: Subscribing to change of Prometheus service in order to ...
+      // ...
+      this.prometheusApiService.getCurrentAddress().subscribe(
+        (currentPrometheusAddress: string) => {
+          this.prometheusResourceLocation = currentPrometheusAddress;
+          this.tryToLoadPrometheus(currentPrometheusAddress);
+        }
+      )
+    )
+    this.prometheusResourceLocation = `${prometheusBaseAddress}:${prometheusPort}`;
   }
 
 }

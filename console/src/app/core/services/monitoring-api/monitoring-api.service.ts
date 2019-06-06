@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, of } from "rxjs";
 import { MongooseRunRecord } from "../../models/run-record.model";
 import { PrometheusApiService } from "../prometheus-api/prometheus-api.service";
 import { MongooseRunStatus } from "../../models/mongoose-run-status";
-import { mergeMap, map, catchError, share } from "rxjs/operators";
+import { mergeMap, map, catchError, share, tap } from "rxjs/operators";
 import { MongooseMetrics } from "../mongoose-api-models/MongooseMetrics";
 import { MongooseApi } from "../mongoose-api-models/MongooseApi.model";
 import { HttpClient } from "@angular/common/http";
@@ -58,6 +58,19 @@ export class MonitoringApiService {
     )
   }
 
+  /**
+   * @returns IP address of Mongoose Runs' data provider.
+   */
+  public getDataProviderUpdatedAddress(): Observable<string> {
+    // NOTE: Handling change of Prometheus address.
+    return this.prometheusApiService.getCurrentAddress().pipe(
+      tap(_ => {
+        // NOTE: Re-fetching runs on Prometheus' address update.
+        this.getMongooseRunRecords();
+      })
+    );
+  }
+
   public getCurrentMongooseRunRecords(): Observable<MongooseRunRecord[]> {
     return this.currentMongooseRunRecords$.asObservable().pipe(
       map(records => {
@@ -103,7 +116,7 @@ export class MonitoringApiService {
 
     const latestValueTmePeriod: number = 0;
     return this.prometheusApiService.getElapsedTimeValue(latestValueTmePeriod, loadStepId).pipe(
-      map((rawDurationMetric: MongooseMetric[]) => { 
+      map((rawDurationMetric: MongooseMetric[]) => {
         const lastFoundValueIndex: number = rawDurationMetric.length - 1;
         const duration: string = rawDurationMetric[lastFoundValueIndex].getValue();
         return duration;
@@ -144,13 +157,13 @@ export class MonitoringApiService {
     )
   }
 
-  public isMongooseRunNodeActive(runNodeAddress: string): Observable<boolean> { 
+  public isMongooseRunNodeActive(runNodeAddress: string): Observable<boolean> {
     const mongooseConfigEndpoint = MongooseApi.Config.CONFIG_ENDPONT;
     return this.http.get(`${Constants.Http.HTTP_PREFIX}${runNodeAddress}${mongooseConfigEndpoint}`).pipe(
-      map((successResult: any) => { 
-        return true; 
+      map((successResult: any) => {
+        return true;
       }),
-      catchError((error, caughtError) => { 
+      catchError((error, caughtError) => {
         return of(false);
       })
     );
@@ -195,7 +208,7 @@ export class MonitoringApiService {
         }
       ),
       catchError((error: any) => {
-        let errorStatus = error.status || 500; 
+        let errorStatus = error.status || 500;
         let errroMessage = "Prometheus doesn't response.";
         throw new PrometheusError(errroMessage, errorStatus);
       })
@@ -266,13 +279,13 @@ export class MonitoringApiService {
     return runRecords;
   }
 
-  
+
   // NOTE: Retrieves nodes from string like "[..., node1, ...]"
-  private getNodesFromRawMetric(rawNodesMetric: string): string[] { 
+  private getNodesFromRawMetric(rawNodesMetric: string): string[] {
     var nodeDefaultValue = "-";
-    if (rawNodesMetric == undefined) { 
+    if (rawNodesMetric == undefined) {
       let emptyArray = [nodeDefaultValue];
-      return emptyArray; 
+      return emptyArray;
     }
     const leftNodeBoundSymbol = "[";
     const rightNodeBoundSymbol = "]";
@@ -310,6 +323,7 @@ export class MonitoringApiService {
     this.availableLogs.set("Messages", "Generic messages");
     this.availableLogs.set("Scenario", "Scenario dump");
   }
+
 
   private findMongooseRecordByLoadStepId(records: MongooseRunRecord[], id: String): MongooseRunRecord {
     if (records.length == 0) {
@@ -353,13 +367,13 @@ export class MonitoringApiService {
     );
   }
 
-  private addNodesListIntoNodesRepository(nodesList: string[]) { 
+  private addNodesListIntoNodesRepository(nodesList: string[]) {
     // NOTE: Adding fetched nodes into nodes repository. 
     nodesList.forEach((nodeAddress: string) => {
       // NOTE: Temporary assuming that every node address is an IP.
       const RESOURCE_LOCATOR_TYPE_STUB = ResourceLocatorType.IP;
       let nodeInstance = new MongooseRunNode(nodeAddress, RESOURCE_LOCATOR_TYPE_STUB);
-      try { 
+      try {
         this.mongooseDataSharedServiceService.addMongooseRunNode(nodeInstance);
       } catch (nodeIsAlreadyExistError) {
         // NOTE: Not handling the situation since it's normal to have duplicate node addresses.

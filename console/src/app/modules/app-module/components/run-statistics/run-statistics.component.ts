@@ -51,7 +51,7 @@ export class RunStatisticsComponent implements OnInit {
           },
           error => {
             let misleadingMsg = `Unable to display statistics for Mongoose run record with ID ${targetRecordLoadStepId}, reason: ${error.message}`;
-            
+
             // TODO: Figure out whether error alers should be displayed or not
             console.error(misleadingMsg);
             return;
@@ -60,9 +60,6 @@ export class RunStatisticsComponent implements OnInit {
         this.initTabs();
       } catch (recordNotFoundError) {
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
-        
-        // TODO: Figure out whether error alers should be displayed or not
-        // alert("Unable to load requested record.");
         console.error(recordNotFoundError);
         this.router.navigate([RoutesList.RUNS]);
       }
@@ -89,15 +86,15 @@ export class RunStatisticsComponent implements OnInit {
     this.loadTab(targetTab);
   }
 
-  public isRunActive(runRecord: MongooseRunRecord) { 
+  public isRunActive(runRecord: MongooseRunRecord) {
     return (runRecord.getStatus() == MongooseRunStatus.Running);
   }
 
-  public onTerminateBtnClicked(runRecord: MongooseRunRecord) { 
+  public onTerminateBtnClicked(runRecord: MongooseRunRecord) {
     let terminatingRunId = runRecord.getRunId();
     let terminatingRunEntryNodeAddress = runRecord.getEntryNodeAddress();
     this.controlApiService.terminateMongooseRun(terminatingRunEntryNodeAddress, terminatingRunId as string).subscribe(
-      (terminationStatusMessage: string) => { 
+      (terminationStatusMessage: string) => {
         alert(terminationStatusMessage);
         window.location.reload();
       }
