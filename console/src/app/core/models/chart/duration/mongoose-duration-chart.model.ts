@@ -9,7 +9,7 @@ import { MetricValueType } from "../mongoose-chart-interface/metric-value-type";
  */
 export class MongooseDurationChart implements MongooseChart {
 
-    private readonly Y_AXIS_CHART_TITLE: string = "Milliseconds";
+    private readonly Y_AXIS_CHART_TITLE: string = "Seconds";
     private readonly X_AXIS_CHART_TITLE: string = MongooseChartOptions.ELAPSED_TIME_AXES_DEFAULT_TAG;
 
     private readonly MIN_DURATION_DATASET_INDEX = 0;

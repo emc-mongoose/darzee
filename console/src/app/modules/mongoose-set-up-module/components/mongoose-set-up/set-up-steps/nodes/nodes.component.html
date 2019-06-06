@@ -21,18 +21,35 @@
 
         <th scope="row">
           <div class="checkbox">
-              <input type="checkbox" id="{{ savedNode.getResourceLocation() }}" class="custom-control-input"
-               style="visibility: hidden;" (click)="onRunNodeSelect(savedNode)">
-              <label for="{{ savedNode.getResourceLocation() }}" class="custom-control-label"></label>
+            <input type="checkbox" id="{{ savedNode.getResourceLocation() }}" class="custom-control-input"
+              style="visibility: hidden;" (click)="onRunNodeSelect(savedNode)">
+            <label for="{{ savedNode.getResourceLocation() }}" class="custom-control-label"></label>
           </div>
 
         </th>
         <td> {{ savedNode.resourceType }} </td>
-        <td> {{ savedNode.resourceLocation }} </td>
+        <td style="white-space: nowrap;">
+          <!-- NOTE: Providing a space for entry-node tag. -->
+          <div style="display:table; align-content: center; width: calc(100%);">
+            <div class="entry-node-tag-wrapper" style="display: table-cell; width: calc(20%)">
+            </div>
+            <p style="display: table-cell; width: calc(50%);">
+              {{ savedNode.resourceLocation }}
+            </p>
+            <!-- NOTE: Entry node tag. -->
+            <div class="entry-node-tag-wrapper" style="display: table-cell; width: calc(20%);">
+              <span [hidden]="!this.getCustomClassForNode(savedNode)" class="badge btn-outline-success my-2 my-sm-0" id="entry-node-tag">
+                Entry node
+              </span>
+            </div>
+
+          </div>
+
+        </td>
         <td>
-            <span class="table-remove"><button type="button"
-                class="btn btn-danger btn-rounded btn-sm my-0" (click)="onRunNodeRemoveClicked(savedNode)">Remove</button></span>
-          </td>
+          <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0"
+              (click)="onRunNodeRemoveClicked(savedNode)">Remove</button></span>
+        </td>
       </tr>
     </tbody>
   </table>

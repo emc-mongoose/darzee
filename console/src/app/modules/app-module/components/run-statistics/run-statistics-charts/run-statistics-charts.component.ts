@@ -129,7 +129,6 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   public isLogarithmicScalingSwitchChecked(): boolean {
     const yAxis: MongooseChartAxesType = MongooseChartAxesType.Y;
-    console.log(`has log scaling: ${this.displayingMongooseChart.chartOptions.isAxisScaledLogarithmically(yAxis)}`)
     return this.displayingMongooseChart.chartOptions.isAxisScaledLogarithmically(yAxis);
   }
   // MARK: - Private 
