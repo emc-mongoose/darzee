@@ -44,7 +44,6 @@ export class RunsTableRootComponent implements OnInit {
   constructor(private monitoringApiService: MonitoringApiService,
     private resolver: ComponentFactoryResolver,
     private mongooseDataSharedServiceService: MongooseDataSharedServiceService) {
-    this.setUpInteractionWithDataProvider();
     this.setUpInitialTabs();
     this.initializeTabsRecordsData();
   }
@@ -197,20 +196,6 @@ export class RunsTableRootComponent implements OnInit {
     });
   }
 
-  private setUpInteractionWithDataProvider() {
-    this.mongooseRecordsSubscription.add(
-      this.monitoringApiService.getDataProviderUpdatedAddress().subscribe(
-        (dataProviderUpdatedAddress: string) => {
-          this.setUpRecordsData();
-          // NOTE: Destroying error components due to fixing of the problem.
-          this.errorComponentsReferences.forEach(componentReference => {
-            componentReference.destroy();
-          })
-          this.monitoringApiService.getMongooseRunRecords();
-        }
-      )
-    )
-  }
 
   /**
    * Retrieves existing records from Prometheus. 
