@@ -78,8 +78,15 @@ app.post('/savefile', function (req, res) {
 
 // NOTE: Reloading Prometheus. Method was implimented because ...
 // ... preflight request from the browser fails. 
+/**
+ * @param ipAddress - ipv4 address of Prometheus 
+ * @param port - Prometheus' exposing port
+ */
 app.post('/reloadprometheus', function (req, res) {
-    axios.post(`http://${prometheusIp}:${prometheusPort}/-/reload`, {})
+    var targetPrometheusAddress = req.query.ipAddress || prometheusIp;
+    var targetPrometheusPort = req.query.port || prometheusPort;
+
+    axios.post(`http://${targetPrometheusAddress}:${targetPrometheusPort}/-/reload`, {})
         .then((prometheusResponse) => {
             console.log(`statusCode: ${prometheusResponse.statusCode}`)
             console.log(prometheusResponse);

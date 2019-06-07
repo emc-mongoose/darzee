@@ -32,8 +32,17 @@ export class ContainerServerService {
         return this.http.post(targetUrl, requestBody, { headers: this.getHttpHeadersForFileSave() });
     }
 
-    public requestPrometheusReload(): Observable<any> {
-        let targetUrl = `${this.CONTAINER_SERVER_ADDRESS}/${this.RELOAD_PROMETHEUS_ENDPOINT}`;
+    /**
+     * Reload Prometheus via NodeJS server.
+     * @returns Prometheus' reloading status code.
+     * @param ipAddress IPv4 address of Prometheus.
+     * @param port Prometheus' exposing port.
+     */
+    public requestPrometheusReload(ipAddress: string, port: string): Observable<any> {
+        const ipAddressParamTag: string = "ipAddress";
+        const portParamTag: string = "port";
+        console.log(`Prometheus will be reloaded on resource ${ipAddress}:${port}`);
+        let targetUrl = `${this.CONTAINER_SERVER_ADDRESS}/${this.RELOAD_PROMETHEUS_ENDPOINT}?${ipAddressParamTag}=${ipAddress}&${portParamTag}=${port}`;
         return this.http.post(targetUrl, Constants.Http.EMPTY_POST_REQUEST_HEADERS);
     }
 
