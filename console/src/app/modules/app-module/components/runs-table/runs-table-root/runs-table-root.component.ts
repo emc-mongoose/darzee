@@ -199,8 +199,13 @@ export class RunsTableRootComponent implements OnInit {
   }
 
 
+  /**
+   * Defines initial state of run table root component.
+   */
   private setupComponent() { 
     this.mongooseRecordsSubscription.add(
+      // NOTE: Healthcheck helps prevent situation when error component is displaying until Prometheus' ...
+      // ... address actually gets loaded from local storage.
       this.prometheusApiService.isAvailable().subscribe(
         (isPrometheusAvailable: boolean) => { 
           this.setUpRecordsData();
