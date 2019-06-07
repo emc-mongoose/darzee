@@ -113,8 +113,7 @@ export class MongooseSetUpService {
         const portAndAddressDelimiter = ":";
         let prometheusAddressParams: string[] = prometheusAddressWithPort.split(portAndAddressDelimiter);
         const prometheusAddress: string = prometheusAddressParams[0] || environment.prometheusIp;
-        const prometheusPort: string = prometheusAddress[1] || environment.prometheusPort;
-        console.log(`nodes will be added to target on ${prometheusAddress} ${prometheusPort}`)
+        var prometheusPort: string = prometheusAddressParams[1] || environment.prometheusPort;
         this.addNodesToPrometheusTargets(prometheusAddress, prometheusPort, mongooseRunNodesList);
       }
     )
