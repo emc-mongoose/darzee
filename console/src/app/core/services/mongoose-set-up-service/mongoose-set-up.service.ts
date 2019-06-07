@@ -14,6 +14,7 @@ import { ResourceLocatorType } from '../../models/address-type';
 import { MongooseConfigurationParser } from '../../models/mongoose-configuration-parser';
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
 import { MonitoringApiService } from '../monitoring-api/monitoring-api.service';
+import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,8 @@ export class MongooseSetUpService {
     private monitoringApiService: MonitoringApiService,
     private containerServerService: ContainerServerService,
     private http: HttpClient,
-    private localStorageService: LocalStorageService) {
+    private localStorageService: LocalStorageService,
+    private prometheusApiService: PrometheusApiService) {
 
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel();
     this.controlApiService.getMongooseConfiguration(this.controlApiService.getMongooseIp())
@@ -39,7 +41,7 @@ export class MongooseSetUpService {
   // MARK: - Getters & Setters 
 
   public getMongooseConfigurationForSetUp(entryNode: MongooseRunNode): Observable<any> {
-    if (entryNode == undefined) { 
+    if (entryNode == undefined) {
       throw new Error(`Can't get configuration snce entry node ins an undefined.`);
     }
     let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${entryNode.getResourceLocation()}`;
@@ -88,7 +90,7 @@ export class MongooseSetUpService {
   }
 
 
-  public isMongooseNodeActive(mongooseNodeAddress: string): Observable<boolean> { 
+  public isMongooseNodeActive(mongooseNodeAddress: string): Observable<boolean> {
     return this.monitoringApiService.isMongooseRunNodeActive(mongooseNodeAddress);
   }
 
@@ -106,7 +108,16 @@ export class MongooseSetUpService {
 
     // NOTE: Updating Prometheus configuration with respect to Mongoose Run nodes. 
     let mongooseRunNodesList: string[] = this.mongooseSetupInfoModel.getStringifiedNodesForDistributedMode();
-    this.addNodesToPrometheusTargets(mongooseRunNodesList);
+    this.prometheusApiService.getCurrentAddress().subscribe(
+      (prometheusAddressWithPort: string) => {
+        const portAndAddressDelimiter = ":";
+        let prometheusAddressParams: string[] = prometheusAddressWithPort.split(portAndAddressDelimiter);
+        const prometheusAddress: string = prometheusAddressParams[0] || environment.prometheusIp;
+        const prometheusPort: string = prometheusAddress[1] || environment.prometheusPort;
+        console.log(`nodes will be added to target on ${prometheusAddress} ${prometheusPort}`)
+        this.addNodesToPrometheusTargets(prometheusAddress, prometheusPort, mongooseRunNodesList);
+      }
+    )
 
     // NOTE: you can get related load step ID from mongoose setup model here. 
     return this.controlApiService.runMongoose(entryNode.getResourceLocation(), this.mongooseSetupInfoModel.getConfiguration(), this.mongooseSetupInfoModel.getRunScenario()).pipe(
@@ -127,7 +138,7 @@ export class MongooseSetUpService {
   }
 
 
-  private addNodesToPrometheusTargets(mongooseRunNodes: string[]) {
+  private addNodesToPrometheusTargets(prometheusAddress: string, prometheusPort: string, mongooseRunNodes: string[]) {
     // NOTE: An initial fetch of Prometheus configuration.
     this.http.get(environment.prometheusConfigPath, { responseType: 'text' }).subscribe((configurationFileContent: Object) => {
       let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
@@ -137,7 +148,7 @@ export class MongooseSetUpService {
       this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => {
         console.log(`Container server response on file save: ${JSON.stringify(response)}. Prometheus will be eventually reloaded.`);
         // NOTE: Prometheus reloads itself once configuration is udpated. 
-        this.containerServerService.requestPrometheusReload().subscribe(prometheusReloadResult => {
+        this.containerServerService.requestPrometheusReload(prometheusAddress, prometheusPort).subscribe(prometheusReloadResult => {
           console.log(`Prometheus reload response: ${JSON.stringify(prometheusReloadResult)}`);
         })
       })
