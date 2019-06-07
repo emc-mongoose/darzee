@@ -17,7 +17,6 @@ export class ContainerServerService {
     private readonly FILE_SAVE_ENDPOINT = "savefile";
     private readonly RELOAD_PROMETHEUS_ENDPOINT = "reloadprometheus";
 
-    private readonly CONTAINER_SERVER_ADDRESS = `${Constants.Http.HTTP_PREFIX}${environment.nodeJsServerIp}:${environment.nodeJsServerPort}`
 
     private readonly REQUEST_BODY_FILENAME_PARAM = "fileName";
     private readonly REQUEST_BODY_FILE_CONTENT_PARAM = "fileContent";
@@ -28,7 +27,8 @@ export class ContainerServerService {
         let requestBody = new FormData();
         requestBody.append(this.REQUEST_BODY_FILENAME_PARAM, fileName);
         requestBody.append(this.REQUEST_BODY_FILE_CONTENT_PARAM, fileContent);
-        let targetUrl = `${this.CONTAINER_SERVER_ADDRESS}/${this.FILE_SAVE_ENDPOINT}`;
+        const containerServicerAddress: string = this.getContainerServicerAddressFromAddressLine();
+        let targetUrl = `${containerServicerAddress}/${this.FILE_SAVE_ENDPOINT}`;
         return this.http.post(targetUrl, requestBody, { headers: this.getHttpHeadersForFileSave() });
     }
 
@@ -42,7 +42,8 @@ export class ContainerServerService {
         const ipAddressParamTag: string = "ipAddress";
         const portParamTag: string = "port";
         console.log(`Prometheus will be reloaded on resource ${ipAddress}:${port}`);
-        let targetUrl = `${this.CONTAINER_SERVER_ADDRESS}/${this.RELOAD_PROMETHEUS_ENDPOINT}?${ipAddressParamTag}=${ipAddress}&${portParamTag}=${port}`;
+        const containerServicerAddress: string = this.getContainerServicerAddressFromAddressLine();
+        let targetUrl = `${containerServicerAddress}/${this.RELOAD_PROMETHEUS_ENDPOINT}?${ipAddressParamTag}=${ipAddress}&${portParamTag}=${port}`;
         return this.http.post(targetUrl, Constants.Http.EMPTY_POST_REQUEST_HEADERS);
     }
 
@@ -51,5 +52,28 @@ export class ContainerServerService {
         httpHeadersForMongooseRun.append('Content-Type', 'multipart/form-data');
         httpHeadersForMongooseRun.append('Accept', '*/*');
         return httpHeadersForMongooseRun;
+    }
+
+    /**
+     * Fetches current deploying address from browser's address bar.
+     * It was done in order to perform HTTP requests to NodeJS proxy server.
+     * @deprecated if NodeJS isn't using anymore.
+     * @returns current deploying address with HTTP prefix.
+     */
+    private getContainerServicerAddressFromAddressLine(): string { 
+        let rawLocation = (document.location as unknown);
+        var currentUrl: string = String(rawLocation);
+        const emptyValue: string = "";
+        // NOTE: Removing HTTP prefix in order to make the parsing easier 
+        currentUrl = currentUrl.replace(Constants.Http.HTTP_PREFIX, emptyValue);
+        var rawCurrentAddress: string = "";
+        const addressFromRoutingDelimiter: string = "/";
+        const shouldPruneAddress: boolean = currentUrl.includes(addressFromRoutingDelimiter);
+        if (shouldPruneAddress) { 
+            rawCurrentAddress = currentUrl.split(addressFromRoutingDelimiter)[0];
+        } else { 
+            rawCurrentAddress = currentUrl;
+        }
+        return `${Constants.Http.HTTP_PREFIX}${rawCurrentAddress}`;
     }
 }
