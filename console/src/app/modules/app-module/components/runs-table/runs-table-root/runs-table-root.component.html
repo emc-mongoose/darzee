@@ -1,28 +1,42 @@
-
-
 <!-- MARK: - Error message in case of services unavailability -->
 <template #errorMessageComponent></template>
 
 <!-- MARK: - Runs table tabs -->
 <nav class="navbar navbar-light bg-light">
    <form class="form-inline">
-      <button *ngFor="let tab of this.getMongooseRunTabs() | async" class="btn btn-sm btn-outline-secondary" type="button" (click)="onStatusTabClick(tab)"
-         [id]="tab.isSelected ? 'selected-tab' : ''">
+      <button *ngFor="let tab of this.getMongooseRunTabs() | async" class="btn btn-sm btn-outline-secondary"
+         type="button" (click)="onStatusTabClick(tab)" [id]="tab.isSelected ? 'selected-tab' : ''">
          {{ tab.getTabTag() }}
       </button>
    </form>
 </nav>
 
 
-<div *ngIf="shouldDisplayRecords(); else emptyRecordsAlert">
-   <!-- NOTE: Table of Mongoose Run Records with actual information. -->
-   <app-runs-table [mongooseRunRecords]="this.getDesiredRecords()" [@slide]="this.displayingRunRecords"></app-runs-table>
-</div>
+<ng-container *ngIf="this.hasRunTableInitialized(); else loadingSpinner">
+   <div *ngIf="shouldDisplayRecords(); else emptyRecordsAlert">
+      <!-- NOTE: Table of Mongoose Run Records with actual information. -->
+      <app-runs-table [mongooseRunRecords]="this.getDesiredRecords()" [@slide]="this.displayingRunRecords">
+      </app-runs-table>
+   </div>
+</ng-container>
 
 
 <!-- NOTE: Alert if no Mongoose Run records have been found. -->
 <ng-template #emptyRecordsAlert>
    <div class="alert alert-secondary" role="alert">
       No records yet.
+   </div>
+</ng-template>
+
+<ng-template #loadingSpinner>
+   <!-- NOTE: Loading spinner. It should be displaying until any data will ...
+      ... be received from data provider. -->
+   <div class="alert alert-secondary" role="alert">
+      <div class="d-flex justify-content-center">
+         <button class="btn" disabled>
+            <span class="spinner-border spinner-border-sm"></span>
+            {{ this.RUN_TABLE_LOADING_MSG }}
+         </button>
+      </div>
    </div>
 </ng-template>
