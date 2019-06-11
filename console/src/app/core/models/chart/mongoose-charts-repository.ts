@@ -63,7 +63,7 @@ export class MongooseChartsRepository {
     }
 
     private createMongooseLatencyChart(): MongooseLatencyChart {
-        let latencyChartOptions: MongooseChartOptions = new MongooseChartOptions();
+        let latencyChartOptions: MongooseChartOptions = this.getLogarithmicOptionsForChart();
         return new MongooseLatencyChart(latencyChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE);
     }
 
@@ -73,7 +73,7 @@ export class MongooseChartsRepository {
     }
 
     private createMongooseBandwidthChart(): MongooseBandwidthChart {
-        let bandwidthChartOptions: MongooseChartOptions = this.getLogarithmicOptionsForChart();
+        let bandwidthChartOptions: MongooseChartOptions = new MongooseChartOptions();
         return new MongooseBandwidthChart(bandwidthChartOptions, this.BASIC_MONGOOSE_CHART_LABELS, this.BASIC_MONGOOSE_CHART_TYPE, this.BASIC_MONGOOSE_CHART_LEGEND_MODE);
     }
 
