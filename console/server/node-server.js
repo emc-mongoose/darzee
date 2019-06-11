@@ -85,7 +85,7 @@ app.post('/savefile', function (req, res) {
 app.post('/reloadprometheus', function (req, res) {
     var targetPrometheusAddress = req.query.ipAddress || prometheusIp;
     var targetPrometheusPort = req.query.port || prometheusPort;
-
+    
     axios.post(`http://${targetPrometheusAddress}:${targetPrometheusPort}/-/reload`, {})
         .then((prometheusResponse) => {
             console.log(`statusCode: ${prometheusResponse.statusCode}`)
