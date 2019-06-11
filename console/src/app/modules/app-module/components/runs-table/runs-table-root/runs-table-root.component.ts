@@ -37,6 +37,7 @@ export class RunsTableRootComponent implements OnInit {
   private monitoringApiServiceSubscriptions: Subscription = new Subscription();
   private recordUpdatingTimer: any;
 
+  private hasReceivedDataFromProvider: boolean = false; 
   private hasInitializedRecord: boolean = false;
   private errorComponentsReferences: ComponentRef<any>[] = [];
 
@@ -65,14 +66,13 @@ export class RunsTableRootComponent implements OnInit {
     this.mongooseRunTabs$.unsubscribe();
   }
 
-  private observeLaunchedRunRecord() {
-    this.monitoringApiService.getMongooseRunRecords().subscribe(
-      (fetchedRecord: MongooseRunRecord[]) => {
-        if (fetchedRecord.length != this.filtredRecords$.getValue().length) {
-          this.mongooseDataSharedServiceService.shouldWaintForNewRun = false;
-        }
-      }
-    );
+
+  /**
+   * Determines if data required for Run Table loading has been received.
+   * @returns true if data has been successfully loaded from data provider.
+   */
+  public hasRunTableInitialized(): boolean { 
+    return this.hasReceivedDataFromProvider;
   }
   // MARK: - Public 
 
@@ -226,6 +226,7 @@ export class RunsTableRootComponent implements OnInit {
         this.mongooseRunTabs$.next(runTableTabs);
         // NOTE: Displaying every fetched records.
         this.displayingRunRecords = updatedRecords;
+        this.hasReceivedDataFromProvider = true;
       },
       error => {
         this.showErrorComponent(error);
@@ -236,6 +237,22 @@ export class RunsTableRootComponent implements OnInit {
         console.error(misleadingMsg + errorDetails);
       }
     )
+  }
+
+    /**
+   * Observles any launched Mongoose run. 
+   * It's useful when Mongoose run has been launched but its data ..
+   * ... hasn't been exported to data provider yet. This way we're able to notify...
+   * ... user that the run is still there, but need to be loaded.
+   */
+  private observeLaunchedRunRecord() {
+    this.monitoringApiService.getMongooseRunRecords().subscribe(
+      (fetchedRecord: MongooseRunRecord[]) => {
+        if (fetchedRecord.length != this.filtredRecords$.getValue().length) {
+          this.mongooseDataSharedServiceService.shouldWaintForNewRun = false;
+        }
+      }
+    );
   }
 
 }
