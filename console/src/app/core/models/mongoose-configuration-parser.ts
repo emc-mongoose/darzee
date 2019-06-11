@@ -19,8 +19,15 @@ export class MongooseConfigurationParser {
 
         var existingNodesInConfiguration = this.getNodes();;
 
+        // NOTE: Handling IPv4 addresses.
+        const addressAndPortDelimiter: string = ":";
         additionalNodes.forEach(node => {
-            let nodeAddress = node.getResourceLocation();
+            var nodeAddress = node.getResourceLocation();
+            if (nodeAddress.includes(addressAndPortDelimiter)) { 
+                // NOTE: Pruning Mongoose remote API's port since we'll be using onli RMI.
+                const addressPartIndex: number = 0;
+                nodeAddress = nodeAddress.split(addressAndPortDelimiter)[addressPartIndex];
+            }
             existingNodesInConfiguration.push(nodeAddress);
         })
 

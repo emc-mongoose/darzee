@@ -50,7 +50,7 @@ export class MongooseSetUpService {
         (configuration: any) => {
           let mongooseConfigrationParser: MongooseConfigurationParser = new MongooseConfigurationParser(configuration);
           try {
-            let additionalNodes = this.mongooseSetupInfoModel.getSlaveNodesList(entryNode);
+            let additionalNodes: MongooseRunNode[] = this.mongooseSetupInfoModel.getSlaveNodesList(entryNode);
             configuration = mongooseConfigrationParser.getConfigurationWithAdditionalNodes(additionalNodes);
           } catch (error) {
             console.error(`Nodes couldn't be inserted into configuration. Details: ${error}`);
