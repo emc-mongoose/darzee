@@ -23,6 +23,8 @@ import { PrometheusApiService } from "src/app/core/services/prometheus-api/prome
 export class RunsTableRootComponent implements OnInit {
 
   @ViewChild('errorMessageComponent', { read: ViewContainerRef }) errorMessageComponent: ViewContainerRef;
+
+  public readonly RUN_TABLE_LOADING_MSG = "Loading runs table...";
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
   public runTabs: MongooseRunTab[] = [];
   public currentActiveTab: MongooseRunTab;
@@ -37,7 +39,7 @@ export class RunsTableRootComponent implements OnInit {
   private monitoringApiServiceSubscriptions: Subscription = new Subscription();
   private recordUpdatingTimer: any;
 
-  private hasReceivedDataFromProvider: boolean = false; 
+  private hasReceivedDataFromProvider: boolean = false;
   private hasInitializedRecord: boolean = false;
   private errorComponentsReferences: ComponentRef<any>[] = [];
 
@@ -71,7 +73,7 @@ export class RunsTableRootComponent implements OnInit {
    * Determines if data required for Run Table loading has been received.
    * @returns true if data has been successfully loaded from data provider.
    */
-  public hasRunTableInitialized(): boolean { 
+  public hasRunTableInitialized(): boolean {
     return this.hasReceivedDataFromProvider;
   }
   // MARK: - Public 
@@ -202,12 +204,12 @@ export class RunsTableRootComponent implements OnInit {
   /**
    * Defines initial state of run table root component.
    */
-  private setupComponent() { 
+  private setupComponent() {
     this.mongooseRecordsSubscription.add(
       // NOTE: Healthcheck helps prevent situation when error component is displaying until Prometheus' ...
       // ... address actually gets loaded from local storage.
       this.prometheusApiService.isAvailable().subscribe(
-        (isPrometheusAvailable: boolean) => { 
+        (isPrometheusAvailable: boolean) => {
           this.setUpRecordsData();
         }
       )
@@ -239,12 +241,12 @@ export class RunsTableRootComponent implements OnInit {
     )
   }
 
-    /**
-   * Observles any launched Mongoose run. 
-   * It's useful when Mongoose run has been launched but its data ..
-   * ... hasn't been exported to data provider yet. This way we're able to notify...
-   * ... user that the run is still there, but need to be loaded.
-   */
+  /**
+ * Observles any launched Mongoose run. 
+ * It's useful when Mongoose run has been launched but its data ..
+ * ... hasn't been exported to data provider yet. This way we're able to notify...
+ * ... user that the run is still there, but need to be loaded.
+ */
   private observeLaunchedRunRecord() {
     this.monitoringApiService.getMongooseRunRecords().subscribe(
       (fetchedRecord: MongooseRunRecord[]) => {

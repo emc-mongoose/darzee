@@ -13,14 +13,12 @@
 
 
 <ng-container *ngIf="this.hasRunTableInitialized(); else loadingSpinner">
-      <div *ngIf="shouldDisplayRecords(); else emptyRecordsAlert">
-            <!-- NOTE: Table of Mongoose Run Records with actual information. -->
-            <app-runs-table [mongooseRunRecords]="this.getDesiredRecords()" [@slide]="this.displayingRunRecords">
-            </app-runs-table>
-         </div>
+   <div *ngIf="shouldDisplayRecords(); else emptyRecordsAlert">
+      <!-- NOTE: Table of Mongoose Run Records with actual information. -->
+      <app-runs-table [mongooseRunRecords]="this.getDesiredRecords()" [@slide]="this.displayingRunRecords">
+      </app-runs-table>
+   </div>
 </ng-container>
-
-
 
 
 <!-- NOTE: Alert if no Mongoose Run records have been found. -->
@@ -31,7 +29,14 @@
 </ng-template>
 
 <ng-template #loadingSpinner>
-   <div class="spinner-border m-5" role="status">
-      <span class="sr-only">Loading...</span>
+   <!-- NOTE: Loading spinner. It should be displaying until any data will ...
+      ... be received from data provider. -->
+   <div class="alert alert-secondary" role="alert">
+      <div class="d-flex justify-content-center">
+         <button class="btn" disabled>
+            <span class="spinner-border spinner-border-sm"></span>
+            {{ this.RUN_TABLE_LOADING_MSG }}
+         </button>
+      </div>
    </div>
 </ng-template>
