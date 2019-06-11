@@ -72,7 +72,8 @@ export class MongooseChartDao {
 
                 let hasEnoughtValuesForChart: boolean = (concurrencyValues.length == elapsedTimeMetricsValues.length);
                 if (!hasEnoughtValuesForChart) {
-                    throw new Error(`Unable to build concurrency chart due to lack of metrics. Concurrency metrics amount: ${concurrencyValues.length}, while matching time metrics amount of: ${elapsedTimeMetricsValues.length}`);
+                    // TODO: Handle the situation correctly
+                    console.error(`Unable to build concurrency chart due to lack of metrics. Concurrency metrics amount: ${concurrencyValues.length}, while matching time metrics amount of: ${elapsedTimeMetricsValues.length}`);
                 }
 
                 let concurrencyChartPoints: ChartPoint[] = [];
