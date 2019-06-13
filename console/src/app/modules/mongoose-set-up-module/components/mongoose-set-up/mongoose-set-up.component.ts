@@ -107,8 +107,8 @@ export class MongooseSetUpComponent implements OnInit {
           let misleadingMessage = `Unable to launch Mongoose - run ID hasn't been generated. Details: ${JSON.stringify(mongooseRunId)}`;
           alert(misleadingMessage);
         } else {
-          let misleadingMessage = "Mongoose Run has started with ID " + mongooseRunId;
-          alert(misleadingMessage);
+          console.log(`Mongoose Run has started with run ID ${mongooseRunId}`);
+          // alert(misleadingMessage);
         }
 
         this.router.navigate([RoutesList.RUNS]);
