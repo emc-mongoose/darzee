@@ -13,7 +13,7 @@ fi
 nohup node prometheus/prometheus/server/node-server.js 2> server_logs.txt &
 
 while true; do
-  ps aux |grep prometheus 2> dev/null &
+  sleep 86400;
 done
 
 echo "Darzee has started."
