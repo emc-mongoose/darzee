@@ -61,11 +61,14 @@ export class NodesComponent implements OnInit {
 
   // MARK: - Public 
 
+  /**
+   * Handling node addition from the UI.
+   * @param entredIpAddress entered IP from the UI.
+   */
   public onAddIpButtonClicked(entredIpAddress: string): void {
     // NOTE: trimming accident whitespaces
     this.entredIpAddress = this.entredIpAddress.replace(/\s/g, ""); 
 
-     // TODO: Validate IP address here
      const savingNodeAddress: string = this.entredIpAddress;
      if (!HttpUtils.isIpAddressValid(savingNodeAddress)) {
          if (HttpUtils.matchesIpv4AddressWithoutPort(savingNodeAddress)) {

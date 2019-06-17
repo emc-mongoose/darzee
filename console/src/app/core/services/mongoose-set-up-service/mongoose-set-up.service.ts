@@ -31,11 +31,6 @@ export class MongooseSetUpService {
     private prometheusApiService: PrometheusApiService) {
 
     this.mongooseSetupInfoModel = new MongooseSetupInfoModel();
-    this.controlApiService.getMongooseConfiguration(this.controlApiService.getMongooseIp())
-      .subscribe((configuration: any) => {
-        this.mongooseSetupInfoModel.setConfiguration(configuration);
-        this.mongooseSetupInfoModel.setRunNodes(this.getSlaveNodesFromConfiguration(configuration));
-      });
   }
 
   // MARK: - Getters & Setters 
