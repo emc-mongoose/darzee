@@ -83,7 +83,7 @@ export class MongooseChartDao {
 
                     if (concurrencyValues.length > elapsedTimeMetricsValues.length) {
                         const lastTimeMetricIndex: number = elapsedTimeMetricsValues.length;
-                        lastRecordedMetric = elapsedTimeMetricsValues[lastTimeMetricIndex];
+                        lastRecordedMetric = elapsedTimeMetricsValues[lastTimeMetricIndex - 1];
                         if (lastRecordedMetric == undefined) {
                             // WARNING: Elapsed time metric name could possibly change. Using it as a mock for now.
                             const elapsedTimeMetricName: string = "mongoose_elapsed_time_value";
@@ -96,7 +96,7 @@ export class MongooseChartDao {
                         }
                     } else if (concurrencyValues.length < elapsedTimeMetricsValues.length) {
                         const lastConcurrencyMetricIndex: number = concurrencyValues.length;
-                        lastRecordedMetric = concurrencyValues[lastConcurrencyMetricIndex];
+                        lastRecordedMetric = concurrencyValues[lastConcurrencyMetricIndex - 1];
                         if (lastRecordedMetric == undefined) {
                             // WARNING: Concurrency metric could possibly change. Using it as a mock for now.
                             const elapsedTimeMetricName: string = "mongoose_concurrency_mean";
