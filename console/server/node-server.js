@@ -27,6 +27,7 @@ var prometheusConfigurationFullPath = process.env.PROMETHEUS_CONFIGURATION_PATH 
 var prometheusConfigurationFolder = process.env.PROMETHEUS_CONFIGURATION_FOLDER_PATH || CONFIGURATION_DIRECTORY_NAME;
 var prometheusPort = process.env.PROMETHEUS_PORT || PROMETHEUS_DEFAULT_PORT;
 var prometheusIp = process.env.PROMETHEUS_IMAGE_IP || PROMETHEUS_DEFAULT_IP;
+var serverPath = process.env.NODE_JS_SERVER_FOLDER_PATH || "/";
 
 app.use(express.static(path));
 app.use(bodyParser.json()); // NOTE: Supporting JSON-encoded bodies 
@@ -106,7 +107,7 @@ app.post('/reloadprometheus', function (req, res) {
 // NOTE: Configurating server to serve index.html since during the production ...
 // build Angular converts its html's to only one file.
 app.get('/*', (req, res) => {
-    res.sendfile('./index.html');
+    res.sendfile(`.${serverPath}index.html`);
 });
 
 app.listen(port);
