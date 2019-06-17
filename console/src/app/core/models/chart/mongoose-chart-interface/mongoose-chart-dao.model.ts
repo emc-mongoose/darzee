@@ -105,7 +105,7 @@ export class MongooseChartDao {
                         for (var i: number = 0; i < differenceInArraySizeTimeAndValues; i++) {
                             // NOTE: In order to equalize array's length and draw the grapgs correctly, ...
                             // ... filling up missing metrics with the last recorded ones.
-                            elapsedTimeMetricsValues.push(lastRecordedMetric);
+                            concurrencyValues.push(lastRecordedMetric);
                         }
                     }
 
