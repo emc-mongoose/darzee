@@ -23,7 +23,8 @@ var path = __dirname + '';
 
 // NOTE: Fetching environment variables' values 
 var port = process.env.DARZEE_PORT || DARZEE_DEFAULT_PORT;
-var prometheusConfigurationPath = process.env.PROMETHEUS_CONFIGURATION_PATH || PROMETHEUS_DEFAULT_CONFIGURATION_PATH;
+var prometheusConfigurationFullPath = process.env.PROMETHEUS_CONFIGURATION_PATH || PROMETHEUS_DEFAULT_CONFIGURATION_PATH;
+var prometheusConfigurationFolder = process.env.PROMETHEUS_CONFIGURATION_FOLDER_PATH || CONFIGURATION_DIRECTORY_NAME;
 var prometheusPort = process.env.PROMETHEUS_PORT || PROMETHEUS_DEFAULT_PORT;
 var prometheusIp = process.env.PROMETHEUS_IMAGE_IP || PROMETHEUS_DEFAULT_IP;
 
@@ -37,17 +38,21 @@ app.options('*', cors());
 // NOTE: Saving file on 'CONFIGURATION_DIRECTORY_NAME' folder. 
 app.post('/savefile', function (req, res) {
     let fileName = req.body.fileName;
-    var creatingFilePath = `${CONFIGURATION_DIRECTORY_NAME}/${fileName}`;
-    console.log(`Processing file with path: ${creatingFilePath}`);
+    var creatingFilePath = `${prometheusConfigurationFullPath}`;
 
     // NOTE: Save Prometheus' configuration to its specified path.
     if (fileName == (PROMETHEUS_CONFIGURATION_FILENAME + PROMETHEUS_CONFIGURATION_EXTENSION)) {
-        creatingFilePath = prometheusConfigurationPath;
+        creatingFilePath = prometheusConfigurationFullPath;
+    } else { 
+        creatingFilePath = prometheusConfigurationFolder + fileName;
     }
 
-    var fileContent = req.body.fileContent;
+    console.log(`Saving file with into path: ${creatingFilePath}`);
 
-    let configurationDirectoryPath = `${CONFIGURATION_DIRECTORY_NAME}`;
+
+    var fileContent = req.body.fileContent;
+    console.log(`Saving file content: ${fileContent}`)
+    let configurationDirectoryPath = `${prometheusConfigurationFolder}`;
     // NOTE: Creating directory for Prometheus configuration if not exist. 
     if (!fs.existsSync(configurationDirectoryPath)) {
         // NOTE: Using ShellJS in order to create the full path. 
