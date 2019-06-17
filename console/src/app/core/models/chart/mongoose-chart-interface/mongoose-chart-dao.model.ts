@@ -72,8 +72,38 @@ export class MongooseChartDao {
 
                 let hasEnoughtValuesForChart: boolean = (concurrencyValues.length == elapsedTimeMetricsValues.length);
                 if (!hasEnoughtValuesForChart) {
-                    // TODO: Handle the situation correctly
-                    console.error(`Unable to build concurrency chart due to lack of metrics. Concurrency metrics amount: ${concurrencyValues.length}, while matching time metrics amount of: ${elapsedTimeMetricsValues.length}`);
+                    const zeroTimestamp: number = 0;
+                    const zeroMetricValueMock: string = "0";
+                    const zeroMetrickNameMock: string = "zero_metric_name";
+                    var zeroMetricMock: MongooseMetric = new MongooseMetric(zeroTimestamp, zeroMetricValueMock, zeroMetrickNameMock);
+                    // NOTE: Set zero metrick mock initially.
+                    // It will be replaced if last added metric will be found.
+                    var lastRecordedMetric: MongooseMetric = zeroMetricMock;
+                    if (concurrencyValues.length > elapsedTimeMetricsValues.length) {
+                        const lastTimeMetricIndex: number = elapsedTimeMetricsValues.length;
+                        lastRecordedMetric = elapsedTimeMetricsValues[lastTimeMetricIndex];
+                        if (lastRecordedMetric == undefined) { 
+                            // WARNING: Elapsed time metric name could possibly change. Using it as a mock for now.
+                            const elapsedTimeMetricName: string = "mongoose_elapsed_time_value";
+                            lastRecordedMetric = new MongooseMetric(zeroTimestamp, zeroMetricValueMock, elapsedTimeMetricName);
+                        }
+                    } else if (concurrencyValues.length < elapsedTimeMetricsValues.length) { 
+                        const lastConcurrencyMetricIndex: number = concurrencyValues.length;
+                        lastRecordedMetric = concurrencyValues[lastConcurrencyMetricIndex];
+                        if (lastRecordedMetric == undefined) { 
+                            // WARNING: Concurrency metric could possibly change. Using it as a mock for now.
+                            const elapsedTimeMetricName: string = "mongoose_concurrency_mean";
+                            lastRecordedMetric = new MongooseMetric(zeroTimestamp, zeroMetricValueMock, elapsedTimeMetricName);
+                        }
+                    }
+                    
+                    const differenceInArraySizeTimeAndValues: number = Math.abs(concurrencyValues.length - elapsedTimeMetricsValues.length);
+                    console.log(`Concurrrency chart has an unequal amount of time and actual value of metrics. Equalizing will be applied.`);
+                    for (var i: number = 0; i < differenceInArraySizeTimeAndValues; i++) { 
+                        // NOTE: In order to equalize array's length and draw the grapgs correctly, ...
+                        // ... filling up missing metrics with the last recorded ones.
+                        elapsedTimeMetricsValues.push(lastRecordedMetric);
+                    }
                 }
 
                 let concurrencyChartPoints: ChartPoint[] = [];
@@ -85,6 +115,10 @@ export class MongooseChartDao {
                     let concurrencyMetric: MongooseMetric = concurrencyValues[i];
 
                     let x: number = new Number(timestamp.getValue()) as number;
+                    var concurrentMetricValue: string = concurrencyMetric.getValue();
+                    if (concurrentMetricValue == undefined) { 
+                        
+                    }
                     let y: number = new Number(concurrencyMetric.getValue()) as number;
                     let chartPoint: ChartPoint = new ChartPoint(x, y);
 

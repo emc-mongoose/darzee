@@ -40,7 +40,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   private readonly BYTE_RATE_MEAN_METRIC_NAME = "mongoose_byte_rate_mean";
   private readonly BYTE_RATE_LAST_METRIC_NAME = "mongoose_byte_rate_last";
 
-  private readonly ELAPSED_TIME_VALUE_METRIC_NAME = "mongoose_elapsed_time_value";
+  public readonly ELAPSED_TIME_VALUE_METRIC_NAME = "mongoose_elapsed_time_value";
 
   // NOTE: Symbols used for queryting Prometheus for value of metric with specific labels. They ...
   // ... are listed within the labels list. 
