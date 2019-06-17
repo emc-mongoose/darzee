@@ -91,7 +91,10 @@ task createDockerfile(type: Dockerfile) {
     instruction "RUN cd .."
     instruction "WORKDIR /"
     instruction "COPY entrypoint.sh entrypoint.sh"
-    instruction "ENTRYPOINT sed -i 's/\r$//' entrypoint.sh  && chmod +x entrypoint.sh && sh ./entrypoint.sh"
+    instruction "RUN ls"
+    instruction "RUN cat entrypoint.sh"
+    instruction "RUN sed -i 's/\r\$//' entrypoint.sh && chmod +x entrypoint.sh"
+    instruction "ENTRYPOINT sh ./entrypoint.sh"
    
 }
 
