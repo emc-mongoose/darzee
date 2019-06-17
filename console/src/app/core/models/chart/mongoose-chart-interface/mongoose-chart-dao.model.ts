@@ -98,7 +98,7 @@ export class MongooseChartDao {
                     }
                     
                     const differenceInArraySizeTimeAndValues: number = Math.abs(concurrencyValues.length - elapsedTimeMetricsValues.length);
-                    console.log(`Concurrrency chart has an unequal amount of time and actual value of metrics. Equalizing will be applied.`);
+                    console.log(`Concurrrency chart has an unequal amount of time and actual value of metrics. Difference in size is ${differenceInArraySizeTimeAndValues}. Equalizing will be applied.`);
                     for (var i: number = 0; i < differenceInArraySizeTimeAndValues; i++) { 
                         // NOTE: In order to equalize array's length and draw the grapgs correctly, ...
                         // ... filling up missing metrics with the last recorded ones.
@@ -112,7 +112,14 @@ export class MongooseChartDao {
 
                 for (var i: number = 0; i < elapsedTimeMetricsValues.length; i++) {
                     let timestamp: MongooseMetric = elapsedTimeMetricsValues[i];
-                    let concurrencyMetric: MongooseMetric = concurrencyValues[i];
+                    var concurrencyMetric: MongooseMetric = concurrencyValues[i];
+                    const previousConcurrencyMetricIndex: number = i - 1;
+                    if (concurrencyMetric == undefined) { 
+                        concurrencyMetric = concurrencyValues[previousConcurrencyMetricIndex];
+                    }
+                    if (timestamp == undefined) { 
+                        timestamp = elapsedTimeMetricsValues[previousConcurrencyMetricIndex];
+                    }
 
                     let x: number = new Number(timestamp.getValue()) as number;
                     var concurrentMetricValue: string = concurrencyMetric.getValue();
