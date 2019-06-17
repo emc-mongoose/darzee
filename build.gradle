@@ -90,9 +90,10 @@ task createDockerfile(type: Dockerfile) {
     instruction "RUN npm install axios"
     instruction "RUN cd .."
     instruction "WORKDIR /"
+    instruction "RUN mv /prometheus/etc/prometheus/prometheus.yml /prometheus/prometheus/server/prometheus.yml"
     instruction "COPY entrypoint.sh entrypoint.sh"
     instruction "RUN ls"
-    instruction "RUN cat entrypoint.sh"
+    instruction "COPY .env .env"
     instruction "RUN sed -i 's/\r\$//' entrypoint.sh && chmod +x entrypoint.sh"
     instruction "ENTRYPOINT sh ./entrypoint.sh"
    
