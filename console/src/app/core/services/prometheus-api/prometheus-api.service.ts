@@ -10,6 +10,8 @@ import { HttpUtils } from 'src/app/common/HttpUtils';
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
 import { MetricValueType } from '../../models/chart/mongoose-chart-interface/metric-value-type';
 import { NumericMetricValueType } from '../../models/chart/mongoose-chart-interface/numeric-metric-value-type';
+import { ContainerServerService } from '../container-server/container-server-service';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
@@ -48,13 +50,14 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   readonly METRIC_LABELS_LIST_END_SYMBOL = "}";
 
   readonly prometheusResponseParser: PrometheusResponseParser = new PrometheusResponseParser();
-  
+
   private address: BehaviorSubject<string> = new BehaviorSubject<string>(this.DEFAULT_PROMETHEUS_IP);
 
   // MARK: - Lifecycle 
 
   constructor(private httpClient: HttpClient,
-    private localStorageService: LocalStorageService) {
+    private localStorageService: LocalStorageService,
+    private containerServerService: ContainerServerService) {
     this.setupPromtheusEntryNode();
   }
 
@@ -333,7 +336,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
    * @returns current address of target Prmetheus' node.
    * WARNING: Could be deprecated in case of implementing data retrieving from multiple Prometheus nodes.
    */
-  public getCurrentAddress(): Observable<string> { 
+  public getCurrentAddress(): Observable<string> {
     return this.address.asObservable();
   }
 
@@ -357,21 +360,31 @@ export class PrometheusApiService implements MongooseChartDataProvider {
    * ... local browser's storage.
    */
   private setupPromtheusEntryNode() {
-    const prometheusLocalStorageAddress: string = this.localStorageService.getPrometheusHostAddress();
-    const defualtPrometheusAddress: string = this.address.getValue();
-    const isPrometheusIpDefault: boolean = (defualtPrometheusAddress == this.DEFAULT_PROMETHEUS_IP);
-    if (!isPrometheusIpDefault) {
-      this.address.next(prometheusLocalStorageAddress);
-      return;
-    }
 
-    this.isAvailable(defualtPrometheusAddress).subscribe(
+    // NOTE: Prometheus and UI runs within the same container. Thus, it's highly likely that...
+    // ... they both have the same host address.
+    const currentHostAddress: string = this.containerServerService.getContainerServicerAddressFromAddressLine();
+    const ipAndPortDelimiter: string = ":";
+    const ipAddressIndex: number = 0;
+
+    var prometheusIp: string = currentHostAddress.split(ipAndPortDelimiter)[ipAddressIndex];
+    // NOTE: Append IP address with default Prometheus port. 
+    prometheusIp += environment.prometheusPort;
+
+    console.log(`Trying to load Prometheus on ${prometheusIp}...`);
+
+    this.isAvailable(prometheusIp).subscribe(
       (isDefaultAddressAvailable: boolean) => {
         if (isDefaultAddressAvailable) {
+          this.address.next(prometheusIp);
+          // NOTE: Saving Prometheus' address into local storage in order to load it faster afterwards.
+          this.localStorageService.savePrometheusHostAddress(prometheusIp);
           return;
         }
-        const isPrometheusCustomIpValid: boolean = HttpUtils.isIpAddressValid(prometheusLocalStorageAddress);
-        if (!isPrometheusCustomIpValid) {
+        const prometheusLocalStorageAddress: string = this.localStorageService.getPrometheusHostAddress();
+        const isPrometheusLocalStorageIpValid: boolean = HttpUtils.isIpAddressValid(prometheusLocalStorageAddress);
+        if (!isPrometheusLocalStorageIpValid) {
+          console.error(`Unable to load Prometheus on address from local storage ${prometheusLocalStorageAddress} since it's not valid.`);
           return;
         }
         this.address.next(prometheusLocalStorageAddress);

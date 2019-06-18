@@ -47,6 +47,30 @@ export class ContainerServerService {
         return this.http.post(targetUrl, Constants.Http.EMPTY_POST_REQUEST_HEADERS);
     }
 
+    /**
+ * Fetches current deploying address from browser's address bar.
+ * It was done in order to perform HTTP requests to NodeJS proxy server.
+ * @deprecated if NodeJS isn't using anymore.
+ * @returns current deploying address with HTTP prefix.
+ */
+    public getContainerServicerAddressFromAddressLine(): string {
+        let rawLocation = (document.location as unknown);
+        var currentUrl: string = String(rawLocation);
+        const emptyValue: string = "";
+        // NOTE: Removing HTTP prefix in order to make the parsing easier. Will ...
+        // ... be appended back afterwards. 
+        currentUrl = currentUrl.replace(Constants.Http.HTTP_PREFIX, emptyValue);
+        var rawCurrentAddress: string = "";
+        const addressFromRoutingDelimiter: string = "/";
+        const shouldPruneAddress: boolean = currentUrl.includes(addressFromRoutingDelimiter);
+        if (shouldPruneAddress) {
+            rawCurrentAddress = currentUrl.split(addressFromRoutingDelimiter)[0];
+        } else {
+            rawCurrentAddress = currentUrl;
+        }
+        return `${Constants.Http.HTTP_PREFIX}${rawCurrentAddress}`;
+    }
+
     private getHttpHeadersForFileSave(): HttpHeaders {
         let httpHeadersForMongooseRun = new HttpHeaders();
         httpHeadersForMongooseRun.append('Content-Type', 'multipart/form-data');
@@ -54,26 +78,4 @@ export class ContainerServerService {
         return httpHeadersForMongooseRun;
     }
 
-    /**
-     * Fetches current deploying address from browser's address bar.
-     * It was done in order to perform HTTP requests to NodeJS proxy server.
-     * @deprecated if NodeJS isn't using anymore.
-     * @returns current deploying address with HTTP prefix.
-     */
-    private getContainerServicerAddressFromAddressLine(): string { 
-        let rawLocation = (document.location as unknown);
-        var currentUrl: string = String(rawLocation);
-        const emptyValue: string = "";
-        // NOTE: Removing HTTP prefix in order to make the parsing easier 
-        currentUrl = currentUrl.replace(Constants.Http.HTTP_PREFIX, emptyValue);
-        var rawCurrentAddress: string = "";
-        const addressFromRoutingDelimiter: string = "/";
-        const shouldPruneAddress: boolean = currentUrl.includes(addressFromRoutingDelimiter);
-        if (shouldPruneAddress) { 
-            rawCurrentAddress = currentUrl.split(addressFromRoutingDelimiter)[0];
-        } else { 
-            rawCurrentAddress = currentUrl;
-        }
-        return `${Constants.Http.HTTP_PREFIX}${rawCurrentAddress}`;
-    }
 }
