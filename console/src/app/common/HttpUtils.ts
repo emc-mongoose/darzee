@@ -1,3 +1,5 @@
+import { Constants } from "./constants";
+
 /**
  * Utilities for working with HTTP calls. Mainly validation functions.
  */
@@ -62,5 +64,16 @@ export class HttpUtils {
             return (ipAddress + port);
         }
         return (ipAddress + ipAndPortDelimiter + port);
+    }
+
+    /**
+     * Prunes HTTP ("http://") prefix from given address.
+     * @param address IPv4 address.
+     * @return address without HTTP prefix.
+     */
+    public static pruneHttpPrefixFromAddress(address: string): string { 
+        const httpPrefix: string = Constants.Http.HTTP_PREFIX;
+        const emptyValue: string = "";
+        return address.replace(httpPrefix, emptyValue);
     }
 }

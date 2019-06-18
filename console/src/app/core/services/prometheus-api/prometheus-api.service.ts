@@ -363,13 +363,19 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
     // NOTE: Prometheus and UI runs within the same container. Thus, it's highly likely that...
     // ... they both have the same host address.
-    const currentHostAddress: string = this.containerServerService.getContainerServicerAddressFromAddressLine();
+    var currentHostAddress: string = this.containerServerService.getContainerServicerAddressFromAddressLine();
+
+    const hostAddressContainsHttpPrefix: boolean = currentHostAddress.includes(Constants.Http.HTTP_PREFIX);
+    if (hostAddressContainsHttpPrefix) { 
+      // NOTE: Pruning HTTP prefix for easier parsing.
+      currentHostAddress = HttpUtils.pruneHttpPrefixFromAddress(currentHostAddress);
+    }
     const ipAndPortDelimiter: string = ":";
     const ipAddressIndex: number = 0;
-
     var prometheusIp: string = currentHostAddress.split(ipAndPortDelimiter)[ipAddressIndex];
+
     // NOTE: Append IP address with default Prometheus port. 
-    prometheusIp += environment.prometheusPort;
+    prometheusIp = `${prometheusIp}${ipAndPortDelimiter}${environment.prometheusPort}`;
 
     console.log(`Trying to load Prometheus on ${prometheusIp}...`);
 
