@@ -3,8 +3,10 @@
 
 export class PrometheusConfigurationEditor {
 
-    private readonly TARGETS_PROPERTY_NAME = "targets";
-    private readonly SCRAPE_INTERVAL_PROPERTY_NAME = "scrape_interval";
+    private readonly TARGETS_PROPERTY_NAME: string = "targets";
+    private readonly SCRAPE_INTERVAL_PROPERTY_NAME: string = "scrape_interval";
+    private readonly CONFIGURATION_FIELD_AND_VALUE_DELIMITER: string = "  ";
+    
     private readonly TARGET_LIST_ELEMENTS_SURROUNDING_CHARACTERS = "'";
 
     public prometheusConfigurationFileContent: Object;
@@ -74,7 +76,7 @@ export class PrometheusConfigurationEditor {
         // NOTE: Inserting updated value between startIndex and endIndex.
         var updatedConfiguration: string = prometheusConfiguration.substring(0, startIndexOfPropetySection);
 
-        const newPropertyValue: string = `${propertyName}:${propertyValue}\n`;
+        const newPropertyValue: string = `${propertyName}:${this.CONFIGURATION_FIELD_AND_VALUE_DELIMITER}${propertyValue}\n`;
         updatedConfiguration += newPropertyValue;
 
         const lastIndexOfProvidedConfiguration: number = prometheusConfiguration.length;
@@ -103,8 +105,7 @@ export class PrometheusConfigurationEditor {
 
     private getUpdatedTargetsValue(targets: String[]): String {
         targets = this.surroundListItemsWithCharacter(targets, this.TARGET_LIST_ELEMENTS_SURROUNDING_CHARACTERS);
-        let fieldNameAndValueDelimiter = "  "; // NOTE: prometheus.yml file delimiter contains 2 whitesapces
         // NOTE: Targets property and value must retain delimiter. Prometheus will crash otherwise.
-        return `${this.TARGETS_PROPERTY_NAME}:${fieldNameAndValueDelimiter}[${targets}]`
+        return `${this.TARGETS_PROPERTY_NAME}:${this.CONFIGURATION_FIELD_AND_VALUE_DELIMITER}[${targets}]`
     }
 }
