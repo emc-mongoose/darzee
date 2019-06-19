@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: darzee
-        image: emcmongoose/darzee:latest
+        image: emcmongoose/darzee:kube
         ports:
         - name: nodejs-port
           containerPort: 8080
