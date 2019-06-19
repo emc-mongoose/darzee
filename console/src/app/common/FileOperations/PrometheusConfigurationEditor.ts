@@ -3,8 +3,8 @@
 
 export class PrometheusConfigurationEditor {
 
-    private readonly GLOBAL_SECTION_NAME: string = "global"
-        ; private readonly TARGETS_PROPERTY_NAME: string = "targets";
+    private readonly GLOBAL_SECTION_NAME: string = "global";
+    private readonly TARGETS_PROPERTY_NAME: string = "targets";
     private readonly SCRAPE_INTERVAL_PROPERTY_NAME: string = "scrape_interval";
     private readonly SCRAPE_TIMEOUT_PROPERTY_NAME: string = "scrape_timeout";
 
@@ -62,7 +62,7 @@ export class PrometheusConfigurationEditor {
         } catch (propertyNotFoundError) {
             // NOTE: Appending scrape interval value into configuration if not found.
             let globalSectionNameWithDelimiter: string = `${this.GLOBAL_SECTION_NAME}:`;
-            updatedConfiguration = this.addPropertyToSection(updatedConfiguration, globalSectionNameWithDelimiter,  this.SCRAPE_INTERVAL_PROPERTY_NAME,  periodOfScrapeSecondsPropertyValue);
+            updatedConfiguration = this.addPropertyToSection(prometheusConfiguration, globalSectionNameWithDelimiter, this.SCRAPE_INTERVAL_PROPERTY_NAME, periodOfScrapeSecondsPropertyValue);
         }
         return updatedConfiguration;
     }
@@ -83,7 +83,7 @@ export class PrometheusConfigurationEditor {
         } catch (propertyNotFoundError) {
             // NOTE: Appending scrape timeout value into configuration if not found.
             let globalSectionNameWithDelimiter: string = `${this.GLOBAL_SECTION_NAME}:`;
-            updatedConfiguration = this.addPropertyToSection(updatedConfiguration, globalSectionNameWithDelimiter,  this.SCRAPE_TIMEOUT_PROPERTY_NAME,  scrapeTimeoutSecondsPropertyValue);
+            updatedConfiguration = this.addPropertyToSection(prometheusConfiguration, globalSectionNameWithDelimiter, this.SCRAPE_TIMEOUT_PROPERTY_NAME, scrapeTimeoutSecondsPropertyValue);
         }
         return updatedConfiguration;
     }
@@ -121,7 +121,6 @@ export class PrometheusConfigurationEditor {
 
         // NOTE: Appending updated part with the rest of the configuration.
         updatedConfiguration += secondPartOfConfiguration;
-        console.log(`Provided configuration: ${prometheusConfiguration}. Updated configuration: ${updatedConfiguration}`);
         return updatedConfiguration;
     }
 
@@ -132,14 +131,16 @@ export class PrometheusConfigurationEditor {
      * @param sectionName - target section name;
      * @param propertyName - appending property name;
      * @param propertyValue - appending property value;
+     * @throws Error if section not found;
      * @returns configuration with appended section.
+     * WARNING: Doesn't work with commented-out lines.
      */
     private addPropertyToSection(yamlConfiguration: String, sectionName: string, propertyName: string, propertyValue: string): String {
         const startIndexOfTargetSection: number = yamlConfiguration.toString().lastIndexOf(sectionName);
 
         const sectionNotFoundIndex: number = -1;
         if (startIndexOfTargetSection == sectionNotFoundIndex) {
-            throw new Error(`Section ${sectionName} hasn't been found within given ocnfiguration: ${yamlConfiguration}.`);
+            throw new Error(`Section ${sectionName} hasn't been found within given configuration: ${yamlConfiguration}.`);
         }
 
         const endOfLineSymbol: string = "\n";
@@ -147,23 +148,24 @@ export class PrometheusConfigurationEditor {
         var amountOfWhiteSpacesInIntent: number = 0;
         for (var processingSymbolIndex: number = startIndexOfTargetSection; processingSymbolIndex > 0; processingSymbolIndex--) {
             const previousChar: string = yamlConfiguration[processingSymbolIndex];
-            if (previousChar == endOfLineSymbol) {
-                return;
-            }
             amountOfWhiteSpacesInIntent++;
+            if (previousChar == endOfLineSymbol) {
+                break;
+            }
         }
 
-        var configurationWithNewProperty: string = yamlConfiguration.substring(0, startIndexOfTargetSection);
+        const processingSection: string = yamlConfiguration.substring(startIndexOfTargetSection, yamlConfiguration.length);
+        const endIndexOfTargetSection: number = startIndexOfTargetSection + this.getAmountOfCharactersUntilEndOfLine(processingSection);
+
+        const firstPartOfConfiguration: string = yamlConfiguration.substring(0, endIndexOfTargetSection);
+        // NOTE: Creating intent with whitespaces.
         const newPropertyIntent: String = new Array(amountOfWhiteSpacesInIntent + 1).join(" ");
-        configurationWithNewProperty += `${newPropertyIntent}${propertyName}:${propertyValue}\n`;
 
         // NOTE: Getting the second part of originally provided configuration.
-        const remainingConfiguration: string = yamlConfiguration.substring(startIndexOfTargetSection, yamlConfiguration.length);
-        const endIndexOfTargetSection: number = this.getAmountOfCharactersUntilEndOfLine(remainingConfiguration);
         const secondPartOfConfiguration: string = yamlConfiguration.substring(endIndexOfTargetSection, yamlConfiguration.length);
+        const newProperty: string = `${newPropertyIntent}${propertyName}:${this.CONFIGURATION_FIELD_AND_VALUE_DELIMITER}${propertyValue}\n`;
 
-        configurationWithNewProperty += secondPartOfConfiguration;
-
+        const configurationWithNewProperty = firstPartOfConfiguration + newProperty + secondPartOfConfiguration;
         return configurationWithNewProperty;
     }
 

@@ -145,9 +145,10 @@ export class MongooseSetUpService {
     // NOTE: An initial fetch of Prometheus configuration.
     this.http.get(environment.prometheusConfigPath, { responseType: 'text' }).subscribe((configurationFileContent: Object) => {
       let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
-      
+
       // NOTE: Appending configuration with added Mongoose nodes.
       var updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(mongooseRunNodes);
+      console.log(`Provided configuration: ${updatedConfiguration}`);
 
       // NOTE: changing scrape interval in order to provide better response for elements that are dependent ...
       // ... on the metrics.
@@ -155,6 +156,8 @@ export class MongooseSetUpService {
 
       // NOTE: Changing scrape timeout within Prometheus configuration in order to exclude connection-related errors.
       updatedConfiguration = prometheusConfigurationEditor.changeScrapeTimeout(updatedConfiguration, this.DEFAULT_DATA_SCRAPE_TIMEOUT_SECS);
+
+      console.log(`\n ######## Updated configuration: ${updatedConfiguration}`);
 
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
