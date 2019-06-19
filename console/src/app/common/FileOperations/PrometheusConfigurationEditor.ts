@@ -3,9 +3,8 @@
 
 export class PrometheusConfigurationEditor {
 
-    private readonly JOBNAME_PROPERTY: string = "job_name";
-    private readonly PROMETHEUS_JOBNAME: string = "prometheus";
-    private readonly TARGETS_PROPERTY_NAME: string = "targets";
+    private readonly GLOBAL_SECTION_NAME: string = "global"
+        ; private readonly TARGETS_PROPERTY_NAME: string = "targets";
     private readonly SCRAPE_INTERVAL_PROPERTY_NAME: string = "scrape_interval";
     private readonly SCRAPE_TIMEOUT_PROPERTY_NAME: string = "scrape_timeout";
 
@@ -57,7 +56,15 @@ export class PrometheusConfigurationEditor {
      */
     public changeScrapeInterval(prometheusConfiguration: String, periodOfScrapeSecs: number): String {
         const periodOfScrapeSecondsPropertyValue: string = `${periodOfScrapeSecs}s`;
-        return this.changeLastFoundPropertyValue(prometheusConfiguration, this.SCRAPE_INTERVAL_PROPERTY_NAME, periodOfScrapeSecondsPropertyValue);
+        var updatedConfiguration: String = "";
+        try {
+            updatedConfiguration = this.changeLastFoundPropertyValue(prometheusConfiguration, this.SCRAPE_INTERVAL_PROPERTY_NAME, periodOfScrapeSecondsPropertyValue);
+        } catch (propertyNotFoundError) {
+            // NOTE: Appending scrape interval value into configuration if not found.
+            let globalSectionNameWithDelimiter: string = `${this.GLOBAL_SECTION_NAME}:`;
+            updatedConfiguration = this.addPropertyToSection(updatedConfiguration, globalSectionNameWithDelimiter,  this.SCRAPE_INTERVAL_PROPERTY_NAME,  periodOfScrapeSecondsPropertyValue);
+        }
+        return updatedConfiguration;
     }
 
 
@@ -70,7 +77,15 @@ export class PrometheusConfigurationEditor {
      */
     public changeScrapeTimeout(prometheusConfiguration: String, scrapeTimeoutSecs: number): String {
         const scrapeTimeoutSecondsPropertyValue: string = `${scrapeTimeoutSecs}s`;
-        return this.changeLastFoundPropertyValue(prometheusConfiguration, this.SCRAPE_TIMEOUT_PROPERTY_NAME, scrapeTimeoutSecondsPropertyValue);
+        var updatedConfiguration: String = "";
+        try {
+            updatedConfiguration = this.changeLastFoundPropertyValue(prometheusConfiguration, this.SCRAPE_TIMEOUT_PROPERTY_NAME, scrapeTimeoutSecondsPropertyValue);
+        } catch (propertyNotFoundError) {
+            // NOTE: Appending scrape timeout value into configuration if not found.
+            let globalSectionNameWithDelimiter: string = `${this.GLOBAL_SECTION_NAME}:`;
+            updatedConfiguration = this.addPropertyToSection(updatedConfiguration, globalSectionNameWithDelimiter,  this.SCRAPE_TIMEOUT_PROPERTY_NAME,  scrapeTimeoutSecondsPropertyValue);
+        }
+        return updatedConfiguration;
     }
 
     // MARK: - Private 
@@ -80,26 +95,26 @@ export class PrometheusConfigurationEditor {
      * @param prometheusConfiguration processing Prometheus configuration.
      * @param propertyName name of property for chaning. IMPORTANT: Name should be provided WITH the postfix if needed. (e.g.: "10s" should be provided as "10s", not just "10").
      * @param propertyValue updated property value.
+     * @throws Error if property hasn't been found in configuration.
      * @returns configuration with updated property value.
      */
     private changeLastFoundPropertyValue(prometheusConfiguration: String, propertyName: string, propertyValue: string): String {
         const startIndexOfPropetySection: number = prometheusConfiguration.toString().lastIndexOf(propertyName);
 
-        var hasReachedEndOfLine: boolean = false;
-        // NOTE: currentIndexOfPropertySection points to the index of currently processing symbol within string.
-        var endIndexOfPropertySection: number = startIndexOfPropetySection;
-        const endOfLineSymbol: string = "\n";
-        while (!hasReachedEndOfLine) {
-            let nextChar: string = prometheusConfiguration[endIndexOfPropertySection]
-            endIndexOfPropertySection++;
-            hasReachedEndOfLine = (nextChar == endOfLineSymbol);
+        const propertyNotFoundIndex: number = - 1;
+        const hasFoundProperty: boolean = (startIndexOfPropetySection != propertyNotFoundIndex);
+        if (!hasFoundProperty) {
+            throw new Error(`Property ${propertyName} hasn't been found in Prometheus' configuration.`);
         }
-
         // NOTE: Inserting updated value between startIndex and endIndex.
         var updatedConfiguration: string = prometheusConfiguration.substring(0, startIndexOfPropetySection);
 
         const newPropertyValue: string = `${propertyName}:${this.CONFIGURATION_FIELD_AND_VALUE_DELIMITER}${propertyValue}\n`;
         updatedConfiguration += newPropertyValue;
+
+        // NOTE: currentIndexOfPropertySection points to the index of currently processing symbol within string.
+        const remainingPartOfConfiguration: string = prometheusConfiguration.substring(startIndexOfPropetySection, prometheusConfiguration.length);
+        var endIndexOfPropertySection: number = startIndexOfPropetySection + this.getAmountOfCharactersUntilEndOfLine(remainingPartOfConfiguration);
 
         const lastIndexOfProvidedConfiguration: number = prometheusConfiguration.length;
         const secondPartOfConfiguration: string = prometheusConfiguration.substring(endIndexOfPropertySection, lastIndexOfProvidedConfiguration);
@@ -108,6 +123,61 @@ export class PrometheusConfigurationEditor {
         updatedConfiguration += secondPartOfConfiguration;
         console.log(`Provided configuration: ${prometheusConfiguration}. Updated configuration: ${updatedConfiguration}`);
         return updatedConfiguration;
+    }
+
+
+    /**
+     * Appends YAML's section with a "proprty: value" pair.
+     * @param yamlConfiguration yaml file content.
+     * @param sectionName - target section name;
+     * @param propertyName - appending property name;
+     * @param propertyValue - appending property value;
+     * @returns configuration with appended section.
+     */
+    private addPropertyToSection(yamlConfiguration: String, sectionName: string, propertyName: string, propertyValue: string): String {
+        const startIndexOfTargetSection: number = yamlConfiguration.toString().lastIndexOf(sectionName);
+
+        const sectionNotFoundIndex: number = -1;
+        if (startIndexOfTargetSection == sectionNotFoundIndex) {
+            throw new Error(`Section ${sectionName} hasn't been found within given ocnfiguration: ${yamlConfiguration}.`);
+        }
+
+        const endOfLineSymbol: string = "\n";
+        // NOTE: Calculating intent in order to insert a "property: value" pair into a section correctly.
+        var amountOfWhiteSpacesInIntent: number = 0;
+        for (var processingSymbolIndex: number = startIndexOfTargetSection; processingSymbolIndex > 0; processingSymbolIndex--) {
+            const previousChar: string = yamlConfiguration[processingSymbolIndex];
+            if (previousChar == endOfLineSymbol) {
+                return;
+            }
+            amountOfWhiteSpacesInIntent++;
+        }
+
+        var configurationWithNewProperty: string = yamlConfiguration.substring(0, startIndexOfTargetSection);
+        const newPropertyIntent: String = new Array(amountOfWhiteSpacesInIntent + 1).join(" ");
+        configurationWithNewProperty += `${newPropertyIntent}${propertyName}:${propertyValue}\n`;
+
+        // NOTE: Getting the second part of originally provided configuration.
+        const remainingConfiguration: string = yamlConfiguration.substring(startIndexOfTargetSection, yamlConfiguration.length);
+        const endIndexOfTargetSection: number = this.getAmountOfCharactersUntilEndOfLine(remainingConfiguration);
+        const secondPartOfConfiguration: string = yamlConfiguration.substring(endIndexOfTargetSection, yamlConfiguration.length);
+
+        configurationWithNewProperty += secondPartOfConfiguration;
+
+        return configurationWithNewProperty;
+    }
+
+    private getAmountOfCharactersUntilEndOfLine(targetString: string): number {
+        var hasReachedEndOfLine: boolean = false;
+        // NOTE: currentIndexOfPropertySection points to the index of currently processing symbol within string.
+        var amountOfCharsUntilEndOfLine: number = 0;
+        const endOfLineSymbol: string = "\n";
+        while (!hasReachedEndOfLine) {
+            let nextChar: string = targetString[amountOfCharsUntilEndOfLine]
+            amountOfCharsUntilEndOfLine++;
+            hasReachedEndOfLine = (nextChar == endOfLineSymbol);
+        }
+        return amountOfCharsUntilEndOfLine;
     }
 
     private surroundListItemsWithCharacter(list: String[], character: String): String[] {

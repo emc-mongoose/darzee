@@ -21,7 +21,8 @@ import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
 })
 export class MongooseSetUpService {
 
-  private readonly DEFAULT_PROMETHEUS_SCRAPING_INTERVAL_SECS: number = 5;
+  private readonly DEFAULT_DATA_SCRAPE_INTERVAL_SECS: number = 5;
+  private readonly DEFAULT_DATA_SCRAPE_TIMEOUT_SECS: number = 30;
 
   private mongooseSetupInfoModel: MongooseSetupInfoModel;
 
@@ -148,8 +149,12 @@ export class MongooseSetUpService {
       // NOTE: Appending configuration with added Mongoose nodes.
       var updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(mongooseRunNodes);
 
-      // NOTE: Changing scraping interval within Prometheus configuration in order to exclude connection-related errors.
-      updatedConfiguration = prometheusConfigurationEditor.changeScrapeInterval(updatedConfiguration, this.DEFAULT_PROMETHEUS_SCRAPING_INTERVAL_SECS);
+      // NOTE: changing scrape interval in order to provide better response for elements that are dependent ...
+      // ... on the metrics.
+      updatedConfiguration = prometheusConfigurationEditor.changeScrapeInterval(updatedConfiguration, this.DEFAULT_DATA_SCRAPE_INTERVAL_SECS);
+
+      // NOTE: Changing scrape timeout within Prometheus configuration in order to exclude connection-related errors.
+      updatedConfiguration = prometheusConfigurationEditor.changeScrapeTimeout(updatedConfiguration, this.DEFAULT_DATA_SCRAPE_TIMEOUT_SECS);
 
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
