@@ -5,18 +5,12 @@ metadata:
     app: darzee
   name: darzee-svc
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
-    # NOTE: Node is available through this port.
-    - nodePort: 9991
     # NOTE: Exposting ports
-    - name: http-port
-      port: 8080
-      protocol: TCP
+    - port: 8080
       targetPort: 8080
-    - name: prometheus-port
-      port: 9090
-      protocol: TCP
+    - port: 9090
       targetPort: 9090
   selector:
     app: darzee
