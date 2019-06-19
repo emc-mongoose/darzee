@@ -1,5 +1,3 @@
-import { start } from "repl";
-
 // NOTE: class should edit Prometheus' configuration. It was created because ...
 // ... I haven't found a good TypeScript-cpmpatible library to parse .yml file. 
 

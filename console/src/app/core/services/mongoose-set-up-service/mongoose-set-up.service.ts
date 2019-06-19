@@ -146,7 +146,7 @@ export class MongooseSetUpService {
       let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
       
       // NOTE: Appending configuration with added Mongoose nodes.
-      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(mongooseRunNodes);
+      var updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(mongooseRunNodes);
 
       // NOTE: Changing scraping interval within Prometheus configuration in order to exclude connection-related errors.
       updatedConfiguration = prometheusConfigurationEditor.changeScrapeInterval(updatedConfiguration, this.DEFAULT_PROMETHEUS_SCRAPING_INTERVAL_SECS);
