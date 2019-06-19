@@ -24,12 +24,12 @@ spec:
           containerPort: 9090
         env:
         - name: NODE_JS_SERVER_FOLDER_PATH
-          value: /prometheus/prometheus/server/
+          value: "/prometheus/prometheus/server/"
         - name: PROMETHEUS_CONFIGURATION_FOLDER_PATH
-          value: /prometheus/prometheus/server/
+          value: "/prometheus/prometheus/server/"
         - name: PROMETHEUS_CONFIGURATION_PATH
-          value: /prometheus/prometheus/server/prometheus.yml
+          value: "/prometheus/prometheus/server/prometheus.yml"
         - name: DARZEE_PORT
-          value: 8080
+          value: "8080"
         - name: PROMETHEUS_PORT
-          value: 9090
+          value: "9090"
