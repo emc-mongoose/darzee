@@ -1,9 +1,12 @@
+import { start } from "repl";
+
 // NOTE: class should edit Prometheus' configuration. It was created because ...
 // ... I haven't found a good TypeScript-cpmpatible library to parse .yml file. 
 
 export class PrometheusConfigurationEditor {
 
     private readonly TARGETS_PROPERTY_NAME = "targets";
+    private readonly SCRAPE_INTERVAL_PROPERTY_NAME = "scrape_interval";
     private readonly TARGET_LIST_ELEMENTS_SURROUNDING_CHARACTERS = "'";
 
     public prometheusConfigurationFileContent: Object;
@@ -16,13 +19,18 @@ export class PrometheusConfigurationEditor {
 
     // MARK: - Public 
 
+    /**
+     * Appends Prometheus' configuration with new targets.
+     * @param targets targets to be appened into the configuration.
+     * @returns appended configuration.
+     */
     public addTargetsToConfiguration(targets: String[]): String {
         var processingConfiguration: String = this.prometheusConfigurationFileContent.toString();
 
-        let startIndexOfTargetsSection = processingConfiguration.toString().lastIndexOf(this.TARGETS_PROPERTY_NAME);
+        let startIndexOfTargetsSection: number = processingConfiguration.toString().lastIndexOf(this.TARGETS_PROPERTY_NAME);
 
-        let isEndOfLine = false;
-        var endIndexOfTargetsSection = startIndexOfTargetsSection;
+        let isEndOfLine: boolean = false;
+        var endIndexOfTargetsSection: number = startIndexOfTargetsSection;
         while (!isEndOfLine) {
             let nextChar = processingConfiguration[endIndexOfTargetsSection + 1];
             endIndexOfTargetsSection++;
@@ -37,7 +45,48 @@ export class PrometheusConfigurationEditor {
         return finalConfiguration;
     }
 
+    public changeScrapeInterval(prometheusConfiguration: String, periodOfScrapeSecs: number): String {
+        const periodOfScrapeSecondsPropertyValue: string = `${periodOfScrapeSecs}s`;
+        return this.changeFirstFoundPropertyValue(prometheusConfiguration, this.SCRAPE_INTERVAL_PROPERTY_NAME, periodOfScrapeSecondsPropertyValue);
+    }
+
+
     // MARK: - Private 
+
+    /**
+     * Changes value of property that was first to be found by provided name.
+     * @param prometheusConfiguration processing Prometheus configuration.
+     * @param propertyName name of property for chaning. IMPORTANT: Name should be provided WITH the postfix if needed. (e.g.: "10s" should be provided as "10s", not just "10").
+     * @param propertyValue updated property value.
+     * @returns configuration with updated property value.
+     */
+    private changeFirstFoundPropertyValue(prometheusConfiguration: String, propertyName: string, propertyValue: string): String {
+        const startIndexOfPropetySection: number = prometheusConfiguration.toString().lastIndexOf(propertyName);
+
+        var hasReachedEndOfLine: boolean = false;
+        // NOTE: currentIndexOfPropertySection points to the index of currently processing symbol within string.
+        var endIndexOfPropertySection: number = startIndexOfPropetySection;
+        const endOfLineSymbol: string = "\n";
+        while (!hasReachedEndOfLine) {
+            let nextChar: string = prometheusConfiguration[endIndexOfPropertySection]
+            endIndexOfPropertySection++;
+            hasReachedEndOfLine = (nextChar == endOfLineSymbol);
+        }
+
+        // NOTE: Inserting updated value between startIndex and endIndex.
+        var updatedConfiguration: string = prometheusConfiguration.substring(0, startIndexOfPropetySection);
+
+        const newPropertyValue: string = `${propertyName}:${propertyValue}\n`;
+        updatedConfiguration += newPropertyValue;
+
+        const lastIndexOfProvidedConfiguration: number = prometheusConfiguration.length;
+        const secondPartOfConfiguration: string = prometheusConfiguration.substring(endIndexOfPropertySection, lastIndexOfProvidedConfiguration);
+
+        // NOTE: Appending updated part with the rest of the configuration.
+        updatedConfiguration += secondPartOfConfiguration;
+        console.log(`Provided configuration: ${prometheusConfiguration}. Updated configuration: ${updatedConfiguration}`);
+        return updatedConfiguration;
+    }
 
     private surroundListItemsWithCharacter(list: String[], character: String): String[] {
         list.forEach((target, index) => {

@@ -21,6 +21,8 @@ import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
 })
 export class MongooseSetUpService {
 
+  private readonly DEFAULT_PROMETHEUS_SCRAPING_INTERVAL_SECS: number = 5;
+
   private mongooseSetupInfoModel: MongooseSetupInfoModel;
 
   constructor(private controlApiService: ControlApiService,
@@ -132,11 +134,23 @@ export class MongooseSetUpService {
   }
 
 
+  /**
+   * Appends Prometheus' configuration with new targets.
+   * @param prometheusAddress address of Prometheus' host, IPv4.
+   * @param prometheusPort Prometheus'-deployment port. 
+   * @param mongooseRunNodes Nodes that should be added to "targets" list.
+   */
   private addNodesToPrometheusTargets(prometheusAddress: string, prometheusPort: string, mongooseRunNodes: string[]) {
     // NOTE: An initial fetch of Prometheus configuration.
     this.http.get(environment.prometheusConfigPath, { responseType: 'text' }).subscribe((configurationFileContent: Object) => {
       let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
+      
+      // NOTE: Appending configuration with added Mongoose nodes.
       let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(mongooseRunNodes);
+
+      // NOTE: Changing scraping interval within Prometheus configuration in order to exclude connection-related errors.
+      updatedConfiguration = prometheusConfigurationEditor.changeScrapeInterval(updatedConfiguration, this.DEFAULT_PROMETHEUS_SCRAPING_INTERVAL_SECS);
+
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
       this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => {
