@@ -3,12 +3,13 @@
 
 export class PrometheusConfigurationEditor {
 
+    private readonly JOBNAME_PROPERTY: string = "job_name";
+    private readonly PROMETHEUS_JOBNAME: string = "prometheus";
     private readonly TARGETS_PROPERTY_NAME: string = "targets";
     private readonly SCRAPE_INTERVAL_PROPERTY_NAME: string = "scrape_interval";
     private readonly SCRAPE_TIMEOUT_PROPERTY_NAME: string = "scrape_timeout";
 
     private readonly CONFIGURATION_FIELD_AND_VALUE_DELIMITER: string = "  ";
-    
     private readonly TARGET_LIST_ELEMENTS_SURROUNDING_CHARACTERS = "'";
 
     public prometheusConfigurationFileContent: Object;
@@ -56,7 +57,7 @@ export class PrometheusConfigurationEditor {
      */
     public changeScrapeInterval(prometheusConfiguration: String, periodOfScrapeSecs: number): String {
         const periodOfScrapeSecondsPropertyValue: string = `${periodOfScrapeSecs}s`;
-        return this.changeFirstFoundPropertyValue(prometheusConfiguration, this.SCRAPE_INTERVAL_PROPERTY_NAME, periodOfScrapeSecondsPropertyValue);
+        return this.changeLastFoundPropertyValue(prometheusConfiguration, this.SCRAPE_INTERVAL_PROPERTY_NAME, periodOfScrapeSecondsPropertyValue);
     }
 
 
@@ -69,20 +70,19 @@ export class PrometheusConfigurationEditor {
      */
     public changeScrapeTimeout(prometheusConfiguration: String, scrapeTimeoutSecs: number): String {
         const scrapeTimeoutSecondsPropertyValue: string = `${scrapeTimeoutSecs}s`;
-        return this.changeFirstFoundPropertyValue(prometheusConfiguration, this.SCRAPE_TIMEOUT_PROPERTY_NAME, scrapeTimeoutSecondsPropertyValue);
+        return this.changeLastFoundPropertyValue(prometheusConfiguration, this.SCRAPE_TIMEOUT_PROPERTY_NAME, scrapeTimeoutSecondsPropertyValue);
     }
-
 
     // MARK: - Private 
 
     /**
-     * Changes value of property that was first to be found by provided name.
+     * Changes value of last found property with a specified name.
      * @param prometheusConfiguration processing Prometheus configuration.
      * @param propertyName name of property for chaning. IMPORTANT: Name should be provided WITH the postfix if needed. (e.g.: "10s" should be provided as "10s", not just "10").
      * @param propertyValue updated property value.
      * @returns configuration with updated property value.
      */
-    private changeFirstFoundPropertyValue(prometheusConfiguration: String, propertyName: string, propertyValue: string): String {
+    private changeLastFoundPropertyValue(prometheusConfiguration: String, propertyName: string, propertyValue: string): String {
         const startIndexOfPropetySection: number = prometheusConfiguration.toString().lastIndexOf(propertyName);
 
         var hasReachedEndOfLine: boolean = false;
