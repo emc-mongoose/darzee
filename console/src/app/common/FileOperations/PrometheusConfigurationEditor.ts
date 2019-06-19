@@ -5,6 +5,8 @@ export class PrometheusConfigurationEditor {
 
     private readonly TARGETS_PROPERTY_NAME: string = "targets";
     private readonly SCRAPE_INTERVAL_PROPERTY_NAME: string = "scrape_interval";
+    private readonly SCRAPE_TIMEOUT_PROPERTY_NAME: string = "scrape_timeout";
+
     private readonly CONFIGURATION_FIELD_AND_VALUE_DELIMITER: string = "  ";
     
     private readonly TARGET_LIST_ELEMENTS_SURROUNDING_CHARACTERS = "'";
@@ -45,9 +47,29 @@ export class PrometheusConfigurationEditor {
         return finalConfiguration;
     }
 
+    /**
+     * Changes scrape interval in Prometheus' configuration. 
+     * Note: it changes the scrape interval value only within the first found field since it's usually global.
+     * @param prometheusConfiguration Prometheus' configuration.
+     * @param periodOfScrapeSecs Period of data scraping to be set into the configuration.
+     * @returns updated Prometheus configuration.
+     */
     public changeScrapeInterval(prometheusConfiguration: String, periodOfScrapeSecs: number): String {
         const periodOfScrapeSecondsPropertyValue: string = `${periodOfScrapeSecs}s`;
         return this.changeFirstFoundPropertyValue(prometheusConfiguration, this.SCRAPE_INTERVAL_PROPERTY_NAME, periodOfScrapeSecondsPropertyValue);
+    }
+
+
+    /**
+     * Changes scrape timeout in Prometheus' configuration. 
+     * Note: it changes the scrape interval value only within the first found field since it's usually global.
+     * @param prometheusConfiguration Prometheus' configuration.
+     * @param scrapeTimeoutSecs Period of data scrape request timeout to be set into the configuration.
+     * @returns updated Prometheus configuration.
+     */
+    public changeScrapeTimeout(prometheusConfiguration: String, scrapeTimeoutSecs: number): String {
+        const scrapeTimeoutSecondsPropertyValue: string = `${scrapeTimeoutSecs}s`;
+        return this.changeFirstFoundPropertyValue(prometheusConfiguration, this.SCRAPE_TIMEOUT_PROPERTY_NAME, scrapeTimeoutSecondsPropertyValue);
     }
 
 
