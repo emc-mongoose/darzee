@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mongoose-base
+  name: mongoose-base-svc
+spec:
+  ports:
+    # NOTE: Exposting ports
+    - name: nmongoose-base-port
+      port: 9090
+      targetPort: 9090
+  selector:
+    app: darzee
+  type: LoadBalancer
+  sessionAffinity: None
