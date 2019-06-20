@@ -21,8 +21,13 @@ import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
 })
 export class MongooseSetUpService {
 
-  private readonly DEFAULT_DATA_SCRAPE_INTERVAL_SECS: number = 5;
-  private readonly DEFAULT_DATA_SCRAPE_TIMEOUT_SECS: number = 30;
+  /**
+   * @param DEFAULT_DATA_SCRAPE_INTERVAL_SECS period of data scraping.
+   * @param DEFAULT_DATA_SCRAPE_TIMEOUT_SECS timeout for data scraping.
+   * ...  WARNING: Timeout should be less or eequal than scrape interval.
+   */
+  private readonly DEFAULT_DATA_SCRAPE_INTERVAL_SECS: number = 8;
+  private readonly DEFAULT_DATA_SCRAPE_TIMEOUT_SECS: number = 7;
 
   private mongooseSetupInfoModel: MongooseSetupInfoModel;
 
