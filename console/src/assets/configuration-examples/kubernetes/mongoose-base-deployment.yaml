@@ -2,20 +2,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: mongoose-base
-  name: mongoose-base-dc
+    app: mongoose-base-deployment-1
+  name: mongoose-base-dc-1
 spec:
   selector:
     matchLabels:
-      app: mongoose-base
+      app: mongoose-base-deployment-1
   replicas: 1 
   template:
     metadata:
       labels:
-        app: mongoose-base
+        app: mongoose-base-deployment-1
     spec:
       containers:
-      - name: mongoose-base-1
+      - name: mongoose-base-1g
         image: emcmongoose/mongoose-base
         args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9991, --load-step-node-port=1091]
 

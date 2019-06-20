@@ -15,6 +15,7 @@ import { MonitoringApiService } from "src/app/core/services/monitoring-api/monit
 import { DateFormatPipe } from "src/app/common/date-format-pipe";
 import { LocalStorageService } from "src/app/core/services/local-storage-service/local-storage.service";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     // NOTE: Dependencies
     NgJsonEditorModule,
     CodemirrorModule,
-    NgbModule
+    NgbModule,
+    ProgressbarModule.forRoot()
   ],
   declarations: [
     MongooseSetUpComponent,
