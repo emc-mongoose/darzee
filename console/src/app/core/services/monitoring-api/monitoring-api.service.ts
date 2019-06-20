@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, of, TimeoutError } from "rxjs";
 import { MongooseRunRecord } from "../../models/run-record.model";
 import { PrometheusApiService } from "../prometheus-api/prometheus-api.service";
 import { MongooseRunStatus } from "../../models/mongoose-run-status";
-import { mergeMap, map, catchError, share, tap } from "rxjs/operators";
+import { mergeMap, map, catchError, share, tap, timeout } from "rxjs/operators";
 import { MongooseMetrics } from "../mongoose-api-models/MongooseMetrics";
 import { MongooseApi } from "../mongoose-api-models/MongooseApi.model";
 import { HttpClient } from "@angular/common/http";
@@ -24,6 +24,7 @@ import { MongooseMetric } from "../../models/chart/mongoose-metric.model";
 })
 export class MonitoringApiService {
 
+  private readonly DEFAULT_TIMEOUT_MILLISECS: number = 4500; 
   private currentMongooseRunRecords$: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
 
   // NOTE: availableLogs is a list of logs provided by Mongoose. Key is REST API's endpoint for fetching the log, ...
@@ -54,7 +55,12 @@ export class MonitoringApiService {
         return mongooseRunStatus;
       })
     ).pipe(
-      share()
+      timeout(this.DEFAULT_TIMEOUT_MILLISECS),
+      share(),
+      catchError(error => {
+        console.log(`Request for Mongoose node's status at ${mongooseRunEntryNode.getEntryNodeAddress()} has timed out. Returning status "finished".`);
+        return of (MongooseRunStatus.Finished);
+      })
     )
   }
 
