@@ -119,7 +119,8 @@ export class ControlApiService {
         let responseStatusCode = runStatusResponse.status;
 
         if (responseStatusCode == undefined) {
-          return MongooseRunStatus.Unavailable;
+          // TODO: Maybe change status to unavailable here? 
+          return MongooseRunStatus.Finished;
         }
 
         let isRunActive: boolean = (responseStatusCode == Constants.HttpStatus.OK);
