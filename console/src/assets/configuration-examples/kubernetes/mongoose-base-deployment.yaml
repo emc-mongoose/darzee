@@ -17,22 +17,22 @@ spec:
       containers:
       - name: mongoose-base-1
         image: emcmongoose/mongoose-base
-        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9991, --load-step-node-port=9991]
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9991, --load-step-node-port=1091]
 
       - name: mongoose-base-2
         image: emcmongoose/mongoose-base
-        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9992, --load-step-node-port=9992]
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9992, --load-step-node-port=1092]
 
       - name: mongoose-base-3
         image: emcmongoose/mongoose-base
-        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9993, --load-step-node-port=9993]
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9993, --load-step-node-port=1093]
      
       - name: mongoose-base-4
         image: emcmongoose/mongoose-base
-        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9994, --load-step-node-port=9994]
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9994, --load-step-node-port=1094]
       
       - name: mongoose-base-5
         image: emcmongoose/mongoose-base
-        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9999, --load-step-node-port=9999]
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9999, --load-step-node-port=1099]
 
        
