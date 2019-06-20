@@ -15,8 +15,25 @@ spec:
         app: mongoose-base
     spec:
       containers:
-      - name: mongoose-base
+      - name: mongoose-base-1
         image: emcmongoose/mongoose-base
-        args: [--run-node, --storage-driver-type=dummy-mock]
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9991]
+
+      - name: mongoose-base-2
+        image: emcmongoose/mongoose-base
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9992]
+
+      - name: mongoose-base-3
+        image: emcmongoose/mongoose-base
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9993]
+     
+      - name: mongoose-base-4
+        image: emcmongoose/mongoose-base
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9994]
+      
+      - name: mongoose-base-5
+        image: emcmongoose/mongoose-base
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9999]
+      
 
        
