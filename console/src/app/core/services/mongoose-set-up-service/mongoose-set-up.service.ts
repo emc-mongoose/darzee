@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { PrometheusConfigurationEditor } from 'src/app/common/FileOperations/PrometheusConfigurationEditor';
 import { FileFormat } from 'src/app/common/FileOperations/FileFormat';
 import { ContainerServerService } from 'src/app/core/services/container-server/container-server-service';
-import { map } from 'rxjs/operators';
+import { map, timeout } from 'rxjs/operators';
 import { MongooseRunNode } from '../../models/mongoose-run-node.model';
 import { ResourceLocatorType } from '../../models/address-type';
 import { MongooseConfigurationParser } from '../../models/mongoose-configuration-parser';
@@ -94,7 +94,10 @@ export class MongooseSetUpService {
 
 
   public isMongooseNodeActive(mongooseNodeAddress: string): Observable<boolean> {
-    return this.monitoringApiService.isMongooseRunNodeActive(mongooseNodeAddress);
+    const timeoutMilliseconds: number = 2500; // NOTE: Timeout is set to 2.5 seconds 
+    return this.monitoringApiService.isMongooseRunNodeActive(mongooseNodeAddress).pipe(
+      timeout(timeoutMilliseconds)
+    );
   }
 
   // NOTE: Adding Mongoose nodes (while node selection)

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Constants } from "src/app/common/constants";
-import { BehaviorSubject, Observable, of } from "rxjs";
+import { BehaviorSubject, Observable, of, TimeoutError } from "rxjs";
 import { MongooseRunRecord } from "../../models/run-record.model";
 import { PrometheusApiService } from "../prometheus-api/prometheus-api.service";
 import { MongooseRunStatus } from "../../models/mongoose-run-status";
@@ -164,6 +164,9 @@ export class MonitoringApiService {
         return true;
       }),
       catchError((error, caughtError) => {
+        if (error instanceof TimeoutError) { 
+          console.log(`Request on Mongoose node ${runNodeAddress} has timed out.`);
+        }
         return of(false);
       })
     );
