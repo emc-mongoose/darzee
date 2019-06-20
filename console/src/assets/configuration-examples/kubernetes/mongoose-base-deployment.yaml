@@ -14,7 +14,7 @@ spec:
       labels:
         app: mongoose-base
     spec:
-            containers:
+      containers:
       - name: mongoose-base-1
         image: emcmongoose/mongoose-base
         args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9991, --load-step-node-port=9991]
