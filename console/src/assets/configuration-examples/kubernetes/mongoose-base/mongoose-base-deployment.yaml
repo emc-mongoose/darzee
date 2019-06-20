@@ -1,18 +1,21 @@
+# NOTE: This Kubernetes object was created in testing purposes. ...
+# ... The configuration may be not suitable for you.
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: mongoose-base-deployment-2
-  name: mongoose-base-dc-2
+    app: mongoose-base
+  name: mongoose-base-dc
 spec:
   selector:
     matchLabels:
-      app: mongoose-base-deployment-2
+      app: mongoose-base
   replicas: 1 
   template:
     metadata:
       labels:
-        app: mongoose-base-deployment-2
+        app: mongoose-base
     spec:
       containers:
       - name: mongoose-base-1

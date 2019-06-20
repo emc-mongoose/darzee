@@ -1,18 +1,21 @@
+# NOTE: This Kubernetes object was created in testing purposes. ...
+# ... The configuration may be not suitable for you.
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: mongoose-base
-  name: mongoose-base-dc
+    app: mongoose-base-deployment-2
+  name: mongoose-base-dc-2
 spec:
   selector:
     matchLabels:
-      app: mongoose-base
+      app: mongoose-base-deployment-2
   replicas: 1 
   template:
     metadata:
       labels:
-        app: mongoose-base
+        app: mongoose-base-deployment-2
     spec:
       containers:
       - name: mongoose-base-1
@@ -34,5 +37,4 @@ spec:
       - name: mongoose-base-5
         image: emcmongoose/mongoose-base
         args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9999, --load-step-node-port=1099]
-
-       
+      

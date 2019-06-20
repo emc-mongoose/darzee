@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mongoose-pravega
+  name: mongoose-pravega-dc
+spec:
+  selector:
+    matchLabels:
+      app: mongoose-pravega
+  replicas: 1 
+  template:
+    metadata:
+      labels:
+        app: mongoose-pravega
+    spec:
+      containers:
+      - name: mongoose-pravega-master
+        image: emcmongoose/mongoose-storage-driver-pravega
+        args: [--run-node, --storage-namespace=mongoose-pravega-scope, --run-port=9999, --load-step-node-port=1099, 
+          # NOTE: storage-net-node-addrs is address of a Pravega controller. ...
+          # ...The one presented in this configuration was hard-coded in test purposes.
+          --storage-net-node-addrs=175.24.45.7]
+      
