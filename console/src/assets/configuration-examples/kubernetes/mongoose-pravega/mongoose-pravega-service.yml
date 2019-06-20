@@ -12,6 +12,6 @@ spec:
       port: 9999
       targetPort: 9999
   selector:
-    app: mongoose-pravega-svc
+    app: mongoose-pravega
   type: LoadBalancer
   sessionAffinity: None
