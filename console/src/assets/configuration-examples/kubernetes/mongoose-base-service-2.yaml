@@ -23,7 +23,7 @@ spec:
       port: 9999
       targetPort: 9999
       
-      - name: nmongoose-base-rmi-1
+    - name: nmongoose-base-rmi-1
       port: 1091
       targetPort: 1091
     - name: nmongoose-base-rmi-2
