@@ -21,6 +21,9 @@ import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
 })
 export class MongooseSetUpService {
 
+  private readonly DEFAULT_DATA_SCRAPE_INTERVAL_SECS: number = 5;
+  private readonly DEFAULT_DATA_SCRAPE_TIMEOUT_SECS: number = 30;
+
   private mongooseSetupInfoModel: MongooseSetupInfoModel;
 
   constructor(private controlApiService: ControlApiService,
@@ -132,11 +135,30 @@ export class MongooseSetUpService {
   }
 
 
+  /**
+   * Appends Prometheus' configuration with new targets.
+   * @param prometheusAddress address of Prometheus' host, IPv4.
+   * @param prometheusPort Prometheus'-deployment port. 
+   * @param mongooseRunNodes Nodes that should be added to "targets" list.
+   */
   private addNodesToPrometheusTargets(prometheusAddress: string, prometheusPort: string, mongooseRunNodes: string[]) {
     // NOTE: An initial fetch of Prometheus configuration.
     this.http.get(environment.prometheusConfigPath, { responseType: 'text' }).subscribe((configurationFileContent: Object) => {
       let prometheusConfigurationEditor: PrometheusConfigurationEditor = new PrometheusConfigurationEditor(configurationFileContent);
-      let updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(mongooseRunNodes);
+
+      // NOTE: Appending configuration with added Mongoose nodes.
+      var updatedConfiguration = prometheusConfigurationEditor.addTargetsToConfiguration(mongooseRunNodes);
+      console.log(`Provided configuration: ${updatedConfiguration}`);
+
+      // NOTE: changing scrape interval in order to provide better response for elements that are dependent ...
+      // ... on the metrics.
+      updatedConfiguration = prometheusConfigurationEditor.changeScrapeInterval(updatedConfiguration, this.DEFAULT_DATA_SCRAPE_INTERVAL_SECS);
+
+      // NOTE: Changing scrape timeout within Prometheus configuration in order to exclude connection-related errors.
+      updatedConfiguration = prometheusConfigurationEditor.changeScrapeTimeout(updatedConfiguration, this.DEFAULT_DATA_SCRAPE_TIMEOUT_SECS);
+
+      console.log(`\n ######## Updated configuration: ${updatedConfiguration}`);
+
       // NOTE: Saving prometheus configuration in .yml file. 
       let prometheusConfigFileName = `${Constants.FileNames.PROMETHEUS_CONFIGURATION}.${FileFormat.YML}`;
       this.containerServerService.saveFile(prometheusConfigFileName, updatedConfiguration as string).subscribe(response => {

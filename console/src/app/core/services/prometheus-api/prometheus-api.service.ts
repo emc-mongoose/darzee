@@ -366,7 +366,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     var currentHostAddress: string = this.containerServerService.getContainerServicerAddressFromAddressLine();
 
     const hostAddressContainsHttpPrefix: boolean = currentHostAddress.includes(Constants.Http.HTTP_PREFIX);
-    if (hostAddressContainsHttpPrefix) { 
+    if (hostAddressContainsHttpPrefix) {
       // NOTE: Pruning HTTP prefix for easier parsing.
       currentHostAddress = HttpUtils.pruneHttpPrefixFromAddress(currentHostAddress);
     }
