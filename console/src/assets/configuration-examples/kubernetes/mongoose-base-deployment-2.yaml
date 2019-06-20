@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: mongoose-base-2
-  name: mongoose-base-dc
+  name: mongoose-base-dc-2
 spec:
   selector:
     matchLabels:
@@ -35,5 +35,3 @@ spec:
         image: emcmongoose/mongoose-base
         args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9999, --load-step-node-port=9999]
       
-
-       

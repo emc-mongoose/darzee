@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: mongoose-base-2
-  name: mongoose-base-svc
+  name: mongoose-base-svc-2
 spec:
   ports:
     # NOTE: Exposting ports
