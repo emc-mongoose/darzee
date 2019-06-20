@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: mongoose-base-2
+    app: mongoose-base-deployment-2
   name: mongoose-base-svc-2
 spec:
   ports:
@@ -39,6 +39,6 @@ spec:
       port: 1099
       targetPort: 1099
   selector:
-    app: mongoose-base-2
+    app: mongoose-base-deployment-2
   type: LoadBalancer
   sessionAffinity: None
