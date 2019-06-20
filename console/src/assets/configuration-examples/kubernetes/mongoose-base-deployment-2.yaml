@@ -2,17 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: mongoose-base-2
+    app: mongoose-base-deployment-2
   name: mongoose-base-dc-2
 spec:
   selector:
     matchLabels:
-      app: mongoose-base-2
+      app: mongoose-base-deployment-2
   replicas: 1 
   template:
     metadata:
       labels:
-        app: mongoose-base-2
+        app: mongoose-base-deployment-2
     spec:
       containers:
       - name: mongoose-base-1
