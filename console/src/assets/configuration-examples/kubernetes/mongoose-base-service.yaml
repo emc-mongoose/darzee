@@ -8,8 +8,8 @@ spec:
   ports:
     # NOTE: Exposting ports
     - name: nmongoose-base-port
-      port: 9090
-      targetPort: 9090
+      port: 9999
+      targetPort: 9999
   selector:
     app: darzee
   type: LoadBalancer
