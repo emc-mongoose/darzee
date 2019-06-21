@@ -47,9 +47,12 @@ export class PrometheusConfigurationEditor {
        
         // NOTE: Temp-fix in order to retain ALL scraped Mongoose's nodes.
         const targetListEndSymbol: string = "]";
-        const insertingTargetsValue: string = this.getUpdatedTargetsValue(targets).replace(targetListEndSymbol, ",").replace(targetListBeginSymbol, ","); // NOTE: Returns "targets: [...]";
-       
-        firstPartOfConfiguration += insertingTargetsValue;
+        var insertingTargetsValue: string = this.getUpdatedTargetsValue(targets).replace(targetListEndSymbol, ",").replace(targetListBeginSymbol, ","); // NOTE: Returns "targets: [...]";
+        
+        const delimiter: string = `,`;
+        insertingTargetsValue += delimiter;
+        console.log(`insertingTargetsValue: ${JSON.stringify(insertingTargetsValue)}`)
+        firstPartOfConfiguration += insertingTargetsValue
         let secondPartOfConfiguration: string = processingConfiguration.substring(endIndexOfTargetsSection, processingConfiguration.length);
         console.log(`[add targets] secondPartOfConfiguration: ${secondPartOfConfiguration}`)
         let finalConfiguration = firstPartOfConfiguration + secondPartOfConfiguration;
@@ -211,6 +214,6 @@ export class PrometheusConfigurationEditor {
         targets = this.surroundListItemsWithCharacter(targets, this.TARGET_LIST_ELEMENTS_SURROUNDING_CHARACTERS);
         return `${targets}`; 
         // NOTE: Targets property and value must retain delimiter. Prometheus will crash otherwise.
-        return `${this.TARGETS_PROPERTY_NAME}:${this.CONFIGURATION_FIELD_AND_VALUE_DELIMITER}[${targets}]`
+        // return `${this.TARGETS_PROPERTY_NAME}:${this.CONFIGURATION_FIELD_AND_VALUE_DELIMITER}[${targets}]`
     }
 }
