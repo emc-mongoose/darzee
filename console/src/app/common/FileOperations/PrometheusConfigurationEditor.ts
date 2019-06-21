@@ -32,16 +32,26 @@ export class PrometheusConfigurationEditor {
         let startIndexOfTargetsSection: number = processingConfiguration.toString().lastIndexOf(this.TARGETS_PROPERTY_NAME);
 
         let isEndOfLine: boolean = false;
+        const targetListBeginSymbol: string = "[";
         var endIndexOfTargetsSection: number = startIndexOfTargetsSection;
+        var amountOfCharsUntilTargetsListStart: number = 0;
         while (!isEndOfLine) {
-            let nextChar = processingConfiguration[endIndexOfTargetsSection + 1];
             endIndexOfTargetsSection++;
-            isEndOfLine = (nextChar == "\n");
+            let currentChar: string = processingConfiguration[endIndexOfTargetsSection];
+            isEndOfLine = ((currentChar == targetListBeginSymbol));
         }
+        endIndexOfTargetsSection++;
 
-        let firstPartOfConfiguration = processingConfiguration.substring(0, startIndexOfTargetsSection);
-        firstPartOfConfiguration += this.getUpdatedTargetsValue(targets);
-        let secondPartOfConfiguration = processingConfiguration.substring(endIndexOfTargetsSection, processingConfiguration.length);
+        let firstPartOfConfiguration: string = processingConfiguration.substring(0, endIndexOfTargetsSection);
+        console.log(`[add targets] firstPartOfConfiguration: ${firstPartOfConfiguration}`)
+       
+        // NOTE: Temp-fix in order to retain ALL scraped Mongoose's nodes.
+        const targetListEndSymbol: string = "]";
+        const insertingTargetsValue: string = this.getUpdatedTargetsValue(targets).replace(targetListEndSymbol, ",").replace(targetListBeginSymbol, ","); // NOTE: Returns "targets: [...]";
+       
+        firstPartOfConfiguration += insertingTargetsValue;
+        let secondPartOfConfiguration: string = processingConfiguration.substring(endIndexOfTargetsSection, processingConfiguration.length);
+        console.log(`[add targets] secondPartOfConfiguration: ${secondPartOfConfiguration}`)
         let finalConfiguration = firstPartOfConfiguration + secondPartOfConfiguration;
 
         return finalConfiguration;
@@ -199,6 +209,7 @@ export class PrometheusConfigurationEditor {
 
     private getUpdatedTargetsValue(targets: String[]): String {
         targets = this.surroundListItemsWithCharacter(targets, this.TARGET_LIST_ELEMENTS_SURROUNDING_CHARACTERS);
+        return `${targets}`; 
         // NOTE: Targets property and value must retain delimiter. Prometheus will crash otherwise.
         return `${this.TARGETS_PROPERTY_NAME}:${this.CONFIGURATION_FIELD_AND_VALUE_DELIMITER}[${targets}]`
     }

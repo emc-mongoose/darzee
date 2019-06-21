@@ -56,7 +56,8 @@ export class MonitoringApiService {
       })
     ).pipe(
       timeout(this.DEFAULT_TIMEOUT_MILLISECS),
-      share(),
+      share()
+    ).pipe(
       catchError(error => {
         console.log(`Request for Mongoose node's status at ${mongooseRunEntryNode.getEntryNodeAddress()} has timed out. Returning status "finished".`);
         return of (MongooseRunStatus.Finished);
