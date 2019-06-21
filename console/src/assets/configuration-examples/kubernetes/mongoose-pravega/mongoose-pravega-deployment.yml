@@ -20,5 +20,5 @@ spec:
         args: [--run-node, --storage-namespace=mongoose-pravega-scope, --run-port=9999, --load-step-node-port=1099, 
           # NOTE: storage-net-node-addrs is address of a Pravega controller. ...
           # ...The one presented in this configuration was hard-coded in test purposes.
-          --storage-net-node-addrs=175.24.45.7]
+          --storage-net-node-addrs=175.24.45.7, --load-batch-size=100, --storage-driver-limit-queue-input=10000]
       
