@@ -1,3 +1,7 @@
+# NOTE: The service connects Mongoose's k8s deployment with the outside network. 
+# ... It has been added in test purposes. The connection with the outside world is required for ...
+# ... healthcheck and overall interaction with the UI (Darzee).
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,6 +11,8 @@ metadata:
 spec:
   ports:
     # NOTE: Exposting ports
+
+    # NOTE: Remote API ports 
     - name: nmongoose-base-port-1
       port: 9991
       targetPort: 9991
@@ -23,6 +29,7 @@ spec:
       port: 9999
       targetPort: 9999
       
+    # NOTE: RMI ports
     - name: nmongoose-base-rmi-1
       port: 1091
       targetPort: 1091
