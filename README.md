@@ -31,8 +31,11 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4.2.1.1 [Mongoose base](#4211-mongoose-base)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4.2.1.2 [Mongoose Pravega driver](#4212-mongoose-pravega-driver)<br/>
 5. [Troubleshooting](#5-troubleshooting)<br/>
+&nbsp;&nbsp;5.1 [Prometheus inactivity](#51-prometheus-inactivity)<br/>
+&nbsp;&nbsp;5.2 [Missing load step node address](#52-missing-load-step-node-address)<br/>
+
 6. [Open issues](#6-open-issues)<br/>
-&nbsp;&nbsp;6.1 [Mongoose run logs unavailability](#61-mongoose-run-logs-unavailability)
+&nbsp;&nbsp;6.1 [Mongoose run logs unavailability](#61-mongoose-run-logs-unavailability)<br/>
 
 
 # 1. Overview 
@@ -289,6 +292,7 @@ Mongoose run's table is constructed based on the retrieved data from Prometheus:
 <b>Now</b>: Mongoose run's entry nodes addresses are stored within browser's local storage. It helps to retain the information about entry nodes as long as the local storage not getting cleaned up, yet it'd be saved even if the browser and/or tab has been closed.<br/>
 We need entry node's address in order to get logs via POST request with Mongoose Logs API to its entry node. <br/>
 <b>Problem</b>: while working outside of the browser from which Mongoose run has been launched (other browser, other computer, etc.), the data about run's entry node is missing, thus logs couldn't be gathered via the Logs API.<br/>
+<b>Temporary solution</b>: see [Missing load step node address](#52-missing-load-step-node-address).
 
 Track progress on the issue [here](https://mongoose-issues.atlassian.net/projects/GUI/issues/GUI-137?filter=allissues).
 
