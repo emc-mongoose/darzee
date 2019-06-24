@@ -113,13 +113,14 @@ export class ControlApiService {
       headers: new HttpHeaders(requestRunStatusHeaders),
       observe: 'response' as 'body'
     }
-
+    console.log(`Fetching status for Mongoose run ID ${runEntryNode.getRunId()} on node ${mongooseEntryNodeAddress}`);
     return this.http.get(`http://${mongooseEntryNodeAddress}/${MongooseApi.RunApi.RUN_ENDPOINT}`, runStatusRequestOptions).pipe(
       map((runStatusResponse: any) => {
         let responseStatusCode = runStatusResponse.status;
 
         if (responseStatusCode == undefined) {
-          return MongooseRunStatus.Unavailable;
+          // TODO: Maybe change status to unavailable here? 
+          return MongooseRunStatus.Finished;
         }
 
         let isRunActive: boolean = (responseStatusCode == Constants.HttpStatus.OK);

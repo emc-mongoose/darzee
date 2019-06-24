@@ -1,0 +1,51 @@
+# NOTE: The service connects Mongoose's k8s deployment with the outside network. 
+# ... It has been added in test purposes. The connection with the outside world is required for ...
+# ... healthcheck and overall interaction with the UI (Darzee).
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mongoose-base-deployment-2
+  name: mongoose-base-svc-2
+spec:
+  ports:
+    # NOTE: Exposting ports
+
+    # NOTE: Remote API ports
+    - name: nmongoose-base-port-1
+      port: 9991
+      targetPort: 9991
+    - name: nmongoose-base-port-2
+      port: 9992
+      targetPort: 9992
+    - name: nmongoose-base-port-3
+      port: 9993
+      targetPort: 9993
+    - name: nmongoose-base-port-4
+      port: 9994
+      targetPort: 9994
+    - name: nmongoose-base-port
+      port: 9999
+      targetPort: 9999
+      
+    # NOTE: RMI ports
+    - name: nmongoose-base-rmi-1
+      port: 1091
+      targetPort: 1091
+    - name: nmongoose-base-rmi-2
+      port: 1092
+      targetPort: 1092
+    - name: nmongoose-base-rmi-3
+      port: 1093
+      targetPort: 1093
+    - name: nmongoose-base-rmi-4
+      port: 1094
+      targetPort: 1094
+    - name: nmongoose-base-rmi
+      port: 1099
+      targetPort: 1099
+  selector:
+    app: mongoose-base-deployment-2
+  type: LoadBalancer
+  sessionAffinity: None

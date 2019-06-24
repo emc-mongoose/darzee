@@ -21,12 +21,16 @@ export class MongooseConfigurationParser {
 
         // NOTE: Handling IPv4 addresses.
         const addressAndPortDelimiter: string = ":";
+        // NOTE: Set configuration's RMI port as default for every node.
+        const rmiPort: string = this.getRmiPortFromConfiguration(this.configuration);
         additionalNodes.forEach(node => {
             var nodeAddress = node.getResourceLocation();
-            if (nodeAddress.includes(addressAndPortDelimiter)) { 
-                // NOTE: Pruning Mongoose remote API's port since we'll be using onli RMI.
+            if (nodeAddress.includes(addressAndPortDelimiter)) {
+                // NOTE: Pruning Mongoose remote API's port since we'll be using only RMI.
                 const addressPartIndex: number = 0;
                 nodeAddress = nodeAddress.split(addressAndPortDelimiter)[addressPartIndex];
+                // NOTE: Appending configuration's RMI port to every node.
+                // nodeAddress += `:${rmiPort}`; 
             }
             existingNodesInConfiguration.push(nodeAddress);
         })
@@ -49,6 +53,10 @@ export class MongooseConfigurationParser {
 
     // MARK: - Private 
 
+    /**
+     * Check if additional nodes field exists within given configuration.
+     * @param configuration Mongoose's configuration
+     */
     private isSlaveNodesFieldExisInConfiguration(configuration: any): boolean {
         // NOTE: Check if 'Address' field exists on received Mongoose JSON configuration. 
         // As for 04.03.2019, it's located at load -> step -> node -> addrs
@@ -56,6 +64,27 @@ export class MongooseConfigurationParser {
             (configuration.load.step == undefined) &&
             (configuration.load.step.node == undefined) &&
             (configuration.load.step.node.addrs == undefined));
+    }
+
+
+    /**
+     * RMI is used to run Mongoose in distributed mode.
+     * While POST requests should be sent to remote API port, ...
+     * ... the requests for distributed run should be sent to RMI port.
+     * @param configuration Mongoose's configuration
+     * @returns RMI port from Mongoose configuration.
+     */
+    private getRmiPortFromConfiguration(configuration: any): string {
+        // NOTE: Check if 'Address' field exists on received Mongoose JSON configuration. 
+        // As for 18.06.2019, it's located at load -> step -> node -> addrs
+        const isRmiPortFieldExistWithinConfiguration: boolean = !((configuration.load == undefined) &&
+            (configuration.load.step == undefined) &&
+            (configuration.load.step.node == undefined) &&
+            (configuration.load.step.node.port == undefined));
+        if (!isRmiPortFieldExistWithinConfiguration) {
+            throw new Error(`Unable to find RMI port within given configuration: ${JSON.stringify(configuration)}`)
+        }
+        return configuration.load.step.node.port;
     }
 
 }

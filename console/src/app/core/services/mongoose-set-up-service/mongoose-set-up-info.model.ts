@@ -82,14 +82,16 @@ export class MongooseSetupInfoModel {
         this.runScenario = scenario;
     }
 
+    /**
+     * Adds multiple nodes into Mongoose's run configuration INCLUDING the entry node.
+     * @param runNodesResourceLocations addresses of run nodes.
+     */
     public setRunNodes(runNodesResourceLocations: string[]) {
         runNodesResourceLocations.forEach(runNodeResource => {
             let retrievedRunNode = new MongooseRunNode(runNodeResource, this.DEFAULT_RESOURCE_TYPE_FOR_NODE);
             this.runNodes.push(retrievedRunNode);
         })
     }
-
-   
 
     // MARK: - Public 
 

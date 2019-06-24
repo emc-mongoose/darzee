@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mongoose-pravega
+  name: mongoose-pravega-svc
+spec:
+  ports:
+    # NOTE: Exposting ports
+    - name: mongoose-pravega-port
+    # NOTE: Remote API Port
+      port: 9999
+      targetPort: 9999
+    # MOTE: RMI Port
+    - name: mongoose-pravega-port
+      port: 1099
+      targetPort: 1099
+  selector:
+    app: mongoose-pravega
+  type: LoadBalancer
+  sessionAffinity: None

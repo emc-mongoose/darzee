@@ -61,41 +61,50 @@ node {
 
 task createDockerfile(type: Dockerfile) {
     destFile = project.file('docker/Dockerfile')
-   
-   // NOTE: We're using multistage building to separate containers with code and with production angular-generated files. 
-  
-    // NOTE: Stage 1 - building the angular application (Mongoose Console) 
-    from 'node:8.11.2-alpine as builder'
-    workingDir("/usr/src/app")
-    copyFile("console/package.json", "./")
+
+    // NOTE: Stage 1. Building Angular app in builder
+    from "node:8.11.2-alpine as builder"
+    instruction "WORKDIR /usr/src/app"
+    instruction "COPY console/package.json ./"
     instruction "RUN npm install"
-    copyFile("./console", ".")
+    instruction "COPY ./console ."
+    instruction "RUN npm run build "
 
-    instruction "RUN npm run build"
+    // NOTE: Stage 2 - adding Prometheus into the image
+    from "prom/prometheus as prometheus"
+    instruction "COPY --from=builder /usr/src/app/dist/mongoose-console server"
 
-    // NOTE: Stage 2 - serving the app via Node.js server 
-    from 'node:alpine'
-    // NOTE: Copying the angular-generated files from builder image
-    instruction "COPY --from=builder /usr/src/app/dist/mongoose-console ."
-
-    // NOTE: Serving the app via Node.js server
-    instruction "COPY --from=builder /usr/src/app/server/node-server.js ."
-    
+    /* NOTE: Stage 3. It contains:
+     * Serving the app via NodeJS server
+     * Exposing Prometheus into port 9090
+     */
+    from "node:8.11.2-alpine as server"
+    instruction "COPY --from=prometheus . prometheus"
+    instruction "COPY console/server/node-server.js prometheus/prometheus/server/ "
+    instruction "RUN ls"
+    instruction "RUN cd prometheus/prometheus/server/ "
     instruction "RUN npm install express@'>=3.0.0 <4.0.0' --save"
     instruction "RUN npm install body-parser"
     instruction "RUN npm install cors"
     instruction "RUN npm install shelljs"
     instruction "RUN npm install axios"
-
-    instruction "EXPOSE " + getConsoleConfiurationParameter(DARZEE_CONFIGURATION_NAMES.port)
-    instruction 'CMD [ "node", "node-server.js" ]' 
+    instruction "RUN cd .."
+    instruction "WORKDIR /"
+    instruction "RUN mv /prometheus/etc/prometheus/prometheus.yml /prometheus/prometheus/server/prometheus.yml"
+    instruction "COPY entrypoint.sh entrypoint.sh"
+    instruction "RUN ls"
+    instruction "COPY .env .env"
+    instruction "RUN sed -i 's/\r\$//' entrypoint.sh && chmod +x entrypoint.sh"
+    instruction "EXPOSE 8080 9090"
+    instruction "ENTRYPOINT sh ./entrypoint.sh"
+   
 }
 
 task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
     imageId = darzeeConfiguration.DARZEE_IMAGE_ID
-    tags = [darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':' + getConsoleConfiurationParameter(DARZEE_CONFIGURATION_NAMES.version), darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':latest']
+    tags = [darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':' + getConsoleConfiurationParameter(DARZEE_CONFIGURATION_NAMES.version), darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':testing', darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':kube']
     doLast { 
         clearProductionFiles()
     }
