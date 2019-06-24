@@ -1,3 +1,5 @@
+[![Issue Tracker](https://img.shields.io/badge/Issue-Tracker-red.svg)](https://mongoose-issues.atlassian.net/projects/GUI)
+[![Docker Pulls](https://img.shields.io/docker/pulls/emcmongoose/darzee.svg)](https://hub.docker.com/r/emcmongoose/darzee/)
 # Darzee
 Provides web interface for Mongoose - storage performance testing tool maintained by Dell EMC. 
 
