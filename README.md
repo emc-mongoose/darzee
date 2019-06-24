@@ -31,8 +31,7 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4.2.1.1 [Mongoose base](#4211-mongoose-base)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4.2.1.2 [Mongoose Pravega driver](#4212-mongoose-pravega-driver)<br/>
 5. [Troubleshooting](#5-troubleshooting)<br/>
-&nbsp;&nbsp;5.1 [Running Mongoose on localhost (Mac, Windows)](#51-running-mongoose-on-localhost-mac-windows)<br/>
-5. [Open issues](#6-open-issues)<br/>
+6. [Open issues](#6-open-issues)<br/>
 &nbsp;&nbsp;6.1 [Mongoose run logs unavailability](#61-mongoose-run-logs-unavailability)
 
 
@@ -87,7 +86,7 @@ You could see Mongoose run status or run details by pressing the status icon.
 ![](screenshots/runs-table/run_status_overview.png)
 
 
-By pressing run status icon, you'll be redirected to run statistics screen. See [Mongoose logs](#1421-mongoose-logs), [Mongoose charts](#1422-mongoose-charts)<br/>.
+By pressing run status icon, you'll be redirected to run statistics screen. See [Mongoose logs](#1421-mongoose-logs), [Mongoose charts](#1422-mongoose-charts).<br/>
 
 ### 1.2.2 Mongoose run statistics
 
@@ -176,7 +175,6 @@ Darzee is deploying via docker image. The image contains front-end files, nodeJS
 In order to have the access from outside, NodeJS server should be mapped to port 8080 and Prometheus should be mapped to port 9090:
 ``` 
 $ docker run --env-file .env -p 8080:8080 -p 9090:9090 emcmongoose/darzee
-
 ```
 ### 3.2.2 Run in development mode 
 Darzee has been created with Angular CLI. It could be ran in development mode using the appropriate command: 
@@ -224,7 +222,7 @@ $ bash cd /console/src/assets/configuration-examples/kubernetes/mongoose-base/to
 $ bash chmod +x  create-mongoose-environment.sh
 $ bash ./create-mongoose-environment.sh 
 ```
-This will deploy 2 pods, each of them will contain 5 Mongoose instances. Remote API ports are 9991...9994, 9999, RMI ports are 1091...1094, 1099.
+This will deploy 2 pods, each of them will contain 5 Mongoose instances. <b>Remote API ports are 9991...9994, 9999, RMI ports are 1091...1094, 1099</b>.
 Every one of them are connected to the web outside of k8s cluster via the service. 
 You can get service's external IP via 
 ```
@@ -247,7 +245,7 @@ $ bash chmod +x  create-mongoose-pravega-environment.sh
 $ bash ./create-mongoose-pravega-environment.sh 
 ```
 This will create a deployment and a service. 
-The deployment will contain instance of Mongoose Pravega driver, the service will connect it to the network outside of cluster via port 9999. <br/>
+The deployment will contain instance of Mongoose Pravega driver, the service will connect it to the network outside of cluster via <b>remote API port 9999</b>. <br/>
 Note that in `/console/src/assets/configuration-examples/kubernetes/mongoose-pravega/mongoose-pravega-service.yml`, you should 
 specify a running Pravega controller IP (<b><PRAVEGA_CONTROLLER_IP></b>), otherwise it won't work.
 ```
@@ -270,9 +268,17 @@ $ bash ./delete-mongoose-pravega-environment.sh
 
 # 5. Troubleshooting 
 
-## 5.1 Running Mongoose on localhost (Mac, Windows)
+## 5.1 Prometheus inactivity
 
-See [Using Darzee on Mac or Windows](console/supporting-files/windows-and-mac-support).
+If Darzee's container Prometheus is not active, it's possible to use a custom one with some limitations. <br/>
+It's recommended to restart the image in case of Prometheus inactivity thought.
+![](screenshots/troubleshooting/prometheus-inactivity.png)
+
+## 5.2 Missing load step node address
+
+In case data for the load step is fetched from the Prometheus, but its IP address hasn't been found, it's possible to write it from the UI.
+![](screenshots/troubleshooting/mongoose-node-inactivity.png)
+
 
 # 6. Open issues 
 We're constantly working on making the UI and Mongoose project overall better. 
