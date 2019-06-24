@@ -158,25 +158,32 @@ To implement this, we're using internal container volume.
 ### 3.1.1 Build docker image 
 
 Docker image is being builted via Gradle. To build Docker image, use: 
-> $ ./gradlew buildImage
+``` 
+$ ./gradlew buildImage
+```
 
 ### 3.1.2 Build project 
 Darzee has been created with Angular 7.0. You could build it just like any Angular app. 
-> $ npm install
-> $ ng build 
+```
+$ npm install
+$ ng build 
+```
 
 ## 3.2 Run 
 
 ### 3.2.1 Run via docker
 Darzee is deploying via docker image. The image contains front-end files, nodeJS server to serving the app and Prometheus.
 In order to have the access from outside, NodeJS server should be mapped to port 8080 and Prometheus should be mapped to port 9090:
-> $ docker run --env-file .env -p 8080:8080 -p 9090:9090 emcmongoose/darzee
+``` 
+$ docker run --env-file .env -p 8080:8080 -p 9090:9090 emcmongoose/darzee
 
+```
 ### 3.2.2 Run in development mode 
 Darzee has been created with Angular CLI. It could be ran in development mode using the appropriate command: 
-> $ npm install
-> $ ng serve 
-
+```
+$ npm install
+$ ng serve 
+```
 
 # 4. Deployment 
 
