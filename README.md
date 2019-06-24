@@ -8,7 +8,7 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 1. [Overview](#1-overview)<br/>
 &nbsp;&nbsp;1.1 [Launch Mongoose run](#11-launch-mongoose-run)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.1.1 [Nodes selection](#111-nodes-selection)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;1.1.2 [Configuring](#112-configuring)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.1.2 [Configuration](#112-configuration)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.1.3 [Scenario](#113-scenario)<br/>
 &nbsp;&nbsp;1.2 [Monitoring](#12-monitoring)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;1.2.1 [Mongoose runs table](#121-mongoose-runs-table)<br/>
@@ -46,22 +46,20 @@ Darzee lets you configure, run and monitor Mongoose runs.
 ## 1.1 Launch Mongoose run
 
 Mongoose launching process is divided in 3 steps: 
-* nodes selection; 
-* configuration set up; 
-* scenario set up; 
 ![](screenshots/setup/set_up_overview.png)
 
 
 ### 1.1.1 Nodes selection 
 
 ![](screenshots/setup/nodes/nodes-selection.png)
-Mongoose could be launched on multiple nodes. You could add and select nodes on the first step of set up. Added nodes will be remained within the UI. 
+Multiple Mongoose run nodes could be selected. <b>First</b> selected node will be the entry one. <br/>
 
-## 1.1.2 Configuring 
+## 1.1.2 Configuration 
+
 ![](screenshots/setup/configuration/configuration.png)
 
-Configuration is being fetched via Mongoose REST API. You could change it via the UI. 
-The changed configuration would be passed to Mongoose /run POST request as a parameter. 
+Configuration is presented as an editable JSON tree. <br/>
+Initially, the configuration is fetched from the entry node.
 
 ## 1.1.3 Scenario 
 Mongoose's scenarios are written in JavaScript. It's possible to write JavaScript code in the UI using code editor. 
@@ -76,9 +74,9 @@ Discovered Mongoose's runs are displayed within the runs table.
 ![](screenshots/runs-table/run_table_filled.png)
 
 There's 3 possible status of Mongoose runs: 
-* Finished - means Mongoose run has finished and its logs are available; 
-* Running - means Mongoose is still performing the benchmark and results are not yet available. Althought, some of the details are available; 
-* Unavailable - means info about Mongoose run has been found on the server, but the related data is lost or couldn't be loaded. 
+* <p style="color:yellow;">Finished</p> - means Mongoose run has finished and its logs are available; 
+* <p style="color:green;">Running</p> - means Mongoose is still performing the benchmark and results are not yet available. Althought, some of the details are available; 
+* <p style="color:gray;">Unavailable</p> - means info about Mongoose run has been found on the server, but the related data is lost or couldn't be loaded. 
 
 You could see Mongoose run status or run details by pressing the status icon. 
 
@@ -207,7 +205,7 @@ The project contains scripts for deploying predefined Mongoose environment in or
 Mongoose's environments are described via Kubernetes deplyoments. Note that there's 2 type of ports for Mongoose: 
 * <b>Remote API port</b>. You should specify remote API port when adding it into [nodes list](#111-nodes-selection).
 * <b>RMI port</b> (Remote Method Invocation port). You should specify RMI port when adding additional Mongoose nodes in order to run it in distributed mode.
-RMI ports should be specified in [configuration](#112-configuring) (load-step-node-addrs).
+RMI ports should be specified in [configuration](#112-configuration) (load-step-node-addrs).
 
 #### 4.2.1.1 Mongoose base 
 ```
