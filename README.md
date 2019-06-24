@@ -74,9 +74,13 @@ Discovered Mongoose's runs are displayed within the runs table.
 ![](screenshots/runs-table/run_table_filled.png)
 
 There's 3 possible status of Mongoose runs: 
-* <p style="color:yellow;">Finished</p> - means Mongoose run has finished and its logs are available; 
-* <p style="color:green;">Running</p> - means Mongoose is still performing the benchmark and results are not yet available. Althought, some of the details are available; 
-* <p style="color:gray;">Unavailable</p> - means info about Mongoose run has been found on the server, but the related data is lost or couldn't be loaded. 
+
+808080
+	 
+	 
+* ![#29a329](https://placehold.it/15/29a329/000000?text=+) <b>Finished</b> - means Mongoose run has finished and its logs are available; <br/>
+* ![#ffd633](https://placehold.it/15/ffd633/000000?text=+) <b>Running</b> - means Mongoose is still performing the benchmark. Charts will be updated every time Darzee received a new data; <br/>
+* ![#a6a6a6](https://placehold.it/15/a6a6a6/000000?text=+) <b>Unavailable</b> - means info about Mongoose run has been found on the server, but the related data is lost or couldn't be loaded. <br/>
 
 You could see Mongoose run status or run details by pressing the status icon. 
 
