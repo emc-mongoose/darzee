@@ -23,8 +23,13 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 &nbsp;&nbsp;&nbsp;&nbsp;2.3.1 [Network](#231-network)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;2.3.2 [Prometheus](#232-prometheus)<br/>
 &nbsp;&nbsp;2.4 [Other parameters](#24-other-parameters) <br/>
-3. [Build and run](#3-build-and-run)
-4. [Deploying](#4-deploying)
+3. [Build and run](#3-build-and-run)<br/>
+4. [Deployment](#4-deployment)<br/>
+&nbsp;&nbsp;4.1 [Docker](#41-docker)<br/>
+&nbsp;&nbsp;4.2 [Kubernetes](#42-kubernetes)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp; 4.2.1 [Test Darzee in Kubernetes using predefined Mongoose environment](#421-test-darzee-in-kubernetes-using-predefined-mongoose-environment)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4.2.1.1 [Mongoose base](#4211-mongoose-base)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4.2.1.2 [Mongoose Pravega driver](#4212-mongoose-pravega-driver)<br/>
 5. [Troubleshooting](#5-troubleshooting)<br/>
 &nbsp;&nbsp;5.1 [Running Mongoose on localhost (Mac, Windows)](#51-running-mongoose-on-localhost-mac-windows)<br/>
 5. [Open issues](#6-open-issues)<br/>
@@ -171,13 +176,88 @@ Darzee has been created with Angular CLI. It could be ran in development mode us
 > $ ng serve 
 
 
-# 4. Deploying 
+# 4. Deployment 
 
-Mongoose image is being loaded into the [docker hub](https://hub.docker.com/r/emcmongoose/darzee).
 
-* It's possible to push Docker image to docker hub via gradle: 
-> $ docker login
-> $ ./gradlew pushImage 
+## 4.1 Docker
+
+Darzee image is being loaded into the [docker hub](https://hub.docker.com/r/emcmongoose/darzee).
+
+```bash
+docker run \
+    --env-file .env \
+    -p {DARZEE_PORT}:{DARZEE_PORT} \
+    -p {PROMETHEUS_PORT}:{PROMETHEUS_PORT} \
+    emcmongoose/darzee[-<VERSION>] 
+```
+
+## 4.2 Kubernetes
+
+Darzee can be deployed in a [kubernetes](https://kubernetes.io/) cluster. Examples of kubernetes object discription files are in the directory `/console/kubernetes`. <br/>
+In order to connect with the outside network, Darzee uses Kubernetes service `/console/kubernetes/darzee-service.yml`
+
+Run Darzee as a deployment: <br/>
+`$ bash 
+kubectl apply -f /console/kubernetes/darzee-deployment.yml` <br/>
+`$ bash kubectl apply -f /console/kubernetes/darzee-service.yml` <br/>
+
+### 4.2.1 Test Darzee in Kubernetes using predefined Mongoose environment
+
+The project contains scripts for deploying predefined Mongoose environment in order to run the UI. <br/>
+Mongoose's environments are described via Kubernetes deplyoments. Note that there's 2 type of ports for Mongoose: 
+* <b>Remote API port</b>. You should specify remote API port when adding it into [nodes list](#111-nodes-selection).
+* <b>RMI port</b> (Remote Method Invocation port). You should specify RMI port when adding additional Mongoose nodes in order to run it in distributed mode.
+RMI ports should be specified in [configuration](#112-configuring) (load-step-node-addrs).
+
+#### 4.2.1.1 Mongoose base 
+```
+$ bash cd /console/src/assets/configuration-examples/kubernetes/mongoose-base/tools
+$ bash chmod +x  create-mongoose-environment.sh
+$ bash ./create-mongoose-environment.sh 
+```
+This will deploy 2 pods, each of them will contain 5 Mongoose instances. Remote API ports are 9991...9994, 9999, RMI ports are 1091...1094, 1099.
+Every one of them are connected to the web outside of k8s cluster via the service. 
+You can get service's external IP via 
+```
+$ bash kubectl get svc mongoose-base-svc
+$ bash kubectl get svc mongoose-base-svc-2
+```
+Combining external IP with Mongoose ports, you'll get an access to it from the network outside of cluster.
+
+In order to delete the environment, use: 
+```
+$ bash cd /console/src/assets/configuration-examples/kubernetes/mongoose-base/tools
+$ bash chmod +x  delete-mongoose-environment.sh
+$ bash ./delete-mongoose-environment.sh 
+```
+
+#### 4.2.1.2 Mongoose Pravega driver
+```
+$ bash cd /console/src/assets/configuration-examples/kubernetes/mongoose-pravega/tools
+$ bash chmod +x  create-mongoose-pravega-environment.sh
+$ bash ./create-mongoose-pravega-environment.sh 
+```
+This will create a deployment and a service. 
+The deployment will contain instance of Mongoose Pravega driver, the service will connect it to the network outside of cluster via port 9999. <br/>
+Note that in `/console/src/assets/configuration-examples/kubernetes/mongoose-pravega/mongoose-pravega-service.yml`, you should 
+specify a running Pravega controller IP (<b><PRAVEGA_CONTROLLER_IP></b>), otherwise it won't work.
+```
+args: [--run-node, --storage-namespace=mongoose-pravega-scope, --run-port=9999, --load-step-node-port=1099, 
+          --storage-net-node-addrs=<PRAVEGA_CONTROLLER_IP>, --load-batch-size=100, --storage-driver-limit-queue-input=10000]
+```
+
+You can get service's external IP via 
+```
+$ bash kubectl get svc mongoose-pravega-svc
+```
+
+In order to delete the environment, use: 
+```
+$ bash cd /console/src/assets/configuration-examples/kubernetes/mongoose-pravega/tools
+$ bash chmod +x  delete-mongoose-pravega-environment.sh
+$ bash ./delete-mongoose-pravega-environment.sh 
+```
+
 
 # 5. Troubleshooting 
 

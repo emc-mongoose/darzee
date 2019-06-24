@@ -11,6 +11,10 @@ spec:
     # NOTE: Remote API Port
       port: 9999
       targetPort: 9999
+    # MOTE: RMI Port
+    - name: mongoose-pravega-port
+      port: 1099
+      targetPort: 1099
   selector:
     app: mongoose-pravega
   type: LoadBalancer
