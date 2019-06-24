@@ -31,8 +31,9 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 
 # 1. Overview 
 
-Darzee lets you configure, run and monitor Mongoose. It gathers metrics from Prometheus and displays them in an appropriate way (runs table, chart).
+Darzee lets you configure, run and monitor Mongoose runs. 
 ![](screenshots/architecture_overview.png)
+
 
 
 ## 1.1 Launch Mongoose run
@@ -56,11 +57,9 @@ Configuration is being fetched via Mongoose REST API. You could change it via th
 The changed configuration would be passed to Mongoose /run POST request as a parameter. 
 
 ## 1.1.3 Scenario 
-Mongoose's scenarios are writtign in JavaScript. It's possible to write JavaScript code in the UI using code editor. 
+Mongoose's scenarios are written in JavaScript. It's possible to write JavaScript code in the UI using code editor. 
 ![](screenshots/setup/scenario/scenario_general.png)
 
-Scenarios could be both loaded and saved into the file system. 
-![](screenshots/setup/scenario/scenario_buttons.png)
 
 
 ## 1.2 Monitoring 
