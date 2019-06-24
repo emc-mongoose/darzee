@@ -30,7 +30,7 @@ export class MongooseConfigurationParser {
                 const addressPartIndex: number = 0;
                 nodeAddress = nodeAddress.split(addressAndPortDelimiter)[addressPartIndex];
                 // NOTE: Appending configuration's RMI port to every node.
-                nodeAddress += rmiPort; 
+                // nodeAddress += `:${rmiPort}`; 
             }
             existingNodesInConfiguration.push(nodeAddress);
         })

@@ -95,6 +95,7 @@ task createDockerfile(type: Dockerfile) {
     instruction "RUN ls"
     instruction "COPY .env .env"
     instruction "RUN sed -i 's/\r\$//' entrypoint.sh && chmod +x entrypoint.sh"
+    instruction "EXPOSE 8080 9090"
     instruction "ENTRYPOINT sh ./entrypoint.sh"
    
 }
@@ -103,7 +104,7 @@ task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
     imageId = darzeeConfiguration.DARZEE_IMAGE_ID
-    tags = [darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':' + getConsoleConfiurationParameter(DARZEE_CONFIGURATION_NAMES.version), darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':testing']
+    tags = [darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':' + getConsoleConfiurationParameter(DARZEE_CONFIGURATION_NAMES.version), darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':testing', darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':kube']
     doLast { 
         clearProductionFiles()
     }

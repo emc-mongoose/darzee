@@ -48,11 +48,11 @@ export class ContainerServerService {
     }
 
     /**
- * Fetches current deploying address from browser's address bar.
- * It was done in order to perform HTTP requests to NodeJS proxy server.
- * @deprecated if NodeJS isn't using anymore.
- * @returns current deploying address with HTTP prefix.
- */
+     * Fetches current deploying address from browser's address bar.
+     * It was done in order to perform HTTP requests to NodeJS proxy server.
+     * @deprecated if NodeJS isn't using anymore.
+     * @returns current deploying address with HTTP prefix.
+     */
     public getContainerServicerAddressFromAddressLine(): string {
         let rawLocation = (document.location as unknown);
         var currentUrl: string = String(rawLocation);

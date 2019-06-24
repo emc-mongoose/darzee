@@ -1,0 +1,40 @@
+# NOTE: This Kubernetes object was created in testing purposes. ...
+# ... The configuration may be not suitable for you.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mongoose-base-deployment-2
+  name: mongoose-base-dc-2
+spec:
+  selector:
+    matchLabels:
+      app: mongoose-base-deployment-2
+  replicas: 1 
+  template:
+    metadata:
+      labels:
+        app: mongoose-base-deployment-2
+    spec:
+      containers:
+      - name: mongoose-base-1
+        image: emcmongoose/mongoose-base
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9991, --load-step-node-port=1091]
+
+      - name: mongoose-base-2
+        image: emcmongoose/mongoose-base
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9992, --load-step-node-port=1092]
+
+      - name: mongoose-base-3
+        image: emcmongoose/mongoose-base
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9993, --load-step-node-port=1093]
+     
+      - name: mongoose-base-4
+        image: emcmongoose/mongoose-base
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9994, --load-step-node-port=1094]
+      
+      - name: mongoose-base-5
+        image: emcmongoose/mongoose-base
+        args: [--run-node, --storage-driver-type=dummy-mock, --run-port=9999, --load-step-node-port=1099]
+      

@@ -71,6 +71,7 @@ export class ScenariosComponent implements OnInit {
       console.log(`Read file content: ${fileReader.result}`);
       this.fileContent = fileReader.result;
       this.setValueForEditor(this.fileContent.toString());
+      // this.mongooseSetUpService.setSenario(this.fileContent.toString());
     };
     fileReader.readAsText(this.processingFile);
   }

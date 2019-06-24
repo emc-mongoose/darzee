@@ -1,23 +1,19 @@
-apiVersion: apps/v1
+apiVersion: v1
 kind: Service
 metadata:
   labels:
     app: darzee
   name: darzee-svc
 spec:
-  type: NodePort
   ports:
-    # NOTE: Node is available through this port.
-    - nodePort: 9991
     # NOTE: Exposting ports
-    - name: http-port
+    - name: nodejs-server-port
       port: 8080
-      protocol: TCP
       targetPort: 8080
     - name: prometheus-port
       port: 9090
-      protocol: TCP
       targetPort: 9090
   selector:
     app: darzee
+  type: LoadBalancer
   sessionAffinity: None
