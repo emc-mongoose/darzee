@@ -19,9 +19,8 @@
 
 <!-- NOTE: The alert will be displayed in case requested logs file hasn't been found -->
 <ng-template #logFileDoesntExistAlert> 
-  <ngb-alert>
+  <div class="alert alert-info" role="alert">
     <h4 class="alert-heading">Requested log file hasn't been created yet.</h4>
-    <p>The content will be available once the logs file is created..</p>
-    <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
-  </ngb-alert>
+    <p>The content will be available once the logs file is created.</p>
+  </div>
 </ng-template>
