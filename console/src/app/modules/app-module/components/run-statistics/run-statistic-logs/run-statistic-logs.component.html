@@ -1,6 +1,6 @@
 <ul class="nav" id="metrics-navbar">
   <!-- TODO: Possible states are 'active' and 'disabled'. Make sure to impliment them. -->
-  <li class="nav-item" *ngFor="let logTab of logTabs">
+  <li class="nav-item" *ngFor="let logTab of this.getLogTabs$() | async">
     <p class="nav-link" (click)="this.changeDisplayingLog(logTab)"
       [ngClass]="logTab.isActive ? 'selected-metric-item' : 'metric-item'"> {{ logTab.getName() }} </p>
   </li>
@@ -9,8 +9,18 @@
 <!-- NOTE: Area for displaying Mongoose logs -->
 <div id="displaying-logs-area" class="card">
   <div class="card-body">
-    <p class="text-break" style="white-space: pre; overflow-x: scroll">{{ displayingLog }}</p>
-    <div class="error-message" [innerHTML]="occuredError" style="background-color: rgba(163.0, 163.0, 163.0, 0.5);">
-    </div>
+    <!-- NOTE: If logs file hasn't been received, display the related alert -->
+    <p *ngIf="this.isLogExist(); else logFileDoesntExistAlert" class="text-break"
+      style="height: calc(60%); white-space: pre; overflow-x: scroll; overflow-y: scroll;">
+      {{ this.displayingTextContent }}
+    </p>
   </div>
 </div>
+
+<!-- NOTE: The alert will be displayed in case requested logs file hasn't been found -->
+<ng-template #logFileDoesntExistAlert>
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">{{ this.displayingTextContent }}</h4>
+    <p>Mongoose will create the log file once the relevant logs will occur.</p>
+  </div>
+</ng-template>

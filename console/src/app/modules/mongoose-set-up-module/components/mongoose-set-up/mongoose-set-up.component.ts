@@ -57,11 +57,8 @@ export class MongooseSetUpComponent implements OnInit {
     return this.setUpTabs[this.processingTabID].title;
   }
 
-  public getPercentagePerTab(): number {
-    let rawPercentage = (100 / this.setUpTabs.length);
-    // NOTE: tabs offset is an estimated value. 
-    let tabsOffset = this.setUpTabs.length;
-    return Math.round(rawPercentage) - tabsOffset;
+  public getCurrentComplitionPercentage(): number { 
+    return (this.getPercentagePerTab() * (this.processingTabID + 1));
   }
 
   public onConfirmClicked() {
@@ -178,5 +175,10 @@ export class MongooseSetUpComponent implements OnInit {
     // NOTE: Allowing switching set up tab only if target run nodes were selected 
     let hasMongooseRunNodesSelected = (this.mongooseSetUpService.getSelectedMongooseRunNodes().length > 0);
     return hasMongooseRunNodesSelected;
+  }
+
+  private getPercentagePerTab(): number {
+    let rawPercentage = (100 / this.setUpTabs.length);
+    return Math.ceil(rawPercentage);
   }
 }
