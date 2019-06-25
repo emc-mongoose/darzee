@@ -43,7 +43,6 @@ Darzee lets you configure, run and monitor Mongoose runs.
 ![](screenshots/architecture_overview.png)
 
 
-
 ## 1.1 Launch Mongoose run
 
 Mongoose launching process is divided in 3 steps: 
@@ -197,7 +196,7 @@ In order to connect with the outside network, Darzee uses Kubernetes service `/c
 Run Darzee as a deployment: <br/>
 ```
 $ bash 
-kubectl apply -f /console/kubernetes/darzee-deployment.yml
+$ kubectl apply -f /console/kubernetes/darzee-deployment.yml
 $ bash kubectl apply -f /console/kubernetes/darzee-service.yml
 ```
 ### 4.2.1 Test Darzee in Kubernetes using predefined Mongoose environment
