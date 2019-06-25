@@ -23,7 +23,6 @@ import { MongooseLogModel } from 'src/app/core/models/mongoose.log.model';
 export class RunStatisticLogsComponent implements OnInit {
 
   // NOTE: Public fields are mostly used within DOM. 
-  public logTabs: BasicTab[] = [];
   public displayingLog = '';
   public occuredError: any;
 
@@ -87,11 +86,13 @@ export class RunStatisticLogsComponent implements OnInit {
   }
 
   public changeDisplayingLog(selectedTab: BasicTab) {
-    // TODO: Change logic of setting 'active' status to a selected tab.
-    this.logTabs.forEach(tab => {
-      let isSelectedTab = (tab.getName() == selectedTab.getName());
+    var currentLogTabs: BasicTab[] = this.logTabs$.getValue();
+    currentLogTabs.forEach(tab => {
+      const isSelectedTab: boolean = (tab.getName() == selectedTab.getName());
       tab.isActive = isSelectedTab ? true : false;
-    })
+    });
+    this.logTabs$.next(currentLogTabs);
+
     const targetLogEndpoint: string = selectedTab.getLink() as string;
     this.setDisplayingLog(targetLogEndpoint)
   }
@@ -118,11 +119,6 @@ export class RunStatisticLogsComponent implements OnInit {
     return (record.getEntryNodeAddress() != MongooseRunEntryNode.EMPTY_ADDRESS);
   }
 
-
-  public getMessageForNonExistingLogsAlert(): string {
-    const currentTab: BasicTab = this.logTabs[this.currentDisplayingTabId];
-    return `Requested log file ${currentTab.getName()} hasn't been created yet.`;
-  }
 
   /**
    * @returns true  if the requested log should be displayed.
@@ -167,23 +163,14 @@ export class RunStatisticLogsComponent implements OnInit {
           for (var mongooseLog of mongooseLogs) {
             let tab: BasicTab = new BasicTab(mongooseLog.getName(), mongooseLog.getEndpoint());
             displayingLogTabs.push(tab);
-            // this.logTabs.push(tab);
           }
           this.logTabs$.next(displayingLogTabs);
-          this.changeDisplayingLog(this.logTabs$.getValue()[0]);
-          // var avalableLogsWithEnpoints = JSON.parse(rawAvailableLogs);
-          // console.log(`[run statistic component] avalableLogsWithEnpoints: ${JSON.stringify(avalableLogsWithEnpoints)}`)
+          
+          const initialTab: BasicTab = this.logTabs$.getValue()[0];
+          this.changeDisplayingLog(initialTab);
+
         }
       )
-    )
-    // let availableLogNames = this.monitoringApiService.getAvailableLogNames();
-    // for (let logName of availableLogNames) {
-    //   let TAB_LINK_MOCK = "/";
-    //   let tab = new BasicTab(logName, TAB_LINK_MOCK);
-    //   this.logTabs.push(tab);
-    // }
-    // const initialTab = this.logTabs[this.currentDisplayingTabId];
-    // initialTab.isActive = true;
-    // this.changeDisplayingLog(initialTab);
+    );
   }
 }
