@@ -86,21 +86,21 @@ export class RunStatisticLogsComponent implements OnInit {
   }
 
   private setDisplayingLog(logName: string) {
-    let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(logName);
-    // NOTE: Resetting error's inner HTML 
-    let emptyErrorHtmlValue = "";
-    this.occuredError = emptyErrorHtmlValue;
+    // let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(logName);
+    // // NOTE: Resetting error's inner HTML 
+    // let emptyErrorHtmlValue = "";
+    // this.occuredError = emptyErrorHtmlValue;
 
-    this.monitoringApiService.getLog(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getLoadStepId(), logApiEndpoint).subscribe(
-      logs => {
-        this.displayingLog = logs;
-      },
-      error => {
-        var misleadingMessage = `Requested target doesn't seem to exist. Details: ${error}`;
-        this.displayingLog = misleadingMessage;
-        this.occuredError = error.error;
-      }
-    );
+    // this.monitoringApiService.getLog(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getLoadStepId(), logApiEndpoint).subscribe(
+    //   logs => {
+    //     this.displayingLog = logs;
+    //   },
+    //   error => {
+    //     var misleadingMessage = `Requested target doesn't seem to exist. Details: ${error}`;
+    //     this.displayingLog = misleadingMessage;
+    //     this.occuredError = error.error;
+    //   }
+    // );
   }
 
   public shouldDisplayLogs(record: MongooseRunRecord): boolean {
@@ -110,6 +110,11 @@ export class RunStatisticLogsComponent implements OnInit {
     return (record.getEntryNodeAddress() != MongooseRunEntryNode.EMPTY_ADDRESS);
   }
 
+
+  public getMessageForNonExistingLogsAlert(): string { 
+    const currentTab: BasicTab = this.logTabs[this.currentDisplayingTabId];
+    return `Requested log file ${currentTab.getName()} hasn't been created yet.`;
+  }
 
   /**
    * @returns true  if the requested log should be displayed.
@@ -141,21 +146,27 @@ export class RunStatisticLogsComponent implements OnInit {
         this.initlogTabs();
       }
     )
-
-
   }
 
   // MARK: - Private
 
   private initlogTabs() {
-    let availableLogNames = this.monitoringApiService.getAvailableLogNames();
-    for (let logName of availableLogNames) {
-      let TAB_LINK_MOCK = "/";
-      let tab = new BasicTab(logName, TAB_LINK_MOCK);
-      this.logTabs.push(tab);
-    }
-    const initialTab = this.logTabs[this.currentDisplayingTabId];
-    initialTab.isActive = true;
-    this.changeDisplayingLog(initialTab);
+    const currentNodeAddress: string = this.processingRunRecord.getEntryNodeAddress();
+    this.monitoringApiSubscriptions.add(
+      this.monitoringApiService.getLogsForRunNode(currentNodeAddress).subscribe(
+        (rawAvailableLogs: any) => { 
+          console.log(`[run statistic component] rawAvailableLogs: ${JSON.stringify(rawAvailableLogs)}`)
+        }
+      )
+    )
+    // let availableLogNames = this.monitoringApiService.getAvailableLogNames();
+    // for (let logName of availableLogNames) {
+    //   let TAB_LINK_MOCK = "/";
+    //   let tab = new BasicTab(logName, TAB_LINK_MOCK);
+    //   this.logTabs.push(tab);
+    // }
+    // const initialTab = this.logTabs[this.currentDisplayingTabId];
+    // initialTab.isActive = true;
+    // this.changeDisplayingLog(initialTab);
   }
 }
