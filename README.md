@@ -74,10 +74,7 @@ Mongoose's scenarios are written in JavaScript. It's possible to write JavaScrip
 Discovered Mongoose's runs are displayed within the runs table. 
 ![](screenshots/runs-table/run_table_filled.png)
 
-There's 3 possible status of Mongoose runs: 
-
-808080
-	 
+There's 3 possible status of Mongoose runs: 	 
 	 
 * ![#29a329](https://placehold.it/15/29a329/000000?text=+) <b>Finished</b> - means Mongoose run has finished and its logs are available; <br/>
 * ![#ffd633](https://placehold.it/15/ffd633/000000?text=+) <b>Running</b> - means Mongoose is still performing the benchmark. Charts will be updated every time Darzee received a new data; <br/>
