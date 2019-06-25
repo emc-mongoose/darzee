@@ -193,7 +193,9 @@ export class MonitoringApiService {
     } else {
       targetUrl = mongooseNodeAddress + logsEndpoint + delimiter + stepId + delimiter + logName;
     }
-    return this.http.get(`${Constants.Http.HTTP_PREFIX}${targetUrl}`, { responseType: 'text' }).pipe(share());
+    return this.http.get(`${Constants.Http.HTTP_PREFIX}${targetUrl}`, { responseType: 'text' }).pipe(
+      share()
+    );
   }
 
   public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {

@@ -10,17 +10,17 @@
 <div id="displaying-logs-area" class="card">
   <div class="card-body">
     <!-- NOTE: If logs file hasn't been received, display the related alert -->
-    <p *ngIf="this.isLogExist(); else logFileDoesntExistAlert"
-     class="text-break" style="white-space: pre; overflow-x: scroll">
-     {{ displayingLog }}
+    <p *ngIf="this.isLogExist(); else logFileDoesntExistAlert" class="text-break"
+      style="white-space: pre; overflow-x: scroll">
+      {{ this.displayingTextContent }}
     </p>
   </div>
 </div>
 
 <!-- NOTE: The alert will be displayed in case requested logs file hasn't been found -->
-<ng-template #logFileDoesntExistAlert> 
+<ng-template #logFileDoesntExistAlert>
   <div class="alert alert-info" role="alert">
-    <h4 class="alert-heading">Requested log file hasn't been created yet.</h4>
-    <p>The content will be available once the log file is created.</p>
+    <h4 class="alert-heading">{{ this.displayingTextContent }}</h4>
+    <p>Mongoose will create the log file once the relevant logs will occur.</p>
   </div>
 </ng-template>
