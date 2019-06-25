@@ -11,7 +11,7 @@
   <div class="card-body">
     <!-- NOTE: If logs file hasn't been received, display the related alert -->
     <p *ngIf="this.isLogExist(); else logFileDoesntExistAlert" class="text-break"
-      style="white-space: pre; overflow-x: scroll">
+      style="height: calc(60%); white-space: pre; overflow-x: scroll; overflow-y: scroll;">
       {{ this.displayingTextContent }}
     </p>
   </div>

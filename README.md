@@ -88,22 +88,23 @@ By pressing run status icon, you'll be redirected to run statistics screen. See 
 
 ### 1.2.2 Mongoose run statistics
 
-You're able to check run statistics (logs, charts) of the selected Mongoose run.
 ![](screenshots/monitoring/run_statistics_overview.png)
  If the run is still being processed, the data will be updating dynamically based on the Mongoose's exported metrics and generated logs. 
+
 
 #### 1.2.2.1 Mongoose logs 
 ![](screenshots/monitoring/logs/logs_overview.png)
 
 #### 1.2.2.2 Mongoose charts
+
+![](screenshots/monitoring/charts/charts_overview.png)
+
 Charts are drawn based on Mongoose's exported metrics. There're 4 types of Mongoose charts available:
 
 * <b>duration</b> - mean duration of Mongoose's performed operations;
 * <b>bandwidth</b> - amount of processed bytes per second; 
 * <b>throughput</b> - shows rate of successful and failed operations performed by Mongoose. It takes mean values for each metric; 
 * <b>latency</b> - shows minimal and maximal latency during Mongoose's run; 
-
-![](screenshots/monitoring/charts/charts_overview.png)
 
 ## 1.3 Terminate Mongoose run
 
