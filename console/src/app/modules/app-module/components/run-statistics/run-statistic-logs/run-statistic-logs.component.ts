@@ -12,6 +12,7 @@ import { MongooseRunEntryNode } from 'src/app/core/services/local-storage-servic
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EntryNodeSelectionComponent } from '../common/entry-node-selection/entry-node-selection.component';
 import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
+import { MongooseLogModel } from 'src/app/core/models/mongoose.log.model';
 
 
 @Component({
@@ -28,9 +29,9 @@ export class RunStatisticLogsComponent implements OnInit {
 
   private processingRunRecord: MongooseRunRecord;
   private currentDisplayingTabId = 0;
-  private routeParameters: RouteParams;
 
   private monitoringApiSubscriptions: Subscription = new Subscription();
+  private routeParamsSubscription: Subscription = new Subscription();
 
   // MARK: - Lifecycle
 
@@ -45,32 +46,35 @@ export class RunStatisticLogsComponent implements OnInit {
   ngAfterContentInit() {
 
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
-    this.routeParameters = this.route.parent.params.subscribe(params => {
-      let mongooseRouteParamsParser: MongooseRouteParamsParser = new MongooseRouteParamsParser(this.monitoringApiService);
-      try {
-        this.monitoringApiSubscriptions.add(mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
-          foundRecord => {
-            this.processingRunRecord = foundRecord;
-            if (!this.shouldDisplayLogs(this.processingRunRecord)) {
-              // NOTE: Timeout prevents situations when modal view will be created before the parent one. 
-              setTimeout(() => this.openEntryNodeSelectionWindow());
-              return;
+    this.routeParamsSubscription.add(
+      this.route.parent.params.subscribe(params => {
+        let mongooseRouteParamsParser: MongooseRouteParamsParser = new MongooseRouteParamsParser(this.monitoringApiService);
+        try {
+          this.monitoringApiSubscriptions.add(mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
+            foundRecord => {
+              this.processingRunRecord = foundRecord;
+              if (!this.shouldDisplayLogs(this.processingRunRecord)) {
+                // NOTE: Timeout prevents situations when modal view will be created before the parent one. 
+                setTimeout(() => this.openEntryNodeSelectionWindow());
+                return;
+              }
+              this.initlogTabs();
             }
-            this.initlogTabs();
-          }
-        ));
-      } catch (recordNotFoundError) {
-        // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
-        alert(`Unable to load requested record information. Reason: ${recordNotFoundError.message}`);
-        console.error(recordNotFoundError);
-        this.router.navigate([RoutesList.RUNS]);
-      }
-    });
+          ));
+        } catch (recordNotFoundError) {
+          // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
+          alert(`Unable to load requested record information. Reason: ${recordNotFoundError.message}`);
+          console.error(recordNotFoundError);
+          this.router.navigate([RoutesList.RUNS]);
+        }
+      })
+    );
   }
 
 
   ngOnDestroy() {
     this.monitoringApiSubscriptions.unsubscribe();
+    this.routeParamsSubscription.unsubscribe();
   }
 
   // MARK: - Public
@@ -111,7 +115,7 @@ export class RunStatisticLogsComponent implements OnInit {
   }
 
 
-  public getMessageForNonExistingLogsAlert(): string { 
+  public getMessageForNonExistingLogsAlert(): string {
     const currentTab: BasicTab = this.logTabs[this.currentDisplayingTabId];
     return `Requested log file ${currentTab.getName()} hasn't been created yet.`;
   }
@@ -119,7 +123,7 @@ export class RunStatisticLogsComponent implements OnInit {
   /**
    * @returns true  if the requested log should be displayed.
    */
-  public isLogExist(): boolean { 
+  public isLogExist(): boolean {
     const emptyValue: string = "";
     return (this.occuredError == emptyValue);
   }
@@ -133,10 +137,10 @@ export class RunStatisticLogsComponent implements OnInit {
       }, (entryNodeAddress) => {
         const emptyValue = "";
         // NOTE: Do nothing if entry node address hasn't been entetred. 
-        if (entryNodeAddress == emptyValue) { 
+        if (entryNodeAddress == emptyValue) {
           this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.processingRunRecord.getLoadStepId()
-          + '/' + RoutesList.RUN_CHARTS]);
-          return; 
+            + '/' + RoutesList.RUN_CHARTS]);
+          return;
         }
         this.processingRunRecord.setEntryNodeAddress(entryNodeAddress);
         // NOTE: Save pair "resource - run ID" to local storage.
@@ -154,8 +158,9 @@ export class RunStatisticLogsComponent implements OnInit {
     const currentNodeAddress: string = this.processingRunRecord.getEntryNodeAddress();
     this.monitoringApiSubscriptions.add(
       this.monitoringApiService.getLogsForRunNode(currentNodeAddress).subscribe(
-        (rawAvailableLogs: any) => { 
-          console.log(`[run statistic component] rawAvailableLogs: ${JSON.stringify(rawAvailableLogs)}`)
+        (rawAvailableLogs: MongooseLogModel[]) => {
+          // var avalableLogsWithEnpoints = JSON.parse(rawAvailableLogs);
+          // console.log(`[run statistic component] avalableLogsWithEnpoints: ${JSON.stringify(avalableLogsWithEnpoints)}`)
         }
       )
     )

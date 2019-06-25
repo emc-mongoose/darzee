@@ -17,6 +17,7 @@ import { ResourceLocatorType } from "../../models/address-type";
 import { MongooseRunNode } from "../../models/mongoose-run-node.model";
 import { PrometheusError } from "src/app/common/Exceptions/PrometheusError";
 import { MongooseMetric } from "../../models/chart/mongoose-metric.model";
+import { MongooseLogModel } from "../../models/mongoose.log.model";
 
 
 @Injectable({
@@ -26,7 +27,7 @@ export class MonitoringApiService {
 
   private readonly DEFAULT_TIMEOUT_MILLISECS: number = 4500;
   private currentMongooseRunRecords$: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
-  
+
   // MARK: - Lifecycle 
 
   constructor(private prometheusApiService: PrometheusApiService,
@@ -125,14 +126,20 @@ export class MonitoringApiService {
    * @param runNodeAddress target node adddress.
    * @returns Pair [log's REST API endpoint : log name]
    */
-  public getLogsForRunNode(runNodeAddress: string): Observable<any> { 
+  public getLogsForRunNode(runNodeAddress: string): Observable<MongooseLogModel[]> {
     const availableLogsEndpoint: string = "logs";
     return this.http.get(`${Constants.Http.HTTP_PREFIX}${runNodeAddress}/${availableLogsEndpoint}`).pipe(
-      map((rawAvailableLogs: any) => { 
-        console.log(`rawAvailableLogs: ${JSON.stringify(rawAvailableLogs)}`);
-        return rawAvailableLogs
+      map((rawAvailableLogs: any) => {
+        let fetchedLogs: MongooseLogModel[] = [];
+        for (var logEndpoint in rawAvailableLogs) {
+          // NOTE: Raw logs format: {.., <Log REST API endpoint> : <Log name>, ...}
+          const logName: string = rawAvailableLogs[`${logEndpoint}`];
+          const fetchedLogInstance: MongooseLogModel = new MongooseLogModel(logName, logEndpoint);
+          fetchedLogs.push(fetchedLogInstance);
+        }
+        return fetchedLogs;
       })
-    )
+    );
   }
 
   public updateRecord(targetRecord: MongooseRunRecord): Observable<MongooseRunRecord> {
