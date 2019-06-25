@@ -1,6 +1,6 @@
 <ul class="nav" id="metrics-navbar">
   <!-- TODO: Possible states are 'active' and 'disabled'. Make sure to impliment them. -->
-  <li class="nav-item" *ngFor="let logTab of logTabs">
+  <li class="nav-item" *ngFor="let logTab of this.getLogTabs$() | async">
     <p class="nav-link" (click)="this.changeDisplayingLog(logTab)"
       [ngClass]="logTab.isActive ? 'selected-metric-item' : 'metric-item'"> {{ logTab.getName() }} </p>
   </li>
@@ -21,6 +21,6 @@
 <ng-template #logFileDoesntExistAlert> 
   <div class="alert alert-info" role="alert">
     <h4 class="alert-heading">Requested log file hasn't been created yet.</h4>
-    <p>The content will be available once the logs file is created.</p>
+    <p>The content will be available once the log file is created.</p>
   </div>
 </ng-template>

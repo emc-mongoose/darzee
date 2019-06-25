@@ -5,7 +5,7 @@ import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteParams } from 'src/app/modules/app-module/Routing/params.routes';
 import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, Subscription, of, BehaviorSubject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MongooseRouteParamsParser } from 'src/app/core/models/mongoose-route-params-praser';
 import { MongooseRunEntryNode } from 'src/app/core/services/local-storage-service/MongooseRunEntryNode';
@@ -29,6 +29,9 @@ export class RunStatisticLogsComponent implements OnInit {
 
   private processingRunRecord: MongooseRunRecord;
   private currentDisplayingTabId = 0;
+  private logTabs$: BehaviorSubject<BasicTab[]> = new BehaviorSubject<BasicTab[]>([]);
+  private shouldDisplayErrorAlert: boolean = false;
+
 
   private monitoringApiSubscriptions: Subscription = new Subscription();
   private routeParamsSubscription: Subscription = new Subscription();
@@ -79,32 +82,33 @@ export class RunStatisticLogsComponent implements OnInit {
 
   // MARK: - Public
 
+  public getLogTabs$(): Observable<BasicTab[]> {
+    return this.logTabs$.asObservable();
+  }
+
   public changeDisplayingLog(selectedTab: BasicTab) {
     // TODO: Change logic of setting 'active' status to a selected tab.
     this.logTabs.forEach(tab => {
       let isSelectedTab = (tab.getName() == selectedTab.getName());
       tab.isActive = isSelectedTab ? true : false;
     })
-    let targetLogName = selectedTab.getName() as string;
-    this.setDisplayingLog(targetLogName)
+    const targetLogEndpoint: string = selectedTab.getLink() as string;
+    this.setDisplayingLog(targetLogEndpoint)
   }
 
-  private setDisplayingLog(logName: string) {
-    // let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(logName);
-    // // NOTE: Resetting error's inner HTML 
-    // let emptyErrorHtmlValue = "";
-    // this.occuredError = emptyErrorHtmlValue;
-
-    // this.monitoringApiService.getLog(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getLoadStepId(), logApiEndpoint).subscribe(
-    //   logs => {
-    //     this.displayingLog = logs;
-    //   },
-    //   error => {
-    //     var misleadingMessage = `Requested target doesn't seem to exist. Details: ${error}`;
-    //     this.displayingLog = misleadingMessage;
-    //     this.occuredError = error.error;
-    //   }
-    // );
+  private setDisplayingLog(targetLogEndpoint: string) {
+    this.monitoringApiService.getLog(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getLoadStepId(), targetLogEndpoint).subscribe(
+      logs => {
+        this.shouldDisplayErrorAlert = false;
+        this.displayingLog = logs;
+      },
+      error => {
+        this.shouldDisplayErrorAlert = true;
+        var misleadingMessage = `Requested target doesn't seem to exist. Details: ${error}`;
+        this.displayingLog = misleadingMessage;
+        this.occuredError = error.error;
+      }
+    );
   }
 
   public shouldDisplayLogs(record: MongooseRunRecord): boolean {
@@ -124,8 +128,7 @@ export class RunStatisticLogsComponent implements OnInit {
    * @returns true  if the requested log should be displayed.
    */
   public isLogExist(): boolean {
-    const emptyValue: string = "";
-    return (this.occuredError == emptyValue);
+    return !this.shouldDisplayErrorAlert;
   }
 
   public openEntryNodeSelectionWindow() {
@@ -158,7 +161,16 @@ export class RunStatisticLogsComponent implements OnInit {
     const currentNodeAddress: string = this.processingRunRecord.getEntryNodeAddress();
     this.monitoringApiSubscriptions.add(
       this.monitoringApiService.getLogsForRunNode(currentNodeAddress).subscribe(
-        (rawAvailableLogs: MongooseLogModel[]) => {
+        (mongooseLogs: MongooseLogModel[]) => {
+
+          var displayingLogTabs: BasicTab[] = [];
+          for (var mongooseLog of mongooseLogs) {
+            let tab: BasicTab = new BasicTab(mongooseLog.getName(), mongooseLog.getEndpoint());
+            displayingLogTabs.push(tab);
+            // this.logTabs.push(tab);
+          }
+          this.logTabs$.next(displayingLogTabs);
+          this.changeDisplayingLog(this.logTabs$.getValue()[0]);
           // var avalableLogsWithEnpoints = JSON.parse(rawAvailableLogs);
           // console.log(`[run statistic component] avalableLogsWithEnpoints: ${JSON.stringify(avalableLogsWithEnpoints)}`)
         }
