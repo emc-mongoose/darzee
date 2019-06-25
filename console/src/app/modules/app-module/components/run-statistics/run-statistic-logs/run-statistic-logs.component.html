@@ -9,8 +9,19 @@
 <!-- NOTE: Area for displaying Mongoose logs -->
 <div id="displaying-logs-area" class="card">
   <div class="card-body">
-    <p class="text-break" style="white-space: pre; overflow-x: scroll">{{ displayingLog }}</p>
-    <div class="error-message" [innerHTML]="occuredError" style="background-color: rgba(163.0, 163.0, 163.0, 0.5);">
-    </div>
+    <!-- NOTE: If logs file hasn't been received, display the related alert -->
+    <p *ngIf="this.isLogExist(); else logFileDoesntExistAlert"
+     class="text-break" style="white-space: pre; overflow-x: scroll">
+     {{ displayingLog }}
+    </p>
   </div>
 </div>
+
+<!-- NOTE: The alert will be displayed in case requested logs file hasn't been found -->
+<ng-template #logFileDoesntExistAlert> 
+  <ngb-alert>
+    <h4 class="alert-heading">Requested log file hasn't been created yet.</h4>
+    <p>The content will be available once the logs file is created..</p>
+    <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+  </ngb-alert>
+</ng-template>

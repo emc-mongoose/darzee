@@ -110,6 +110,15 @@ export class RunStatisticLogsComponent implements OnInit {
     return (record.getEntryNodeAddress() != MongooseRunEntryNode.EMPTY_ADDRESS);
   }
 
+
+  /**
+   * @returns true  if the requested log should be displayed.
+   */
+  public isLogExist(): boolean { 
+    const emptyValue: string = "";
+    return (this.occuredError == emptyValue);
+  }
+
   public openEntryNodeSelectionWindow() {
     const entryRunNodeEntranceScreenReference = this.modalService.open(EntryNodeSelectionComponent, { ariaLabelledBy: 'modal-basic-title', backdropClass: 'light-blue-backdrop' });
     entryRunNodeEntranceScreenReference.componentInstance.mongooseRunRecord = this.processingRunRecord;
