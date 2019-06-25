@@ -20,8 +20,7 @@ Provides web interface for Mongoose - storage performance testing tool maintaine
 &nbsp;&nbsp;2.1 [Deploying ports](#21-deploying-ports)<br/>
 &nbsp;&nbsp;2.2 [Image versions](#22-image-versions)<br/>
 &nbsp;&nbsp;2.3 [Container configuration](#23-container-configuration)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;2.3.1 [Network](#231-network)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;2.3.2 [Prometheus](#232-prometheus)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;2.3.1 [Prometheus](#231-prometheus)<br/>
 &nbsp;&nbsp;2.4 [Other parameters](#24-other-parameters) <br/>
 3. [Build and run](#3-build-and-run)<br/>
 4. [Deployment](#4-deployment)<br/>
@@ -135,15 +134,7 @@ The following parameters are being used to specify docker image version of a spe
 
 ## 2.3 Container configuration 
 
-### 2.3.1 Network
-The following parameters are being used to organize internal network within the container: 
-
-* IMAGES_NETWORK_BRIDGE_BASE_SUBNET - base subnet of container's network; 
-* IMAGES_NETWORK_BRIDGE_BASE_SUBNET_SLOTS - amount of slots within the network; 
-* PROMETHEUS_IMAGE_IP - *internal (image)* IP of Prometheus within the container; 
-* NODE_SERVER_IMAGE_IP - *internal (image)* IP of Node JS server within the container; 
-
-### 2.3.2 Prometheus 
+### 2.3.1 Prometheus 
 Prometheus configuration is being rewritten in a runtime in order to add targets dynamically. 
 To implement this, we're using internal container volume. 
 * PROMETHEUS_CONFIGURATION_PATH - full path for Prometheus configuration; 
@@ -151,7 +142,7 @@ To implement this, we're using internal container volume.
 
 ## 2.4 Other parameters 
 
-* MONGOOSE_HOST - specifies host of an initially loaded Mongoose; 
+* MONGOOSE_HOST - specifies host of an initially loaded Mongoose (optional); 
 
 # 3. Build and run 
 
@@ -188,12 +179,12 @@ $ ng serve
 
 # 4. Deployment 
 
-
 ## 4.1 Docker
 
 Darzee image is being loaded into the [docker hub](https://hub.docker.com/r/emcmongoose/darzee).
 
-```bash
+```
+bash
 docker run \
     --env-file .env \
     -p {DARZEE_PORT}:{DARZEE_PORT} \
@@ -207,10 +198,11 @@ Darzee can be deployed in a [kubernetes](https://kubernetes.io/) cluster. Exampl
 In order to connect with the outside network, Darzee uses Kubernetes service `/console/kubernetes/darzee-service.yml`
 
 Run Darzee as a deployment: <br/>
-`$ bash 
-kubectl apply -f /console/kubernetes/darzee-deployment.yml` <br/>
-`$ bash kubectl apply -f /console/kubernetes/darzee-service.yml` <br/>
-
+```
+$ bash 
+kubectl apply -f /console/kubernetes/darzee-deployment.yml
+$ bash kubectl apply -f /console/kubernetes/darzee-service.yml
+```
 ### 4.2.1 Test Darzee in Kubernetes using predefined Mongoose environment
 
 The project contains scripts for deploying predefined Mongoose environment in order to run the UI. <br/>
