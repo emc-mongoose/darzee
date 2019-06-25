@@ -5,13 +5,14 @@ import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteParams } from 'src/app/modules/app-module/Routing/params.routes';
 import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, Subscription, of, BehaviorSubject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MongooseRouteParamsParser } from 'src/app/core/models/mongoose-route-params-praser';
 import { MongooseRunEntryNode } from 'src/app/core/services/local-storage-service/MongooseRunEntryNode';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EntryNodeSelectionComponent } from '../common/entry-node-selection/entry-node-selection.component';
 import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
+import { MongooseLogModel } from 'src/app/core/models/mongoose.log.model';
 
 
 @Component({
@@ -22,15 +23,14 @@ import { LocalStorageService } from 'src/app/core/services/local-storage-service
 export class RunStatisticLogsComponent implements OnInit {
 
   // NOTE: Public fields are mostly used within DOM. 
-  public logTabs: BasicTab[] = [];
-  public displayingLog = '';
-  public occuredError: any;
+  public displayingTextContent = '';
 
   private processingRunRecord: MongooseRunRecord;
-  private currentDisplayingTabId = 0;
-  private routeParameters: RouteParams;
+  private logTabs$: BehaviorSubject<BasicTab[]> = new BehaviorSubject<BasicTab[]>([]);
+  private shouldDisplayErrorAlert: boolean = false;
 
   private monitoringApiSubscriptions: Subscription = new Subscription();
+  private routeParamsSubscription: Subscription = new Subscription();
 
   // MARK: - Lifecycle
 
@@ -45,61 +45,69 @@ export class RunStatisticLogsComponent implements OnInit {
   ngAfterContentInit() {
 
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
-    this.routeParameters = this.route.parent.params.subscribe(params => {
-      let mongooseRouteParamsParser: MongooseRouteParamsParser = new MongooseRouteParamsParser(this.monitoringApiService);
-      try {
-        this.monitoringApiSubscriptions.add(mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
-          foundRecord => {
-            this.processingRunRecord = foundRecord;
-            if (!this.shouldDisplayLogs(this.processingRunRecord)) {
-              // NOTE: Timeout prevents situations when modal view will be created before the parent one. 
-              setTimeout(() => this.openEntryNodeSelectionWindow());
-              return;
+    this.routeParamsSubscription.add(
+      this.route.parent.params.subscribe((params: any) => {
+        let mongooseRouteParamsParser: MongooseRouteParamsParser = new MongooseRouteParamsParser(this.monitoringApiService);
+        try {
+          this.monitoringApiSubscriptions.add(mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
+            (foundRecord: MongooseRunRecord) => {
+              this.processingRunRecord = foundRecord;
+              if (!this.shouldDisplayLogs(this.processingRunRecord)) {
+                // NOTE: Timeout prevents situations when modal view will be created before the parent one. 
+                setTimeout(() => this.openEntryNodeSelectionWindow());
+                return;
+              }
+              this.initlogTabs();
             }
-            this.initlogTabs();
-          }
-        ));
-      } catch (recordNotFoundError) {
-        // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
-        alert(`Unable to load requested record information. Reason: ${recordNotFoundError.message}`);
-        console.error(recordNotFoundError);
-        this.router.navigate([RoutesList.RUNS]);
-      }
-    });
+          ));
+        } catch (recordNotFoundError) {
+          // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
+          alert(`Unable to load requested record information. Reason: ${recordNotFoundError.message}`);
+          console.error(recordNotFoundError);
+          this.router.navigate([RoutesList.RUNS]);
+        }
+      })
+    );
   }
 
 
   ngOnDestroy() {
     this.monitoringApiSubscriptions.unsubscribe();
+    this.routeParamsSubscription.unsubscribe();
   }
 
   // MARK: - Public
 
-  public changeDisplayingLog(selectedTab: BasicTab) {
-    // TODO: Change logic of setting 'active' status to a selected tab.
-    this.logTabs.forEach(tab => {
-      let isSelectedTab = (tab.getName() == selectedTab.getName());
-      tab.isActive = isSelectedTab ? true : false;
-    })
-    let targetLogName = selectedTab.getName() as string;
-    this.setDisplayingLog(targetLogName)
+  public getLogTabs$(): Observable<BasicTab[]> {
+    return this.logTabs$.asObservable();
   }
 
-  private setDisplayingLog(logName: string) {
-    let logApiEndpoint = this.monitoringApiService.getLogApiEndpoint(logName);
-    // NOTE: Resetting error's inner HTML 
-    let emptyErrorHtmlValue = "";
-    this.occuredError = emptyErrorHtmlValue;
+  public changeDisplayingLog(selectedTab: BasicTab) {
+    var currentLogTabs: BasicTab[] = this.logTabs$.getValue();
+    currentLogTabs.forEach((tab: BasicTab) => {
+      const isSelectedTab: boolean = (tab.getName() == selectedTab.getName());
+      tab.isActive = isSelectedTab ? true : false;
+    });
+    this.logTabs$.next(currentLogTabs);
 
-    this.monitoringApiService.getLog(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getLoadStepId(), logApiEndpoint).subscribe(
-      logs => {
-        this.displayingLog = logs;
-      },
-      error => {
-        var misleadingMessage = `Requested target doesn't seem to exist. Details: ${error}`;
-        this.displayingLog = misleadingMessage;
-        this.occuredError = error.error;
-      }
+    const targetLogName: string = selectedTab.getName() as string;
+    const targetLogEndpoint: string = selectedTab.getLink() as string;
+    this.setDisplayingLog(targetLogName, targetLogEndpoint);
+  }
+
+  private setDisplayingLog(logName: string, targetLogEndpoint: string) {
+    this.monitoringApiSubscriptions.add(
+      this.monitoringApiService.getLog(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getLoadStepId(), targetLogEndpoint).subscribe(
+        (logs: string) => {
+          this.shouldDisplayErrorAlert = false;
+          this.displayingTextContent = logs;
+        },
+        (error: any) => {
+          this.shouldDisplayErrorAlert = true;
+          const misleadingMessage: string = `Requested logs file "${logName}" hasn't been created yet.`;
+          this.displayingTextContent = misleadingMessage;
+        }
+      )
     );
   }
 
@@ -114,9 +122,8 @@ export class RunStatisticLogsComponent implements OnInit {
   /**
    * @returns true  if the requested log should be displayed.
    */
-  public isLogExist(): boolean { 
-    const emptyValue: string = "";
-    return (this.occuredError == emptyValue);
+  public isLogExist(): boolean {
+    return !this.shouldDisplayErrorAlert;
   }
 
   public openEntryNodeSelectionWindow() {
@@ -128,34 +135,56 @@ export class RunStatisticLogsComponent implements OnInit {
       }, (entryNodeAddress) => {
         const emptyValue = "";
         // NOTE: Do nothing if entry node address hasn't been entetred. 
-        if (entryNodeAddress == emptyValue) { 
+        if (entryNodeAddress == emptyValue) {
           this.router.navigate(['/' + RoutesList.RUN_STATISTICS + '/' + this.processingRunRecord.getLoadStepId()
-          + '/' + RoutesList.RUN_CHARTS]);
-          return; 
+            + '/' + RoutesList.RUN_CHARTS]);
+          return;
         }
         this.processingRunRecord.setEntryNodeAddress(entryNodeAddress);
         // NOTE: Save pair "resource - run ID" to local storage.
-        let entryNodeRunId: string = this.processingRunRecord.getRunId() as string;
+        const entryNodeRunId: string = this.processingRunRecord.getRunId() as string;
         this.localStorageService.saveToLocalStorage(entryNodeAddress, entryNodeRunId);
         // NOTE: Reinitializing log tabs with existing entry node address.
         this.initlogTabs();
       }
     )
-
-
   }
 
   // MARK: - Private
 
   private initlogTabs() {
-    let availableLogNames = this.monitoringApiService.getAvailableLogNames();
-    for (let logName of availableLogNames) {
-      let TAB_LINK_MOCK = "/";
-      let tab = new BasicTab(logName, TAB_LINK_MOCK);
-      this.logTabs.push(tab);
-    }
-    const initialTab = this.logTabs[this.currentDisplayingTabId];
-    initialTab.isActive = true;
-    this.changeDisplayingLog(initialTab);
+    const currentNodeAddress: string = this.processingRunRecord.getEntryNodeAddress();
+    this.monitoringApiSubscriptions.add(
+      this.monitoringApiService.getLogsForRunNode(currentNodeAddress)
+      .subscribe(
+        (mongooseLogs: MongooseLogModel[]) => {
+
+          var displayingLogTabs: BasicTab[] = [];
+          for (var mongooseLog of mongooseLogs) {
+            // NOTE: Creating same amount of tabs as the fetched log types.
+            const tabName: string = mongooseLog.getName();
+            const tabLink: string = mongooseLog.getEndpoint();
+            let tab: BasicTab = new BasicTab(tabName, tabLink);
+
+            displayingLogTabs.push(tab);
+          }
+          this.logTabs$.next(displayingLogTabs);
+
+          // NOTE: Set first found tab as initial.
+          const createdTabs: BasicTab[] = this.logTabs$.getValue();
+          if (createdTabs.length == 0) { 
+            this.shouldDisplayErrorAlert = true; 
+            console.log(`Unable to find any Mongoose logs.`);
+            return;
+          }
+          const initialTab: BasicTab = createdTabs[0];
+          this.changeDisplayingLog(initialTab);
+        },
+        (error: any) => { 
+          this.shouldDisplayErrorAlert = true; 
+          console.log(`Unable to find any Mongoose logs.`);
+        }
+      ),
+    );
   }
 }

@@ -17,6 +17,7 @@ import { ResourceLocatorType } from "../../models/address-type";
 import { MongooseRunNode } from "../../models/mongoose-run-node.model";
 import { PrometheusError } from "src/app/common/Exceptions/PrometheusError";
 import { MongooseMetric } from "../../models/chart/mongoose-metric.model";
+import { MongooseLogModel } from "../../models/mongoose.log.model";
 
 
 @Injectable({
@@ -24,12 +25,8 @@ import { MongooseMetric } from "../../models/chart/mongoose-metric.model";
 })
 export class MonitoringApiService {
 
-  private readonly DEFAULT_TIMEOUT_MILLISECS: number = 4500; 
+  private readonly DEFAULT_TIMEOUT_MILLISECS: number = 4500;
   private currentMongooseRunRecords$: BehaviorSubject<MongooseRunRecord[]> = new BehaviorSubject<MongooseRunRecord[]>([]);
-
-  // NOTE: availableLogs is a list of logs provided by Mongoose. Key is REST API's endpoint for fetching the log, ...
-  // ... value is a displaying name. 
-  private availableLogs: Map<String, String> = new Map<String, String>();
 
   // MARK: - Lifecycle 
 
@@ -60,7 +57,7 @@ export class MonitoringApiService {
     ).pipe(
       catchError(error => {
         console.log(`Request for Mongoose node's status at ${mongooseRunEntryNode.getEntryNodeAddress()} has timed out. Returning status "finished".`);
-        return of (MongooseRunStatus.Finished);
+        return of(MongooseRunStatus.Finished);
       })
     )
   }
@@ -112,15 +109,8 @@ export class MonitoringApiService {
     );
   }
 
-  // NOTE: Returning hard-coded metrics name in order to test the UI first.
-  public getAvailableLogNames(): String[] {
-    let availableLogsName = Array.from(this.availableLogs.values());
-    return availableLogsName;
-  }
-
   // NOTE: Fetching duration for the target run record 
   public getDuration(loadStepId: string): Observable<any> {
-
     const latestValueTmePeriod: number = 0;
     return this.prometheusApiService.getElapsedTimeValue(latestValueTmePeriod, loadStepId).pipe(
       map((rawDurationMetric: MongooseMetric[]) => {
@@ -131,15 +121,25 @@ export class MonitoringApiService {
     );
   }
 
-  public getLogApiEndpoint(displayingLogName: String): String {
-    // NOTE: Finding first matching key. Key is an API's endpoint.
-    var targetEndpoint: String = "";
-    Array.from(this.availableLogs.keys()).forEach(key => {
-      if (this.availableLogs.get(key) == displayingLogName) {
-        targetEndpoint = key;
-      }
-    });
-    return targetEndpoint;
+  /**
+   * Fetches available logs with their REST API endpoints from given node.
+   * @param runNodeAddress target node adddress.
+   * @returns Pair [log's REST API endpoint : log name]
+   */
+  public getLogsForRunNode(runNodeAddress: string): Observable<MongooseLogModel[]> {
+    const availableLogsEndpoint: string = "logs";
+    return this.http.get(`${Constants.Http.HTTP_PREFIX}${runNodeAddress}/${availableLogsEndpoint}`).pipe(
+      map((rawAvailableLogs: any) => {
+        let fetchedLogs: MongooseLogModel[] = [];
+        for (var logEndpoint in rawAvailableLogs) {
+          // NOTE: Raw logs format: {.., <Log REST API endpoint> : <Log name>, ...}
+          const logName: string = rawAvailableLogs[`${logEndpoint}`];
+          const fetchedLogInstance: MongooseLogModel = new MongooseLogModel(logName, logEndpoint);
+          fetchedLogs.push(fetchedLogInstance);
+        }
+        return fetchedLogs;
+      })
+    );
   }
 
   public updateRecord(targetRecord: MongooseRunRecord): Observable<MongooseRunRecord> {
@@ -171,7 +171,7 @@ export class MonitoringApiService {
         return true;
       }),
       catchError((error, caughtError) => {
-        if (error instanceof TimeoutError) { 
+        if (error instanceof TimeoutError) {
           console.log(`Request on Mongoose node ${runNodeAddress} has timed out.`);
         }
         return of(false);
@@ -193,7 +193,9 @@ export class MonitoringApiService {
     } else {
       targetUrl = mongooseNodeAddress + logsEndpoint + delimiter + stepId + delimiter + logName;
     }
-    return this.http.get(`${Constants.Http.HTTP_PREFIX}${targetUrl}`, { responseType: 'text' }).pipe(share());
+    return this.http.get(`${Constants.Http.HTTP_PREFIX}${targetUrl}`, { responseType: 'text' }).pipe(
+      share()
+    );
   }
 
   public getMongooseRunRecords(): Observable<MongooseRunRecord[]> {
@@ -313,26 +315,7 @@ export class MonitoringApiService {
   }
 
   // NOTE: Setting up service's observables 
-  private setUpService() {
-    this.configurateAvailableLogs();
-  }
-
-  private configurateAvailableLogs() {
-    // NOTE: Key is a REST API endpoint's name, value is displaying name. 
-    // NOTE: Endpoints can be found at https://github.com/emc-mongoose/mongoose/tree/master/doc/interfaces/api/remote#logs
-    this.availableLogs.set("Config", "Configuration");
-    this.availableLogs.set("Cli", "Command line arguments dump");
-    this.availableLogs.set("Error", "Error messages");
-    this.availableLogs.set("OpTraces", "Load operation traces");
-
-    this.availableLogs.set("metrics.File", "Load step periodic metrics");
-    this.availableLogs.set("metrics.FileTotal", "Load step total metrics log");
-    this.availableLogs.set("metrics.threshold.File", "Load step periodic threshold metrics");
-    this.availableLogs.set("metrics.threshold.FileTotal", "Load step total threshold metrics log");
-
-    this.availableLogs.set("Messages", "Generic messages");
-    this.availableLogs.set("Scenario", "Scenario dump");
-  }
+  private setUpService() { }
 
 
   private findMongooseRecordByLoadStepId(records: MongooseRunRecord[], id: String): MongooseRunRecord {
