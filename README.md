@@ -114,7 +114,7 @@ Processing Mongoose run could be terminated from the UI.
 
 # 2. Configuration 
 
-UI's configuration depends on the parameters listen within .env file.
+UI's configuration depends on the parameters listen within [.env](.env) file.
 
 ## 2.1 Deploying ports 
 The following parameters are being used to specify deploying ports of the services: 
@@ -167,6 +167,8 @@ In order to have the access from outside, NodeJS server should be mapped to port
 ``` 
 $ docker run --env-file .env -p 8080:8080 -p 9090:9090 emcmongoose/darzee
 ```
+Note that you should use project's [.env](.env) file.
+
 ### 3.2.2 Run in development mode 
 Darzee has been created with Angular CLI. It could be ran in development mode using the appropriate command: 
 ```
@@ -188,6 +190,7 @@ docker run \
     -p {PROMETHEUS_PORT}:{PROMETHEUS_PORT} \
     emcmongoose/darzee[-<VERSION>] 
 ```
+Note that you should use project's [.env](.env) file.
 
 ## 4.2 Kubernetes
 
