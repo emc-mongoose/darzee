@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # NOTE: The file contains script for starting up Darzee's supporting services.
-# NOTE Starting Prometheus in background 
+# NOTE: Starting Prometheus in background 
 nohup /./prometheus/bin/prometheus --config.file=/prometheus/prometheus/server/prometheus.yml --web.enable-lifecycle 2> prometheus_logs.txt &
 status=$?
 if [ $status -ne 0 ]; then
@@ -9,11 +9,12 @@ if [ $status -ne 0 ]; then
   exit $status
 fi
 
-# NOTE Starting NodeJS server in background 
+# NOTE: Starting NodeJS server in background 
 nohup node prometheus/prometheus/server/node-server.js 2> server_logs.txt &
 
 while true; do
+# NOTE: Infinite loop in order to keep the services running within the Docker container.
   sleep 86400;
 done
 
-echo "Darzee has started."
+echo "Darzee has unexpectedly terminated."
