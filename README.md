@@ -240,7 +240,7 @@ $ bash ./create-mongoose-pravega-environment.sh
 ```
 This will create a deployment and a service. 
 The deployment will contain instance of Mongoose Pravega driver, the service will connect it to the network outside of cluster via <b>remote API port 9999</b>. <br/>
-Note that in `/console/src/assets/configuration-examples/kubernetes/mongoose-pravega/mongoose-pravega-service.yml`, you should 
+Note that in [kubernetes object description for Mongoose pravega driver](/console/src/assets/configuration-examples/kubernetes/mongoose-pravega/mongoose-pravega-service.yml), you should 
 specify a running Pravega controller IP (<b><PRAVEGA_CONTROLLER_IP></b>), otherwise it won't work.
 ```
 args: [--run-node, --storage-namespace=mongoose-pravega-scope, --run-port=9999, --load-step-node-port=1099, 
@@ -258,7 +258,6 @@ $ bash cd /console/src/assets/configuration-examples/kubernetes/mongoose-pravega
 $ bash chmod +x  delete-mongoose-pravega-environment.sh
 $ bash ./delete-mongoose-pravega-environment.sh 
 ```
-
 
 # 5. Troubleshooting 
 
