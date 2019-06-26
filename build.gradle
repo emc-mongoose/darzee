@@ -91,7 +91,7 @@ task createDockerfile(type: Dockerfile) {
     instruction "RUN cd .."
     instruction "WORKDIR /"
     instruction "RUN mv /prometheus/etc/prometheus/prometheus.yml /prometheus/prometheus/server/prometheus.yml"
-    instruction "COPY entrypoint.sh entrypoint.sh"
+    instruction "COPY docker-related-files/entrypoint.sh entrypoint.sh"
     instruction "RUN ls"
     instruction "COPY .env .env"
     instruction "RUN sed -i 's/\r\$//' entrypoint.sh && chmod +x entrypoint.sh"
