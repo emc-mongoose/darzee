@@ -199,8 +199,7 @@ In order to connect with the outside network, Darzee uses Kubernetes service `/c
 
 Run Darzee as a deployment: <br/>
 ```
-$ bash 
-$ kubectl apply -f /console/kubernetes/darzee-deployment.yml
+$ bash kubectl apply -f /console/kubernetes/darzee-deployment.yml
 $ bash kubectl apply -f /console/kubernetes/darzee-service.yml
 ```
 ### 4.2.1 Test Darzee in Kubernetes using predefined Mongoose environment
