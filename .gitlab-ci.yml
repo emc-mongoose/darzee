@@ -1,0 +1,29 @@
+image: docker:stable
+
+variables:
+  IMAGE_NAME: emcmongoose/darzee
+  IMAGE_TAG: ${DARZEE_VER}
+
+stages:
+  - build_docker_image
+  - deploy
+
+build_docker_image:
+  stage: build_docker_image
+  script:
+    - ./gradlew clean buildImage
+
+release_to_docker_hub:
+  stage: deploy
+  script:
+    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+    - docker load < ${IMAGE_FILE_NAME}
+    - docker tag ${IMAGE_NAME}:${CI_COMMIT_SHA} ${IMAGE_NAME}:${MONGOOSE_VERSION}
+    - docker push ${IMAGE_NAME}:${IMAGE_TAG}
+    - docker tag ${IMAGE_NAME}:${IMAGE_TAG}
+    - docker push ${IMAGE_NAME}:${IMAGE_TAG}
+
+  only:
+    - latest
+  except:
+    - branches
