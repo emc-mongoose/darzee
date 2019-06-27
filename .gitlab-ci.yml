@@ -21,6 +21,7 @@ build_docker_image:
   image: docker:stable
   stage: build_docker_image
   script:
+    - ls 
     - echo $CREATED_DARZEE_DOCKERFILE_PATH
     - docker build -t emcmongoose/darzee:latest $CREATED_DARZEE_DOCKERFILE_PATH
     - docker save ${IMAGE_NAME}:${CI_COMMIT_SHA} > ${IMAGE_FILE_NAME}
