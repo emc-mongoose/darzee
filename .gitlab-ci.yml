@@ -20,7 +20,7 @@ build_docker_image:
   image: docker:stable
   stage: build
   script:
-    - docker build -f ${CREATED_DARZEE_DOCKERFILE_PATH} -t ${IMAGE_NAME}:${IMAGE_TAG}
+    - docker build -f ${CREATED_DARZEE_DOCKERFILE_PATH} -t ${IMAGE_NAME}:${LATEST_IMAGE_TAG}
     - docker save ${IMAGE_NAME}:${CI_COMMIT_SHA} > ${IMAGE_FILE_NAME}
   artifacts:
     paths:
@@ -32,10 +32,10 @@ release_to_docker_hub:
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
     - docker load < ${IMAGE_FILE_NAME}
-    - docker tag ${IMAGE_NAME}:${CI_COMMIT_SHA} ${IMAGE_NAME}:${MONGOOSE_VERSION}
-    - docker push ${IMAGE_NAME}:${IMAGE_TAG}
-    - docker tag ${IMAGE_NAME}:${IMAGE_TAG}
-    - docker push ${IMAGE_NAME}:${IMAGE_TAG}
+    - docker tag $IMAGE_NAME:$CI_COMMIT_SHA $IMAGE_NAME:$MONGOOSE_VERSION
+    - docker push $IMAGE_NAME:${LATEST_IMAGE_TAG}
+    - docker tag ${IMAGE_NAME}:${LATEST_IMAGE_TAG}
+    - docker push ${IMAGE_NAME}:${LATEST_IMAGE_TAG}
 
   only:
   # NOTE: Using GUI-47-continious-integration in test purposes 
