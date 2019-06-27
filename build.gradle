@@ -7,14 +7,15 @@ import com.bmuschko.gradle.docker.tasks.image.*
 def DARZEE_CONFIGURATION_NAMES = [
   version: "DARZEE_VER",
   port: "DARZEE_PORT",
+  dockerfilePath: "CREATED_DARZEE_DOCKERFILE_PATH"
 ]
 
 buildscript {
   ext {
     // NOTE: Project configurations' actual parameter values. 
     darzeeConfiguration = [ 
-      DARZEE_VERSION: '${getConsoleConfiurationParameter(${DARZEE_CONFIGURATION_NAMES.version})}',
-      DARZEE_PORT: '${getConsoleConfiurationParameter(${DARZEE_CONFIGURATION_NAMES.port})}',
+      DARZEE_VERSION: '${getDarzeeConfiurationParameter(${DARZEE_CONFIGURATION_NAMES.version})}',
+      DARZEE_PORT: '${getDarzeeConfiurationParameter(${DARZEE_CONFIGURATION_NAMES.port})}',
       DARZEE_IMAGE_FULL_ID: 'emcmongoose/darzee',
       DARZEE_IMAGE_NAME: 'darzee'
     ]
@@ -60,7 +61,8 @@ node {
 }
 
 task createDockerfile(type: Dockerfile) {
-    destFile = project.file('docker/Dockerfile')
+  
+    destFile = project.file(getDarzeeConfiurationParameter(DARZEE_CONFIGURATION_NAMES.dockerfilePath))
 
     // NOTE: Stage 1. Building Angular app in builder
     from "node:8.11.2-alpine as builder"
@@ -104,7 +106,7 @@ task buildImage(type: DockerBuildImage, dependsOn: 'createDockerfile') {
     inputDir = project.file(".")
     dockerFile = createDockerfile.destFile
     imageId = darzeeConfiguration.DARZEE_IMAGE_ID
-    tags = [darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':' + getConsoleConfiurationParameter(DARZEE_CONFIGURATION_NAMES.version), darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':testing', darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':kube']
+    tags = [darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':' + getDarzeeConfiurationParameter(DARZEE_CONFIGURATION_NAMES.version), darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':testing', darzeeConfiguration.DARZEE_IMAGE_FULL_ID + ':kube']
     doLast { 
         clearProductionFiles()
     }
@@ -132,7 +134,7 @@ def clearProductionFiles() {
  delete 'docker'
 }
 
-def getConsoleConfiurationParameter(final String parameterName) { 
+def getDarzeeConfiurationParameter(final String parameterName) { 
 
   // We're storing environment variables within .env file. The image tag ...
   // ... (version of Mongoose Console), Console's exposing port, etc. is defined inside of it. 
@@ -154,7 +156,5 @@ def getConsoleConfiurationParameter(final String parameterName) {
 }
 
 def getConsoleExposingPort() { 
-  // TODO: Figure out the way how to extract parameter name from the variable. 
-  // return getConsoleConfiurationParameter(ext.darzeeConfiguration.DARZEE_PORT);
-  return getConsoleConfiurationParameter(DARZEE_CONFIGURATION_NAMES.port);
+  return getDarzeeConfiurationParameter(DARZEE_CONFIGURATION_NAMES.port);
 }
