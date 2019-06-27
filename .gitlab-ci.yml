@@ -1,19 +1,31 @@
-image: java:8-jdk
 
 variables:
   IMAGE_NAME: emcmongoose/darzee
   IMAGE_TAG: ${DARZEE_VER}
+  IMAGE_FILE_NAME: build/darzee.tar
 
 stages:
-  - build_docker_image
+  - build
   - deploy
 
-build_docker_image:
-  stage: build_docker_image
+create_dockerfile:
+  image: java:8-jdk
+  stage: build
   script:
-    - ./gradlew clean buildImage
+    - ./gradlew clean createDockerfile
+
+build_docker_image:
+  image: docker:stable
+  stage: build
+  script:
+    - docker build -f ${CREATED_DARZEE_DOCKERFILE_PATH} -t ${IMAGE_NAME}:${IMAGE_TAG}
+    - docker save ${IMAGE_NAME}:${CI_COMMIT_SHA} > ${IMAGE_FILE_NAME}
+  artifacts:
+    paths:
+      - ${IMAGE_FILE_NAME}
 
 release_to_docker_hub:
+  image: docker:stable
   stage: deploy
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
