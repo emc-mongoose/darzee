@@ -20,8 +20,10 @@ build_docker_image:
   image: docker:stable
   stage: build
   script:
-    - docker build -f ${CREATED_DARZEE_DOCKERFILE_PATH} -t ${IMAGE_NAME}:${LATEST_IMAGE_TAG}
+    - docker build -t ${IMAGE_NAME}:${LATEST_IMAGE_TAG}
     - docker save ${IMAGE_NAME}:${CI_COMMIT_SHA} > ${IMAGE_FILE_NAME}
+    - echo $CI_COMMIT_SHA
+    - echo $DOCKER_USER
   artifacts:
     paths:
       - ${IMAGE_FILE_NAME}
