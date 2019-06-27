@@ -1,8 +1,18 @@
-image: docker:stable
+image: java:8-jdk
 
 variables:
   IMAGE_NAME: emcmongoose/darzee
   IMAGE_TAG: ${DARZEE_VER}
+
+before_script:
+#  - echo `pwd` # debug
+#  - echo "$CI_BUILD_NAME, $CI_BUILD_REF_NAME $CI_BUILD_STAGE" # debug
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+cache:
+paths:
+    - .gradle/wrapper
+    - .gradle/caches
 
 stages:
   - build_docker_image
@@ -24,6 +34,7 @@ release_to_docker_hub:
     - docker push ${IMAGE_NAME}:${IMAGE_TAG}
 
   only:
-    - latest
+  # NOTE: Using GUI-47-continious-integration in test purposes 
+    - GUI-47-continious-integration
   except:
     - branches
