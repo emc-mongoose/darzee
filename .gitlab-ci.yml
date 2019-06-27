@@ -5,6 +5,9 @@ variables:
   IMAGE_FILE_NAME: build/darzee.tar
   CREATED_DARZEE_DOCKERFILE_PATH: "${CREATED_DARZEE_DOCKERFILE_PATH}"
 
+before-script: 
+  - export CREATED_DARZEE_DOCKERFILE_PATH=$(CREATED_DARZEE_DOCKERFILE_PATH)
+
 stages:
   - build
   - deploy
