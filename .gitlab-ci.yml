@@ -4,11 +4,6 @@ variables:
   IMAGE_NAME: emcmongoose/darzee
   IMAGE_TAG: ${DARZEE_VER}
 
-
-cache:
-    - .gradle/wrapper
-    - .gradle/caches
-
 stages:
   - build_docker_image
   - deploy
