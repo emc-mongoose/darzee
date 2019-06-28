@@ -35,12 +35,12 @@ build_docker_image:
     - cp $CREATED_DARZEE_DOCKERFILE_PATH .
     - ls
     - docker build -t emcmongoose/darzee:latest .
-    - docker save ${IMAGE_NAME}:${CI_COMMIT_SHA} > ${IMAGE_FILE_NAME}
+    - docker save emcmongoose/darzee:latest > build/darzee.tar
     - echo $CI_COMMIT_SHA
     - echo $DOCKER_USER
   artifacts:
     paths:
-      - ${IMAGE_FILE_NAME}
+      - build/darzee.tar
 
 release_to_docker_hub:
   image: docker:stable
