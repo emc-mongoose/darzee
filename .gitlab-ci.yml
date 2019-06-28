@@ -55,6 +55,7 @@ release_to_docker_hub:
 
   only:
   # NOTE: Using GUI-47-continious-integration in test purposes 
+  # TODO: Change target branch name to "master"
     - GUI-47-continious-integration
   except:
     - branches
