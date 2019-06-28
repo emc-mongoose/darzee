@@ -3,7 +3,7 @@ variables:
   IMAGE_NAME: emcmongoose/darzee
   LATEST_IMAGE_TAG: latest
   TESTING_IMAGE_TAG: testing
-  IMAGE_FILE_NAME: build/darzee.tar
+  IMAGE_FILE_NAME: darzee.tar
   CREATED_DARZEE_DOCKERFILE_PATH: docker/Dockerfile
  
   # NOTE: Reassigning pre-defined variables 
@@ -35,19 +35,19 @@ build_docker_image:
     - cp $CREATED_DARZEE_DOCKERFILE_PATH .
     - ls
     - docker build -t emcmongoose/darzee:latest .
-    - docker save emcmongoose/darzee:latest > build/darzee.tar
+    - docker save --output emcmongoose/darzee:latest darzee.tar
     - echo $CI_COMMIT_SHA
     - echo $DOCKER_USER
   artifacts:
     paths:
-      - build/darzee.tar
+      - darzee.tar
 
 release_to_docker_hub:
   image: docker:stable
   stage: deploy
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-    - docker load < ${IMAGE_FILE_NAME}
+    - docker load < darzee.tar
     - docker tag $IMAGE_NAME:$CI_COMMIT_SHA $IMAGE_NAME:$MONGOOSE_VERSION
     - docker push $IMAGE_NAME:${LATEST_IMAGE_TAG}
     - docker tag ${IMAGE_NAME}:${LATEST_IMAGE_TAG}
