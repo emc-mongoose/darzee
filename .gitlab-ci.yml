@@ -17,7 +17,7 @@ services:
 stages:
   - create_dockerfile
   - build_docker_image
-  - deploy
+  - release_to_docker_hub
 
 create_dockerfile:
   image: java:8-jdk
@@ -44,7 +44,7 @@ build_docker_image:
 
 release_to_docker_hub:
   image: docker:stable
-  stage: deploy
+  stage: release_to_docker_hub
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
     - docker load < darzee.tar
@@ -57,5 +57,6 @@ release_to_docker_hub:
   # NOTE: Using GUI-47-continious-integration in test purposes 
   # TODO: Change target branch name to "master"
     - GUI-47-continious-integration
-  except:
-    - branches
+
+  # except:
+  #   - branches
