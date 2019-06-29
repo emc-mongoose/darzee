@@ -21,6 +21,7 @@ stages:
   - release_latest_image_to_docker_hub
 
 create_dockerfile:
+  stage: create_dockerfile
   image: java:8-jdk
   artifacts:
     paths:
