@@ -54,9 +54,7 @@ release_testing_image_to_docker_hub:
     - docker push $IMAGE_NAME:$LATEST_IMAGE_TAG
 
   only:
-    - branches 
-  except:
-    - master
+    - merge_requests
 
 # NOTE: Releasing new Darzee version under tha "latest" tag only ...
 # ... in case of merge into master.
