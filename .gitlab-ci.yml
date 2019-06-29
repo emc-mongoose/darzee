@@ -20,7 +20,6 @@ stages:
   - release_to_docker_hub
 
 create_dockerfile:
-  stage: create_dockerfile
   image: java:8-jdk
   artifacts:
     paths:
@@ -44,7 +43,7 @@ build_docker_image:
 
 # NOTE: Releasing testing image into the docker hub. This is done in order to ...
 # ... test Darzee's updated version in deployment environment before the release.
-release_testing_image_to_docker_hub:
+release_to_docker_hub release_testing_image_to_docker_hub:
   stage: release_to_docker_hub
   image: docker:stable
   script:
@@ -58,7 +57,7 @@ release_testing_image_to_docker_hub:
 
 # NOTE: Releasing new Darzee version under tha "latest" tag only ...
 # ... in case of merge into master.
-release_latest_image_to_docker_hub:
+release_to_docker_hub release_latest_image_to_docker_hub:
   stage: release_to_docker_hub
   image: docker:stable
   script:
