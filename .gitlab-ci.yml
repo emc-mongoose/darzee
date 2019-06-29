@@ -17,7 +17,8 @@ services:
 stages:
   - create_dockerfile
   - build_docker_image
-  - release_to_docker_hub
+  - release_testing_image_to_docker_hub
+  - release_latest_image_to_docker_hub
 
 create_dockerfile:
   image: java:8-jdk
@@ -43,8 +44,8 @@ build_docker_image:
 
 # NOTE: Releasing testing image into the docker hub. This is done in order to ...
 # ... test Darzee's updated version in deployment environment before the release.
-release_to_docker_hub release_testing_image_to_docker_hub:
-  stage: release_to_docker_hub
+release_testing_image_to_docker_hub:
+  stage: release_testing_image_to_docker_hub
   image: docker:stable
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
@@ -57,8 +58,8 @@ release_to_docker_hub release_testing_image_to_docker_hub:
 
 # NOTE: Releasing new Darzee version under tha "latest" tag only ...
 # ... in case of merge into master.
-release_to_docker_hub release_latest_image_to_docker_hub:
-  stage: release_to_docker_hub
+release_latest_image_to_docker_hub:
+  stage: release_latest_image_to_docker_hub
   image: docker:stable
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
