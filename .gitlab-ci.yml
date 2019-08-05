@@ -16,19 +16,19 @@ variables:
 #   - docker:dind
 
 stages:
-  # - create_dockerfile
+  - create_dockerfile
   - build_docker_image
   - push_testing_image
   - release_into_the_dockerhub
 
-# create_dockerfile:
-#   stage: create_dockerfile
-#   image: java:8-jdk
-#   artifacts:
-#     paths:
-#       - $CREATED_DARZEE_DOCKERFILE_PATH
-#   script:
-#     - ./gradlew clean createDockerfile
+create_dockerfile:
+  stage: create_dockerfile
+  image: java:8-jdk
+  artifacts:
+    paths:
+      - $CREATED_DARZEE_DOCKERFILE_PATH
+  script:
+    - ./gradlew clean createDockerfile
 
 build_docker_image:
   stage: build_docker_image
