@@ -1,29 +1,91 @@
-image: docker:stable
 
 variables:
   IMAGE_NAME: emcmongoose/darzee
-  IMAGE_TAG: ${DARZEE_VER}
+  LATEST_IMAGE_TAG: latest
+  TESTING_IMAGE_TAG: testing
+  IMAGE_FILE_NAME: darzee.tar
+  CREATED_DARZEE_DOCKERFILE_PATH: docker/Dockerfile
 
 stages:
+  - create_dockerfile
   - build_docker_image
-  - deploy
+  - push_testing_image
+  - release_into_the_dockerhub
+
+create_dockerfile:
+  stage: create_dockerfile
+  image: java:8-jdk
+  artifacts:
+    paths:
+      - $CREATED_DARZEE_DOCKERFILE_PATH
+  script:
+    - ./gradlew clean createDockerfile
 
 build_docker_image:
   stage: build_docker_image
-  script:
-    - ./gradlew clean buildImage
+  image: docker:stable
 
-release_to_docker_hub:
-  stage: deploy
+  # NOTE: Setting up dind service inside a stage since it conflicts with a JDK image used ...
+  # ... in dockerfile creation stage.
+  services:
+    - docker:dind
+  variables:
+    SERVICE_HOST: docker # should be used instead of the "localhost"/"127.0.0.1" in GL CI
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+
+  script:
+    - cp $CREATED_DARZEE_DOCKERFILE_PATH .
+    - docker build -t emcmongoose/darzee:latest .
+    - docker save emcmongoose/darzee:latest > darzee.tar
+    - echo $CI_COMMIT_SHA
+    - echo $DOCKER_USER
+  artifacts:
+    paths:
+      - darzee.tar
+
+# NOTE: Releasing testing image into the docker hub. This is done in order to ...
+# ... test Darzee's updated version in deployment environment before the release.
+push_testing_image:
+  stage: push_testing_image
+  image: docker:stable
+
+  # NOTE: For some reasons, docker image conflicts with JDK image (which was used in a first stage), ...
+  # ... this is why I'm reinitializing it here. If you know better solutions, please, ...
+  # ... open a up PR.
+  services:
+    - docker:dind
+  variables:
+    SERVICE_HOST: docker
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-    - docker load < ${IMAGE_FILE_NAME}
-    - docker tag ${IMAGE_NAME}:${CI_COMMIT_SHA} ${IMAGE_NAME}:${MONGOOSE_VERSION}
-    - docker push ${IMAGE_NAME}:${IMAGE_TAG}
-    - docker tag ${IMAGE_NAME}:${IMAGE_TAG}
-    - docker push ${IMAGE_NAME}:${IMAGE_TAG}
+    - docker load < darzee.tar
+    - docker tag $IMAGE_NAME $IMAGE_NAME:$TESTING_IMAGE_TAG
+    - docker push $IMAGE_NAME:$TESTING_IMAGE_TAG
 
+# NOTE: Releasing new Darzee version under tha "latest" tag only ...
+# ... in case of merge into master.
+release_into_the_dockerhub:
+  stage: release_into_the_dockerhub
+
+  # NOTE: For some reasons, docker image conflicts with JDK image (which was used in a first stage), ...
+  # ... this is why I'm reinitializing it here. If you know better solutions, please, ...
+  # ... open a up PR.
+  image: docker:stable
+  services:
+    - docker:dind
+  variables:
+    SERVICE_HOST: docker
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+
+  script:
+    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+    - docker load < darzee.tar
+    - docker tag $IMAGE_NAME $IMAGE_NAME:$LATEST_IMAGE_TAG
+    - docker push $IMAGE_NAME:$LATEST_IMAGE_TAG
   only:
-    - latest
-  except:
-    - branches
+    - master
