@@ -33,7 +33,10 @@ create_dockerfile:
 build_docker_image:
   stage: build_docker_image
   image: docker:stable
- 
+  variables:
+    SERVICE_HOST: docker # should be used instead of the "localhost"/"127.0.0.1" in GL CI
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
   script:
     - docker ps
     - cp $CREATED_DARZEE_DOCKERFILE_PATH .
