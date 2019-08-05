@@ -55,6 +55,7 @@ build_docker_image:
 
 # NOTE: Releasing testing image into the docker hub. This is done in order to ...
 # ... test Darzee's updated version in deployment environment before the release.
+
 push_testing_image:
   stage: push_testing_image
   script:
