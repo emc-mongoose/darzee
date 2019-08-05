@@ -37,6 +37,9 @@ build_docker_image:
     SERVICE_HOST: docker # should be used instead of the "localhost"/"127.0.0.1" in GL CI
     DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+
+  services:
+    - docker:dind
     
   script:
     - docker ps
