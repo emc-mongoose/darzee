@@ -51,8 +51,8 @@ release_into_the_dockerhub:
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
     - docker load < darzee.tar
-    - docker tag $IMAGE_NAME $IMAGE_NAME:$TESTING_IMAGE_TAG
-    - docker push $IMAGE_NAME:$TESTING_IMAGE_TAG
+    - docker tag $IMAGE_NAME $IMAGE_NAME:$LATEST_IMAGE_TAG
+    - docker push $IMAGE_NAME:$LATEST_IMAGE_TAG
 
   only:
     - master
