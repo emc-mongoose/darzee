@@ -27,9 +27,12 @@ create_dockerfile:
     paths:
       - $CREATED_DARZEE_DOCKERFILE_PATH
   script:
+    - docker ps
     - ./gradlew clean createDockerfile
 
 build_docker_image:
+  services:
+    - docker:dind
   stage: build_docker_image
   script:
     - docker ps
