@@ -38,6 +38,9 @@ build_docker_image:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
   script:
+    - export SERVICE_HOST=docker
+    - export DOCKER_HOST=tcp://docker:2375
+    - export DOCKER_DRIVER=overlay2
     - docker ps
     - cp $CREATED_DARZEE_DOCKERFILE_PATH .
     - docker build -t emcmongoose/darzee:latest .
