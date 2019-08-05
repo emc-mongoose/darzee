@@ -56,12 +56,12 @@ build_docker_image:
 # NOTE: Releasing testing image into the docker hub. This is done in order to ...
 # ... test Darzee's updated version in deployment environment before the release.
 
-services:
-  - docker:dind
-variables:
-  SERVICE_HOST: docker # should be used instead of the "localhost"/"127.0.0.1" in GL CI
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_DRIVER: overlay2
+# services:
+#   - docker:dind
+# variables:
+#   SERVICE_HOST: docker # should be used instead of the "localhost"/"127.0.0.1" in GL CI
+#   DOCKER_HOST: tcp://docker:2375
+#   DOCKER_DRIVER: overlay2
 
 push_testing_image:
   stage: push_testing_image
