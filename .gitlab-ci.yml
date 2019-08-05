@@ -33,6 +33,7 @@ build_docker_image:
   stage: build_docker_image
   image: docker:stable
   script:
+    - export DOCKER_HOST="tcp://localhost:2375"
     - cp $CREATED_DARZEE_DOCKERFILE_PATH .
     - ls
     - docker build -t emcmongoose/darzee:latest .
@@ -49,6 +50,7 @@ release_into_the_dockerhub:
   stage: release_into_the_dockerhub
   image: docker:stable
   script:
+    - export DOCKER_HOST="tcp://localhost:2375"
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
     - docker load < darzee.tar
     - docker tag $IMAGE_NAME $IMAGE_NAME:$LATEST_IMAGE_TAG
@@ -65,6 +67,7 @@ push_testing_image:
   stage: push_testing_image
   image: docker:stable
   script:
+    - export DOCKER_HOST="tcp://localhost:2375"
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
     - docker load < darzee.tar
     - docker tag $IMAGE_NAME $IMAGE_NAME:$TESTING_IMAGE_TAG
