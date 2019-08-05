@@ -53,33 +53,31 @@ build_docker_image:
     paths:
       - darzee.tar
 
-# # NOTE: Releasing new Darzee version under tha "latest" tag only ...
-# # ... in case of merge into master.
-# release_into_the_dockerhub:
-#   stage: release_into_the_dockerhub
-#   image: docker:stable
-#   script:
-#     - export DOCKER_HOST="tcp://localhost:2375"
-#     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-#     - docker load < darzee.tar
-#     - docker tag $IMAGE_NAME $IMAGE_NAME:$LATEST_IMAGE_TAG
-#     - docker push $IMAGE_NAME:$LATEST_IMAGE_TAG
+# NOTE: Releasing testing image into the docker hub. This is done in order to ...
+# ... test Darzee's updated version in deployment environment before the release.
+push_testing_image:
+  stage: push_testing_image
+  script:
+    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+    - docker load < darzee.tar
+    - docker tag $IMAGE_NAME $IMAGE_NAME:$TESTING_IMAGE_TAG
+    - docker push $IMAGE_NAME:$TESTING_IMAGE_TAG
+  only:
+    - merge_requests
 
-#   only:
-#     - master
-#   except: 
-#     - branches 
+# NOTE: Releasing new Darzee version under tha "latest" tag only ...
+# ... in case of merge into master.
+release_into_the_dockerhub:
+  stage: release_into_the_dockerhub
+  script:
+    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+    - docker load < darzee.tar
+    - docker tag $IMAGE_NAME $IMAGE_NAME:$LATEST_IMAGE_TAG
+    - docker push $IMAGE_NAME:$LATEST_IMAGE_TAG
 
-# # NOTE: Releasing testing image into the docker hub. This is done in order to ...
-# # ... test Darzee's updated version in deployment environment before the release.
-# push_testing_image:
-#   stage: push_testing_image
-#   image: docker:stable
-#   script:
-#     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-#     - docker load < darzee.tar
-#     - docker tag $IMAGE_NAME $IMAGE_NAME:$TESTING_IMAGE_TAG
-#     - docker push $IMAGE_NAME:$TESTING_IMAGE_TAG
+  only:
+    - master
+  except: 
+    - branches 
 
-#   only:
-#     - merge_requests
+
