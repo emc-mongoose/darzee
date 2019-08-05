@@ -31,7 +31,7 @@ create_dockerfile:
 
 build_docker_image:
   stage: build_docker_image
-  # image: docker:stable
+  image: docker:stable
   script:
     - cp $CREATED_DARZEE_DOCKERFILE_PATH .
     - ls
@@ -47,7 +47,7 @@ build_docker_image:
 # ... in case of merge into master.
 release_into_the_dockerhub:
   stage: release_into_the_dockerhub
-  # image: docker:stable
+  image: docker:stable
   script:
     - export DOCKER_HOST="tcp://localhost:2375"
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
@@ -64,7 +64,7 @@ release_into_the_dockerhub:
 # ... test Darzee's updated version in deployment environment before the release.
 push_testing_image:
   stage: push_testing_image
-  # image: docker:stable
+  image: docker:stable
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
     - docker load < darzee.tar
