@@ -279,7 +279,7 @@ In case data for the load step is fetched from the Prometheus, but its IP addres
 <b>NOTE: Actual for 06.08.2019</b> </br>
 
 With Angular builder version change, some errors are popping up. We've experienced issues with the [charts library we're using](https://github.com/valor-software/ng2-charts): after building Darzee docker image from Gitlab CI, the UI hasn't been starting up because of invalid linking of the charts library with the UI via Webpack. Althought, it has been working correctly with manual build. </br>
-Different Angular CLI and Angular versions is the reason why the issue took a place. </br>
+Different Angular CLI and Angular versions is the reason why the issue took a place. It was resolved [here](https://github.com/emc-mongoose/darzee/pull/132). </br>
 
 <b>Related issues: </b> 
 * [ERROR Error: Uncaught (in promise): TypeError: Object(...) is not a function #1117](https://github.com/valor-software/ng2-charts/issues/1117) - same issue; </br>
