@@ -4,7 +4,6 @@ variables:
   LATEST_IMAGE_TAG: latest
   TESTING_IMAGE_TAG: testing
   IMAGE_FILE_NAME: darzee.tar
-  DARZEE_SOURCE_CODE_MAIN_DIRECTORY: console
   CREATED_DARZEE_DOCKERFILE_PATH: docker/Dockerfile
 
 stages:
@@ -37,7 +36,6 @@ build_docker_image:
 
   script:
     - cp $CREATED_DARZEE_DOCKERFILE_PATH .
-    - ls
     - docker build -t emcmongoose/darzee:latest .
     - docker save emcmongoose/darzee:latest > darzee.tar
     - echo $CI_COMMIT_SHA
