@@ -39,7 +39,7 @@ export class ControlApiService {
     }
 
     // NOTE: Using JSON.stirngly(...) to pass Scenario as a HTTP parameter. It could contains multiple quotes, JSON.stringfy(...) handles it well. 
-    let configurationFormData = this.getFormDataArgumentsForMongooseRun(mongooseJsonConfiguration, javaScriptScenario);
+    let configurationFormData: FormData = this.getFormDataArgumentsForMongooseRun(mongooseJsonConfiguration, javaScriptScenario);
 
 
     return this.http.post(`${Constants.Http.HTTP_PREFIX}${entryNodeAddress}/${MongooseApi.RunApi.RUN_ENDPOINT}`, configurationFormData, { observe: "response" }).pipe(

@@ -36,6 +36,7 @@ export class MongooseRunRecord implements OnDestroy {
                 this.currentStatus = fetchedStatus;
             },
             error => {
+                console.error(`Unexpecred error has occured wihle fetchinds status for load step ${this.loadStepId}.`);
                 // NOTE: Handle situation of Mongoose entry node unavailability
                 this.currentStatus = MongooseRunStatus.Finished;
             }

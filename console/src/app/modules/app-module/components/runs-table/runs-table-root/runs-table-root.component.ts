@@ -200,7 +200,6 @@ export class RunsTableRootComponent implements OnInit {
     });
   }
 
-
   /**
    * Defines initial state of run table root component.
    */
@@ -224,7 +223,7 @@ export class RunsTableRootComponent implements OnInit {
     this.mongooseRecordsSubscription = this.monitoringApiService.getMongooseRunRecords().subscribe(
       updatedRecords => {
         // NOTE: Updating tabs here
-        let runTableTabs = this.getTabsForRecords(updatedRecords);
+        let runTableTabs: MongooseRunTab[] = this.getTabsForRecords(updatedRecords);
         this.mongooseRunTabs$.next(runTableTabs);
         // NOTE: Displaying every fetched records.
         this.displayingRunRecords = updatedRecords;

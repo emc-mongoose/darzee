@@ -12,6 +12,10 @@ import { environment } from "src/environments/environment";
 //  which is running within the UI's container. The service is supposed to ...
 // ... work with this server. 
 
+/**
+ * Describes service used to interact with Darzee's proxy server.
+ * Server documentation: Documentation: https://github.com/emc-mongoose/darzee/blob/master/console/server/README.md
+ */
 export class ContainerServerService {
 
     private readonly FILE_SAVE_ENDPOINT = "savefile";
@@ -39,12 +43,18 @@ export class ContainerServerService {
      * @param port Prometheus' exposing port.
      */
     public requestPrometheusReload(ipAddress: string, port: string): Observable<any> {
-        const ipAddressParamTag: string = "ipAddress";
-        const portParamTag: string = "port";
         console.log(`Prometheus will be reloaded on resource ${ipAddress}:${port}`);
         const containerServicerAddress: string = this.getContainerServicerAddressFromAddressLine();
-        let targetUrl = `${containerServicerAddress}/${this.RELOAD_PROMETHEUS_ENDPOINT}?${ipAddressParamTag}=${ipAddress}&${portParamTag}=${port}`;
-        return this.http.post(targetUrl, Constants.Http.EMPTY_POST_REQUEST_HEADERS);
+
+        const prometheusAddressData: Object = {
+            // NOTE: JSON's object fields naming is mandatory and should not be changed. 
+            // ... if any changes are required, always refer to server's documentation located in class's discription.
+            ipAddress: `${ipAddress}`,
+            port: `${port}`
+        };
+
+        const targetUrl = `${containerServicerAddress}/${this.RELOAD_PROMETHEUS_ENDPOINT}`;
+        return this.http.post(targetUrl, prometheusAddressData, Constants.Http.EMPTY_POST_REQUEST_HEADERS);
     }
 
     /**

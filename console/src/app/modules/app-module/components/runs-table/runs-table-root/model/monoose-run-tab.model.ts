@@ -1,6 +1,9 @@
 import { Subscription, Observable, BehaviorSubject } from "rxjs";
 import { OnInit, OnDestroy } from "@angular/core";
 
+/**
+ * Describes tabs on top of the runs table.
+ */
 export class MongooseRunTab implements OnInit, OnDestroy {
 
     private readonly INITIAL_AMOUNT_OF_RECORDS = 0;
