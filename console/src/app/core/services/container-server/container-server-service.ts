@@ -44,7 +44,7 @@ export class ContainerServerService {
         console.log(`Prometheus will be reloaded on resource ${ipAddress}:${port}`);
         const containerServicerAddress: string = this.getContainerServicerAddressFromAddressLine();
 
-        const prometheusAddressData: Object = { 
+        const prometheusAddressData: Object = {
             ipAddress: `${ipAddress}`,
             port: `${port}`
         };
