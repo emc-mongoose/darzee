@@ -372,10 +372,18 @@ export class PrometheusApiService implements MongooseChartDataProvider {
     }
     const ipAndPortDelimiter: string = ":";
     const ipAddressIndex: number = 0;
-    var prometheusIp: string = currentHostAddress.split(ipAndPortDelimiter)[ipAddressIndex];
 
+    var prometheusIp: string = currentHostAddress.split(ipAndPortDelimiter)[ipAddressIndex];
+   
+    const prometheusPortIndex: number = 1;
+    var prometheusPort: string = currentHostAddress.split(ipAndPortDelimiter)[prometheusPortIndex];
+    if (prometheusPort == undefined) { 
+      // NOTE: When user didn't specify Prometheus port, set the default one.
+      prometheusPort = environment.prometheusPort;
+    }
+    
     // NOTE: Append IP address with default Prometheus port. 
-    prometheusIp = `${prometheusIp}${ipAndPortDelimiter}${environment.prometheusPort}`;
+    prometheusIp = `${prometheusIp}${ipAndPortDelimiter}${prometheusPort}`;
 
     console.log(`Trying to load Prometheus on ${prometheusIp}...`);
 
