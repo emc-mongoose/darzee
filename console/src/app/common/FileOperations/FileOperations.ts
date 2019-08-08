@@ -15,12 +15,19 @@ export class FileOperations {
     // Defining empty constructor
     constructor() {}
 
+    /**
+     * 
+     * @param fileName Name of saving file.
+     * @param fileType Type of saving file withon the delimiter (".").
+     * @param data File content.
+     * @param lineDelimiter Delimiter between lines within saving file.
+     */
     public saveFile(fileName: String, fileType: FileFormat, data: String, lineDelimiter: string = this.NON_SET_DELIMITER) {
         data = data.toString();
         var textFromFileInLines: string[] = data.split(lineDelimiter);
         let fileTypeTag: string = this.getFileTypeTag(fileType);
         let binaryFileData = new Blob(textFromFileInLines, { type: fileTypeTag});
-        saveAs(binaryFileData, `${fileName}.yml`);
+        saveAs(binaryFileData, `${fileName}.${fileType}`);
     }
 
     private getFileTypeTag(fileType: FileFormat): string {
