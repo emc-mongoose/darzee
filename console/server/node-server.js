@@ -88,7 +88,7 @@ app.post('/savefile', function (req, res) {
  * @param ipAddress - ipv4 address of Prometheus 
  * @param port - Prometheus' exposing port
  */
-app.get('/reloadprometheus', function (req, res) {
+app.post('/reloadprometheus', function (req, res) {
     var targetPrometheusAddress = req.body.ipAddress || prometheusIp;
     var targetPrometheusPort = req.body.port || prometheusPort;
     console.log(`Reloading Prometheus on address ${req.body.ipAddress} and port ${req.body.port}`);
