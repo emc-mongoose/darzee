@@ -43,8 +43,15 @@ export class ContainerServerService {
         const portParamTag: string = "port";
         console.log(`Prometheus will be reloaded on resource ${ipAddress}:${port}`);
         const containerServicerAddress: string = this.getContainerServicerAddressFromAddressLine();
-        let targetUrl = `${containerServicerAddress}/${this.RELOAD_PROMETHEUS_ENDPOINT}?${ipAddressParamTag}=${ipAddress}&${portParamTag}=${port}`;
-        return this.http.post(targetUrl, Constants.Http.EMPTY_POST_REQUEST_HEADERS);
+
+        const prometheusAddressData: Object = { 
+            ipAddress: `${ipAddress}`,
+            port: `${port}`
+        };
+        console.log(`prometheusAddressData: ${JSON.stringify(prometheusAddressData)}`);
+
+        let targetUrl = `${containerServicerAddress}/${this.RELOAD_PROMETHEUS_ENDPOINT}`;
+        return this.http.post(targetUrl, prometheusAddressData, Constants.Http.EMPTY_POST_REQUEST_HEADERS);
     }
 
     /**
