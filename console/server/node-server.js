@@ -1,3 +1,8 @@
+/**
+ * Reverse proxy used to serve files and overcome browser's restrictions. 
+ * Documentation: https://github.com/emc-mongoose/darzee/blob/master/console/server/README.md
+ */
+
 const DARZEE_DEFAULT_PORT = 8080;
 const PROMETHEUS_DEFAULT_PORT = 9090;
 const PROMETHEUS_DEFAULT_IP = "localhost";
