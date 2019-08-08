@@ -81,9 +81,9 @@ export class ScenariosComponent implements OnInit {
     if (this.isSavingAvaliable()) {
       let fileSaver: FileOperations = new FileOperations();
       const filename = Constants.FileNames.SCENARIO_FILE_NAME;
-      let fileFormat = FileFormat.JSON;
+      const fileFormat = FileFormat.JS;
       let savingData = this.getValueFromEditor();
-      let codeLinesDelimiter = ";";
+      const codeLinesDelimiter: string = ";";
       fileSaver.saveFile(filename, fileFormat, savingData, codeLinesDelimiter);
       let misleadingMsg = Constants.Alerts.FILE_SAVED;
       alert(misleadingMsg);

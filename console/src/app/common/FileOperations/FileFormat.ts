@@ -3,5 +3,6 @@ export enum FileFormat {
     // ... to avoid compilation issues at runtime
     JSON = "json", 
     TEXT = "text",
-    YML = "yml"
+    YML = "yml",
+    JS = "js"
 }
