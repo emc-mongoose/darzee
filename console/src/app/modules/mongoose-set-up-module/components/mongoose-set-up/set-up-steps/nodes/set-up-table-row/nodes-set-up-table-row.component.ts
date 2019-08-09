@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
@@ -14,10 +14,18 @@ import { ResourceLocatorType } from 'src/app/core/models/address-type';
 })
 export class NodesSetUpTableRowComponent implements OnInit {
 
+  /**
+   * Displaying Mongoose run node instance.
+   */
   @Input() runNode: MongooseRunNode;
-  
+
+  /**
+   * Emits an event on inactive run node selection.
+   */
+  @Output() hasSelectedInactiveNode: EventEmitter<MongooseRunNode> = new EventEmitter<MongooseRunNode>();
+
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
-  
+
   private slaveNodesSubscription: Subscription = new Subscription();
 
   constructor(private mongooseSetUpService: MongooseSetUpService,
@@ -31,7 +39,7 @@ export class NodesSetUpTableRowComponent implements OnInit {
    * Handle selected node (validates its reachability, etc.).
    * @param selectedNode instance of selected Mongoose node.
    */
-  public onRunNodeSelect(selectedNode: MongooseRunNode) { 
+  public onRunNodeSelect(selectedNode: MongooseRunNode) {
     let isNodeLocatedByIp: boolean = (selectedNode.getResourceType() == ResourceLocatorType.IP);
     // NOTE: Add noode if check mark has been set, remove if unset    
     let hasNodeBeenSelected: boolean = this.mongooseSetUpService.isNodeExist(selectedNode);
@@ -47,8 +55,8 @@ export class NodesSetUpTableRowComponent implements OnInit {
         this.mongooseSetUpService.isMongooseNodeActive(selectedNodeResourceLocationIp).subscribe(
           (isNodeActive: boolean) => {
             if (!isNodeActive) {
-              // TODO: Handle inactive node here 
-              // this.displayInactivenodeAlert(selectedNode);
+              // NOTE: Handle run node inactivity.
+              this.hasSelectedInactiveNode.emit(selectedNode);
               return;
             }
             this.mongooseSetUpService.addNode(selectedNode);
@@ -80,7 +88,7 @@ export class NodesSetUpTableRowComponent implements OnInit {
   public getCustomClassForNode(node: MongooseRunNode): string {
     let mongooseEntryNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
     const noCustomClassTag: string = "";
-    if (mongooseEntryNode == undefined) { 
+    if (mongooseEntryNode == undefined) {
       return noCustomClassTag;
     }
     const entryNodeAddress: string = mongooseEntryNode.getResourceLocation();

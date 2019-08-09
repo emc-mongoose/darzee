@@ -21,7 +21,7 @@ import { HttpUtils } from 'src/app/common/HttpUtils';
   providers: []
 })
 export class NodesComponent implements OnInit {
-  
+
   private readonly IP_DEFAULT_PORT: number = 9999;
 
   public runNode: MongooseRunNode;
@@ -124,12 +124,13 @@ export class NodesComponent implements OnInit {
 
   /**
  * Displays alert on top of the screen notifying that inactive node is selected.
- * @param inactiveNode inactive node instance,
+ * @param inactiveNode inactive node instance.
  */
-  private displayInactivenodeAlert(inactiveNode: MongooseRunNode) {
+  public displayInactiveNodeAlert(selectedNodeInfo: MongooseRunNode) {
+    console.log(`Inacitive run node has been selected. Arguments: ${JSON.stringify(selectedNodeInfo)}`)
     // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
     // ... the configuration thought. 
-    let inactiveNodeAlert = new InactiveNodeAlert(`selected node ${inactiveNode.getResourceLocation()} is not active`, inactiveNode);
+    let inactiveNodeAlert = new InactiveNodeAlert(`selected node ${selectedNodeInfo.getResourceLocation()} is not active`, selectedNodeInfo);
 
     // NOTE: Finding alert by message in alerts array
     let alertIndex = this.getAlertIndex(inactiveNodeAlert);
