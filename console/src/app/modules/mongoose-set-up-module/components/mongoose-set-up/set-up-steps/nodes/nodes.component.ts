@@ -24,6 +24,8 @@ export class NodesComponent implements OnInit {
   private readonly IP_DEFAULT_PORT: number = 9999;
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
 
+  public runNode: MongooseRunNode;
+
   public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>();
   public inactiveNodeAlerts: InactiveNodeAlert[] = [];
   public displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
@@ -148,19 +150,7 @@ export class NodesComponent implements OnInit {
 
   }
 
-  public getCustomClassForNode(node: MongooseRunNode): string {
-    let mongooseEntryNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
-    const noCustomClassTag: string = "";
-    if (mongooseEntryNode == undefined) { 
-      return noCustomClassTag;
-    }
-    const entryNodeAddress: string = mongooseEntryNode.getResourceLocation();
-    if (entryNodeAddress == node.getResourceLocation()) {
-      const entryNodeClass: string = this.ENTRY_NODE_CUSTOM_CLASS;
-      return entryNodeClass;
-    }
-    return noCustomClassTag;
-  }
+
 
   public onAlertClosed(closedAlert: InactiveNodeAlert) {
     let closedAlertIndex = this.getAlertIndex(closedAlert);
