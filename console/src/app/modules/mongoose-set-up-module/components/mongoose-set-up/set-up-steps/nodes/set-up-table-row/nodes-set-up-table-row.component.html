@@ -1,9 +1,11 @@
 <th scope="row">
-  <div class="checkbox">
-    <input type="checkbox" id="{{ runNode.getResourceLocation() }}" class="custom-control-input"
-      style="visibility: hidden;" (click)="onRunNodeSelect(runNode)">
-    <label for="{{ runNode.getResourceLocation() }}" class="custom-control-label"></label>
-  </div>
+  <ng-container *ngIf="!this.shouldDisplayLoadingSpinner(); else loadingSpinner">
+    <div class="checkbox">
+      <input type="checkbox" id="{{ runNode.getResourceLocation() }}" class="custom-control-input"
+        style="visibility: hidden;" (click)="onRunNodeSelect(runNode)">
+      <label for="{{ runNode.getResourceLocation() }}" class="custom-control-label"></label>
+    </div>
+  </ng-container>
 </th>
 
 <td> {{ runNode.resourceType }} </td>
@@ -30,3 +32,10 @@
   <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0"
       (click)="onRunNodeRemoveClicked(runNode)">Remove</button></span>
 </td>
+
+<!-- NOTE: Loading spinner template. -->
+<ng-template #loadingSpinner>
+  <div class="spinner-border text-success" role="status">
+      <span class="sr-only"></span>
+  </div>
+</ng-template>

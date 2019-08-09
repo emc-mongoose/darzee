@@ -26,6 +26,7 @@ export class NodesSetUpTableRowComponent implements OnInit {
 
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
 
+  private isNodeInValidationProcess: boolean = false; 
   private slaveNodesSubscription: Subscription = new Subscription();
 
   // MARK: - Lifecycle 
@@ -99,6 +100,13 @@ export class NodesSetUpTableRowComponent implements OnInit {
       return entryNodeClass;
     }
     return noCustomClassTag;
+  }
+
+  /**
+   * Determines if loading spinner should be displayed during node's validation.
+   */
+  public shouldDisplayLoadingSpinner(): boolean { 
+    return this.isNodeInValidationProcess;
   }
 
 }
