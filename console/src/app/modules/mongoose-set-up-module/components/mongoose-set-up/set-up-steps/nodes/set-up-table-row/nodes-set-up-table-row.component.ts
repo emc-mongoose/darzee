@@ -6,6 +6,7 @@ import { LocalStorageService } from 'src/app/core/services/local-storage-service
 import { MongooseStoredRunNode } from 'src/app/core/services/local-storage-service/mongoose-stored-run-node.model';
 import { Subscription } from 'rxjs';
 import { ResourceLocatorType } from 'src/app/core/models/address-type';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: '[app-nodes-set-up-table-row]',
@@ -26,7 +27,7 @@ export class NodesSetUpTableRowComponent implements OnInit {
 
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
 
-  private isNodeInValidationProcess: boolean = false; 
+  private isNodeInValidationProcess: boolean = false;
   private slaveNodesSubscription: Subscription = new Subscription();
 
   // MARK: - Lifecycle 
@@ -34,7 +35,7 @@ export class NodesSetUpTableRowComponent implements OnInit {
     private mongooseDataSharedService: MongooseDataSharedServiceService,
     private localStorageService: LocalStorageService) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   // MARK: - Public
 
@@ -54,15 +55,25 @@ export class NodesSetUpTableRowComponent implements OnInit {
 
     if (!hasNodeBeenSelected && isNodeLocatedByIp) {
       let selectedNodeResourceLocationIp: string = selectedNode.getResourceLocation();
+      this.isNodeInValidationProcess = true;
       this.slaveNodesSubscription.add(
-        this.mongooseSetUpService.isMongooseNodeActive(selectedNodeResourceLocationIp).subscribe(
-          (isNodeActive: boolean) => {
-            if (!isNodeActive) {
-              // NOTE: Handle run node inactivity.
-              this.hasSelectedInactiveNode.emit(selectedNode);
-              return;
-            }
-            this.mongooseSetUpService.addNode(selectedNode);
+        this.mongooseSetUpService.isMongooseNodeActive(selectedNodeResourceLocationIp).pipe(
+          map(
+            // NOTE: Node's validation process.
+            (isNodeActive: boolean) => {
+              if (!isNodeActive) {
+                // NOTE: Handle run node inactivity.
+                this.hasSelectedInactiveNode.emit(selectedNode);
+                this.isNodeInValidationProcess = false;
+                return;
+              }
+              this.mongooseSetUpService.addNode(selectedNode);
+            },
+          )
+        ).subscribe(
+          () => {
+            // NOTE: End of validation process for node.
+            this.isNodeInValidationProcess = false;
           }
         )
       )
@@ -105,7 +116,7 @@ export class NodesSetUpTableRowComponent implements OnInit {
   /**
    * Determines if loading spinner should be displayed during node's validation.
    */
-  public shouldDisplayLoadingSpinner(): boolean { 
+  public shouldDisplayLoadingSpinner(): boolean {
     return this.isNodeInValidationProcess;
   }
 
