@@ -21,8 +21,8 @@ import { HttpUtils } from 'src/app/common/HttpUtils';
   providers: []
 })
 export class NodesComponent implements OnInit {
+  
   private readonly IP_DEFAULT_PORT: number = 9999;
-  private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
 
   public runNode: MongooseRunNode;
 
@@ -69,17 +69,17 @@ export class NodesComponent implements OnInit {
    */
   public onAddIpButtonClicked(entredIpAddress: string): void {
     // NOTE: trimming accident whitespaces
-    this.entredIpAddress = this.entredIpAddress.replace(/\s/g, ""); 
+    this.entredIpAddress = this.entredIpAddress.replace(/\s/g, "");
 
-     const savingNodeAddress: string = this.entredIpAddress;
-     if (!HttpUtils.isIpAddressValid(savingNodeAddress)) {
-         if (HttpUtils.matchesIpv4AddressWithoutPort(savingNodeAddress)) {
-             this.entredIpAddress = HttpUtils.addPortToIp(this.entredIpAddress, this.IP_DEFAULT_PORT);
-         } else { 
-          alert(`IP address ${this.entredIpAddress} is not valid. Please, provide a valid one.`);
-          return; 
-         }
-     } 
+    const savingNodeAddress: string = this.entredIpAddress;
+    if (!HttpUtils.isIpAddressValid(savingNodeAddress)) {
+      if (HttpUtils.matchesIpv4AddressWithoutPort(savingNodeAddress)) {
+        this.entredIpAddress = HttpUtils.addPortToIp(this.entredIpAddress, this.IP_DEFAULT_PORT);
+      } else {
+        alert(`IP address ${this.entredIpAddress} is not valid. Please, provide a valid one.`);
+        return;
+      }
+    }
 
     let newMongooseNode = new MongooseRunNode(this.entredIpAddress);
     try {
@@ -104,59 +104,10 @@ export class NodesComponent implements OnInit {
     }
   }
 
-  /**
-   * Handle node removal. 
-   * @param savedNode will be removed from nodes list.
-   */
-  public onRunNodeRemoveClicked(savedNode: MongooseRunNode) {
-    const removedNodeAddress: string = savedNode.getResourceLocation();
-
-    let hasNodeBeenSavedToLocalStorage: boolean = this.localStorageService.getStoredMongooseNodes().some((storedNode: MongooseStoredRunNode) => {
-      const currentStoredNodeAddres: string = storedNode.address;
-      return (removedNodeAddress == currentStoredNodeAddres);
-    });
-
-    if (!hasNodeBeenSavedToLocalStorage) {
-      this.localStorageService.saveMongooseRunNode(removedNodeAddress);
-    }
-
-    this.mongooseDataSharedService.deleteMongooseRunNode(savedNode);
-  }
-
-  public onRunNodeSelect(selectedNode: MongooseRunNode) {
-    let isNodeLocatedByIp: boolean = (selectedNode.getResourceType() == ResourceLocatorType.IP);
-    // NOTE: Add noode if check mark has been set, remove if unset    
-    let hasNodeBeenSelected: boolean = this.mongooseSetUpService.isNodeExist(selectedNode);
-
-    if (hasNodeBeenSelected) {
-      // NOTE: Remove node it checkmark has been unset.
-      this.mongooseSetUpService.removeNode(selectedNode);
-    }
-
-    if (!hasNodeBeenSelected && isNodeLocatedByIp) {
-      let selectedNodeResourceLocationIp: string = selectedNode.getResourceLocation();
-      this.slaveNodesSubscription.add(
-        this.mongooseSetUpService.isMongooseNodeActive(selectedNodeResourceLocationIp).subscribe(
-          (isNodeActive: boolean) => {
-            if (!isNodeActive) {
-              this.displayInactivenodeAlert(selectedNode);
-              return;
-            }
-            this.mongooseSetUpService.addNode(selectedNode);
-          }
-        )
-      )
-    }
-
-  }
-
-
-
   public onAlertClosed(closedAlert: InactiveNodeAlert) {
     let closedAlertIndex = this.getAlertIndex(closedAlert);
     this.inactiveNodeAlerts.splice(closedAlertIndex, 1);
   }
-
 
   private isipValid(entredIpAddress: string) {
     const regExpr = new
@@ -171,6 +122,10 @@ export class NodesComponent implements OnInit {
     return isIpValid;
   }
 
+  /**
+ * Displays alert on top of the screen notifying that inactive node is selected.
+ * @param inactiveNode inactive node instance,
+ */
   private displayInactivenodeAlert(inactiveNode: MongooseRunNode) {
     // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
     // ... the configuration thought. 
