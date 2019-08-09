@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
@@ -25,6 +25,10 @@ export class NodesSetUpTableRowComponent implements OnInit {
    */
   @Output() hasSelectedInactiveNode: EventEmitter<MongooseRunNode> = new EventEmitter<MongooseRunNode>();
 
+  @ViewChild(`checkboxInput`) checkboxInput;
+  @ViewChild(`checkboxLabel`) checkboxLabel;
+
+
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
 
   private isNodeInValidationProcess: boolean = false;
@@ -44,6 +48,9 @@ export class NodesSetUpTableRowComponent implements OnInit {
    * @param selectedNode instance of selected Mongoose node.
    */
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
+    console.log(`Checkbox input value: ${this.checkboxInput.nativeElement.value}, whole JSON is: ${JSON.stringify(this.checkboxInput.nativeElement)}`);
+    console.log(`Checkbox label value: ${this.checkboxLabel.nativeElement.value}`);
+
     let isNodeLocatedByIp: boolean = (selectedNode.getResourceType() == ResourceLocatorType.IP);
     // NOTE: Add noode if check mark has been set, remove if unset    
     let hasNodeBeenSelected: boolean = this.mongooseSetUpService.isNodeExist(selectedNode);
@@ -64,7 +71,6 @@ export class NodesSetUpTableRowComponent implements OnInit {
               if (!isNodeActive) {
                 // NOTE: Handle run node inactivity.
                 this.hasSelectedInactiveNode.emit(selectedNode);
-                this.isNodeInValidationProcess = false;
                 return;
               }
               this.mongooseSetUpService.addNode(selectedNode);
