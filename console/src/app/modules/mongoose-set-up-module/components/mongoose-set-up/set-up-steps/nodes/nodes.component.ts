@@ -2,16 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Subscription, Observable } from 'rxjs';
-import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
-import { ResourceLocatorType } from 'src/app/core/models/address-type';
-import { MongooseSetupStep } from 'src/app/modules/mongoose-set-up-module/interfaces/mongoose-setup-step.interface';
 import { InactiveNodeAlert } from './incative-node-alert.interface';
 import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
 import { map } from 'rxjs/operators';
-import { elementContainerEnd } from '@angular/core/src/render3';
-import { MongooseStoredRunNode } from 'src/app/core/services/local-storage-service/mongoose-stored-run-node.model';
 import { HttpUtils } from 'src/app/common/HttpUtils';
 
 @Component({
@@ -37,7 +32,6 @@ export class NodesComponent implements OnInit {
 
   // MARK: - Lifecycle 
   constructor(
-    private mongooseSetUpService: MongooseSetUpService,
     private controlApiService: ControlApiService,
     private mongooseDataSharedService: MongooseDataSharedServiceService,
     private localStorageService: LocalStorageService
@@ -67,7 +61,7 @@ export class NodesComponent implements OnInit {
    * Handling node addition from the UI.
    * @param entredIpAddress entered IP from the UI.
    */
-  public onAddIpButtonClicked(entredIpAddress: string): void {
+  public onAddIpButtonClicked(): void {
     // NOTE: trimming accident whitespaces
     this.entredIpAddress = this.entredIpAddress.replace(/\s/g, "");
 
@@ -109,18 +103,6 @@ export class NodesComponent implements OnInit {
     this.inactiveNodeAlerts.splice(closedAlertIndex, 1);
   }
 
-  private isipValid(entredIpAddress: string) {
-    const regExpr = new
-      RegExp('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\:([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$');
-    entredIpAddress = entredIpAddress.trim();
-
-    if (!entredIpAddress) {
-      console.error("IP hasn't been set up.");
-    }
-
-    const isIpValid = regExpr.test(entredIpAddress);
-    return isIpValid;
-  }
 
   /**
  * Displays alert on top of the screen notifying that inactive node is selected.
@@ -141,6 +123,8 @@ export class NodesComponent implements OnInit {
     }
     return;
   }
+
+  // MARK: - Private
 
   private getAlertIndex(inactiveNodeAlert: InactiveNodeAlert): number {
     return (this.inactiveNodeAlerts.findIndex(

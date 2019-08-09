@@ -28,12 +28,14 @@ export class NodesSetUpTableRowComponent implements OnInit {
 
   private slaveNodesSubscription: Subscription = new Subscription();
 
+  // MARK: - Lifecycle 
   constructor(private mongooseSetUpService: MongooseSetUpService,
     private mongooseDataSharedService: MongooseDataSharedServiceService,
     private localStorageService: LocalStorageService) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
+
+  // MARK: - Public
 
   /**
    * Handle selected node (validates its reachability, etc.).
