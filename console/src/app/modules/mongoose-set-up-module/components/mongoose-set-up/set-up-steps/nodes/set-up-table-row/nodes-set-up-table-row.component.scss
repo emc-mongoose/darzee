@@ -1,135 +1,75 @@
+// NOTE: Node select checkbox.
+$CHECKBOX_DIAMETER: 25px;
+$CHECKBOX_BACKGROUND_COLOR-selected: #356cd2;
+$CHECKBOX_BACKGROUND_COLOR: #c9f6c9;
+$CHECKBOX_CHECK_MARK_COLOR: #5cb85c;
 
-  .nodes-input-block {
-    display: block;
-    margin-bottom: calc(15%);
-  }
-  .node-input-table-wrapper {
-    padding-bottom: calc(0.5%);
-    padding-top: calc(0.5%);
-  
-    z-index: 9999;
-    margin-bottom: calc(10vh);
-    width: calc(90%);
-    position: fixed;
-    bottom: 0%;
-    background-color: rgba(230, 255, 228, 0.5);
-  
-    display: table;
-    border-collapse: separate;
-    border-spacing: 30px 0;
-  }
-  
-  .test-wrapper {
+$CHECKBOX_SELECTED_COLOR: #fff;
+$CHECKBOX_SELECTED_BORDER_COLOR: #5cb85c;
+
+.checkbox:not(last-of-type) {
+  // NOTE: Cirlle
+  label {
+    background-color: pink;
     position: relative;
-  }
-  
-  .node-input-elements {
-    display: table-row;
-  }
-  
-  .node-input {
-    display: table-cell;
-  }
-  
-  .ip-address-input {
-    width: calc(100%);
-  }
-  
-  .add-ip-btn {
-    width: calc(100%);
-  }
-  
-  .node-entring-form {
-    margin: 10px 10px;
-  }
-  
-  .column-nodes-check {
-    /* NOTE: Setting minimal width in order to make the column wrap its content */
-    width: calc(1%);
-  }
-  
-  .column-nodes-removal {
-    /* NOTE: Setting minimal width in order to make the column wrap its content */
-    width: calc(1%);
-  }
-  
-  .column-nodes-type {
-    /* NOTE: Setting minimal width in order to make the column wrap its content */
-    width: calc(1%);
-  }
-  
-  $CHECKBOX_DIAMETER: 25px;
-  $CHECKBOX_BACKGROUND_COLOR-selected: #356cd2;
-  $CHECKBOX_BACKGROUND_COLOR: #c9f6c9;
-  $CHECKBOX_CHECK_MARK_COLOR: #5cb85c;
-  
-  $CHECKBOX_SELECTED_COLOR: #fff;
-  $CHECKBOX_SELECTED_BORDER_COLOR: #5cb85c;
-  
-  .checkbox:not(last-of-type) {
-    // NOTE: Cirlle
-    label {
-      background-color: pink;
-      position: relative;
-      display: block;
-      margin: 0 auto;
-      top: 0;
-      width: $CHECKBOX_DIAMETER;
-      height: $CHECKBOX_DIAMETER;
-      // NOTE: Unselected circle configuration
-      background-color: $CHECKBOX_BACKGROUND_COLOR;
-      border: 1px solid $CHECKBOX_SELECTED_BORDER_COLOR;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background-color 300ms ease, colour 300ms ease, box-shadow 300ms ease;
-  
-      // NOTE: Checkmark
-      &:after {
-        content: "";
-        position: absolute;
-        // NOTE: Constructing checkmark
-        width: 50%;
-        height: 34%;
-        top: 33%;
-        left: 23%;
-        opacity: 0;
-        border-left: 2px solid $CHECKBOX_CHECK_MARK_COLOR;
-        border-bottom: 2px solid $CHECKBOX_CHECK_MARK_COLOR;
-        // NOTE: Checkmark is a rotated by 45 degrees rectangle.
-        transform: rotate(-45deg);
-        transition: opacity 300ms ease;
-      }
-  
-      &:before {
-        visibility: hidden;
-      }
+    display: block;
+    margin: 0 auto;
+    top: 0;
+    width: $CHECKBOX_DIAMETER;
+    height: $CHECKBOX_DIAMETER;
+    // NOTE: Unselected circle configuration
+    background-color: $CHECKBOX_BACKGROUND_COLOR;
+    border: 1px solid $CHECKBOX_SELECTED_BORDER_COLOR;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 300ms ease, colour 300ms ease, box-shadow 300ms ease;
+
+    // NOTE: Checkmark
+    &:after {
+      content: "";
+      position: absolute;
+      // NOTE: Constructing checkmark
+      width: 50%;
+      height: 34%;
+      top: 33%;
+      left: 23%;
+      opacity: 0;
+      border-left: 2px solid $CHECKBOX_CHECK_MARK_COLOR;
+      border-bottom: 2px solid $CHECKBOX_CHECK_MARK_COLOR;
+      // NOTE: Checkmark is a rotated by 45 degrees rectangle.
+      transform: rotate(-45deg);
+      transition: opacity 300ms ease;
     }
-  
-    input {
+
+    &:before {
       visibility: hidden;
-  
-      // NOTE: Checkbox selected state background configuration
-      &:checked + label {
-        background-color: $CHECKBOX_BACKGROUND_COLOR-selected;
-        border-color: $CHECKBOX_BACKGROUND_COLOR-selected;
-        // NOTE: Selected checkbox checkmark's state
-        &:after {
-          opacity: 1;
-        }
-      }
     }
-  
-    input {
-      &:checked + label {
-        background-color: ($CHECKBOX_SELECTED_COLOR);
-        border-color: ($CHECKBOX_SELECTED_BORDER_COLOR);
+  }
+
+  input {
+    visibility: hidden;
+
+    // NOTE: Checkbox selected state background configuration
+    &:checked + label {
+      background-color: $CHECKBOX_BACKGROUND_COLOR-selected;
+      border-color: $CHECKBOX_BACKGROUND_COLOR-selected;
+      // NOTE: Selected checkbox checkmark's state
+      &:after {
+        opacity: 1;
       }
     }
   }
-  
-  #entry-node-tag { 
-    border-color: $CHECKBOX_BACKGROUND_COLOR;
-    border: 1px $CHECKBOX_BACKGROUND_COLOR solid;
-    font-weight: normal;
+
+  input {
+    &:checked + label {
+      background-color: ($CHECKBOX_SELECTED_COLOR);
+      border-color: ($CHECKBOX_SELECTED_BORDER_COLOR);
+    }
   }
-  
+}
+
+#entry-node-tag {
+  border-color: $CHECKBOX_BACKGROUND_COLOR;
+  border: 1px $CHECKBOX_BACKGROUND_COLOR solid;
+  font-weight: normal;
+}
