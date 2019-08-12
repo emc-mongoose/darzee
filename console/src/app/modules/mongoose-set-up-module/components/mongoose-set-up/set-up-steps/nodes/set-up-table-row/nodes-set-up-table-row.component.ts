@@ -32,10 +32,10 @@ export class NodesSetUpTableRowComponent implements OnInit {
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
   
   private readonly CHECKBOX_SUCCESS_COLOR: string = "p-success";
-  private readonly CHECKBOX_SUCCESS_ICON: string = 'fa fa-check';
+  private readonly CHECKBOX_SUCCESS_ICON: string = "fa fa-check";
 
   private readonly CHECKBOX_FAILURE_COLOR: string = "p-danger";
-  private readonly CHECKBOX_FAILURE_ICON: string = 'fa fa-refresh';
+  private readonly CHECKBOX_FAILURE_ICON: string = "fa fa-refresh";
 
   private isNodeInValidationProcess: boolean = false;
   private slaveNodesSubscription: Subscription = new Subscription();
