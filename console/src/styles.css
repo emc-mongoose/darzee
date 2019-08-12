@@ -7,3 +7,7 @@
 
 /* NOTE: JsonEditor style for displaying json as tree  */
 @import "~jsoneditor/dist/jsoneditor.min.css";
+
+/* NOTE: Custom fonts */
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~font-awesome/css/font-awesome.css";
