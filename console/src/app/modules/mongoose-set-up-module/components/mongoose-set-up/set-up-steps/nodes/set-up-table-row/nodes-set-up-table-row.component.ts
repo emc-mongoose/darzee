@@ -73,60 +73,26 @@ export class NodesSetUpTableRowComponent implements OnInit {
       this.slaveNodesSubscription.add(
         this.mongooseSetUpService.getMongooseRunNodeInstance(selectedNodeResourceLocationIp).pipe(
           map(
-            (runNodeInstance: MongooseRunNode) => {
+            (runNodeInstance: MongooseRunNode | undefined) => {
               const hasNodeSelectionSuccseed: boolean = (runNodeInstance != undefined);
-
-              this.isNodeSelected = hasNodeSelectionSuccseed;
               // TODO: Change driver type here
-              if (hasNodeSelectionSuccseed) {
-                this.checkboxConfiguration.color = "p-success";
-                this.checkboxConfiguration.icon = 'fa fa-check';
-                this.mongooseSetUpService.addNode(selectedNode);
-              } else {
-                this.checkboxConfiguration.color = "p-danger";
-                this.checkboxConfiguration.icon = 'fa fa-refresh';
-                this.hasSelectedInactiveNode.emit(selectedNode);
-              }
-
+              this.changeNodeSelectionCheckboxAppearence(selectedNode, hasNodeSelectionSuccseed);
               return runNodeInstance;
             }
           ),
           catchError((error: any) => {
             // NOTE: Handle run node inactivity.
+            console.log(`Error has been caught.`)
             return error;
           })
-        ).subscribe(
+        ).
+        subscribe(
           (runNodeInstance: (MongooseRunNode | undefined)) => {
-            const hasNodeSelectionSuccseed: boolean = (runNodeInstance != undefined);
-            this.isNodeSelected = hasNodeSelectionSuccseed;
+            this.isNodeInValidationProcess = false;
+          },
+          error => { 
+            console.log(`Error has been caught in subscription.`)
 
-            this.isNodeInValidationProcess = false;
-            console.log(`Node driver type: ${runNodeInstance.getDriverType()}`)
-          }
-        )
-      )
-      this.slaveNodesSubscription.add(
-        this.mongooseSetUpService.isMongooseNodeActive(selectedNodeResourceLocationIp).pipe(
-          map(
-            // NOTE: Node's validation process.
-            (isNodeActive: boolean) => {
-              this.isNodeSelected = true;
-              if (!isNodeActive) {
-                // NOTE: Handle run node inactivity.
-                this.checkboxConfiguration.color = "p-danger";
-                this.checkboxConfiguration.icon = 'fa fa-refresh';
-                this.hasSelectedInactiveNode.emit(selectedNode);
-                return;
-              }
-              this.checkboxConfiguration.color = "p-success";
-              this.checkboxConfiguration.icon = 'fa fa-check';
-              this.mongooseSetUpService.addNode(selectedNode);
-            },
-          )
-        ).subscribe(
-          () => {
-            // NOTE: End of validation process for node.
-            this.isNodeInValidationProcess = false;
           }
         )
       )
@@ -171,6 +137,19 @@ export class NodesSetUpTableRowComponent implements OnInit {
    */
   public shouldDisplayLoadingSpinner(): boolean {
     return this.isNodeInValidationProcess;
+  }
+
+  private changeNodeSelectionCheckboxAppearence(node: MongooseRunNode, nodeActivityState: boolean): void { 
+    if (nodeActivityState) {
+      this.checkboxConfiguration.color = "p-success";
+      this.checkboxConfiguration.icon = 'fa fa-check';
+      this.mongooseSetUpService.addNode(node);
+      console.log(`Node driver type: ${node.getDriverType()}`)
+    } else {
+      this.checkboxConfiguration.color = "p-danger";
+      this.checkboxConfiguration.icon = 'fa fa-refresh';
+      this.hasSelectedInactiveNode.emit(node);
+    }
   }
 
 }
