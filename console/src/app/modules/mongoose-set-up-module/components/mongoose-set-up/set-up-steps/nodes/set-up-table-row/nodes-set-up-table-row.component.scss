@@ -1,0 +1,19 @@
+// NOTE: Importing pretty checkbox in order to make angular-custom-checkbox work correctly
+@import "~pretty-checkbox/src/pretty-checkbox.scss";
+
+// NOTE: Node select checkbox.
+$CHECKBOX_DIAMETER: 25px;
+$CHECKBOX_BACKGROUND_COLOR-selected: #356cd2;
+$CHECKBOX_BACKGROUND_COLOR: #c9f6c9;
+$CHECKBOX_CHECK_MARK_COLOR: #5cb85c;
+
+#entry-node-tag {
+  border-color: $CHECKBOX_BACKGROUND_COLOR;
+  border: 1px $CHECKBOX_BACKGROUND_COLOR solid;
+  font-weight: normal;
+}
+
+.node-selection-element {
+  width: $CHECKBOX_DIAMETER;
+  height: $CHECKBOX_DIAMETER;
+}

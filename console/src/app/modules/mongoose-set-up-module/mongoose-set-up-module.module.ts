@@ -15,6 +15,8 @@ import { MonitoringApiService } from "src/app/core/services/monitoring-api/monit
 import { DateFormatPipe } from "src/app/common/date-format-pipe";
 import { LocalStorageService } from "src/app/core/services/local-storage-service/local-storage.service";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NodesSetUpTableRowComponent } from "./components/mongoose-set-up/set-up-steps/nodes/set-up-table-row/nodes-set-up-table-row.component";
+import { CustomCheckboxModule } from 'angular-custom-checkbox';
 
 
 @NgModule({
@@ -25,7 +27,9 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     // NOTE: Dependencies
     NgJsonEditorModule,
     CodemirrorModule,
-    NgbModule
+    NgbModule,
+    CustomCheckboxModule,
+    FormsModule
   ],
   declarations: [
     MongooseSetUpComponent,
@@ -34,6 +38,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     ConfigurationEditingRootComponent,
     ConfigurationEditingComponent,
     SetUpFooterComponent,
+    NodesSetUpTableRowComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [

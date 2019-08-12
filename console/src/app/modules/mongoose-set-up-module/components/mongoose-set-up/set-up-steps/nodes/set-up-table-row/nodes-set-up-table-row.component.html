@@ -1,0 +1,42 @@
+<th scope="row">
+  <ng-container *ngIf="!this.shouldDisplayLoadingSpinner(); else loadingSpinner">
+    <div class="checkbox node-selection-element">
+      <!-- NOTE: Importing pretty-checkbox both CSS and SCSS is mandatory to use ngx-checkbox -->
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css"
+        crossorigin="anonymous">
+      <ngx-checkbox [configuration]="checkboxConfiguration" [(ngModel)]="isNodeSelected" name="isNodeSelected"
+        (click)="onRunNodeSelect(runNode)"></ngx-checkbox>
+    </div>
+  </ng-container>
+</th>
+<td> {{ runNode.resourceType }} </td>
+<td style="white-space: nowrap;">
+  <!-- NOTE: Providing a space for entry-node tag. -->
+  <div style="display:table; align-content: center; width: calc(100%);">
+    <div class="entry-node-tag-wrapper" style="display: table-cell; width: calc(20%)">
+    </div>
+    <p style="display: table-cell; width: calc(50%);">
+      {{ runNode.resourceLocation }}
+    </p>
+    <!-- NOTE: Entry node tag. -->
+    <div class="entry-node-tag-wrapper" style="display: table-cell; width: calc(20%);">
+      <span [hidden]="!this.getCustomClassForNode(runNode)" class="badge btn-outline-success my-2 my-sm-0"
+        id="entry-node-tag">
+        Entry node
+      </span>
+    </div>
+  </div>
+</td>
+<!-- NOTE: Remove button -->
+<td>
+  <!-- NOTE: Node removal button -->
+  <span class="table-remove">
+    <button type="button" class="btn btn-danger btn-sm fa fa-remove" (click)="onRunNodeRemoveClicked(runNode)"></button>
+  </span>
+</td>
+<!-- NOTE: Loading spinner template. -->
+<ng-template #loadingSpinner>
+  <div class="spinner-border text-success node-selection-element " role="status">
+    <span class="sr-only"></span>
+  </div>
+</ng-template>

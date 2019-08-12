@@ -2,80 +2,41 @@
   <ngb-alert [type]="inactiveAlert.alertType" (close)="onAlertClosed(inactiveAlert)">{{ inactiveAlert.message }}
   </ngb-alert>
 </p>
-
-<!-- NOTE: Table with saved Mongoose Run Nodes.  -->
+<!-- NOTE: Nodes table  -->
 <div *ngIf="(savedMongooseNodes$ | async).length; else emptyNodesTable">
-  <table class="table table-bordered">
+  <table class="table">
     <thead>
       <tr>
-        <th scope="col" class="column-nodes-check">Run</th>
+        <th scope="col" class="column-nodes-check"></th>
         <th scope="col" class="column-nodes-type">Type</th>
         <th scope="col" class="column-nodes-address">Address</th>
-        <th scope="col" class="column-nodes-removal">Remove</th>
+        <th scope="col" class="column-nodes-removal"></th>
       </tr>
     </thead>
-
-    <tbody>
-      <!-- NOTE: Trying to use 'async' -->
-      <tr *ngFor="let savedNode of savedMongooseNodes$ | async">
-
-        <th scope="row">
-          <div class="checkbox">
-            <input type="checkbox" id="{{ savedNode.getResourceLocation() }}" class="custom-control-input"
-              style="visibility: hidden;" (click)="onRunNodeSelect(savedNode)">
-            <label for="{{ savedNode.getResourceLocation() }}" class="custom-control-label"></label>
-          </div>
-
-        </th>
-        <td> {{ savedNode.resourceType }} </td>
-        <td style="white-space: nowrap;">
-          <!-- NOTE: Providing a space for entry-node tag. -->
-          <div style="display:table; align-content: center; width: calc(100%);">
-            <div class="entry-node-tag-wrapper" style="display: table-cell; width: calc(20%)">
-            </div>
-            <p style="display: table-cell; width: calc(50%);">
-              {{ savedNode.resourceLocation }}
-            </p>
-            <!-- NOTE: Entry node tag. -->
-            <div class="entry-node-tag-wrapper" style="display: table-cell; width: calc(20%);">
-              <span [hidden]="!this.getCustomClassForNode(savedNode)" class="badge btn-outline-success my-2 my-sm-0" id="entry-node-tag">
-                Entry node
-              </span>
-            </div>
-
-          </div>
-
-        </td>
-        <td>
-          <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0"
-              (click)="onRunNodeRemoveClicked(savedNode)">Remove</button></span>
-        </td>
-      </tr>
-    </tbody>
+    <!-- NOTE: Nodes' table rows -->
+    <tr class="component-style table-row-component" *ngFor="let savedNode of savedMongooseNodes$ | async"
+      app-nodes-set-up-table-row [runNode]="savedNode"
+      (hasSelectedInactiveNode)="this.displayInactiveNodeAlert($event)">
   </table>
-
 </div>
-
-
+<!-- NOTE: IP entering area -->
 <div class="node-input-table-wrapper">
   <div class="node-input-elements">
     <div class="node-input elem0">
       <span class="input-group-text" id="basic-addon1">IP:</span>
     </div>
-
+    <!-- NOTE: Actual input field  -->
     <div class="node-input ip-address-input">
       <input #ipAd [(ngModel)]="entredIpAddress" class="form-control mr-sm-2" type="search"
         placeholder="Enter node IP here..." aria-label="Search">
     </div>
-
+    <!-- NOTE: Add IP button -->
     <div class="node-input add-ip-btn">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
         (click)="onAddIpButtonClicked(ipAd.textContent)">Add</button>
     </div>
-
   </div>
 </div>
-
 <!-- NOTE: Alert if no Mongoose Run records have been found. -->
 <ng-template #emptyNodesTable>
   <div class="alert alert-secondary" role="alert">
