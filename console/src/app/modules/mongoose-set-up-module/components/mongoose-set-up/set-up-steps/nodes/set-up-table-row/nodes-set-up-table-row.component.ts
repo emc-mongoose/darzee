@@ -4,9 +4,9 @@ import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-serv
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
 import { MongooseStoredRunNode } from 'src/app/core/services/local-storage-service/mongoose-stored-run-node.model';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { ResourceLocatorType } from 'src/app/core/models/address-type';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { CustomCheckBoxModel } from 'angular-custom-checkbox';
 
 
@@ -70,6 +70,41 @@ export class NodesSetUpTableRowComponent implements OnInit {
     if (!hasNodeBeenSelected && isNodeLocatedByIp) {
       let selectedNodeResourceLocationIp: string = selectedNode.getResourceLocation();
       this.isNodeInValidationProcess = true;
+      this.slaveNodesSubscription.add(
+        this.mongooseSetUpService.getMongooseRunNodeInstance(selectedNodeResourceLocationIp).pipe(
+          map(
+            (runNodeInstance: MongooseRunNode) => {
+              const hasNodeSelectionSuccseed: boolean = (runNodeInstance != undefined);
+
+              this.isNodeSelected = hasNodeSelectionSuccseed;
+              // TODO: Change driver type here
+              if (hasNodeSelectionSuccseed) {
+                this.checkboxConfiguration.color = "p-success";
+                this.checkboxConfiguration.icon = 'fa fa-check';
+                this.mongooseSetUpService.addNode(selectedNode);
+              } else {
+                this.checkboxConfiguration.color = "p-danger";
+                this.checkboxConfiguration.icon = 'fa fa-refresh';
+                this.hasSelectedInactiveNode.emit(selectedNode);
+              }
+
+              return runNodeInstance;
+            }
+          ),
+          catchError((error: any) => {
+            // NOTE: Handle run node inactivity.
+            return error;
+          })
+        ).subscribe(
+          (runNodeInstance: (MongooseRunNode | undefined)) => {
+            const hasNodeSelectionSuccseed: boolean = (runNodeInstance != undefined);
+            this.isNodeSelected = hasNodeSelectionSuccseed;
+
+            this.isNodeInValidationProcess = false;
+            console.log(`Node driver type: ${runNodeInstance.getDriverType()}`)
+          }
+        )
+      )
       this.slaveNodesSubscription.add(
         this.mongooseSetUpService.isMongooseNodeActive(selectedNodeResourceLocationIp).pipe(
           map(
