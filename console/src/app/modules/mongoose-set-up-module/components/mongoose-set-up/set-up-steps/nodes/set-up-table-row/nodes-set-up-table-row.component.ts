@@ -32,8 +32,8 @@ export class NodesSetUpTableRowComponent implements OnInit {
   private isNodeInValidationProcess: boolean = false;
   private slaveNodesSubscription: Subscription = new Subscription();
 
-  isSelected: boolean = false;
-  configurationCustom: CustomCheckBoxModel = new CustomCheckBoxModel();
+  isNodeSelected: boolean = false;
+  checkboxConfiguration: CustomCheckBoxModel = new CustomCheckBoxModel();
 
   // MARK: - Lifecycle 
   constructor(private mongooseSetUpService: MongooseSetUpService,
@@ -41,11 +41,9 @@ export class NodesSetUpTableRowComponent implements OnInit {
     private localStorageService: LocalStorageService) { }
 
   ngOnInit() {
-    this.configurationCustom.color = 'p-success';
-    // this.configurationCustom.colorHex = '#F500FF';
-    // this.configurationCustom.colorInside = '#FFF' //or 'white';
-    this.configurationCustom.rounded = true;
-    this.configurationCustom.icon = 'fa fa-check';
+    this.checkboxConfiguration.color = 'p-success';
+    this.checkboxConfiguration.rounded = true;
+    this.checkboxConfiguration.icon = 'fa fa-check';
   }
 
   // MARK: - Public
@@ -55,9 +53,6 @@ export class NodesSetUpTableRowComponent implements OnInit {
    * @param selectedNode instance of selected Mongoose node.
    */
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
-    // console.log(`Checkbox input value: ${this.checkboxInput.nativeElement.value}, whole JSON is: ${JSON.stringify(this.checkboxInput.nativeElement)}`);
-    // console.log(`Checkbox label value: ${this.checkboxLabel.nativeElement.value}`);
-
     let isNodeLocatedByIp: boolean = (selectedNode.getResourceType() == ResourceLocatorType.IP);
     // NOTE: Add noode if check mark has been set, remove if unset    
     let hasNodeBeenSelected: boolean = this.mongooseSetUpService.isNodeExist(selectedNode);
@@ -75,10 +70,12 @@ export class NodesSetUpTableRowComponent implements OnInit {
           map(
             // NOTE: Node's validation process.
             (isNodeActive: boolean) => {
-              this.isSelected = isNodeActive;
-
+              this.isNodeSelected = true;
               if (!isNodeActive) {
                 // NOTE: Handle run node inactivity.
+                this.checkboxConfiguration.color = "p-danger";
+                this.checkboxConfiguration.icon = 'fa fa-exclamation-circle';
+
                 this.hasSelectedInactiveNode.emit(selectedNode);
                 return;
               }
