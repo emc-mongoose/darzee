@@ -19,7 +19,6 @@ export class HttpUtils {
      * With exception if address caontains keyword (only "localhost" at the moment).
      */
     public static isIpAddressValid(ipAddress: string): boolean {
-
         // NOTE: Prunning HTTP / HTTPS prefixes in order to test pattern-matching.
         const hasHttpPrefix: boolean = (ipAddress.includes(HttpUtils.HTTP_PREFIX) || ipAddress.includes(HttpUtils.HTTPS_PREFIX));
         if (hasHttpPrefix) {
