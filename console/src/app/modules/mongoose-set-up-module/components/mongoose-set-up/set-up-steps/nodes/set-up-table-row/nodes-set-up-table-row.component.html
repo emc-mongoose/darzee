@@ -29,8 +29,11 @@
 </td>
 <!-- NOTE: Remove button -->
 <td>
-  <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0"
-      (click)="onRunNodeRemoveClicked(runNode)">Remove</button></span>
+  <!-- NOTE: Node removal button -->
+  <span class="table-remove">
+    <button type="button" class="btn btn-danger btn-sm fa fa-remove"
+      (click)="onRunNodeRemoveClicked(runNode)"></button>
+  </span>
 </td>
 <!-- NOTE: Loading spinner template. -->
 <ng-template #loadingSpinner>
