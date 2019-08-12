@@ -37,12 +37,11 @@ export class NodesSetUpTableRowComponent implements OnInit {
   /**
    * @param isNodeSelected indicates whether a node has been selected AND validated. 
    * @param checkboxConfiguration describes an instance of custom checkbox for node selection.
+   * @param additionalNodeInfoBadges contains additional strings that are displayed as badges.
    */
-
   public isNodeSelected: boolean = false;
   public checkboxConfiguration: CustomCheckBoxModel = new CustomCheckBoxModel();
-  public displayingDriverType: string = "";
-  public displayingVersion: string = "";
+  public additionalNodeInfoBadges: Set<string> = new Set();
 
   // MARK: - Lifecycle 
   constructor(private mongooseSetUpService: MongooseSetUpService,
@@ -149,7 +148,10 @@ export class NodesSetUpTableRowComponent implements OnInit {
     if (nodeActivityState) {
       this.checkboxConfiguration.color = "p-success";
       this.checkboxConfiguration.icon = 'fa fa-check';
-      this.displayingDriverType = node.getDriverType();
+
+      const driverType: string = node.getDriverType();
+      this.additionalNodeInfoBadges.add(driverType);
+
       this.mongooseSetUpService.addNode(node);
     } else {
       this.checkboxConfiguration.color = "p-danger";
