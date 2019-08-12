@@ -139,6 +139,11 @@ export class NodesSetUpTableRowComponent implements OnInit {
     return this.isNodeInValidationProcess;
   }
 
+  /**
+   * Handles checkbox state changing after node's selection.
+   * @param node selected run node.
+   * @param nodeActivityState describes node's state (currently: active / non-active)
+   */
   private changeNodeSelectionCheckboxAppearence(node: MongooseRunNode, nodeActivityState: boolean): void { 
     if (nodeActivityState) {
       this.checkboxConfiguration.color = "p-success";
