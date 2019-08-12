@@ -192,7 +192,13 @@ export class MonitoringApiService {
         if (mongooseStorageDriverType == undefined) { 
           mongooseStorageDriverType = defaultDriverType;
         }
-        const runNodeInstance: MongooseRunNode = new MongooseRunNode(runNodeAddress, ResourceLocatorType.IP, mongooseStorageDriverType);
+
+        var mongooseImageVersion: string = mongooseRunNodeConfig.run.version;
+        if (mongooseImageVersion == undefined) { 
+          mongooseImageVersion = "version unknown";
+        }
+
+        const runNodeInstance: MongooseRunNode = new MongooseRunNode(runNodeAddress, ResourceLocatorType.IP, mongooseStorageDriverType, mongooseImageVersion);
         return runNodeInstance;
       }),
       // catchError((error, caughtError) => {

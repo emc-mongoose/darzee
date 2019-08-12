@@ -86,15 +86,14 @@ export class NodesSetUpTableRowComponent implements OnInit {
             return error;
           })
         ).
-        subscribe(
-          (runNodeInstance: (MongooseRunNode | undefined)) => {
-            this.isNodeInValidationProcess = false;
-          },
-          error => { 
-            console.log(`Error has been caught in subscription.`)
-
-          }
-        )
+          subscribe(
+            (runNodeInstance: (MongooseRunNode | undefined)) => {
+              this.isNodeInValidationProcess = false;
+            },
+            error => {
+              console.log(`Error has been caught in subscription.`)
+            }
+          )
       )
     }
   }
@@ -144,13 +143,16 @@ export class NodesSetUpTableRowComponent implements OnInit {
    * @param node selected run node.
    * @param nodeActivityState describes node's state (currently: active / non-active)
    */
-  private changeNodeSelectionCheckboxAppearence(node: MongooseRunNode, nodeActivityState: boolean): void { 
+  private changeNodeSelectionCheckboxAppearence(node: MongooseRunNode, nodeActivityState: boolean): void {
     if (nodeActivityState) {
       this.checkboxConfiguration.color = "p-success";
       this.checkboxConfiguration.icon = 'fa fa-check';
 
       const driverType: string = node.getDriverType();
       this.additionalNodeInfoBadges.add(driverType);
+
+      const imageVersion: string = node.getImageVersion();
+      this.additionalNodeInfoBadges.add(imageVersion);
 
       this.mongooseSetUpService.addNode(node);
     } else {
