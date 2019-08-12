@@ -169,7 +169,7 @@ export class MonitoringApiService {
    * @param runNodeAddress IPv4 address of Mongoose.
    */
   public isMongooseRunNodeActive(runNodeAddress: string): Observable<boolean> {
-    let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${runNodeAddress}`;
+    const mongooseTargetAddress: string = `${Constants.Http.HTTP_PREFIX}${runNodeAddress}`;
     return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
       map((successResult: any) => {
         return true;
@@ -187,17 +187,17 @@ export class MonitoringApiService {
    * Returns specified Mongoose's nodes basic info.
    * @param runNodeAddress IPv4 address of Mongoose.
    */
-  public getBasicMongooseRunNodeInfo(runNodeAddress: string): Observable<MongooseRunNode | undefined> { 
+  public getBasicMongooseRunNodeInfo(runNodeAddress: string): Observable<MongooseRunNode | undefined> {
     const mongooseConfigEndpoint = MongooseApi.Config.CONFIG_ENDPONT;
     return this.http.get(`${Constants.Http.HTTP_PREFIX}${runNodeAddress}${mongooseConfigEndpoint}`).pipe(
       map((mongooseRunNodeConfig: any) => {
         const defaultDriverType: string = "unknown driver";
         var mongooseStorageDriverType: string = mongooseRunNodeConfig.storage.driver.type;
-        if (mongooseStorageDriverType == undefined) { 
+        if (mongooseStorageDriverType == undefined) {
           mongooseStorageDriverType = defaultDriverType;
         }
         var mongooseImageVersion: string = mongooseRunNodeConfig.run.version;
-        if (mongooseImageVersion == undefined) { 
+        if (mongooseImageVersion == undefined) {
           mongooseImageVersion = "version unknown";
         }
 

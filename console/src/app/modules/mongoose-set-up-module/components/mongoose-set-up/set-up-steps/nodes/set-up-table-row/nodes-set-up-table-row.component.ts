@@ -30,6 +30,12 @@ export class NodesSetUpTableRowComponent implements OnInit {
   @Output() hasSelectedInactiveNode: EventEmitter<MongooseRunNode> = new EventEmitter<MongooseRunNode>();
 
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
+  
+  private readonly CHECKBOX_SUCCESS_COLOR: string = "p-success";
+  private readonly CHECKBOX_SUCCESS_ICON: string = 'fa fa-check';
+
+  private readonly CHECKBOX_FAILURE_COLOR: string = "p-danger";
+  private readonly CHECKBOX_FAILURE_ICON: string = 'fa fa-refresh';
 
   private isNodeInValidationProcess: boolean = false;
   private slaveNodesSubscription: Subscription = new Subscription();
@@ -83,16 +89,13 @@ export class NodesSetUpTableRowComponent implements OnInit {
           ),
           catchError((error: any) => {
             // NOTE: Handle run node inactivity.
-            console.log(`Error has been caught.`)
+            console.error(`Unable to select node. Details: ${error}`);
             return error;
           })
         ).
           subscribe(
             (runNodeInstance: (MongooseRunNode | undefined)) => {
               this.isNodeInValidationProcess = false;
-            },
-            error => {
-              console.log(`Error has been caught in subscription.`)
             }
           )
       )
@@ -147,10 +150,10 @@ export class NodesSetUpTableRowComponent implements OnInit {
   private changeNodeSelectionCheckboxAppearence(node: MongooseRunNode, nodeActivityState: boolean): void {
     // NOTE: Set checkbox to 'selected' state since we're changng the selected checkbox appearence.
     this.isNodeSelected = true;
-  
+
     if (nodeActivityState) {
-      this.checkboxConfiguration.color = "p-success";
-      this.checkboxConfiguration.icon = 'fa fa-check';
+      this.checkboxConfiguration.color = this.CHECKBOX_SUCCESS_COLOR;
+      this.checkboxConfiguration.icon = this.CHECKBOX_SUCCESS_ICON;
 
       const driverType: string = node.getDriverType();
       this.additionalNodeInfoBadges.add(driverType);
@@ -160,8 +163,8 @@ export class NodesSetUpTableRowComponent implements OnInit {
 
       this.mongooseSetUpService.addNode(node);
     } else {
-      this.checkboxConfiguration.color = "p-danger";
-      this.checkboxConfiguration.icon = 'fa fa-refresh';
+      this.checkboxConfiguration.color = this.CHECKBOX_FAILURE_COLOR;
+      this.checkboxConfiguration.icon = this.CHECKBOX_FAILURE_ICON;
       this.hasSelectedInactiveNode.emit(node);
     }
   }
