@@ -41,9 +41,7 @@ export class NodesSetUpTableRowComponent implements OnInit {
     private localStorageService: LocalStorageService) { }
 
   ngOnInit() {
-    this.checkboxConfiguration.color = 'p-success';
     this.checkboxConfiguration.rounded = true;
-    this.checkboxConfiguration.icon = 'fa fa-check';
   }
 
   // MARK: - Public
@@ -74,11 +72,12 @@ export class NodesSetUpTableRowComponent implements OnInit {
               if (!isNodeActive) {
                 // NOTE: Handle run node inactivity.
                 this.checkboxConfiguration.color = "p-danger";
-                this.checkboxConfiguration.icon = 'fa fa-exclamation-circle';
-
+                this.checkboxConfiguration.icon = 'fa fa-refresh';
                 this.hasSelectedInactiveNode.emit(selectedNode);
                 return;
               }
+              this.checkboxConfiguration.color = "p-success";
+              this.checkboxConfiguration.icon = 'fa fa-check';
               this.mongooseSetUpService.addNode(selectedNode);
             },
           )
