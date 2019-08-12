@@ -187,7 +187,7 @@ export class MonitoringApiService {
     return this.http.get(`${Constants.Http.HTTP_PREFIX}${runNodeAddress}${mongooseConfigEndpoint}`).pipe(
       map((mongooseRunNodeConfig: any) => {
         // TODO: return storage-driver-type
-        const defaultDriverType: string = "unknowj";
+        const defaultDriverType: string = "unknown";
         var mongooseStorageDriverType: string = mongooseRunNodeConfig.storage.driver.type;
         if (mongooseStorageDriverType == undefined) { 
           mongooseStorageDriverType = defaultDriverType;

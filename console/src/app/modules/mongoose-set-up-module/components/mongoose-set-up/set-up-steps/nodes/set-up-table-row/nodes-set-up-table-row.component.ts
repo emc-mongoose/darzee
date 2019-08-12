@@ -41,6 +41,8 @@ export class NodesSetUpTableRowComponent implements OnInit {
 
   public isNodeSelected: boolean = false;
   public checkboxConfiguration: CustomCheckBoxModel = new CustomCheckBoxModel();
+  public displayingDriverType: string = "";
+  public displayingVersion: string = "";
 
   // MARK: - Lifecycle 
   constructor(private mongooseSetUpService: MongooseSetUpService,
@@ -75,8 +77,7 @@ export class NodesSetUpTableRowComponent implements OnInit {
           map(
             (runNodeInstance: MongooseRunNode | undefined) => {
               const hasNodeSelectionSuccseed: boolean = (runNodeInstance != undefined);
-              // TODO: Change driver type here
-              this.changeNodeSelectionCheckboxAppearence(selectedNode, hasNodeSelectionSuccseed);
+              this.changeNodeSelectionCheckboxAppearence(runNodeInstance, hasNodeSelectionSuccseed);
               return runNodeInstance;
             }
           ),
@@ -148,8 +149,8 @@ export class NodesSetUpTableRowComponent implements OnInit {
     if (nodeActivityState) {
       this.checkboxConfiguration.color = "p-success";
       this.checkboxConfiguration.icon = 'fa fa-check';
+      this.displayingDriverType = node.getDriverType();
       this.mongooseSetUpService.addNode(node);
-      console.log(`Node driver type: ${node.getDriverType()}`)
     } else {
       this.checkboxConfiguration.color = "p-danger";
       this.checkboxConfiguration.icon = 'fa fa-refresh';
