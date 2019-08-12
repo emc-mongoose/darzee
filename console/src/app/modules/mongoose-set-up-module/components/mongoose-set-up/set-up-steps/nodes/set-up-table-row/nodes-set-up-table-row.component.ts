@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
@@ -7,6 +7,8 @@ import { MongooseStoredRunNode } from 'src/app/core/services/local-storage-servi
 import { Subscription } from 'rxjs';
 import { ResourceLocatorType } from 'src/app/core/models/address-type';
 import { map } from 'rxjs/operators';
+import { CustomCheckBoxModel } from 'angular-custom-checkbox';
+
 
 @Component({
   selector: '[app-nodes-set-up-table-row]',
@@ -30,12 +32,17 @@ export class NodesSetUpTableRowComponent implements OnInit {
   private isNodeInValidationProcess: boolean = false;
   private slaveNodesSubscription: Subscription = new Subscription();
 
+  isNodeSelected: boolean = false;
+  checkboxConfiguration: CustomCheckBoxModel = new CustomCheckBoxModel();
+
   // MARK: - Lifecycle 
   constructor(private mongooseSetUpService: MongooseSetUpService,
     private mongooseDataSharedService: MongooseDataSharedServiceService,
     private localStorageService: LocalStorageService) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.checkboxConfiguration.rounded = true;
+  }
 
   // MARK: - Public
 
@@ -61,12 +68,16 @@ export class NodesSetUpTableRowComponent implements OnInit {
           map(
             // NOTE: Node's validation process.
             (isNodeActive: boolean) => {
+              this.isNodeSelected = true;
               if (!isNodeActive) {
                 // NOTE: Handle run node inactivity.
+                this.checkboxConfiguration.color = "p-danger";
+                this.checkboxConfiguration.icon = 'fa fa-refresh';
                 this.hasSelectedInactiveNode.emit(selectedNode);
-                this.isNodeInValidationProcess = false;
                 return;
               }
+              this.checkboxConfiguration.color = "p-success";
+              this.checkboxConfiguration.icon = 'fa fa-check';
               this.mongooseSetUpService.addNode(selectedNode);
             },
           )

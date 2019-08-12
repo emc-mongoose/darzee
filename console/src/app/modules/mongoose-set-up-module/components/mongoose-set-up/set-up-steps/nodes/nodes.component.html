@@ -2,45 +2,41 @@
   <ngb-alert [type]="inactiveAlert.alertType" (close)="onAlertClosed(inactiveAlert)">{{ inactiveAlert.message }}
   </ngb-alert>
 </p>
-
 <!-- NOTE: Nodes table  -->
 <div *ngIf="(savedMongooseNodes$ | async).length; else emptyNodesTable">
-  <table class="table table-bordered">
+  <table class="table">
     <thead>
       <tr>
-        <th scope="col" class="column-nodes-check">Run</th>
+        <th scope="col" class="column-nodes-check"></th>
         <th scope="col" class="column-nodes-type">Type</th>
         <th scope="col" class="column-nodes-address">Address</th>
-        <th scope="col" class="column-nodes-removal">Remove</th>
+        <th scope="col" class="column-nodes-removal"></th>
       </tr>
     </thead>
-
     <!-- NOTE: Nodes' table rows -->
     <tr class="component-style table-row-component" *ngFor="let savedNode of savedMongooseNodes$ | async"
-      app-nodes-set-up-table-row [runNode]="savedNode" (hasSelectedInactiveNode)="this.displayInactiveNodeAlert($event)">
+      app-nodes-set-up-table-row [runNode]="savedNode"
+      (hasSelectedInactiveNode)="this.displayInactiveNodeAlert($event)">
   </table>
 </div>
-
 <!-- NOTE: IP entering area -->
 <div class="node-input-table-wrapper">
   <div class="node-input-elements">
     <div class="node-input elem0">
       <span class="input-group-text" id="basic-addon1">IP:</span>
     </div>
-
+    <!-- NOTE: Actual input field  -->
     <div class="node-input ip-address-input">
       <input #ipAd [(ngModel)]="entredIpAddress" class="form-control mr-sm-2" type="search"
         placeholder="Enter node IP here..." aria-label="Search">
     </div>
-
+    <!-- NOTE: Add IP button -->
     <div class="node-input add-ip-btn">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
         (click)="onAddIpButtonClicked(ipAd.textContent)">Add</button>
     </div>
-
   </div>
 </div>
-
 <!-- NOTE: Alert if no Mongoose Run records have been found. -->
 <ng-template #emptyNodesTable>
   <div class="alert alert-secondary" role="alert">
