@@ -109,7 +109,6 @@ export class NodesComponent implements OnInit {
  * @param inactiveNode inactive node instance.
  */
   public displayInactiveNodeAlert(selectedNodeInfo: MongooseRunNode) {
-    console.log(`Inacitive run node has been selected. Arguments: ${JSON.stringify(selectedNodeInfo)}`)
     // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
     // ... the configuration thought. 
     let inactiveNodeAlert = new InactiveNodeAlert(`selected node ${selectedNodeInfo.getResourceLocation()} is not active`, selectedNodeInfo);

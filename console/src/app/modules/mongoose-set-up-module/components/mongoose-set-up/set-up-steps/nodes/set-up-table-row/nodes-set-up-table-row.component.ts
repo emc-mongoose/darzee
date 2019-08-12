@@ -76,7 +76,8 @@ export class NodesSetUpTableRowComponent implements OnInit {
           map(
             (runNodeInstance: MongooseRunNode | undefined) => {
               const hasNodeSelectionSuccseed: boolean = (runNodeInstance != undefined);
-              this.changeNodeSelectionCheckboxAppearence(runNodeInstance, hasNodeSelectionSuccseed);
+              const displayingNode: MongooseRunNode = hasNodeSelectionSuccseed ? runNodeInstance : selectedNode;
+              this.changeNodeSelectionCheckboxAppearence(displayingNode, hasNodeSelectionSuccseed);
               return runNodeInstance;
             }
           ),
@@ -144,6 +145,9 @@ export class NodesSetUpTableRowComponent implements OnInit {
    * @param nodeActivityState describes node's state (currently: active / non-active)
    */
   private changeNodeSelectionCheckboxAppearence(node: MongooseRunNode, nodeActivityState: boolean): void {
+    // NOTE: Set checkbox to 'selected' state since we're changng the selected checkbox appearence.
+    this.isNodeSelected = true;
+  
     if (nodeActivityState) {
       this.checkboxConfiguration.color = "p-success";
       this.checkboxConfiguration.icon = 'fa fa-check';

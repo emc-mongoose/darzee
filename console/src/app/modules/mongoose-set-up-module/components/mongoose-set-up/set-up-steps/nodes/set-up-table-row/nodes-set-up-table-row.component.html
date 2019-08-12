@@ -13,10 +13,10 @@
 <td> {{ runNode.resourceType }} </td>
 <td style="width: calc(10%);">
   <!-- NOTE: Node's additional info -->
-  <table class='table borderless' style="display: table-cell; width: calc(20%); vertical-align: center;">
+  <table class='table borderless' style="display: table-cell; width: calc(15%); vertical-align: center;">
     <!-- NOTE: Display additional node's info here -->
     <ng-container *ngFor="let badge of this.additionalNodeInfoBadges">
-        <tr>
+        <tr class="col-sm">
           <span class="badge badge-success">{{ badge }} </span>
         </tr>
     </ng-container>
