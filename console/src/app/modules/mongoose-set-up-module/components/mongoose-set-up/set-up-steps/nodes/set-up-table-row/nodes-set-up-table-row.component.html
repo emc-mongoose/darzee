@@ -16,7 +16,9 @@
   <table class='table borderless' style="display: table-cell; width: calc(20%); vertical-align: center;">
     <!-- NOTE: Display additional node's info here -->
     <ng-container *ngFor="let badge of this.additionalNodeInfoBadges">
-        <tr><span class="badge badge-dark">{{ badge }} </span></tr>
+        <tr>
+          <span class="badge badge-success">{{ badge }} </span>
+        </tr>
     </ng-container>
   </table>
 </td>
