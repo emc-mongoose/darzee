@@ -27,10 +27,6 @@ export class NodesSetUpTableRowComponent implements OnInit {
    */
   @Output() hasSelectedInactiveNode: EventEmitter<MongooseRunNode> = new EventEmitter<MongooseRunNode>();
 
-  // @ViewChild(`checkboxInput`) checkboxInput;
-  // @ViewChild(`checkboxLabel`) checkboxLabel;
-
-
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
 
   private isNodeInValidationProcess: boolean = false;
@@ -46,10 +42,10 @@ export class NodesSetUpTableRowComponent implements OnInit {
 
   ngOnInit() {
     this.configurationCustom.color = 'p-success';
-    this.configurationCustom.colorHex = '#F500FF';
-    this.configurationCustom.colorInside = '#FFF' //or 'white';
+    // this.configurationCustom.colorHex = '#F500FF';
+    // this.configurationCustom.colorInside = '#FFF' //or 'white';
     this.configurationCustom.rounded = true;
-    this.configurationCustom.icon = 'mdi mdi-check';
+    this.configurationCustom.icon = 'fa fa-check';
   }
 
   // MARK: - Public
