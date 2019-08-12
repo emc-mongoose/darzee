@@ -1,6 +1,6 @@
 <th scope="row">
   <ng-container *ngIf="!this.shouldDisplayLoadingSpinner(); else loadingSpinner">
-    <div class="checkbox node-selection-element ">
+    <div class="checkbox node-selection-element">
       <!-- NOTE: Importing pretty-checkbox both CSS and SCSS is mandatory to use ngx-checkbox -->
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css"
         crossorigin="anonymous">
@@ -31,8 +31,7 @@
 <td>
   <!-- NOTE: Node removal button -->
   <span class="table-remove">
-    <button type="button" class="btn btn-danger btn-sm fa fa-remove"
-      (click)="onRunNodeRemoveClicked(runNode)"></button>
+    <button type="button" class="btn btn-danger btn-sm fa fa-remove" (click)="onRunNodeRemoveClicked(runNode)"></button>
   </span>
 </td>
 <!-- NOTE: Loading spinner template. -->

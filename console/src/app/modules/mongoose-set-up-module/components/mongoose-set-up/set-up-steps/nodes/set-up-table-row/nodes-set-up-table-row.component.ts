@@ -18,13 +18,15 @@ import { CustomCheckBoxModel } from 'angular-custom-checkbox';
 export class NodesSetUpTableRowComponent implements OnInit {
 
   /**
-   * Displaying Mongoose run node instance.
+   * @param runNode describes displaying Mongoose run node instance.
    */
+
   @Input() runNode: MongooseRunNode;
 
   /**
-   * Emits an event on inactive run node selection.
+   * @param hasSelectedInactiveNode emits an event on inactive run node selection.
    */
+
   @Output() hasSelectedInactiveNode: EventEmitter<MongooseRunNode> = new EventEmitter<MongooseRunNode>();
 
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
@@ -32,8 +34,13 @@ export class NodesSetUpTableRowComponent implements OnInit {
   private isNodeInValidationProcess: boolean = false;
   private slaveNodesSubscription: Subscription = new Subscription();
 
-  isNodeSelected: boolean = false;
-  checkboxConfiguration: CustomCheckBoxModel = new CustomCheckBoxModel();
+  /**
+   * @param isNodeSelected indicates whether a node has been selected AND validated. 
+   * @param checkboxConfiguration describes an instance of custom checkbox for node selection.
+   */
+
+  public isNodeSelected: boolean = false;
+  public checkboxConfiguration: CustomCheckBoxModel = new CustomCheckBoxModel();
 
   // MARK: - Lifecycle 
   constructor(private mongooseSetUpService: MongooseSetUpService,
