@@ -11,14 +11,26 @@ export class HttpUtils {
      */
     public static readonly PORT_NUMBER_UPPER_BOUND: number = 65535;
     public static readonly LOCALHOST_KEYWORD: string = "localhost";
+    public static readonly HTTP_PREFIX: string = "http://";
+    public static readonly HTTPS_PREFIX: string = "https://";
 
     /**
      * Returns true if @param ipAddress matches IP address pattern. 
      * With exception if address caontains keyword (only "localhost" at the moment).
      */
     public static isIpAddressValid(ipAddress: string): boolean {
+
+        // NOTE: Prunning HTTP / HTTPS prefixes in order to test pattern-matching.
+        const hasHttpPrefix: boolean = (ipAddress.includes(HttpUtils.HTTP_PREFIX) || ipAddress.includes(HttpUtils.HTTPS_PREFIX));
+        if (hasHttpPrefix) {
+            const emptyString: string = "";
+            ipAddress = ipAddress.replace(HttpUtils.HTTP_PREFIX, emptyString);
+            ipAddress = ipAddress.replace(HttpUtils.HTTPS_PREFIX, emptyString);
+        }
+
         const localhostKeyword: string = HttpUtils.LOCALHOST_KEYWORD;
         const hasLocalhostKeyword: boolean = ipAddress.includes(localhostKeyword);
+
         if (!hasLocalhostKeyword) {
             const ipV4Pattern: RegExp = new RegExp("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$");
             return ipV4Pattern.test(ipAddress);
@@ -41,7 +53,7 @@ export class HttpUtils {
      * @param ipAddress IP address to be checked.
      * @returns true if provided IP address has port.
      */
-    public static matchesIpv4AddressWithoutPort(ipAddress: string): boolean { 
+    public static matchesIpv4AddressWithoutPort(ipAddress: string): boolean {
         // NOTE: Check IP address to match pattern "xxx.xxx.xxx.xxx".
         return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ipAddress);
     }
@@ -57,10 +69,10 @@ export class HttpUtils {
         return ((isIpValid) || (isIpPointsToLocalhost));
     }
 
-    public static addPortToIp(ipAddress: string, port: number): string { 
+    public static addPortToIp(ipAddress: string, port: number): string {
         const lastSymbolIndex: number = (ipAddress.length - 1);
         const ipAndPortDelimiter: string = ':';
-        if (ipAddress[lastSymbolIndex] == ipAndPortDelimiter) { 
+        if (ipAddress[lastSymbolIndex] == ipAndPortDelimiter) {
             return (ipAddress + port);
         }
         return (ipAddress + ipAndPortDelimiter + port);
@@ -71,7 +83,7 @@ export class HttpUtils {
      * @param address IPv4 address.
      * @return address without HTTP prefix.
      */
-    public static pruneHttpPrefixFromAddress(address: string): string { 
+    public static pruneHttpPrefixFromAddress(address: string): string {
         const httpPrefix: string = Constants.Http.HTTP_PREFIX;
         const emptyValue: string = "";
         return address.replace(httpPrefix, emptyValue);
