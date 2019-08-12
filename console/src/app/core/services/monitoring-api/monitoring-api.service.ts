@@ -166,7 +166,9 @@ export class MonitoringApiService {
 
   public isMongooseRunNodeActive(runNodeAddress: string): Observable<boolean> {
     const mongooseConfigEndpoint = MongooseApi.Config.CONFIG_ENDPONT;
-    return this.http.get(`${Constants.Http.HTTP_PREFIX}${runNodeAddress}${mongooseConfigEndpoint}`).pipe(
+    let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${runNodeAddress}`;
+    console.log(`mongooseTargetAddress: ${mongooseTargetAddress}`)
+    return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
       map((successResult: any) => {
         return true;
       }),
@@ -174,8 +176,31 @@ export class MonitoringApiService {
         if (error instanceof TimeoutError) {
           console.log(`Request on Mongoose node ${runNodeAddress} has timed out.`);
         }
+        console.log(`error: ${error}`);
         return of(false);
       })
+    );
+  }
+
+  public getBasicMongooseRunNodeInfo(runNodeAddress: string): Observable<MongooseRunNode> { 
+    const mongooseConfigEndpoint = MongooseApi.Config.CONFIG_ENDPONT;
+    return this.http.get(`${Constants.Http.HTTP_PREFIX}${runNodeAddress}${mongooseConfigEndpoint}`).pipe(
+      map((mongooseRunNodeConfig: any) => {
+        // TODO: return storage-driver-type
+        const defaultDriverType: string = "unknowj";
+        var mongooseStorageDriverType: string = mongooseRunNodeConfig.storage.driver.type;
+        if (mongooseStorageDriverType == undefined) { 
+          mongooseStorageDriverType = defaultDriverType;
+        }
+        const runNodeInstance: MongooseRunNode = new MongooseRunNode(runNodeAddress, ResourceLocatorType.IP, mongooseStorageDriverType);
+        return runNodeInstance;
+      }),
+      // catchError((error, caughtError) => {
+      //   if (error instanceof TimeoutError) {
+      //     console.log(`Request on Mongoose node ${runNodeAddress} has timed out.`);
+      //   }
+      //   return of(false);
+      // })
     );
   }
 

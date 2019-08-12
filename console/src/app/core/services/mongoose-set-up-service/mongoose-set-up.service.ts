@@ -105,6 +105,18 @@ export class MongooseSetUpService {
     )
   }
 
+  public getMongooseRunNodeInstance(mongooseNodeAddress: string): Observable<MongooseRunNode> { 
+    const timeoutMilliseconds: number = 2500; // NOTE: Timeout is set to 2.5 seconds 
+    return this.monitoringApiService.getBasicMongooseRunNodeInfo(mongooseNodeAddress).pipe(
+      timeout(timeoutMilliseconds)
+    ).pipe(
+      // catchError(error => { 
+      //   console.log(`Mongoose's node ${mongooseNodeAddress} status request has timed out.`);
+      //   return of(false);
+      // })
+    );
+  }
+
   // NOTE: Adding Mongoose nodes (while node selection)
   public addNode(node: MongooseRunNode) {
     this.mongooseSetupInfoModel.addRunNode(node);

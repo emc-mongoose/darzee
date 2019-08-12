@@ -86,8 +86,13 @@ export class ControlApiService {
 
     var mongooseConfigurationHeaders = new HttpHeaders();
     mongooseConfigurationHeaders.append('Accept', 'application/json');
-
-    return this.http.get(mongooseAddress + configEndpoint, { headers: mongooseConfigurationHeaders });
+    console.log(`Fetching data from target address: ${mongooseAddress + configEndpoint}`)
+    return this.http.get(mongooseAddress + configEndpoint, { headers: mongooseConfigurationHeaders }).pipe(
+      catchError(error => { 
+        console.log(`error on fetching data: ${error}`)
+        return error;
+      })
+    );
   }
 
   /** 
