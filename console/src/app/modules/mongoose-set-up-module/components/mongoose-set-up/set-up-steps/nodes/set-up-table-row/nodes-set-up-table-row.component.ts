@@ -7,6 +7,8 @@ import { MongooseStoredRunNode } from 'src/app/core/services/local-storage-servi
 import { Subscription } from 'rxjs';
 import { ResourceLocatorType } from 'src/app/core/models/address-type';
 import { map } from 'rxjs/operators';
+import { CustomCheckBoxModel } from 'angular-custom-checkbox';
+
 
 @Component({
   selector: '[app-nodes-set-up-table-row]',
@@ -25,8 +27,8 @@ export class NodesSetUpTableRowComponent implements OnInit {
    */
   @Output() hasSelectedInactiveNode: EventEmitter<MongooseRunNode> = new EventEmitter<MongooseRunNode>();
 
-  @ViewChild(`checkboxInput`) checkboxInput;
-  @ViewChild(`checkboxLabel`) checkboxLabel;
+  // @ViewChild(`checkboxInput`) checkboxInput;
+  // @ViewChild(`checkboxLabel`) checkboxLabel;
 
 
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
@@ -34,12 +36,21 @@ export class NodesSetUpTableRowComponent implements OnInit {
   private isNodeInValidationProcess: boolean = false;
   private slaveNodesSubscription: Subscription = new Subscription();
 
+  isSelected: boolean = false;
+  configurationCustom: CustomCheckBoxModel = new CustomCheckBoxModel();
+
   // MARK: - Lifecycle 
   constructor(private mongooseSetUpService: MongooseSetUpService,
     private mongooseDataSharedService: MongooseDataSharedServiceService,
     private localStorageService: LocalStorageService) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.configurationCustom.color = 'p-success';
+    this.configurationCustom.colorHex = '#F500FF';
+    this.configurationCustom.colorInside = '#FFF' //or 'white';
+    this.configurationCustom.rounded = true;
+    this.configurationCustom.icon = 'mdi mdi-check';
+  }
 
   // MARK: - Public
 
@@ -48,8 +59,8 @@ export class NodesSetUpTableRowComponent implements OnInit {
    * @param selectedNode instance of selected Mongoose node.
    */
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
-    console.log(`Checkbox input value: ${this.checkboxInput.nativeElement.value}, whole JSON is: ${JSON.stringify(this.checkboxInput.nativeElement)}`);
-    console.log(`Checkbox label value: ${this.checkboxLabel.nativeElement.value}`);
+    // console.log(`Checkbox input value: ${this.checkboxInput.nativeElement.value}, whole JSON is: ${JSON.stringify(this.checkboxInput.nativeElement)}`);
+    // console.log(`Checkbox label value: ${this.checkboxLabel.nativeElement.value}`);
 
     let isNodeLocatedByIp: boolean = (selectedNode.getResourceType() == ResourceLocatorType.IP);
     // NOTE: Add noode if check mark has been set, remove if unset    
@@ -68,6 +79,8 @@ export class NodesSetUpTableRowComponent implements OnInit {
           map(
             // NOTE: Node's validation process.
             (isNodeActive: boolean) => {
+              this.isSelected = isNodeActive;
+
               if (!isNodeActive) {
                 // NOTE: Handle run node inactivity.
                 this.hasSelectedInactiveNode.emit(selectedNode);

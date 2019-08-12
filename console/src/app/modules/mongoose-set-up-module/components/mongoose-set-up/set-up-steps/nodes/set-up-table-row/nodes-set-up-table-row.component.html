@@ -1,10 +1,15 @@
 <th scope="row">
   <ng-container *ngIf="!this.shouldDisplayLoadingSpinner(); else loadingSpinner">
     <div class="checkbox">
-      <input #checkboxInput type="checkbox" id="{{ runNode.getResourceLocation() }}" class="custom-control-input"
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css"
+        crossorigin="anonymous">
+      <ngx-checkbox [configuration]="configurationCustom" [(ngModel)]="isSelected" name="isSelected"
+        (click)="onRunNodeSelect(runNode)"></ngx-checkbox>
+
+      <!-- <input #checkboxInput type="checkbox" id="{{ runNode.getResourceLocation() }}" class="custom-control-input"
         style="visibility: hidden;" (click)="onRunNodeSelect(runNode)">
       <label #checkboxLabel for="{{ runNode.getResourceLocation() }}" class="custom-control-label"
-        ></label>
+        ></label> -->
     </div>
   </ng-container>
 </th>
