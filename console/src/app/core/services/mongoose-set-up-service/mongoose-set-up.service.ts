@@ -105,6 +105,24 @@ export class MongooseSetUpService {
     )
   }
 
+  /**
+   * Provides an instance of Mongoose run node located on specified address.
+   * @param mongooseNodeAddress address of entered Mongoose run node IPv4 address.
+   * @returns undefined if Mongoose hasn't been launched on specified address.
+   * 
+   */
+  public getMongooseRunNodeInstance(mongooseNodeAddress: string): Observable<MongooseRunNode | undefined> { 
+    const timeoutMilliseconds: number = 2500; // NOTE: Timeout is set to 2.5 seconds 
+    return this.monitoringApiService.getBasicMongooseRunNodeInfo(mongooseNodeAddress).pipe(
+      timeout(timeoutMilliseconds)
+    ).pipe(
+      catchError(error => { 
+        console.log(`Mongoose's node ${mongooseNodeAddress} status request has timed out.`);
+        return of(undefined);
+      })
+    );
+  }
+
   // NOTE: Adding Mongoose nodes (while node selection)
   public addNode(node: MongooseRunNode) {
     this.mongooseSetupInfoModel.addRunNode(node);

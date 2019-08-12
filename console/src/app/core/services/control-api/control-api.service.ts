@@ -86,8 +86,12 @@ export class ControlApiService {
 
     var mongooseConfigurationHeaders = new HttpHeaders();
     mongooseConfigurationHeaders.append('Accept', 'application/json');
-
-    return this.http.get(mongooseAddress + configEndpoint, { headers: mongooseConfigurationHeaders });
+    return this.http.get(mongooseAddress + configEndpoint, { headers: mongooseConfigurationHeaders }).pipe(
+      catchError(error => {
+        console.error(`Unable to fetch configuration for Mongoose node ${mongooseAddress}. Details: ${error}`)
+        return error;
+      })
+    );
   }
 
   /** 

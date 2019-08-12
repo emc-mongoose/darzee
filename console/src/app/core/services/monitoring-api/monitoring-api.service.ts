@@ -164,9 +164,13 @@ export class MonitoringApiService {
     )
   }
 
+  /**
+   * Returns true if Mongoose is active on specified node.
+   * @param runNodeAddress IPv4 address of Mongoose.
+   */
   public isMongooseRunNodeActive(runNodeAddress: string): Observable<boolean> {
-    const mongooseConfigEndpoint = MongooseApi.Config.CONFIG_ENDPONT;
-    return this.http.get(`${Constants.Http.HTTP_PREFIX}${runNodeAddress}${mongooseConfigEndpoint}`).pipe(
+    const mongooseTargetAddress: string = `${Constants.Http.HTTP_PREFIX}${runNodeAddress}`;
+    return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
       map((successResult: any) => {
         return true;
       }),
@@ -175,6 +179,36 @@ export class MonitoringApiService {
           console.log(`Request on Mongoose node ${runNodeAddress} has timed out.`);
         }
         return of(false);
+      })
+    );
+  }
+
+  /**
+   * Returns specified Mongoose's nodes basic info.
+   * @param runNodeAddress IPv4 address of Mongoose.
+   */
+  public getBasicMongooseRunNodeInfo(runNodeAddress: string): Observable<MongooseRunNode | undefined> {
+    const mongooseConfigEndpoint = MongooseApi.Config.CONFIG_ENDPONT;
+    return this.http.get(`${Constants.Http.HTTP_PREFIX}${runNodeAddress}${mongooseConfigEndpoint}`).pipe(
+      map((mongooseRunNodeConfig: any) => {
+        const defaultDriverType: string = "unknown driver";
+        var mongooseStorageDriverType: string = mongooseRunNodeConfig.storage.driver.type;
+        if (mongooseStorageDriverType == undefined) {
+          mongooseStorageDriverType = defaultDriverType;
+        }
+        var mongooseImageVersion: string = mongooseRunNodeConfig.run.version;
+        if (mongooseImageVersion == undefined) {
+          mongooseImageVersion = "version unknown";
+        }
+
+        const runNodeInstance: MongooseRunNode = new MongooseRunNode(runNodeAddress, ResourceLocatorType.IP, mongooseStorageDriverType, mongooseImageVersion);
+        return runNodeInstance;
+      }),
+      catchError((error, caughtError) => {
+        if (error instanceof TimeoutError) {
+          console.log(`Request on Mongoose node ${runNodeAddress} has timed out.`);
+        }
+        return of(undefined);
       })
     );
   }
