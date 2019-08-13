@@ -1,0 +1,27 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mongoose-base
+  name: mongoose-base-svc
+spec:
+  ports:
+    # NOTE: Exposting ports
+
+    # NOTE: Remote API ports 
+    - name: nmongoose-base-port-1
+      port: 9991
+      targetPort: 9991
+
+    # NOTE: RMI ports
+    - name: nmongoose-base-rmi-1
+      port: 1091
+      targetPort: 1091
+
+  selector:
+    app: mongoose-base
+  type: LoadBalancer
+  sessionAffinity: None
+  
+

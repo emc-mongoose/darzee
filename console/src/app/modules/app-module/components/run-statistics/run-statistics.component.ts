@@ -32,6 +32,7 @@ export class RunStatisticsComponent implements OnInit {
 
   private routeParameters: any;
   private monitoringApiSubscriptions: Subscription;
+  private controlApiSubscriptions: Subscription;
 
   // MARK: - Lifecycle 
 
@@ -74,6 +75,7 @@ export class RunStatisticsComponent implements OnInit {
 
   ngOnDestroy() {
     this.monitoringApiSubscriptions.unsubscribe();
+    this.controlApiSubscriptions.unsubscribe();
     this.routeParameters.unsubscribe();
   }
 
@@ -99,20 +101,22 @@ export class RunStatisticsComponent implements OnInit {
   public onTerminateBtnClicked(runRecord: MongooseRunRecord) {
     let terminatingRunId = runRecord.getRunId();
     let terminatingRunEntryNodeAddress = runRecord.getEntryNodeAddress();
-    this.controlApiService.terminateMongooseRun(terminatingRunEntryNodeAddress, terminatingRunId as string).subscribe(
-      (terminationStatusMessage: string) => {
-        console.log(`${RunStatisticsComponent.TAG} termination subscription.`)
+    this.controlApiSubscriptions.add(
+      this.controlApiService.terminateMongooseRun(terminatingRunEntryNodeAddress, terminatingRunId as string).subscribe(
+        (terminationStatusMessage: string) => {
+          console.log(`${RunStatisticsComponent.TAG} termination subscription.`)
 
-        alert(terminationStatusMessage);
-        window.location.reload();
-      }
+          alert(terminationStatusMessage);
+          window.location.reload();
+        }
+      )
     );
   }
   // MARK: - Private
 
   private initTabs() {
     // NOTE: Filling up statistic tabs data  
-    
+
     for (let section of this.STATISTICS_SECTIONS) {
       let tab = new BasicTab(section.name, section.url);
       this.statisticTabs.push(tab);
