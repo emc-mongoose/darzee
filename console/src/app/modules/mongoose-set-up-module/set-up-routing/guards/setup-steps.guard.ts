@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, CanActivate, Router } from '@angular/router';
-import { RoutesList } from './modules/app-module/Routing/routes-list';
+import { RoutesList } from '../../../app-module/Routing/routes-list';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +29,6 @@ export class SetupStepsGuard implements CanActivate {
    */
   private isPageRefresh(): boolean {
     return (!this.router.navigated);
-
   }
 
 }
