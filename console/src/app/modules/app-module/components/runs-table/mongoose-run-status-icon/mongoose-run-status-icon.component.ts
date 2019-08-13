@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { MongooseRunStatus } from 'src/app/core/models/mongoose-run-status';
 
 @Component({
@@ -7,7 +7,7 @@ import { MongooseRunStatus } from 'src/app/core/models/mongoose-run-status';
   styleUrls: ['./mongoose-run-status-icon.component.css']
 })
 
-export class MongooseRunStatusIconComponent implements OnInit {
+export class MongooseRunStatusIconComponent implements OnInit, OnDestroy {
 
   // NOTE: We're using bootstrap buttons style. See: https://www.w3schools.com/bootstrap/bootstrap_buttons.asp 
   private readonly BTN_SUCCESS_TAG = 'btn-success';
@@ -25,6 +25,7 @@ export class MongooseRunStatusIconComponent implements OnInit {
 
   ngOnInit() { }
 
+  ngOnDestroy(): void {  }
   // MARK: - Public
 
   public updateStatus(newStatus) {

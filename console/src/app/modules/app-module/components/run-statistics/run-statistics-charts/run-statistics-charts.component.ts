@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef, OnDestroy } from "@angular/core";
 import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
 import { Subscription } from "rxjs";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
@@ -21,7 +21,7 @@ import { MongooseChartOptions, MongooseChartAxesType } from "src/app/core/models
 })
 
 
-export class RunStatisticsChartsComponent implements OnInit {
+export class RunStatisticsChartsComponent implements OnInit, OnDestroy {
 
   public static readonly TAG: string = "RunStatisticsChartsComponent";
 

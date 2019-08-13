@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { MonitoringApiService } from 'src/app/core/services/monitoring-api/monitoring-api.service';
 import { BasicTab } from 'src/app/common/BasicTab/BasicTab';
 import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
@@ -20,7 +20,7 @@ import { MongooseLogModel } from 'src/app/core/models/mongoose.log.model';
   templateUrl: './run-statistic-logs.component.html',
   styleUrls: ['./run-statistic-logs.component.css']
 })
-export class RunStatisticLogsComponent implements OnInit {
+export class RunStatisticLogsComponent implements OnInit, OnDestroy {
 
   public static readonly TAG: string = "RunStatisticLogsComponent";
 

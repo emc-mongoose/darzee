@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { RoutesList } from "../../Routing/routes-list";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
 import { BasicTab } from "src/app/common/BasicTab/BasicTab";
@@ -16,7 +16,8 @@ import { PrometheusApiService } from "src/app/core/services/prometheus-api/prome
   templateUrl: './run-statistics.component.html',
   styleUrls: ['./run-statistics.component.css']
 })
-export class RunStatisticsComponent implements OnInit {
+
+export class RunStatisticsComponent implements OnInit, OnDestroy {
 
   public static readonly TAG: string = "RunStatisticsComponent";
 

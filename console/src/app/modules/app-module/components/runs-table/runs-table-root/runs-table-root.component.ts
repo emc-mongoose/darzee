@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef, ComponentRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef, ComponentRef, OnDestroy } from "@angular/core";
 import { slideAnimation } from "src/app/core/animations";
 import { MongooseRunTab } from "./model/monoose-run-tab.model";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
@@ -20,7 +20,7 @@ import { PrometheusApiService } from "src/app/core/services/prometheus-api/prome
   ]
 })
 
-export class RunsTableRootComponent implements OnInit {
+export class RunsTableRootComponent implements OnInit, OnDestroy {
 
   @ViewChild('errorMessageComponent', { read: ViewContainerRef }) errorMessageComponent: ViewContainerRef;
 

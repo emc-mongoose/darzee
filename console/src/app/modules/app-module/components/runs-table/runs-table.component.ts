@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { MongooseRunRecord } from '../../../../core/models/run-record.model';
 import { Router } from '@angular/router';
 import { RoutesList } from '../../Routing/routes-list';
@@ -14,7 +14,7 @@ import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose
   styleUrls: ['./runs-table.component.css']
 })
 
-export class RunsTableComponent implements OnInit {
+export class RunsTableComponent implements OnInit, OnDestroy {
 
   public readonly MONGOOSE_LOADING_RUN_MSG = "Loading Mongoose run. This can take up to 20 seconds.."
   public readonly EMPTY_FIELD_DEFAULT_TAG = "-";
