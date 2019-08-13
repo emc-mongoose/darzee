@@ -23,6 +23,8 @@ import { MongooseChartOptions, MongooseChartAxesType } from "src/app/core/models
 
 export class RunStatisticsChartsComponent implements OnInit {
 
+  public static readonly TAG: string = "RunStatisticsChartsComponent";
+
   @ViewChild('chartContainer', { read: ViewContainerRef }) chartContainerReference: ViewContainerRef;
   @ViewChild('logarithmicScalingSwitch') logarithmicScalingSwitch: ElementRef;
 
@@ -49,10 +51,13 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   ngOnInit() {
     this.subsctiptions.add(this.route.parent.params.subscribe(params => {
+      console.log(`${RunStatisticsChartsComponent.TAG} Parent params subscription`)
+
       let mongooseRouteParamsParser: MongooseRouteParamsParser = new MongooseRouteParamsParser(this.monitoringApiService);
       try {
         mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
           foundRecord => {
+            console.log(`${RunStatisticsChartsComponent.TAG} Route params subscription.`)
             if (foundRecord == undefined) {
               throw new Error(`Requested run record hasn't been found.`);
             }

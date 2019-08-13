@@ -18,6 +18,8 @@ import { PrometheusApiService } from "src/app/core/services/prometheus-api/prome
 })
 export class RunStatisticsComponent implements OnInit {
 
+  public static readonly TAG: string = "RunStatisticsComponent";
+
   private readonly STATISTICS_SECTIONS = [
     { name: "Charts", url: RoutesList.RUN_CHARTS },
     { name: "Logs", url: RoutesList.RUN_LOGS }
@@ -40,16 +42,20 @@ export class RunStatisticsComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    console.log(`${RunStatisticsComponent.TAG} onInit`)
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParameters = this.route.params.subscribe(params => {
+      console.log(`${RunStatisticsComponent.TAG} Route params subscription`);
       let targetRecordLoadStepId = params[RouteParams.ID];
       try {
         this.monitoringApiSubscriptions = this.monitoringApiService.getMongooseRunRecordByLoadStepId(targetRecordLoadStepId).subscribe(
           foundRecord => {
+            console.log(`${RunStatisticsComponent.TAG} Route params sunscription -> monitoring API subscription`)
             this.runRecord = foundRecord;
           },
           error => {
+            console.log(`${RunStatisticsComponent.TAG} Route params sunscription -> error`)
+
             let misleadingMsg = `Unable to display statistics for Mongoose run record with ID ${targetRecordLoadStepId}, reason: ${error.message}`;
 
             // TODO: Figure out whether error alers should be displayed or not
@@ -95,6 +101,8 @@ export class RunStatisticsComponent implements OnInit {
     let terminatingRunEntryNodeAddress = runRecord.getEntryNodeAddress();
     this.controlApiService.terminateMongooseRun(terminatingRunEntryNodeAddress, terminatingRunId as string).subscribe(
       (terminationStatusMessage: string) => {
+        console.log(`${RunStatisticsComponent.TAG} termination subscription.`)
+
         alert(terminationStatusMessage);
         window.location.reload();
       }
@@ -104,6 +112,7 @@ export class RunStatisticsComponent implements OnInit {
 
   private initTabs() {
     // NOTE: Filling up statistic tabs data  
+    
     for (let section of this.STATISTICS_SECTIONS) {
       let tab = new BasicTab(section.name, section.url);
       this.statisticTabs.push(tab);

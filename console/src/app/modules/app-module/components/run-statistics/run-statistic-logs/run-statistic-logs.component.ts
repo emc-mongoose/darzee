@@ -22,6 +22,8 @@ import { MongooseLogModel } from 'src/app/core/models/mongoose.log.model';
 })
 export class RunStatisticLogsComponent implements OnInit {
 
+  public static readonly TAG: string = "RunStatisticLogsComponent";
+
   // NOTE: Public fields are mostly used within DOM. 
   public displayingTextContent = '';
 
@@ -47,10 +49,13 @@ export class RunStatisticLogsComponent implements OnInit {
     // NOTE: Getting ID of the required Run Record from the HTTP query parameters. 
     this.routeParamsSubscription.add(
       this.route.parent.params.subscribe((params: any) => {
+        console.log(`${RunStatisticLogsComponent.TAG} parent params subsription`)
         let mongooseRouteParamsParser: MongooseRouteParamsParser = new MongooseRouteParamsParser(this.monitoringApiService);
         try {
           this.monitoringApiSubscriptions.add(mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
             (foundRecord: MongooseRunRecord) => {
+              console.log(`${RunStatisticLogsComponent.TAG} getMongooseRunRecordByLoadStepId subscription`)
+
               this.processingRunRecord = foundRecord;
               if (!this.shouldDisplayLogs(this.processingRunRecord)) {
                 // NOTE: Timeout prevents situations when modal view will be created before the parent one. 
@@ -99,6 +104,8 @@ export class RunStatisticLogsComponent implements OnInit {
     this.monitoringApiSubscriptions.add(
       this.monitoringApiService.getLog(this.processingRunRecord.getEntryNodeAddress(), this.processingRunRecord.getLoadStepId(), targetLogEndpoint).subscribe(
         (logs: string) => {
+          console.log(`${RunStatisticLogsComponent.TAG} monitoring API logs subscription`)
+
           this.shouldDisplayErrorAlert = false;
           this.displayingTextContent = logs;
         },
@@ -158,6 +165,7 @@ export class RunStatisticLogsComponent implements OnInit {
       this.monitoringApiService.getLogsForRunNode(currentNodeAddress)
       .subscribe(
         (mongooseLogs: MongooseLogModel[]) => {
+          console.log(`${RunStatisticLogsComponent.TAG} monitoringApiService getLogsForRunNode subscription`)
 
           var displayingLogTabs: BasicTab[] = [];
           for (var mongooseLog of mongooseLogs) {
