@@ -37,6 +37,8 @@ export class RunsTableRootComponent implements OnInit {
 
   private mongooseRecordsSubscription: Subscription = new Subscription();
   private monitoringApiServiceSubscriptions: Subscription = new Subscription();
+  private prometheusAddressSubscription: Subscription = new Subscription();
+
   private recordUpdatingTimer: any;
 
   private hasReceivedDataFromProvider: boolean = false;
@@ -65,7 +67,10 @@ export class RunsTableRootComponent implements OnInit {
   ngOnDestroy() {
     this.mongooseRecordsSubscription.unsubscribe();
     this.monitoringApiServiceSubscriptions.unsubscribe();
+    this.prometheusAddressSubscription.unsubscribe();
     this.mongooseRunTabs$.unsubscribe();
+    this.currentTab$.unsubscribe();
+    this.filtredRecords$.unsubscribe();
   }
 
 
@@ -129,11 +134,13 @@ export class RunsTableRootComponent implements OnInit {
       const factory = this.resolver.resolveComponentFactory(PrometheusErrorComponent);
       const errorComponentReference = this.errorMessageComponent.createComponent(factory);
       this.errorComponentsReferences.push(errorComponentReference);
-      errorComponentReference.instance.onPrometheusLoad.subscribe(
-        onPrometheusClosed => {
-          this.errorMessageComponent.clear();
-          this.setUpRecordsData();
-        }
+      this.prometheusAddressSubscription.add(
+        errorComponentReference.instance.onPrometheusLoad.subscribe(
+          onPrometheusClosed => {
+            this.errorMessageComponent.clear();
+            this.setUpRecordsData();
+          }
+        )
       );
     }
   }
@@ -247,12 +254,14 @@ export class RunsTableRootComponent implements OnInit {
  * ... user that the run is still there, but need to be loaded.
  */
   private observeLaunchedRunRecord() {
-    this.monitoringApiService.getMongooseRunRecords().subscribe(
-      (fetchedRecord: MongooseRunRecord[]) => {
-        if (fetchedRecord.length != this.filtredRecords$.getValue().length) {
-          this.mongooseDataSharedServiceService.shouldWaintForNewRun = false;
+    this.mongooseRecordsSubscription.add(
+      this.monitoringApiService.getMongooseRunRecords().subscribe(
+        (fetchedRecord: MongooseRunRecord[]) => {
+          if (fetchedRecord.length != this.filtredRecords$.getValue().length) {
+            this.mongooseDataSharedServiceService.shouldWaintForNewRun = false;
+          }
         }
-      }
+      )
     );
   }
 
