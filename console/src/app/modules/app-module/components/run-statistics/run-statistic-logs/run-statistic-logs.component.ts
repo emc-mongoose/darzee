@@ -79,6 +79,7 @@ export class RunStatisticLogsComponent implements OnInit {
   ngOnDestroy() {
     this.monitoringApiSubscriptions.unsubscribe();
     this.routeParamsSubscription.unsubscribe();
+    this.logTabs$.unsubscribe();
   }
 
   // MARK: - Public
