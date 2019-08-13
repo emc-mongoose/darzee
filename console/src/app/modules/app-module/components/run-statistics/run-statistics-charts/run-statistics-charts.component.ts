@@ -31,6 +31,8 @@ export class RunStatisticsChartsComponent implements OnInit {
   public displayingMongooseChart: MongooseChart;
 
   private subsctiptions: Subscription = new Subscription();
+  private monitoringApiSubscription: Subscription = new Subscription();
+
   private processingRecord: MongooseRunRecord;
 
   private chartTabs: BasicTab[];
@@ -55,18 +57,19 @@ export class RunStatisticsChartsComponent implements OnInit {
 
       let mongooseRouteParamsParser: MongooseRouteParamsParser = new MongooseRouteParamsParser(this.monitoringApiService);
       try {
-        mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
-          foundRecord => {
-            console.log(`${RunStatisticsChartsComponent.TAG} Route params subscription.`)
-            if (foundRecord == undefined) {
-              throw new Error(`Requested run record hasn't been found.`);
+        this.monitoringApiSubscription.add(
+          mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
+            foundRecord => {
+              console.log(`${RunStatisticsChartsComponent.TAG} [getMongooseRunRecordByLoadStepId] Route params subscription.`)
+              if (foundRecord == undefined) {
+                throw new Error(`Requested run record hasn't been found.`);
+              }
+              this.configureChartsRepository();
+              this.processingRecord = foundRecord;
+              this.configureTabs();
+              this.configureChartUpdateInterval();
             }
-            this.configureChartsRepository();
-            this.processingRecord = foundRecord;
-            this.configureTabs();
-            this.configureChartUpdateInterval();
-
-          }
+          )
         )
       } catch (recordNotFoundError) {
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
@@ -80,6 +83,7 @@ export class RunStatisticsChartsComponent implements OnInit {
   ngOnDestroy() {
     clearInterval();
     this.subsctiptions.unsubscribe();
+    this.monitoringApiSubscription.unsubscribe();
   }
 
   // MARK: - Public 

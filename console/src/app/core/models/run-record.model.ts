@@ -33,6 +33,7 @@ export class MongooseRunRecord implements OnDestroy {
         this.entryNode = entryNode;
         this.statusSubscription.add(this.status$.subscribe(
             fetchedStatus => {
+                console.log(`Update status for run record with load step ID ${loadStepId}.`)
                 this.currentStatus = fetchedStatus;
             },
             error => {
@@ -45,6 +46,7 @@ export class MongooseRunRecord implements OnDestroy {
         this.duration$ = duration$;
         this.statusSubscription.add(this.duration$.subscribe(
             (fetchedDuration: string) => {
+                console.log(`Update duration for run record with load step ID ${loadStepId}.`)
                 this.currentDuration = fetchedDuration;
             }
         ))
