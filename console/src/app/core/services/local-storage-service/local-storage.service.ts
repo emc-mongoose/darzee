@@ -156,8 +156,8 @@ export class LocalStorageService {
   public getPrometheusHostAddress(): string {
     let prometheusHostAddresses: string[] = this.storage.get(this.PROMETHEUS_HOST_ADDRESS_LOCAL_STORAGE_KEY) || [];
     const firstAddressIndex: number = 0;
-    const emptyValue = "";
     console.log(`[${LocalStorageService.name}] Found Prometheus addresses: ${prometheusHostAddresses}.`);
+    const emptyValue = "";
     let firstFoundAddress = prometheusHostAddresses[firstAddressIndex] || emptyValue;
     console.log(`[${LocalStorageService.name}] First found address (${firstFoundAddress}) will be set as entry node.`);
     return firstFoundAddress;

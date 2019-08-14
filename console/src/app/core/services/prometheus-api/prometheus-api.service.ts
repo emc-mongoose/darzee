@@ -403,17 +403,22 @@ export class PrometheusApiService implements MongooseChartDataProvider {
             this.address.next(prometheusIp);
             // NOTE: Saving Prometheus' address into local storage in order to load it faster afterwards.
             this.localStorageService.savePrometheusHostAddress(prometheusIp);
-            return true;
+            return isDefaultAddressAvailable;
           }
           console.log(`[${PrometheusApiService.name}] Host loading failure on ${prometheusIp}.`);
           const prometheusLocalStorageAddress: string = this.localStorageService.getPrometheusHostAddress();
           const isPrometheusLocalStorageIpValid: boolean = HttpUtils.isIpAddressValid(prometheusLocalStorageAddress);
           if (!isPrometheusLocalStorageIpValid) {
             console.error(`Unable to load Prometheus on address from local storage ${prometheusLocalStorageAddress} since it's not valid.`);
-            return false;
+            return isPrometheusLocalStorageIpValid;
           }
+
+          // NOTE: Prometheus' address is an observable and its subscriber - ...
+          // ... - address handler - should reload it automatically.
+          console.log(`[${PrometheusApiService.name}] Switching Prometheus' host to ${prometheusLocalStorageAddress}. Should be realoded automatically.`);
           this.address.next(prometheusLocalStorageAddress);
-          return true;
+          const shouldReloadPrometheusAutomatically: boolean = true;
+          return shouldReloadPrometheusAutomatically;
         }
       )
     )
