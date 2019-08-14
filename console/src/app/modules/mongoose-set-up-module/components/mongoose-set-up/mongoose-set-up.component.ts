@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { MongooseSetupTab } from '../../models/mongoose-setup-tab.model';
 // import { slideAnimation } from '../../../core/animations';
@@ -16,7 +16,7 @@ import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose
   providers: [MongooseSetUpService]
 })
 
-export class MongooseSetUpComponent implements OnInit {
+export class MongooseSetUpComponent implements OnInit, OnDestroy {
 
   readonly BASE_URL = "/" + RoutesList.MONGOOSE_SETUP;
   readonly SETUP_TABS_DATA = [

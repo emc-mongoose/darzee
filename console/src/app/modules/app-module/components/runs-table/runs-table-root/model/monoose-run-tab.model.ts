@@ -32,7 +32,8 @@ export class MongooseRunTab implements OnInit, OnDestroy {
     ngOnInit(): void { }
 
     ngOnDestroy(): void {
-        this.recordsUpdateSubscription.unsubscribe()
+        this.recordsUpdateSubscription.unsubscribe();
+        this.amountOfRecords$.unsubscribe();
     }
 
     // MARK: - Public

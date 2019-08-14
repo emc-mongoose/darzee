@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { Constants } from 'src/app/common/constants';
 import { Subscription } from 'rxjs';
@@ -12,7 +12,7 @@ import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
   styleUrls: ['./configuration-editing.component.css']
 })
 
-export class ConfigurationEditingComponent implements OnInit {
+export class ConfigurationEditingComponent implements OnInit, OnDestroy {
 
   readonly CONFIGURATION_FILENAME = Constants.FileNames.CUSTOM_CONFIGURATION_FILENAME;
 

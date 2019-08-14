@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { Doc } from 'codemirror';
 import { FileOperations } from 'src/app/common/FileOperations/FileOperations';
@@ -13,7 +13,7 @@ import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-serv
   templateUrl: './scenarios.component.html',
   styleUrls: ['./scenarios.component.css']
 })
-export class ScenariosComponent implements OnInit {
+export class ScenariosComponent implements OnInit, OnDestroy {
 
   @ViewChild('scenarioCodeEditor') codeEditor: CodemirrorComponent;
 
@@ -46,6 +46,8 @@ export class ScenariosComponent implements OnInit {
   ngOnViewDestroyed() {
     this.setCurrentEditorValueAsScenario()
   }
+
+  ngOnDestroy(): void {  }
 
   // MARK: - Public 
 

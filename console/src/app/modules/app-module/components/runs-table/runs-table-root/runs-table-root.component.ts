@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef, ComponentRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef, ComponentRef, OnDestroy } from "@angular/core";
 import { slideAnimation } from "src/app/core/animations";
 import { MongooseRunTab } from "./model/monoose-run-tab.model";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
@@ -20,7 +20,7 @@ import { PrometheusApiService } from "src/app/core/services/prometheus-api/prome
   ]
 })
 
-export class RunsTableRootComponent implements OnInit {
+export class RunsTableRootComponent implements OnInit, OnDestroy {
 
   @ViewChild('errorMessageComponent', { read: ViewContainerRef }) errorMessageComponent: ViewContainerRef;
 
@@ -37,6 +37,8 @@ export class RunsTableRootComponent implements OnInit {
 
   private mongooseRecordsSubscription: Subscription = new Subscription();
   private monitoringApiServiceSubscriptions: Subscription = new Subscription();
+  private prometheusAddressSubscription: Subscription = new Subscription();
+
   private recordUpdatingTimer: any;
 
   private hasReceivedDataFromProvider: boolean = false;
@@ -48,11 +50,7 @@ export class RunsTableRootComponent implements OnInit {
   constructor(private monitoringApiService: MonitoringApiService,
     private resolver: ComponentFactoryResolver,
     private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
-    private prometheusApiService: PrometheusApiService) {
-    this.setUpInitialTabs();
-    this.initializeTabsRecordsData();
-  }
-
+    private prometheusApiService: PrometheusApiService) { }
 
   ngOnInit() {
     if (this.mongooseDataSharedServiceService.shouldWaintForNewRun) {
@@ -65,9 +63,11 @@ export class RunsTableRootComponent implements OnInit {
   ngOnDestroy() {
     this.mongooseRecordsSubscription.unsubscribe();
     this.monitoringApiServiceSubscriptions.unsubscribe();
+    this.prometheusAddressSubscription.unsubscribe();
     this.mongooseRunTabs$.unsubscribe();
+    this.currentTab$.unsubscribe();
+    this.filtredRecords$.unsubscribe();
   }
-
 
   /**
    * Determines if data required for Run Table loading has been received.
@@ -91,7 +91,7 @@ export class RunsTableRootComponent implements OnInit {
         return;
       }
       tab.isSelected = false;
-    })
+    });
     this.currentActiveTab = requiredTab;
     this.monitoringApiServiceSubscriptions = this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(requiredTab.tabTitle).subscribe(
       (filtedRecords: MongooseRunRecord[]) => {
@@ -101,7 +101,7 @@ export class RunsTableRootComponent implements OnInit {
       (error: PrometheusError): any => {
         this.showErrorComponent(error);
       }
-    )
+    );
   }
 
 
@@ -129,11 +129,13 @@ export class RunsTableRootComponent implements OnInit {
       const factory = this.resolver.resolveComponentFactory(PrometheusErrorComponent);
       const errorComponentReference = this.errorMessageComponent.createComponent(factory);
       this.errorComponentsReferences.push(errorComponentReference);
-      errorComponentReference.instance.onPrometheusLoad.subscribe(
-        onPrometheusClosed => {
-          this.errorMessageComponent.clear();
-          this.setUpRecordsData();
-        }
+      this.prometheusAddressSubscription.add(
+        errorComponentReference.instance.onPrometheusLoad.subscribe(
+          onPrometheusClosed => {
+            this.errorMessageComponent.clear();
+            this.setUpRunTableDataSource();
+          }
+        )
       );
     }
   }
@@ -154,9 +156,29 @@ export class RunsTableRootComponent implements OnInit {
     return tabs;
   }
 
+  /**
+   * Loads run table's data source.
+   */
+  private setUpRunTableDataSource() {
+    this.prometheusAddressSubscription.add(
+      this.prometheusApiService.setupPromtheusEntryNode().subscribe(
+        (hasPrometheusLoaded: boolean) => {
+          if (!hasPrometheusLoaded) {
+            const erorr: PrometheusError = new PrometheusError("Prometheus unavailable", 500); // TODO: Replace hard coded values
+            this.showErrorComponent(erorr);
+            return;
+          }
+          console.log(`[${RunsTableRootComponent.name}] Data source has successfully loaded.`);
+          this.setUpInitialTabs();
+          this.initializeTabsRecordsData();
+          this.setUpRecordsData();
+        }
+      )
+    );
+  }
 
   /**
-   * Initialize basic tab isntances.
+   * Initialize basic tab instances.
    */
   private setUpInitialTabs() {
     let emptyMongooseRunRecords: MongooseRunRecord[] = [];
@@ -204,16 +226,9 @@ export class RunsTableRootComponent implements OnInit {
    * Defines initial state of run table root component.
    */
   private setupComponent() {
-    this.mongooseRecordsSubscription.add(
-      // NOTE: Healthcheck helps prevent situation when error component is displaying until Prometheus' ...
-      // ... address actually gets loaded from local storage.
-      this.prometheusApiService.isAvailable().subscribe(
-        (isPrometheusAvailable: boolean) => {
-          this.setUpRecordsData();
-        }
-      )
-    )
+    this.setUpRunTableDataSource();
   }
+
   /**
    * Retrieves existing records from Prometheus. 
    * Note that it will display every existing record on the screen without ...
@@ -237,7 +252,7 @@ export class RunsTableRootComponent implements OnInit {
 
         console.error(misleadingMsg + errorDetails);
       }
-    )
+    );
   }
 
   /**
@@ -247,12 +262,14 @@ export class RunsTableRootComponent implements OnInit {
  * ... user that the run is still there, but need to be loaded.
  */
   private observeLaunchedRunRecord() {
-    this.monitoringApiService.getMongooseRunRecords().subscribe(
-      (fetchedRecord: MongooseRunRecord[]) => {
-        if (fetchedRecord.length != this.filtredRecords$.getValue().length) {
-          this.mongooseDataSharedServiceService.shouldWaintForNewRun = false;
+    this.mongooseRecordsSubscription.add(
+      this.monitoringApiService.getMongooseRunRecords().subscribe(
+        (fetchedRecord: MongooseRunRecord[]) => {
+          if (fetchedRecord.length != this.filtredRecords$.getValue().length) {
+            this.mongooseDataSharedServiceService.shouldWaintForNewRun = false;
+          }
         }
-      }
+      )
     );
   }
 

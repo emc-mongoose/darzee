@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ViewChild, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Subject, Observable, merge, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { LocalStorageService } from 'src/app/core/services/local-storage-service
   templateUrl: './prometheus-error.component.html',
   styleUrls: ['./prometheus-error.component.css']
 })
-export class PrometheusErrorComponent implements OnInit {
+export class PrometheusErrorComponent implements OnInit, OnDestroy {
 
   /**
    * @param prometheusAddressTypeheadInstance references to input field for Prometheus IP address.
@@ -118,9 +118,10 @@ export class PrometheusErrorComponent implements OnInit {
           this.isLoadingInProgress = false;
           this.prometheusResourceLocation = prometheusAddress;
           if (!isPrometheusAvailable) {
-            alert(`Prometheus is not available on ${prometheusAddress}`);
+            console.error(`Prometheus is not available on ${prometheusAddress}`);
             return;
           }
+          console.log(`Prometheus has successfully loaded on ${prometheusAddress}.`);
           // NOTE: Saving Prometheus' address if true.
           this.localStorageService.savePrometheusHostAddress(prometheusAddress);
           // NOTE: Updating Prometheus' address.

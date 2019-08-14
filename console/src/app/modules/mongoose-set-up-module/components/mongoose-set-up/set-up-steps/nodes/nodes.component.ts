@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Subscription, Observable } from 'rxjs';
@@ -15,7 +15,7 @@ import { HttpUtils } from 'src/app/common/HttpUtils';
   styleUrls: ['./nodes.component.scss'],
   providers: []
 })
-export class NodesComponent implements OnInit {
+export class NodesComponent implements OnInit, OnDestroy {
 
   private readonly IP_DEFAULT_PORT: number = 9999;
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewChecked, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, Input, ViewChild, OnDestroy } from '@angular/core';
 import { NgbActiveModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { MongooseRunRecord } from 'src/app/core/models/run-record.model';
 import { Observable, Subject, merge, of, Subscription } from 'rxjs';
@@ -13,7 +13,7 @@ import { MongooseApi } from 'src/app/core/services/mongoose-api-models/MongooseA
   templateUrl: './entry-node-selection.component.html',
   styleUrls: ['./entry-node-selection.component.css']
 })
-export class EntryNodeSelectionComponent implements OnInit {
+export class EntryNodeSelectionComponent implements OnInit, OnDestroy {
 
   @Input() mongooseRunRecord: MongooseRunRecord;
   @ViewChild('instance') typeheadInstance: NgbTypeahead;
@@ -38,6 +38,11 @@ export class EntryNodeSelectionComponent implements OnInit {
 
   ngOnInit() {
     this.errorMessage$.subscribe((message) => this.errorMessage = message);
+  }
+
+  ngOnDestroy() { 
+    this.errorMessage$.unsubscribe();
+    this.activeSubscriptions.unsubscribe();
   }
 
   /**

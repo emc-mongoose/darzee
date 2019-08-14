@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
@@ -15,7 +15,7 @@ import { CustomCheckBoxModel } from 'angular-custom-checkbox';
   templateUrl: './nodes-set-up-table-row.component.html',
   styleUrls: ['./nodes-set-up-table-row.component.scss']
 })
-export class NodesSetUpTableRowComponent implements OnInit {
+export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
 
   /**
    * @param runNode describes displaying Mongoose run node instance.
@@ -56,6 +56,10 @@ export class NodesSetUpTableRowComponent implements OnInit {
 
   ngOnInit() {
     this.checkboxConfiguration.rounded = true;
+  }
+
+  ngOnDestroy() { 
+    this.slaveNodesSubscription.unsubscribe();
   }
 
   // MARK: - Public

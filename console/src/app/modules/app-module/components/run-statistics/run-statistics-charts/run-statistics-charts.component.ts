@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ElementRef, OnDestroy } from "@angular/core";
 import { MongooseChart } from "src/app/core/models/chart/mongoose-chart-interface/mongoose-chart.interface";
 import { Subscription } from "rxjs";
 import { MongooseRunRecord } from "src/app/core/models/run-record.model";
@@ -21,7 +21,9 @@ import { MongooseChartOptions, MongooseChartAxesType } from "src/app/core/models
 })
 
 
-export class RunStatisticsChartsComponent implements OnInit {
+export class RunStatisticsChartsComponent implements OnInit, OnDestroy {
+
+  public static readonly TAG: string = "RunStatisticsChartsComponent";
 
   @ViewChild('chartContainer', { read: ViewContainerRef }) chartContainerReference: ViewContainerRef;
   @ViewChild('logarithmicScalingSwitch') logarithmicScalingSwitch: ElementRef;
@@ -29,6 +31,8 @@ export class RunStatisticsChartsComponent implements OnInit {
   public displayingMongooseChart: MongooseChart;
 
   private subsctiptions: Subscription = new Subscription();
+  private monitoringApiSubscription: Subscription = new Subscription();
+
   private processingRecord: MongooseRunRecord;
 
   private chartTabs: BasicTab[];
@@ -49,19 +53,23 @@ export class RunStatisticsChartsComponent implements OnInit {
 
   ngOnInit() {
     this.subsctiptions.add(this.route.parent.params.subscribe(params => {
+      console.log(`${RunStatisticsChartsComponent.TAG} Parent params subscription`)
+
       let mongooseRouteParamsParser: MongooseRouteParamsParser = new MongooseRouteParamsParser(this.monitoringApiService);
       try {
-        mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
-          foundRecord => {
-            if (foundRecord == undefined) {
-              throw new Error(`Requested run record hasn't been found.`);
+        this.monitoringApiSubscription.add(
+          mongooseRouteParamsParser.getMongooseRunRecordByLoadStepId(params).subscribe(
+            foundRecord => {
+              console.log(`${RunStatisticsChartsComponent.TAG} [getMongooseRunRecordByLoadStepId] Route params subscription.`)
+              if (foundRecord == undefined) {
+                throw new Error(`Requested run record hasn't been found.`);
+              }
+              this.configureChartsRepository();
+              this.processingRecord = foundRecord;
+              this.configureTabs();
+              this.configureChartUpdateInterval();
             }
-            this.configureChartsRepository();
-            this.processingRecord = foundRecord;
-            this.configureTabs();
-            this.configureChartUpdateInterval();
-
-          }
+          )
         )
       } catch (recordNotFoundError) {
         // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
@@ -75,6 +83,7 @@ export class RunStatisticsChartsComponent implements OnInit {
   ngOnDestroy() {
     clearInterval();
     this.subsctiptions.unsubscribe();
+    this.monitoringApiSubscription.unsubscribe();
   }
 
   // MARK: - Public 
