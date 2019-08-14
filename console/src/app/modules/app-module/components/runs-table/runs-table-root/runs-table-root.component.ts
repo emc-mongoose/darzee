@@ -50,11 +50,7 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
   constructor(private monitoringApiService: MonitoringApiService,
     private resolver: ComponentFactoryResolver,
     private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
-    private prometheusApiService: PrometheusApiService) {
-    this.setUpInitialTabs();
-    this.initializeTabsRecordsData();
-  }
-
+    private prometheusApiService: PrometheusApiService) { }
 
   ngOnInit() {
     if (this.mongooseDataSharedServiceService.shouldWaintForNewRun) {
@@ -72,7 +68,6 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
     this.currentTab$.unsubscribe();
     this.filtredRecords$.unsubscribe();
   }
-
 
   /**
    * Determines if data required for Run Table loading has been received.
@@ -96,7 +91,7 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
         return;
       }
       tab.isSelected = false;
-    })
+    });
     this.currentActiveTab = requiredTab;
     this.monitoringApiServiceSubscriptions = this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(requiredTab.tabTitle).subscribe(
       (filtedRecords: MongooseRunRecord[]) => {
@@ -106,7 +101,7 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
       (error: PrometheusError): any => {
         this.showErrorComponent(error);
       }
-    )
+    );
   }
 
 
@@ -138,7 +133,7 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
         errorComponentReference.instance.onPrometheusLoad.subscribe(
           onPrometheusClosed => {
             this.errorMessageComponent.clear();
-            this.setUpRecordsData();
+            this.setUpRunTableDataSource();
           }
         )
       );
@@ -161,9 +156,29 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
     return tabs;
   }
 
+  /**
+   * Loads run table's data source.
+   */
+  private setUpRunTableDataSource() {
+    this.prometheusAddressSubscription.add(
+      this.prometheusApiService.setupPromtheusEntryNode().subscribe(
+        (hasPrometheusLoaded: boolean) => {
+          if (!hasPrometheusLoaded) {
+            const erorr: PrometheusError = new PrometheusError("Prometheus unavailable", 500); // TODO: Replace hard coded values
+            this.showErrorComponent(erorr);
+            return;
+          }
+          console.log(`[${RunsTableRootComponent.name}] Data source has successfully loaded.`);
+          this.setUpInitialTabs();
+          this.initializeTabsRecordsData();
+          this.setUpRecordsData();
+        }
+      )
+    );
+  }
 
   /**
-   * Initialize basic tab isntances.
+   * Initialize basic tab instances.
    */
   private setUpInitialTabs() {
     let emptyMongooseRunRecords: MongooseRunRecord[] = [];
@@ -211,16 +226,9 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
    * Defines initial state of run table root component.
    */
   private setupComponent() {
-    this.mongooseRecordsSubscription.add(
-      // NOTE: Healthcheck helps prevent situation when error component is displaying until Prometheus' ...
-      // ... address actually gets loaded from local storage.
-      this.prometheusApiService.isAvailable().subscribe(
-        (isPrometheusAvailable: boolean) => {
-          this.setUpRecordsData();
-        }
-      )
-    )
+    this.setUpRunTableDataSource();
   }
+
   /**
    * Retrieves existing records from Prometheus. 
    * Note that it will display every existing record on the screen without ...
@@ -244,7 +252,7 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
 
         console.error(misleadingMsg + errorDetails);
       }
-    )
+    );
   }
 
   /**

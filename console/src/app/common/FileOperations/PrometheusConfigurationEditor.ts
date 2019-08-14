@@ -34,7 +34,6 @@ export class PrometheusConfigurationEditor {
         let isEndOfLine: boolean = false;
         const targetListBeginSymbol: string = "[";
         var endIndexOfTargetsSection: number = startIndexOfTargetsSection;
-        var amountOfCharsUntilTargetsListStart: number = 0;
         while (!isEndOfLine) {
             endIndexOfTargetsSection++;
             let currentChar: string = processingConfiguration[endIndexOfTargetsSection];
@@ -43,7 +42,6 @@ export class PrometheusConfigurationEditor {
         endIndexOfTargetsSection++;
 
         let firstPartOfConfiguration: string = processingConfiguration.substring(0, endIndexOfTargetsSection);
-        console.log(`[add targets] firstPartOfConfiguration: ${firstPartOfConfiguration}`)
        
         // NOTE: Temp-fix in order to retain ALL scraped Mongoose's nodes.
         const targetListEndSymbol: string = "]";
@@ -51,10 +49,9 @@ export class PrometheusConfigurationEditor {
         
         const delimiter: string = `,`;
         insertingTargetsValue += delimiter;
-        console.log(`insertingTargetsValue: ${JSON.stringify(insertingTargetsValue)}`)
+        console.log(`[Prometheus Configuration] Updated targets: ${JSON.stringify(insertingTargetsValue)}`)
         firstPartOfConfiguration += insertingTargetsValue
         let secondPartOfConfiguration: string = processingConfiguration.substring(endIndexOfTargetsSection, processingConfiguration.length);
-        console.log(`[add targets] secondPartOfConfiguration: ${secondPartOfConfiguration}`)
         let finalConfiguration = firstPartOfConfiguration + secondPartOfConfiguration;
 
         return finalConfiguration;
