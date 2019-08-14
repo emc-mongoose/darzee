@@ -365,7 +365,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
     var currentHostAddress: string = this.localStorageService.getPrometheusHostAddress();
     const emptyValue: string = "";
-    if (currentHostAddress == emptyValue) { 
+    if (currentHostAddress == emptyValue) {
       currentHostAddress = this.containerServerService.getContainerServicerAddressFromAddressLine();
     }
     // NOTE: Prometheus and UI runs within the same container. Thus, it's highly likely that...
@@ -421,7 +421,7 @@ export class PrometheusApiService implements MongooseChartDataProvider {
           return shouldReloadPrometheusAutomatically;
         }
       )
-    )
+    );
   }
 
 }

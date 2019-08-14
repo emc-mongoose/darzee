@@ -52,13 +52,12 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
     private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
     private prometheusApiService: PrometheusApiService) { }
 
-
   ngOnInit() {
     if (this.mongooseDataSharedServiceService.shouldWaintForNewRun) {
       this.observeLaunchedRunRecord = this.observeLaunchedRunRecord.bind(this);
       this.recordUpdatingTimer = setInterval(this.observeLaunchedRunRecord, 2000);
     }
-    this.setUpRunTableDataSource();
+    this.setupComponent();
   }
 
   ngOnDestroy() {
@@ -69,7 +68,6 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
     this.currentTab$.unsubscribe();
     this.filtredRecords$.unsubscribe();
   }
-
 
   /**
    * Determines if data required for Run Table loading has been received.
@@ -93,7 +91,7 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
         return;
       }
       tab.isSelected = false;
-    })
+    });
     this.currentActiveTab = requiredTab;
     this.monitoringApiServiceSubscriptions = this.monitoringApiService.getMongooseRunRecordsFiltredByStatus(requiredTab.tabTitle).subscribe(
       (filtedRecords: MongooseRunRecord[]) => {
@@ -103,7 +101,7 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
       (error: PrometheusError): any => {
         this.showErrorComponent(error);
       }
-    )
+    );
   }
 
 
@@ -176,7 +174,7 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
           this.setUpRecordsData();
         }
       )
-    )
+    );
   }
 
   /**
@@ -228,16 +226,9 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
    * Defines initial state of run table root component.
    */
   private setupComponent() {
-    this.mongooseRecordsSubscription.add(
-      // NOTE: Healthcheck helps prevent situation when error component is displaying until Prometheus' ...
-      // ... address actually gets loaded from local storage.
-      this.prometheusApiService.isAvailable().subscribe(
-        (isPrometheusAvailable: boolean) => {
-          this.setUpRecordsData();
-        }
-      )
-    )
+    this.setUpRunTableDataSource();
   }
+
   /**
    * Retrieves existing records from Prometheus. 
    * Note that it will display every existing record on the screen without ...
@@ -261,7 +252,7 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
 
         console.error(misleadingMsg + errorDetails);
       }
-    )
+    );
   }
 
   /**
