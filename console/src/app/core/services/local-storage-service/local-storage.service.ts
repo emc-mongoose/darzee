@@ -59,7 +59,6 @@ export class LocalStorageService {
     this.storage.set(this.PROMETHEUS_HOST_ADDRESS_LOCAL_STORAGE_KEY, updatedArrayOfPrometheusHosts);
   }
 
-
   /**
    * Saved Mongoose run node (regardless whether it's an entry node or not) into local storage.
    * @param nodeAddress saving node's address.
@@ -152,7 +151,7 @@ export class LocalStorageService {
 
   /**
    * @returns Prometheus' server host address retrieved from local storage.
-   * If nothing has been found at local storage, returns empty value.
+   * @returns empty value If nothing has been found at local storage.
    */
   public getPrometheusHostAddress(): string {
     let prometheusHostAddresses: string[] = this.storage.get(this.PROMETHEUS_HOST_ADDRESS_LOCAL_STORAGE_KEY) || [];

@@ -359,12 +359,18 @@ export class PrometheusApiService implements MongooseChartDataProvider {
   /**
    * Tries to retrieve Prometheus' entry node form both .env file and ...
    * ... local browser's storage.
+   * @returns true if Prometheus has successully loaded.
    */
-  private setupPromtheusEntryNode() {
+  public setupPromtheusEntryNode(): Observable<boolean> {
 
+    var currentHostAddress: string = this.localStorageService.getPrometheusHostAddress();
+    const emptyValue: string = "";
+    if (currentHostAddress == emptyValue) { 
+      currentHostAddress = this.containerServerService.getContainerServicerAddressFromAddressLine();
+    }
     // NOTE: Prometheus and UI runs within the same container. Thus, it's highly likely that...
     // ... they both have the same host address.
-    var currentHostAddress: string = this.containerServerService.getContainerServicerAddressFromAddressLine();
+    // var currentHostAddress: string = this.containerServerService.getContainerServicerAddressFromAddressLine();
     console.log(`[${PrometheusApiService.name}] Current host address: ${currentHostAddress}`)
 
     const hostAddressContainsHttpPrefix: boolean = currentHostAddress.includes(Constants.Http.HTTP_PREFIX);
@@ -389,24 +395,27 @@ export class PrometheusApiService implements MongooseChartDataProvider {
 
     console.log(`[${PrometheusApiService.name}] Trying to load Prometheus on ${prometheusIp}...`);
 
-    this.isAvailable(prometheusIp).subscribe(
-      (isDefaultAddressAvailable: boolean) => {
-        if (isDefaultAddressAvailable) {
-          console.log(`[${PrometheusApiService.name}] Host is successfully loaded on ${prometheusIp}.`);
-          this.address.next(prometheusIp);
-          // NOTE: Saving Prometheus' address into local storage in order to load it faster afterwards.
-          this.localStorageService.savePrometheusHostAddress(prometheusIp);
-          return;
-        } console.log(`[${PrometheusApiService.name}] Host loading failure on ${prometheusIp}.`);
-        const prometheusLocalStorageAddress: string = this.localStorageService.getPrometheusHostAddress();
-        const isPrometheusLocalStorageIpValid: boolean = HttpUtils.isIpAddressValid(prometheusLocalStorageAddress);
-        if (!isPrometheusLocalStorageIpValid) {
-          console.error(`Unable to load Prometheus on address from local storage ${prometheusLocalStorageAddress} since it's not valid.`);
-          return;
+    return this.isAvailable(prometheusIp).pipe(
+      map(
+        (isDefaultAddressAvailable: boolean) => {
+          if (isDefaultAddressAvailable) {
+            console.log(`[${PrometheusApiService.name}] Host is successfully loaded on ${prometheusIp}.`);
+            this.address.next(prometheusIp);
+            // NOTE: Saving Prometheus' address into local storage in order to load it faster afterwards.
+            this.localStorageService.savePrometheusHostAddress(prometheusIp);
+            return true;
+          }
+          console.log(`[${PrometheusApiService.name}] Host loading failure on ${prometheusIp}.`);
+          const prometheusLocalStorageAddress: string = this.localStorageService.getPrometheusHostAddress();
+          const isPrometheusLocalStorageIpValid: boolean = HttpUtils.isIpAddressValid(prometheusLocalStorageAddress);
+          if (!isPrometheusLocalStorageIpValid) {
+            console.error(`Unable to load Prometheus on address from local storage ${prometheusLocalStorageAddress} since it's not valid.`);
+            return false;
+          }
+          this.address.next(prometheusLocalStorageAddress);
+          return true;
         }
-        this.address.next(prometheusLocalStorageAddress);
-        return;
-      }
+      )
     )
   }
 

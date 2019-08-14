@@ -50,10 +50,7 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
   constructor(private monitoringApiService: MonitoringApiService,
     private resolver: ComponentFactoryResolver,
     private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
-    private prometheusApiService: PrometheusApiService) {
-    this.setUpInitialTabs();
-    this.initializeTabsRecordsData();
-  }
+    private prometheusApiService: PrometheusApiService) { }
 
 
   ngOnInit() {
@@ -61,7 +58,7 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
       this.observeLaunchedRunRecord = this.observeLaunchedRunRecord.bind(this);
       this.recordUpdatingTimer = setInterval(this.observeLaunchedRunRecord, 2000);
     }
-    this.setupComponent();
+    this.setUpRunTableDataSource();
   }
 
   ngOnDestroy() {
@@ -138,7 +135,7 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
         errorComponentReference.instance.onPrometheusLoad.subscribe(
           onPrometheusClosed => {
             this.errorMessageComponent.clear();
-            this.setUpRecordsData();
+            this.setUpRunTableDataSource();
           }
         )
       );
@@ -161,9 +158,29 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
     return tabs;
   }
 
+  /**
+   * Loads run table's data source.
+   */
+  private setUpRunTableDataSource() {
+    this.prometheusAddressSubscription.add(
+      this.prometheusApiService.setupPromtheusEntryNode().subscribe(
+        (hasPrometheusLoaded: boolean) => {
+          if (!hasPrometheusLoaded) {
+            const erorr: PrometheusError = new PrometheusError("Prometheus unavailable", 500); // TODO: Replace hard coded values
+            this.showErrorComponent(erorr);
+            return;
+          }
+          console.log(`[${RunsTableRootComponent.name}] Data source has successfully loaded.`);
+          this.setUpInitialTabs();
+          this.initializeTabsRecordsData();
+          this.setUpRecordsData();
+        }
+      )
+    )
+  }
 
   /**
-   * Initialize basic tab isntances.
+   * Initialize basic tab instances.
    */
   private setUpInitialTabs() {
     let emptyMongooseRunRecords: MongooseRunRecord[] = [];

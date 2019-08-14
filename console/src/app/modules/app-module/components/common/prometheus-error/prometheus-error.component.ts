@@ -118,9 +118,10 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
           this.isLoadingInProgress = false;
           this.prometheusResourceLocation = prometheusAddress;
           if (!isPrometheusAvailable) {
-            alert(`Prometheus is not available on ${prometheusAddress}`);
+            console.error(`Prometheus is not available on ${prometheusAddress}`);
             return;
           }
+          console.log(`Prometheus has successfully loaded on ${prometheusAddress}.`);
           // NOTE: Saving Prometheus' address if true.
           this.localStorageService.savePrometheusHostAddress(prometheusAddress);
           // NOTE: Updating Prometheus' address.
