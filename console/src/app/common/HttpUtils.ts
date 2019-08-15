@@ -78,13 +78,21 @@ export class HttpUtils {
     }
 
     /**
-     * Prunes HTTP ("http://") prefix from given address.
+     * Prunes HTTP ("http://") or HTTPS ("https://") prefixes from given address.
      * @param address IPv4 address.
      * @return address without HTTP prefix.
      */
     public static pruneHttpPrefixFromAddress(address: string): string {
         const httpPrefix: string = Constants.Http.HTTP_PREFIX;
+        const httpsPrefix: string = Constants.Http.HTTPS_PREFIX;
         const emptyValue: string = "";
-        return address.replace(httpPrefix, emptyValue);
+        if (address.includes(httpPrefix)) {
+            // NOTE: Handling HTTP-prefixed addresses
+            return address.replace(httpPrefix, emptyValue);
+        } else if (address.includes(httpsPrefix)) {
+            // NOTE: Handling HTTPS-prefixed addresses
+            return address.replace(httpsPrefix, emptyValue);
+        }
+        return address;
     }
 }

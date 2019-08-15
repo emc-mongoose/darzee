@@ -57,7 +57,8 @@ export namespace Constants {
             headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' })
         }
 
-        static readonly HTTP_PREFIX = "http://";
+        static readonly HTTP_PREFIX: string = "http://";
+        static readonly HTTPS_PREFIX: string = "https://";
     }
 
     export class HttpStatus {
