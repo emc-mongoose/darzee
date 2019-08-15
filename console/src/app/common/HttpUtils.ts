@@ -86,6 +86,8 @@ export class HttpUtils {
         const httpPrefix: string = Constants.Http.HTTP_PREFIX;
         const httpsPrefix: string = Constants.Http.HTTPS_PREFIX;
         const emptyValue: string = "";
+        
+        // NOTE: Prefix pruning logic 
         if (address.includes(httpPrefix)) {
             // NOTE: Handling HTTP-prefixed addresses
             return address.replace(httpPrefix, emptyValue);
