@@ -17,7 +17,7 @@ import { HttpUtils } from 'src/app/common/HttpUtils';
 })
 export class NodesComponent implements OnInit, OnDestroy {
 
-  private readonly IP_DEFAULT_PORT: number = 9999;
+  private readonly IP_DEFAULT_PORT: number = 9991;
 
   public runNode: MongooseRunNode;
 
