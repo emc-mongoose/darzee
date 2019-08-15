@@ -111,9 +111,10 @@ export class NodesComponent implements OnInit, OnDestroy {
 
   /**
  * Displays alert on top of the screen notifying that inactive node is selected.
- * @param inactiveNode inactive node instance.
+ * @param selectedNodeInfo instance of node that causes alert to appear.
+ * @param type type of appearing alert. Error by default.
  */
-  public displayNodeAlert(selectedNodeInfo: MongooseRunNode, type: NodeSetUpAlertType) {
+  public displayNodeAlert(selectedNodeInfo: MongooseRunNode, type: NodeSetUpAlertType = NodeSetUpAlertType.ERROR) {
     // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
     // ... the configuration thought. 
     let nodeAlert = new NodeAlert(`selected node ${selectedNodeInfo.getResourceLocation()} is not active`, selectedNodeInfo, type);
