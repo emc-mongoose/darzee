@@ -63,8 +63,10 @@ export class NodesComponent implements OnInit, OnDestroy {
    */
   public onAddIpButtonClicked(): void {
     // NOTE: trimming accident whitespaces
-    this.entredIpAddress = this.entredIpAddress.replace(/\s/g, "");
-
+    const allWhitespacesRegex: RegExp = /\s/g;
+    this.entredIpAddress = this.entredIpAddress.replace(allWhitespacesRegex, "");
+    console.log(`[${NodesComponent.name}] Processing entered IPv4 address: "${this.entredIpAddress}"`);
+    
     const savingNodeAddress: string = this.entredIpAddress;
     if (!HttpUtils.isIpAddressValid(savingNodeAddress)) {
       if (HttpUtils.matchesIpv4AddressWithoutPort(savingNodeAddress)) {
@@ -75,7 +77,9 @@ export class NodesComponent implements OnInit, OnDestroy {
       }
     }
 
-    let newMongooseNode = new MongooseRunNode(this.entredIpAddress);
+    const processedMongooseNodeAddress: string = HttpUtils.pruneHttpPrefixFromAddress(this.entredIpAddress);
+
+    let newMongooseNode = new MongooseRunNode(processedMongooseNodeAddress);
     try {
       const savingNodeAddress: string = newMongooseNode.getResourceLocation();
 

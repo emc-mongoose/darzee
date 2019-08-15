@@ -112,20 +112,24 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
    */
   private tryToLoadPrometheus(prometheusAddress: string) {
     this.isLoadingInProgress = true;
+    // NOTE: Pruning prefixes in order to exclude invalid target URl and any errors ...
+    // ... within services.
+    const prometheusAddressWithoutPrefixes: string = HttpUtils.pruneHttpPrefixFromAddress(prometheusAddress);
+    
     this.activeSubscriptions.add(
-      this.prometheusApiService.isAvailable(prometheusAddress).subscribe(
+      this.prometheusApiService.isAvailable(prometheusAddressWithoutPrefixes).subscribe(
         (isPrometheusAvailable: boolean) => {
           this.isLoadingInProgress = false;
-          this.prometheusResourceLocation = prometheusAddress;
+          this.prometheusResourceLocation = prometheusAddressWithoutPrefixes;
           if (!isPrometheusAvailable) {
-            console.error(`Prometheus is not available on ${prometheusAddress}`);
+            console.error(`Prometheus is not available on ${prometheusAddressWithoutPrefixes}`);
             return;
           }
-          console.log(`Prometheus has successfully loaded on ${prometheusAddress}.`);
+          console.log(`Prometheus has successfully loaded on ${prometheusAddressWithoutPrefixes}.`);
           // NOTE: Saving Prometheus' address if true.
-          this.localStorageService.savePrometheusHostAddress(prometheusAddress);
+          this.localStorageService.savePrometheusHostAddress(prometheusAddressWithoutPrefixes);
           // NOTE: Updating Prometheus' address.
-          this.prometheusApiService.setHostIpAddress(prometheusAddress);
+          this.prometheusApiService.setHostIpAddress(prometheusAddressWithoutPrefixes);
           this.onPrometheusLoad.emit();
         }
       )
