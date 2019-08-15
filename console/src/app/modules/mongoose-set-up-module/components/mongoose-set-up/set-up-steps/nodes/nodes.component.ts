@@ -4,10 +4,11 @@ import { ControlApiService } from 'src/app/core/services/control-api/control-api
 import { Subscription, Observable } from 'rxjs';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
-import { InactiveNodeAlert } from './incative-node-alert.interface';
 import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
 import { map } from 'rxjs/operators';
 import { HttpUtils } from 'src/app/common/HttpUtils';
+import { NodeAlert } from './node-alert.interface';
+import { NodeSetUpAlertType } from './node-setup-alert.type';
 
 @Component({
   selector: 'app-nodes',
@@ -22,7 +23,7 @@ export class NodesComponent implements OnInit, OnDestroy {
   public runNode: MongooseRunNode;
 
   public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>();
-  public inactiveNodeAlerts: InactiveNodeAlert[] = [];
+  public nodeAlerts: NodeAlert[] = [];
   public displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
   public entredIpAddress = '';
   public nodeConfig: any = null;
@@ -102,9 +103,9 @@ export class NodesComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onAlertClosed(closedAlert: InactiveNodeAlert) {
+  public onAlertClosed(closedAlert: NodeAlert) {
     let closedAlertIndex = this.getAlertIndex(closedAlert);
-    this.inactiveNodeAlerts.splice(closedAlertIndex, 1);
+    this.nodeAlerts.splice(closedAlertIndex, 1);
   }
 
 
@@ -112,27 +113,27 @@ export class NodesComponent implements OnInit, OnDestroy {
  * Displays alert on top of the screen notifying that inactive node is selected.
  * @param inactiveNode inactive node instance.
  */
-  public displayInactiveNodeAlert(selectedNodeInfo: MongooseRunNode) {
+  public displayNodeAlert(selectedNodeInfo: MongooseRunNode, type: NodeSetUpAlertType) {
     // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
     // ... the configuration thought. 
-    let inactiveNodeAlert = new InactiveNodeAlert(`selected node ${selectedNodeInfo.getResourceLocation()} is not active`, selectedNodeInfo);
+    let nodeAlert = new NodeAlert(`selected node ${selectedNodeInfo.getResourceLocation()} is not active`, selectedNodeInfo, type);
 
     // NOTE: Finding alert by message in alerts array
-    let alertIndex = this.getAlertIndex(inactiveNodeAlert);
+    let alertIndex = this.getAlertIndex(nodeAlert);
     let isAlertExist: boolean = (alertIndex >= 0);
 
     if (!isAlertExist) {
-      this.inactiveNodeAlerts.push(inactiveNodeAlert);
+      this.nodeAlerts.push(nodeAlert);
     }
     return;
   }
 
   // MARK: - Private
 
-  private getAlertIndex(inactiveNodeAlert: InactiveNodeAlert): number {
-    return (this.inactiveNodeAlerts.findIndex(
-      (alert: InactiveNodeAlert) => {
-        return (alert.message == inactiveNodeAlert.message);
+  private getAlertIndex(nodeAlert: NodeAlert): number {
+    return (this.nodeAlerts.findIndex(
+      (alert: NodeAlert) => {
+        return (alert.message == nodeAlert.message);
       }));
   }
 

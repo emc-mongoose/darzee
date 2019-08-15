@@ -1,4 +1,4 @@
-export enum NodeSetUpAlert { 
+export enum NodeSetUpAlertType { 
     ERROR = "error",
     WARNING = "warning"
 }
