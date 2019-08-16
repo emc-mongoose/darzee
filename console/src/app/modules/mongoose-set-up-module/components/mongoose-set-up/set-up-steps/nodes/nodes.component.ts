@@ -18,7 +18,7 @@ import { NodeSetUpAlertType } from './node-setup-alert.type';
 })
 export class NodesComponent implements OnInit, OnDestroy {
 
-  private readonly IP_DEFAULT_PORT: number = 9991;
+  private readonly IP_DEFAULT_PORT: number = 9999;
 
   public runNode: MongooseRunNode;
 
@@ -67,8 +67,9 @@ export class NodesComponent implements OnInit, OnDestroy {
     const allWhitespacesRegex: RegExp = /\s/g;
     this.entredIpAddress = this.entredIpAddress.replace(allWhitespacesRegex, "");
     console.log(`[${NodesComponent.name}] Processing entered IPv4 address: "${this.entredIpAddress}"`);
-    
+
     const savingNodeAddress: string = this.entredIpAddress;
+
     if (!HttpUtils.isIpAddressValid(savingNodeAddress)) {
       if (HttpUtils.matchesIpv4AddressWithoutPort(savingNodeAddress)) {
         this.entredIpAddress = HttpUtils.addPortToIp(this.entredIpAddress, this.IP_DEFAULT_PORT);
@@ -81,6 +82,14 @@ export class NodesComponent implements OnInit, OnDestroy {
     const processedMongooseNodeAddress: string = HttpUtils.pruneHttpPrefixFromAddress(this.entredIpAddress);
 
     let newMongooseNode = new MongooseRunNode(processedMongooseNodeAddress);
+
+    const hasLocalhostKeyword: boolean = processedMongooseNodeAddress.includes(HttpUtils.LOCALHOST_KEYWORD);
+    if (hasLocalhostKeyword) {
+      console.log(`has localhost keyword`)
+      // NOTE: Displaying warning if user tries to work with a localhost node.
+      this.displayNodeAlert(newMongooseNode, NodeSetUpAlertType.WARNING);
+    }
+
     try {
       const savingNodeAddress: string = newMongooseNode.getResourceLocation();
 
@@ -113,11 +122,28 @@ export class NodesComponent implements OnInit, OnDestroy {
  * Displays alert on top of the screen notifying that inactive node is selected.
  * @param selectedNodeInfo instance of node that causes alert to appear.
  * @param type type of appearing alert. Error by default.
+ * @param message misleading message of the alert.
  */
-  public displayNodeAlert(selectedNodeInfo: MongooseRunNode, type: NodeSetUpAlertType = NodeSetUpAlertType.ERROR) {
-    // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
-    // ... the configuration thought. 
-    let nodeAlert = new NodeAlert(`selected node ${selectedNodeInfo.getResourceLocation()} is not active`, selectedNodeInfo, type);
+  public displayNodeAlert(selectedNodeInfo: MongooseRunNode, type: NodeSetUpAlertType = NodeSetUpAlertType.ERROR, message: string = "") {
+
+    var misleadingMsg: string = "";
+    switch (type) {
+      case NodeSetUpAlertType.ERROR: {
+        // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
+        // ... the configuration thought. 
+        misleadingMsg = `selected node ${selectedNodeInfo.getResourceLocation()} is not active`;
+        break;
+      }
+      case NodeSetUpAlertType.WARNING: {
+        misleadingMsg = message;
+        break;
+      }
+      default: {
+        misleadingMsg = message;
+        break;
+      }
+    }
+    let nodeAlert = new NodeAlert(misleadingMsg, selectedNodeInfo, type);
 
     // NOTE: Finding alert by message in alerts array
     let alertIndex = this.getAlertIndex(nodeAlert);

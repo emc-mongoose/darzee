@@ -6,19 +6,37 @@ export class NodeAlert {
     /**
      * @param mongooseNode node that caused an alert to appear.
      * @param message displays basic alert message.
+     * @param cssType CSS custom type of the alert.
      */
 
     public message: string;
     public mongooseNode: MongooseRunNode;
+    public cssType: string = "danger";
 
-    /**
-     * @param alertType determines type (appearence) of alert.
-     */
-    private alertType: string = "danger";
-
+    // MARK: - Lifecycle 
 
     constructor(displayingMessage: string, mongooseNode: MongooseRunNode, type: NodeSetUpAlertType) {
         this.message = displayingMessage;
         this.mongooseNode = mongooseNode;
+        this.cssType = this.getAlertCssType(type);
+    }
+
+    // MARK: - Public 
+
+    // MARK: - Private
+
+    private getAlertCssType(type: NodeSetUpAlertType): string {
+        switch (type) {
+            case NodeSetUpAlertType.ERROR: {
+                return "danger";
+            }
+            case NodeSetUpAlertType.WARNING: {
+                console.log(`Warning alert will be spawned.`)
+                return "warning";
+            }
+            default: {
+                return "info";
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
 <!-- NOTE: Alerts that are caused because of a particular node selection. -->
 <p *ngFor="let nodeAlert of nodeAlerts">
-  <ngb-alert [type]="nodeAlert.alertType" (close)="onAlertClosed(nodeAlert)">{{ nodeAlert.message }}
+  <ngb-alert [type]="nodeAlert.cssType" (close)="onAlertClosed(nodeAlert)">{{ nodeAlert.message }}
   </ngb-alert>
 </p>
 <!-- NOTE: Nodes table  -->
