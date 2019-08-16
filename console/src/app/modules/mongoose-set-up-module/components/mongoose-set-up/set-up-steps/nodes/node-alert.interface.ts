@@ -31,7 +31,6 @@ export class NodeAlert {
                 return "danger";
             }
             case NodeSetUpAlertType.WARNING: {
-                console.log(`Warning alert will be spawned.`)
                 return "warning";
             }
             default: {

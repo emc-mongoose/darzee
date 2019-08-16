@@ -85,9 +85,9 @@ export class NodesComponent implements OnInit, OnDestroy {
 
     const hasLocalhostKeyword: boolean = processedMongooseNodeAddress.includes(HttpUtils.LOCALHOST_KEYWORD);
     if (hasLocalhostKeyword) {
-      console.log(`has localhost keyword`)
       // NOTE: Displaying warning if user tries to work with a localhost node.
-      this.displayNodeAlert(newMongooseNode, NodeSetUpAlertType.WARNING);
+      const misleadingMsg: string = "Communication with localhost is supported only in development mode.";
+      this.displayNodeAlert(newMongooseNode, NodeSetUpAlertType.WARNING, misleadingMsg);
     }
 
     try {
@@ -125,7 +125,7 @@ export class NodesComponent implements OnInit, OnDestroy {
  * @param message misleading message of the alert.
  */
   public displayNodeAlert(selectedNodeInfo: MongooseRunNode, type: NodeSetUpAlertType = NodeSetUpAlertType.ERROR, message: string = "") {
-
+    console.log(`Selected node info: ${JSON.stringify(selectedNodeInfo)}`);
     var misleadingMsg: string = "";
     switch (type) {
       case NodeSetUpAlertType.ERROR: {
