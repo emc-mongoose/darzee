@@ -87,7 +87,7 @@ export class NodesComponent implements OnInit, OnDestroy {
     if (!isNodeSupported) {
       // NOTE: Displaying warning if user tries to work with a localhost node.
       const misleadingMsg: string = "Communication with localhost is supported only in development mode.";
-      this.displayNodeAlert(newMongooseNode, NodeSetUpAlertType.WARNING, misleadingMsg);
+      this.displayNodeAlert(newMongooseNode, misleadingMsg);
     }
 
     try {
@@ -124,35 +124,38 @@ export class NodesComponent implements OnInit, OnDestroy {
  * @param type type of appearing alert. Error by default.
  * @param message misleading message of the alert.
  */
-  public displayNodeAlert(selectedNodeInfo: MongooseRunNode, type: NodeSetUpAlertType = NodeSetUpAlertType.ERROR, message: string = "") {
+  public displayNodeAlert(selectedNodeInfo: MongooseRunNode, message: string = "") {
     const causedNodeResourceLocation: string = selectedNodeInfo.getResourceLocation();
-
     var misleadingMsg: string = "";
-    switch (type) {
-      case NodeSetUpAlertType.ERROR: {
-        // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
-        // ... the configuration thought. 
-        misleadingMsg = `selected node ${selectedNodeInfo.getResourceLocation()} is not active`;
-        break;
-      }
-      case NodeSetUpAlertType.WARNING: {
-        misleadingMsg = message;
-        break;
-      }
-      default: {
-        misleadingMsg = message;
-        break;
+    // NOTE: Alert type is "Error" by default.
+    var alertType: NodeSetUpAlertType = NodeSetUpAlertType.ERROR;
+
+    var newAlerts: NodeAlert[] = [];
+
+    const hasLocalhostKeyword: boolean = causedNodeResourceLocation.includes(HttpUtils.LOCALHOST_KEYWORD);
+    if (hasLocalhostKeyword) {
+      // NOTE: Warning alerts are additional ones. You can push warning alerts along with ...
+      // ... error alerts.
+      alertType = NodeSetUpAlertType.WARNING;
+      const localhostNotSupportedMsg: string = "Communication with localhost is supported only in development mode.";
+      misleadingMsg = localhostNotSupportedMsg;
+      let warningNodeAlert: NodeAlert = new NodeAlert(misleadingMsg, selectedNodeInfo, alertType);
+      newAlerts.push(warningNodeAlert);
+    }
+
+    let errorAlert = new NodeAlert(misleadingMsg, selectedNodeInfo, alertType);
+    newAlerts.push(errorAlert);
+
+    for (var newAlert of newAlerts) {
+      // NOTE: Finding alert by message in alerts array
+      let alertIndex = this.getAlertIndex(newAlert);
+      let isAlertExist: boolean = (alertIndex >= 0);
+
+      if (!isAlertExist) {
+        this.nodeAlerts.push(newAlert);
       }
     }
-    let nodeAlert = new NodeAlert(misleadingMsg, selectedNodeInfo, type);
 
-    // NOTE: Finding alert by message in alerts array
-    let alertIndex = this.getAlertIndex(nodeAlert);
-    let isAlertExist: boolean = (alertIndex >= 0);
-
-    if (!isAlertExist) {
-      this.nodeAlerts.push(nodeAlert);
-    }
     return;
   }
 
