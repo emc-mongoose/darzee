@@ -17,8 +17,7 @@
     </thead>
     <!-- NOTE: Nodes' table rows -->
     <tr class="component-style table-row-component" *ngFor="let savedNode of savedMongooseNodes$ | async"
-      app-nodes-set-up-table-row [runNode]="savedNode"
-      (hasSelectedInactiveNode)="this.displayNodeAlert($event)">
+      app-nodes-set-up-table-row [runNode]="savedNode" (hasSelectedInactiveNode)="this.displayNodeAlert($event)">
   </table>
 </div>
 <!-- NOTE: IP entering area -->

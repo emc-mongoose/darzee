@@ -121,7 +121,6 @@ export class NodesComponent implements OnInit, OnDestroy {
   /**
  * Displays alert on top of the screen notifying that inactive node is selected.
  * @param selectedNodeInfo instance of node that causes alert to appear.
- * @param type type of appearing alert. Error by default.
  * @param message misleading message of the alert.
  */
   public displayNodeAlert(selectedNodeInfo: MongooseRunNode, message: string = "") {
@@ -143,10 +142,12 @@ export class NodesComponent implements OnInit, OnDestroy {
       newAlerts.push(warningNodeAlert);
     }
 
-    let errorAlert = new NodeAlert(misleadingMsg, selectedNodeInfo, alertType);
+    const errorAlertMisleadingMsg: string = `selected node ${selectedNodeInfo.getResourceLocation()} is not active`;
+    let errorAlert = new NodeAlert(errorAlertMisleadingMsg, selectedNodeInfo, NodeSetUpAlertType.ERROR);
     newAlerts.push(errorAlert);
 
     for (var newAlert of newAlerts) {
+      console.log(`processing new alert... with message ${newAlert.message}`)
       // NOTE: Finding alert by message in alerts array
       let alertIndex = this.getAlertIndex(newAlert);
       let isAlertExist: boolean = (alertIndex >= 0);
