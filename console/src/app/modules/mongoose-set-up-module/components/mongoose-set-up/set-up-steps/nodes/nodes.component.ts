@@ -83,8 +83,8 @@ export class NodesComponent implements OnInit, OnDestroy {
 
     let newMongooseNode = new MongooseRunNode(processedMongooseNodeAddress);
 
-    const hasLocalhostKeyword: boolean = processedMongooseNodeAddress.includes(HttpUtils.LOCALHOST_KEYWORD);
-    if (hasLocalhostKeyword) {
+    const isNodeSupported: boolean = this.isNodeSupported(newMongooseNode);
+    if (!isNodeSupported) {
       // NOTE: Displaying warning if user tries to work with a localhost node.
       const misleadingMsg: string = "Communication with localhost is supported only in development mode.";
       this.displayNodeAlert(newMongooseNode, NodeSetUpAlertType.WARNING, misleadingMsg);
@@ -125,7 +125,8 @@ export class NodesComponent implements OnInit, OnDestroy {
  * @param message misleading message of the alert.
  */
   public displayNodeAlert(selectedNodeInfo: MongooseRunNode, type: NodeSetUpAlertType = NodeSetUpAlertType.ERROR, message: string = "") {
-    console.log(`Selected node info: ${JSON.stringify(selectedNodeInfo)}`);
+    const causedNodeResourceLocation: string = selectedNodeInfo.getResourceLocation();
+
     var misleadingMsg: string = "";
     switch (type) {
       case NodeSetUpAlertType.ERROR: {
@@ -162,6 +163,17 @@ export class NodesComponent implements OnInit, OnDestroy {
       (alert: NodeAlert) => {
         return (alert.message == nodeAlert.message);
       }));
+  }
+
+  /**
+   * Determines if communication with @param node is supported from the UI.
+   * @param node processing Mongoose node. 
+   */
+  private isNodeSupported(node: MongooseRunNode): boolean {
+    const processingNodeAddress: string = node.getResourceLocation();
+    const hasLocalhostKeyword: boolean = processingNodeAddress.includes(HttpUtils.LOCALHOST_KEYWORD);
+    const isNodeSupported: boolean = (!hasLocalhostKeyword);
+    return isNodeSupported;
   }
 
 }
