@@ -73,6 +73,9 @@ export class NodesComponent implements OnInit, OnDestroy {
    * Handling node addition from the UI.
    */
   public onAddIpButtonClicked(): void {
+    // NOTE: Do not display invalid IP popover by default.
+    this.shouldDisplayAddButtonPopover = false; 
+
     // NOTE: trimming accident whitespaces
     const allWhitespacesRegex: RegExp = /\s/g;
     this.entredIpAddress = this.entredIpAddress.replace(allWhitespacesRegex, "");
@@ -84,6 +87,7 @@ export class NodesComponent implements OnInit, OnDestroy {
       if (HttpUtils.matchesIpv4AddressWithoutPort(savingNodeAddress)) {
         this.entredIpAddress = HttpUtils.addPortToIp(this.entredIpAddress, this.IP_DEFAULT_PORT);
       } else {
+        console.error(`[${NodesComponent.name}]: Address ${savingNodeAddress} is not valid.`)
         this.shouldDisplayAddButtonPopover = true;
         const emptyString: string = "";
         this.entredIpAddress = emptyString;
@@ -125,6 +129,9 @@ export class NodesComponent implements OnInit, OnDestroy {
     this.nodeAlerts.splice(closedAlertIndex, 1);
   }
 
+  public closePopover(): void { 
+    this.shouldDisplayAddButtonPopover = false;
+  }
 
   /**
  * Displays alert on top of the screen notifying that inactive node is selected.

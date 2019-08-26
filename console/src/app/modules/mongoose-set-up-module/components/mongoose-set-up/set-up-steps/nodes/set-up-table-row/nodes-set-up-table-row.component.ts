@@ -165,6 +165,7 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
    * @param nodeActivityState describes node's state (currently: active / non-active)
    */
   private changeNodeSelectionCheckboxAppearence(node: MongooseRunNode, nodeActivityState: boolean): void {
+    console.log(`[${NodesSetUpTableRowComponent.name}]: Changing appearence for node ${node.getResourceLocation()}.`);
     // NOTE: Set checkbox to 'selected' state since we're changng the selected checkbox appearence.
     this.isNodeSelected = true;
 
@@ -174,7 +175,7 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
 
       const driverType: string = node.getDriverType();
       this.additionalNodeInfoBadges.add(driverType);
-
+      console.log(`[${NodesSetUpTableRowComponent.name}] Adding badges to ${node.getResourceLocation()}.`);
       const imageVersion: string = node.getImageVersion();
       this.additionalNodeInfoBadges.add(imageVersion);
 
