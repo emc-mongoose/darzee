@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Subscription, Observable } from 'rxjs';
@@ -9,6 +9,7 @@ import { map } from 'rxjs/operators';
 import { HttpUtils } from 'src/app/common/HttpUtils';
 import { NodeAlert } from './node-alert.interface';
 import { NodeSetUpAlertType } from './node-setup-alert.type';
+import { NodesSetUpTableRowComponent } from './set-up-table-row/nodes-set-up-table-row.component';
 
 @Component({
   selector: 'app-nodes',
@@ -19,6 +20,12 @@ import { NodeSetUpAlertType } from './node-setup-alert.type';
 export class NodesComponent implements OnInit, OnDestroy {
 
   private readonly IP_DEFAULT_PORT: number = 9999;
+
+  /**
+   * @param nodesSetUpTableRowComponent references Nodes table handler class. It's used to ...
+   * ... select and unselect nodes manually from the code.
+   */
+  @ViewChild('nodesTableRow') nodesSetUpTableRowComponent: NodesSetUpTableRowComponent;
 
   public runNode: MongooseRunNode;
 
@@ -82,13 +89,6 @@ export class NodesComponent implements OnInit, OnDestroy {
 
     let newMongooseNode = new MongooseRunNode(processedMongooseNodeAddress);
 
-    // const isNodeSupported: boolean = this.isNodeSupported(newMongooseNode);
-    // if (!isNodeSupported) {
-    //   // NOTE: Displaying warning if user tries to work with a localhost node.
-    //   const misleadingMsg: string = "Communication with localhost is supported only in development mode.";
-    //   this.displayNodeAlert(newMongooseNode, misleadingMsg, NodeSetUpAlertType.WARNING);
-    // }
-
     try {
       const savingNodeAddress: string = newMongooseNode.getResourceLocation();
 
@@ -110,6 +110,9 @@ export class NodesComponent implements OnInit, OnDestroy {
       alert(`Requested Mongoose run node won't be saved. Details: ${error}`);
       return;
     }
+
+    // NOTE: Selecting recently added Mongoose run node.
+    this.nodesSetUpTableRowComponent.onRunNodeSelect(newMongooseNode);
   }
 
   public onAlertClosed(closedAlert: NodeAlert) {
@@ -123,22 +126,16 @@ export class NodesComponent implements OnInit, OnDestroy {
  * @param selectedNodeInfo instance of node that causes alert to appear.
  * @param message misleading message of the alert.
  */
-  public displayNodeAlert(selectedNodeInfo: MongooseRunNode, message: string = "", alertType: NodeSetUpAlertType): void {
+  public displayNodeAlert(selectedNodeInfo: MongooseRunNode, message: string, alertType: NodeSetUpAlertType): void {
 
-    var newAlerts: NodeAlert[] = [];
-    let errorAlert = new NodeAlert(message, selectedNodeInfo, alertType);
-    newAlerts.push(errorAlert);
+    let newAlert: NodeAlert = new NodeAlert(message, selectedNodeInfo, alertType);
+    // NOTE: Finding alert by message in alerts array
+    let alertIndex = this.getAlertIndex(newAlert);
+    let isAlertExist: boolean = (alertIndex >= 0);
 
-    for (var newAlert of newAlerts) {
-      // NOTE: Finding alert by message in alerts array
-      let alertIndex = this.getAlertIndex(newAlert);
-      let isAlertExist: boolean = (alertIndex >= 0);
-
-      if (!isAlertExist) {
-        this.nodeAlerts.push(newAlert);
-      }
+    if (!isAlertExist) {
+      this.nodeAlerts.push(newAlert);
     }
-
     return;
   }
 
@@ -157,7 +154,7 @@ export class NodesComponent implements OnInit, OnDestroy {
    * ... work with them via the UI.
    * @param unsupportedNodeDetails An object that contain node instance and a warning message.
    */
-  public displayUnsupportedNodeAlert(unsupportedNodeDetails: any) { 
+  public displayUnsupportedNodeAlert(unsupportedNodeDetails: any) {
     this.displayNodeAlert(unsupportedNodeDetails.node, unsupportedNodeDetails.reason, NodeSetUpAlertType.WARNING);
   }
 

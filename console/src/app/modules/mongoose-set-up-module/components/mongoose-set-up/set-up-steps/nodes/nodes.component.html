@@ -17,7 +17,8 @@
     </thead>
     <!-- NOTE: Nodes' table rows -->
     <tr class="component-style table-row-component" *ngFor="let savedNode of savedMongooseNodes$ | async"
-      app-nodes-set-up-table-row [runNode]="savedNode" (hasSelectedInactiveNode)="this.displayInactiveNodeAlert($event)"
+      app-nodes-set-up-table-row #nodesTableRow
+      [runNode]="savedNode" (hasSelectedInactiveNode)="this.displayInactiveNodeAlert($event)"
       (hasSelectedUnsupportedNode)="this.displayUnsupportedNodeAlert($event)">
   </table>
 </div>

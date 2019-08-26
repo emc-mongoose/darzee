@@ -30,11 +30,11 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
    */
 
   @Output() hasSelectedInactiveNode: EventEmitter<MongooseRunNode> = new EventEmitter<MongooseRunNode>();
-  @Output() hasSelectedUnsupportedNode: EventEmitter<{node: MongooseRunNode, reason: string}> = new EventEmitter<{node: MongooseRunNode, reason: string}>();
+  @Output() hasSelectedUnsupportedNode: EventEmitter<{ node: MongooseRunNode, reason: string }> = new EventEmitter<{ node: MongooseRunNode, reason: string }>();
 
 
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
-  
+
   private readonly CHECKBOX_SUCCESS_COLOR: string = "p-success";
   private readonly CHECKBOX_SUCCESS_ICON: string = "fa fa-check";
 
@@ -62,7 +62,7 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
     this.checkboxConfiguration.rounded = true;
   }
 
-  ngOnDestroy() { 
+  ngOnDestroy() {
     this.slaveNodesSubscription.unsubscribe();
   }
 
@@ -73,13 +73,15 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
    * @param selectedNode instance of selected Mongoose node.
    */
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
+    // NOTE: Checking wheather UI supports working with the selected node.
+    // Some cases when it's not supported: working in production mode with localhost nodes.
     const isNodeSupported: boolean = this.isNodeSupported(selectedNode);
-    if (!isNodeSupported) { 
+    if (!isNodeSupported) {
+      // NOTE: Displaying warning alert if node is not supported.
       const misleadingMsg: string = "Communication with localhost is supported only in development mode.";
-
-      this.hasSelectedUnsupportedNode.emit({node: selectedNode, reason: misleadingMsg});
+      this.hasSelectedUnsupportedNode.emit({ node: selectedNode, reason: misleadingMsg });
     }
-  
+
     let isNodeLocatedByIp: boolean = (selectedNode.getResourceType() == ResourceLocatorType.IP);
     // NOTE: Add noode if check mark has been set, remove if unset    
     let hasNodeBeenSelected: boolean = this.mongooseSetUpService.isNodeExist(selectedNode);
@@ -184,10 +186,10 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
     }
   }
 
-    /**
-   * Determines if communication with @param node is supported from the UI.
-   * @param node processing Mongoose node. 
-   */
+  /**
+ * Determines if communication with @param node is supported from the UI.
+ * @param node processing Mongoose node. 
+ */
   private isNodeSupported(node: MongooseRunNode): boolean {
     const processingNodeAddress: string = node.getResourceLocation();
     const hasLocalhostKeyword: boolean = processingNodeAddress.includes(HttpUtils.LOCALHOST_KEYWORD);
