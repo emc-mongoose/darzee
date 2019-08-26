@@ -54,14 +54,13 @@ export class NodesComponent implements OnInit, OnDestroy {
     this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes().pipe(
       map((nodes: MongooseRunNode[]) => {
         const hiddenNodes: string[] = this.localStorageService.getHiddenNodeAddresses();
-        console.log(`savedMongooseNodes subscription`)
         nodes.forEach((node: MongooseRunNode) => {
           if (hiddenNodes.includes(node.getResourceLocation())) {
             this.mongooseDataSharedService.deleteMongooseRunNode(node);
           }
         });
 
-        
+
         if (this.recentlyAddedNode != undefined) {
           // NOTE: Set recently added node as selected.
           this.setNodeAsSelected(this.recentlyAddedNode);
@@ -70,11 +69,10 @@ export class NodesComponent implements OnInit, OnDestroy {
         return nodes;
       })
     );
+
   }
 
-  ngOnInit() { 
-    this.setupComponent();
-  }
+  ngOnInit() { }
 
   ngOnDestroy() {
     this.slaveNodesSubscription.unsubscribe();
@@ -202,36 +200,22 @@ export class NodesComponent implements OnInit, OnDestroy {
     // Once new element has been appended, it should be a recently added node.
     this.nodesTableRowsSubscription = this.nodesSetUpTableRowComponents.changes.subscribe(
       (updatedTestRows: NodesSetUpTableRowComponent[]) => {
+        const firstFoundElementIndex: number = 0;
         // NOTE: Searching for row that should be updated.
-        // updatedTestRows.forEach(
-        //   (row: NodesSetUpTableRowComponent) => { 
-        //     if (row.runNode.getResourceLocation() == node.getResourceLocation()) { 
-        //       row.onRunNodeSelect(node);
-        //       this.nodesSetUpTableRowComponents.notifyOnChanges();
-        //     }
-        //   }
-        // )
         const rowThatShouldBeUpdated: NodesSetUpTableRowComponent = updatedTestRows.filter(
-          (row: NodesSetUpTableRowComponent) => 
-          row.runNode.getResourceLocation() == node.getResourceLocation()
-          )[0];
+          (row: NodesSetUpTableRowComponent) =>
+            row.runNode.getResourceLocation() == node.getResourceLocation()
+        )[firstFoundElementIndex];
 
-          // console.log(`rowThatShouldBeUpdated ${rowThatShouldBeUpdated.runNode.getResourceLocation()}`)
         if (rowThatShouldBeUpdated == undefined) {
-          return; 
+          // NOTE: Do nothing if recerntly added node hasn't been fond.
+          console.warn(`Node ${node.getResourceLocation()} hasn't been found. Nodes table content remains the same.`);
+          return;
         }
         rowThatShouldBeUpdated.onRunNodeSelect(node);
-        this.nodesSetUpTableRowComponents.notifyOnChanges();  
+        // NOTE: Notifying rows Query List that the source has been updated.
+        this.nodesSetUpTableRowComponents.notifyOnChanges();
       });
-  }
-
-  /**
-   * Performs set up operations for the component.
-   */
-  private setupComponent(): void { 
-    // NOTE: Observing nodes table changes in order to ...
-    // ... be able to handle recently added nodes manually.
-    // this.nodesSetUpTableRowComponents.notifyOnChanges();
   }
 
 }
