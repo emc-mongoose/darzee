@@ -17,8 +17,8 @@
     </thead>
     <!-- NOTE: Nodes' table rows -->
     <tr class="component-style table-row-component" *ngFor="let savedNode of savedMongooseNodes$ | async"
-      app-nodes-set-up-table-row #nodesTableRow
-      [runNode]="savedNode" (hasSelectedInactiveNode)="this.displayInactiveNodeAlert($event)"
+      app-nodes-set-up-table-row #nodesTableRow [runNode]="savedNode"
+      (hasSelectedInactiveNode)="this.displayInactiveNodeAlert($event)"
       (hasSelectedUnsupportedNode)="this.displayUnsupportedNodeAlert($event)">
   </table>
 </div>
@@ -36,7 +36,8 @@
     <!-- NOTE: Add IP button -->
     <div class="node-input add-ip-btn">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
-        (click)="onAddIpButtonClicked(ipAd.textContent)" popover="Please provide a valid IPv4 address.">Add</button>
+        (click)="onAddIpButtonClicked(ipAd.textContent)" popover="Please provide a valid IPv4 address."
+        [isOpen]="this.shouldDisplayAddButtonPopover" triggers="focus">Add</button>
     </div>
   </div>
 </div>

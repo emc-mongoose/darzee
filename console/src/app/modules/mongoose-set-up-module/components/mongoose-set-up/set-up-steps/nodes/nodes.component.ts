@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Subscription, Observable } from 'rxjs';
@@ -37,6 +37,8 @@ export class NodesComponent implements OnInit, OnDestroy {
   public entredIpAddress = '';
   public nodeConfig: any = null;
   public error: HttpErrorResponse = null;
+
+  public shouldDisplayAddButtonPopover: boolean = false; 
 
   private slaveNodesSubscription: Subscription = new Subscription();
 
@@ -82,7 +84,9 @@ export class NodesComponent implements OnInit, OnDestroy {
       if (HttpUtils.matchesIpv4AddressWithoutPort(savingNodeAddress)) {
         this.entredIpAddress = HttpUtils.addPortToIp(this.entredIpAddress, this.IP_DEFAULT_PORT);
       } else {
-        // alert(`IP address ${this.entredIpAddress} is not valid. Please, provide a valid one.`);
+        this.shouldDisplayAddButtonPopover = true; 
+        const emptyString: string = "";
+        this.entredIpAddress = emptyString;
         return;
       }
     }
