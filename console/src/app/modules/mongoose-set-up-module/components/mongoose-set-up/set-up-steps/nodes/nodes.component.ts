@@ -82,7 +82,7 @@ export class NodesComponent implements OnInit, OnDestroy {
       if (HttpUtils.matchesIpv4AddressWithoutPort(savingNodeAddress)) {
         this.entredIpAddress = HttpUtils.addPortToIp(this.entredIpAddress, this.IP_DEFAULT_PORT);
       } else {
-        alert(`IP address ${this.entredIpAddress} is not valid. Please, provide a valid one.`);
+        // alert(`IP address ${this.entredIpAddress} is not valid. Please, provide a valid one.`);
         return;
       }
     }

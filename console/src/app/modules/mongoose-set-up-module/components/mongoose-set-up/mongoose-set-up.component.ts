@@ -110,7 +110,6 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
           alert(misleadingMessage);
         } else {
           console.log(`Mongoose Run has started with run ID ${mongooseRunId}`);
-          // alert(misleadingMessage);
         }
 
         this.router.navigate([RoutesList.RUNS]);

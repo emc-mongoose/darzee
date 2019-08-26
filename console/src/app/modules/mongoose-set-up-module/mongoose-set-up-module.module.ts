@@ -18,6 +18,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { NodesSetUpTableRowComponent } from "./components/mongoose-set-up/set-up-steps/nodes/set-up-table-row/nodes-set-up-table-row.component";
 import { CustomCheckboxModule } from 'angular-custom-checkbox';
 import { BasicModalComponent } from "src/app/common/modals/basic-modal.template";
+import { PopoverModule } from 'ngx-bootstrap';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { BasicModalComponent } from "src/app/common/modals/basic-modal.template"
     CodemirrorModule,
     NgbModule,
     CustomCheckboxModule,
-    FormsModule
+    FormsModule,
+    PopoverModule.forRoot()
   ],
   entryComponents: [
     BasicModalComponent
