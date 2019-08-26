@@ -35,6 +35,7 @@
     </div>
     <!-- NOTE: Add IP button -->
     <div class="node-input add-ip-btn">
+      <!-- NOTE: "Add" button with dismissible popover -->
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
         (click)="onAddIpButtonClicked(ipAd.textContent)" popover="Please provide a valid IPv4 address."
         [isOpen]="this.shouldDisplayAddButtonPopover" triggers="focus">Add</button>

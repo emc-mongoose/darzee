@@ -38,7 +38,7 @@ export class NodesComponent implements OnInit, OnDestroy {
   public nodeConfig: any = null;
   public error: HttpErrorResponse = null;
 
-  public shouldDisplayAddButtonPopover: boolean = false; 
+  public shouldDisplayAddButtonPopover: boolean = false;
 
   private slaveNodesSubscription: Subscription = new Subscription();
 
@@ -84,7 +84,7 @@ export class NodesComponent implements OnInit, OnDestroy {
       if (HttpUtils.matchesIpv4AddressWithoutPort(savingNodeAddress)) {
         this.entredIpAddress = HttpUtils.addPortToIp(this.entredIpAddress, this.IP_DEFAULT_PORT);
       } else {
-        this.shouldDisplayAddButtonPopover = true; 
+        this.shouldDisplayAddButtonPopover = true;
         const emptyString: string = "";
         this.entredIpAddress = emptyString;
         return;
@@ -94,7 +94,6 @@ export class NodesComponent implements OnInit, OnDestroy {
     const processedMongooseNodeAddress: string = HttpUtils.pruneHttpPrefixFromAddress(this.entredIpAddress);
 
     let newMongooseNode = new MongooseRunNode(processedMongooseNodeAddress);
-
     try {
       const savingNodeAddress: string = newMongooseNode.getResourceLocation();
 
@@ -111,9 +110,9 @@ export class NodesComponent implements OnInit, OnDestroy {
       const emptyValue: string = "";
       this.entredIpAddress = emptyValue;
     } catch (error) {
-      console.log(`Requested Mongoose run node won't be saved. Details: ${error}`);
-      // TODO: Spawn disappearing alert here. 
-      alert(`Requested Mongoose run node won't be saved. Details: ${error}`);
+      console.error(`${newMongooseNode.getResourceLocation()} won't be saved. Details: ${JSON.stringify(error)}`);
+      const misleadingMsg: string = `Unable to save run node ${newMongooseNode.getResourceLocation()}} due to an unknown reason.`;
+      this.displayNodeAlert(newMongooseNode, misleadingMsg, NodeSetUpAlertType.ERROR);
       return;
     }
 
