@@ -8,6 +8,7 @@ import { Constants } from '../../../../common/constants';
 import { MongooseSetUpService } from '../../../../core/services/mongoose-set-up-service/mongoose-set-up.service';
 import { NodesComponent } from './set-up-steps/nodes/nodes.component';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
+import { NodeAlert } from './set-up-steps/nodes/node-alert.interface';
 
 @Component({
   selector: 'app-mongoose-set-up',
@@ -27,6 +28,7 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
 
   public setUpTabs: MongooseSetupTab[] = []
   public processingTabID: number = 0;
+  public alerts: NodeAlert[] = [];
 
   private mongooseRunSubscription: Subscription = new Subscription();
 
@@ -180,5 +182,8 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
   private getPercentagePerTab(): number {
     let rawPercentage = (100 / this.setUpTabs.length);
     return Math.ceil(rawPercentage);
+  }
+
+  private displayAlert(): void { 
   }
 }
