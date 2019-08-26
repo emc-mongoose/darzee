@@ -60,7 +60,6 @@ export class NodesComponent implements OnInit, OnDestroy {
 
   /**
    * Handling node addition from the UI.
-   * @param entredIpAddress entered IP from the UI.
    */
   public onAddIpButtonClicked(): void {
     // NOTE: trimming accident whitespaces
@@ -83,12 +82,12 @@ export class NodesComponent implements OnInit, OnDestroy {
 
     let newMongooseNode = new MongooseRunNode(processedMongooseNodeAddress);
 
-    const isNodeSupported: boolean = this.isNodeSupported(newMongooseNode);
-    if (!isNodeSupported) {
-      // NOTE: Displaying warning if user tries to work with a localhost node.
-      const misleadingMsg: string = "Communication with localhost is supported only in development mode.";
-      this.displayNodeAlert(newMongooseNode, misleadingMsg);
-    }
+    // const isNodeSupported: boolean = this.isNodeSupported(newMongooseNode);
+    // if (!isNodeSupported) {
+    //   // NOTE: Displaying warning if user tries to work with a localhost node.
+    //   const misleadingMsg: string = "Communication with localhost is supported only in development mode.";
+    //   this.displayNodeAlert(newMongooseNode, misleadingMsg, NodeSetUpAlertType.WARNING);
+    // }
 
     try {
       const savingNodeAddress: string = newMongooseNode.getResourceLocation();
@@ -107,6 +106,7 @@ export class NodesComponent implements OnInit, OnDestroy {
       this.entredIpAddress = emptyValue;
     } catch (error) {
       console.log(`Requested Mongoose run node won't be saved. Details: ${error}`);
+      // TODO: Spawn disappearing alert here. 
       alert(`Requested Mongoose run node won't be saved. Details: ${error}`);
       return;
     }
@@ -123,31 +123,13 @@ export class NodesComponent implements OnInit, OnDestroy {
  * @param selectedNodeInfo instance of node that causes alert to appear.
  * @param message misleading message of the alert.
  */
-  public displayNodeAlert(selectedNodeInfo: MongooseRunNode, message: string = "") {
-    const causedNodeResourceLocation: string = selectedNodeInfo.getResourceLocation();
-    var misleadingMsg: string = "";
-    // NOTE: Alert type is "Error" by default.
-    var alertType: NodeSetUpAlertType = NodeSetUpAlertType.ERROR;
+  public displayNodeAlert(selectedNodeInfo: MongooseRunNode, message: string = "", alertType: NodeSetUpAlertType): void {
 
     var newAlerts: NodeAlert[] = [];
-
-    const hasLocalhostKeyword: boolean = causedNodeResourceLocation.includes(HttpUtils.LOCALHOST_KEYWORD);
-    if (hasLocalhostKeyword) {
-      // NOTE: Warning alerts are additional ones. You can push warning alerts along with ...
-      // ... error alerts.
-      alertType = NodeSetUpAlertType.WARNING;
-      const localhostNotSupportedMsg: string = "Communication with localhost is supported only in development mode.";
-      misleadingMsg = localhostNotSupportedMsg;
-      let warningNodeAlert: NodeAlert = new NodeAlert(misleadingMsg, selectedNodeInfo, alertType);
-      newAlerts.push(warningNodeAlert);
-    }
-
-    const errorAlertMisleadingMsg: string = `selected node ${selectedNodeInfo.getResourceLocation()} is not active`;
-    let errorAlert = new NodeAlert(errorAlertMisleadingMsg, selectedNodeInfo, NodeSetUpAlertType.ERROR);
+    let errorAlert = new NodeAlert(message, selectedNodeInfo, alertType);
     newAlerts.push(errorAlert);
 
     for (var newAlert of newAlerts) {
-      console.log(`processing new alert... with message ${newAlert.message}`)
       // NOTE: Finding alert by message in alerts array
       let alertIndex = this.getAlertIndex(newAlert);
       let isAlertExist: boolean = (alertIndex >= 0);
@@ -160,6 +142,25 @@ export class NodesComponent implements OnInit, OnDestroy {
     return;
   }
 
+  /**
+   * Display inactive node alert. The function is designed to ...
+   * ... simlify its calling from the HTML.
+   * @param selectedNodeInfo inactive node.
+   */
+  public displayInactiveNodeAlert(selectedNodeInfo: MongooseRunNode) {
+    const errorAlertMisleadingMsg: string = `selected node ${selectedNodeInfo.getResourceLocation()} is not active`;
+    this.displayNodeAlert(selectedNodeInfo, errorAlertMisleadingMsg, NodeSetUpAlertType.ERROR);
+  }
+
+  /**
+   * Display alert for nodes that are not supported, thus its unable to ...
+   * ... work with them via the UI.
+   * @param unsupportedNodeDetails An object that contain node instance and a warning message.
+   */
+  public displayUnsupportedNodeAlert(unsupportedNodeDetails: any) { 
+    this.displayNodeAlert(unsupportedNodeDetails.node, unsupportedNodeDetails.reason, NodeSetUpAlertType.WARNING);
+  }
+
   // MARK: - Private
 
   private getAlertIndex(nodeAlert: NodeAlert): number {
@@ -167,17 +168,6 @@ export class NodesComponent implements OnInit, OnDestroy {
       (alert: NodeAlert) => {
         return (alert.message == nodeAlert.message);
       }));
-  }
-
-  /**
-   * Determines if communication with @param node is supported from the UI.
-   * @param node processing Mongoose node. 
-   */
-  private isNodeSupported(node: MongooseRunNode): boolean {
-    const processingNodeAddress: string = node.getResourceLocation();
-    const hasLocalhostKeyword: boolean = processingNodeAddress.includes(HttpUtils.LOCALHOST_KEYWORD);
-    const isNodeSupported: boolean = (!hasLocalhostKeyword);
-    return isNodeSupported;
   }
 
 }

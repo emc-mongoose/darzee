@@ -8,6 +8,7 @@ import { Subscription, of } from 'rxjs';
 import { ResourceLocatorType } from 'src/app/core/models/address-type';
 import { map, catchError } from 'rxjs/operators';
 import { CustomCheckBoxModel } from 'angular-custom-checkbox';
+import { HttpUtils } from 'src/app/common/HttpUtils';
 
 
 @Component({
@@ -25,9 +26,12 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
 
   /**
    * @param hasSelectedInactiveNode emits an event on inactive run node selection.
+   * @param hasSelectedUnsupportedNode emits an event on unsupported run node selection.
    */
 
   @Output() hasSelectedInactiveNode: EventEmitter<MongooseRunNode> = new EventEmitter<MongooseRunNode>();
+  @Output() hasSelectedUnsupportedNode: EventEmitter<{node: MongooseRunNode, reason: string}> = new EventEmitter<{node: MongooseRunNode, reason: string}>();
+
 
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
   
@@ -69,6 +73,13 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
    * @param selectedNode instance of selected Mongoose node.
    */
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
+    const isNodeSupported: boolean = this.isNodeSupported(selectedNode);
+    if (!isNodeSupported) { 
+      const misleadingMsg: string = "Communication with localhost is supported only in development mode.";
+
+      this.hasSelectedUnsupportedNode.emit({node: selectedNode, reason: misleadingMsg});
+    }
+  
     let isNodeLocatedByIp: boolean = (selectedNode.getResourceType() == ResourceLocatorType.IP);
     // NOTE: Add noode if check mark has been set, remove if unset    
     let hasNodeBeenSelected: boolean = this.mongooseSetUpService.isNodeExist(selectedNode);
@@ -171,6 +182,17 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
       this.checkboxConfiguration.icon = this.CHECKBOX_FAILURE_ICON;
       this.hasSelectedInactiveNode.emit(node);
     }
+  }
+
+    /**
+   * Determines if communication with @param node is supported from the UI.
+   * @param node processing Mongoose node. 
+   */
+  private isNodeSupported(node: MongooseRunNode): boolean {
+    const processingNodeAddress: string = node.getResourceLocation();
+    const hasLocalhostKeyword: boolean = processingNodeAddress.includes(HttpUtils.LOCALHOST_KEYWORD);
+    const isNodeSupported: boolean = (!hasLocalhostKeyword);
+    return isNodeSupported;
   }
 
 }
