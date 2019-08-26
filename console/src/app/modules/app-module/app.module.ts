@@ -24,6 +24,7 @@ import { LocalStorageService } from "src/app/core/services/local-storage-service
 import { EntryNodeSelectionComponent } from './components/run-statistics/common/entry-node-selection/entry-node-selection.component';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { PrometheusErrorComponent } from "./components/common/prometheus-error/prometheus-error.component";
+import { BasicModalComponent } from "src/app/common/modals/basic-modal.template";
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { PrometheusErrorComponent } from "./components/common/prometheus-error/p
     RunsTableComponent,
     MongooseRunStatusIconComponent,
     RunsTableRootComponent,
+    BasicModalComponent,
 
     RunStatisticsComponent,
     RunStatisticLogsComponent,
@@ -62,8 +64,16 @@ import { PrometheusErrorComponent } from "./components/common/prometheus-error/p
 
   // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
   // ... since we use it for the set up. 
-  providers: [ControlApiService, MonitoringApiService, DateFormatPipe, PrometheusApiService, LocalStorageService],
+  providers: [
+    ControlApiService,
+    MonitoringApiService,
+    DateFormatPipe,
+    PrometheusApiService,
+    LocalStorageService],
   bootstrap: [AppComponent],
-  exports: [AppComponent],
+  exports: [
+    AppComponent,
+    BasicModalComponent
+  ],
 })
 export class AppModule { }

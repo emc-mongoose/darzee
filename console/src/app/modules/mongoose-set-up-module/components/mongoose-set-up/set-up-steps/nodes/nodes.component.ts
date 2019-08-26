@@ -10,6 +10,8 @@ import { HttpUtils } from 'src/app/common/HttpUtils';
 import { NodeAlert } from './node-alert.interface';
 import { NodeSetUpAlertType } from './node-setup-alert.type';
 import { NodesSetUpTableRowComponent } from './set-up-table-row/nodes-set-up-table-row.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { BasicModalComponent } from 'src/app/common/modals/basic-modal.template';
 
 @Component({
   selector: 'app-nodes',
@@ -42,7 +44,8 @@ export class NodesComponent implements OnInit, OnDestroy {
   constructor(
     private controlApiService: ControlApiService,
     private mongooseDataSharedService: MongooseDataSharedServiceService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private modalService: NgbModal
   ) {
     this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes().pipe(
       map((nodes: MongooseRunNode[]) => {
@@ -69,6 +72,8 @@ export class NodesComponent implements OnInit, OnDestroy {
    * Handling node addition from the UI.
    */
   public onAddIpButtonClicked(): void {
+    const modalRef = this.modalService.open(BasicModalComponent);
+    modalRef.componentInstance.name = 'World';
     // NOTE: trimming accident whitespaces
     const allWhitespacesRegex: RegExp = /\s/g;
     this.entredIpAddress = this.entredIpAddress.replace(allWhitespacesRegex, "");

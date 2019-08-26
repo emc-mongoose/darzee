@@ -17,6 +17,7 @@ import { LocalStorageService } from "src/app/core/services/local-storage-service
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { NodesSetUpTableRowComponent } from "./components/mongoose-set-up/set-up-steps/nodes/set-up-table-row/nodes-set-up-table-row.component";
 import { CustomCheckboxModule } from 'angular-custom-checkbox';
+import { BasicModalComponent } from "src/app/common/modals/basic-modal.template";
 
 
 @NgModule({
@@ -30,6 +31,9 @@ import { CustomCheckboxModule } from 'angular-custom-checkbox';
     NgbModule,
     CustomCheckboxModule,
     FormsModule
+  ],
+  entryComponents: [
+    BasicModalComponent
   ],
   declarations: [
     MongooseSetUpComponent,
