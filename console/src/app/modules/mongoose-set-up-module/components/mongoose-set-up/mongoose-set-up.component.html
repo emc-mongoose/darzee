@@ -23,3 +23,15 @@
 
   <app-set-up-footer [isSetupCompleted]="isSetupCompleted()" [confirmButtonTitle]="getConfigrmationBtnTitle()"
     (confirmButtonClick)="onConfirmClicked()" (runButtonClick)="onRunBtnClicked()"></app-set-up-footer>
+  <!-- MARK: Templates -->
+  <ng-template #modalAlertTemplate>
+    <div class="modal-header">
+      <h4 class="modal-title center">Notice</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalAlertReference.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      Select any <b>active</b> node in order to continue.
+    </div>
+  </ng-template>

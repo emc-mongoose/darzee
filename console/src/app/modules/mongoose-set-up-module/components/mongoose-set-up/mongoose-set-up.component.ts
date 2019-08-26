@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { MongooseSetupTab } from '../../models/mongoose-setup-tab.model';
 // import { slideAnimation } from '../../../core/animations';
 import { RoutesList } from '../../../app-module/Routing/routes-list';
-import { Subscription } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import { Constants } from '../../../../common/constants';
 import { MongooseSetUpService } from '../../../../core/services/mongoose-set-up-service/mongoose-set-up.service';
 import { NodesComponent } from './set-up-steps/nodes/nodes.component';
@@ -11,6 +11,7 @@ import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose
 import { NodeAlert } from './set-up-steps/nodes/node-alert.interface';
 import { BasicModalComponent } from 'src/app/common/modals/basic-modal.template';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 
 @Component({
   selector: 'app-mongoose-set-up',
@@ -28,6 +29,13 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
     { title: 'Scenario', link: RoutesList.SCENARIO }
   ];
 
+  @ViewChild('modalAlertTemplate') modalAlertTemplate: TemplateRef<any>;
+  modalAlertReference: BsModalRef;
+  config = {
+    backdrop: false,
+    ignoreBackdropClick: false
+  };
+
   public setUpTabs: MongooseSetupTab[] = []
   public processingTabID: number = 0;
   public alerts: NodeAlert[] = [];
@@ -44,7 +52,8 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
     private router: Router,
     private mongooseSetUpService: MongooseSetUpService,
     private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
-    private modalService: NgbModal) {
+    private modalService: NgbModal,
+    private bsModalService: BsModalService) {
     this.initSetUpTabs();
     let defaultTabNumber = 0;
     this.openUpTab(defaultTabNumber);
@@ -62,7 +71,7 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
     return this.setUpTabs[this.processingTabID].title;
   }
 
-  public getCurrentComplitionPercentage(): number { 
+  public getCurrentComplitionPercentage(): number {
     return (this.getPercentagePerTab() * (this.processingTabID + 1));
   }
 
@@ -72,7 +81,11 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
       case RoutesList.NODES: {
         currentTab.isCompleted = this.isNodeSetUpComplete();
         if (!currentTab.isCompleted) {
-          alert(`Please, select active Mongoose run nodes before continuing.`);
+          this.modalAlertReference = this.bsModalService.show(this.modalAlertTemplate, this.config);
+          const timeUntilModalGetsClosedMs: number = 2500;
+          setTimeout(() => {
+            this.modalAlertReference.hide();
+          }, timeUntilModalGetsClosedMs);
           return;
         }
       }
@@ -99,9 +112,9 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
         // ... it won't be implimented, map them here. If you want to get ...
         // ... load step id, you can do it via mongoose set up service. 
         console.log("Launched Mongoose run with run ID: ", mongooseRunId);
-        
+
         // NOTE: Loading spinning bar. It will disappear once Mongoose run will be loaded.
-        this.mongooseDataSharedServiceService.shouldWaintForNewRun = true; 
+        this.mongooseDataSharedServiceService.shouldWaintForNewRun = true;
 
         // NOTE: If run ID has been returned from the server, Mongoose run has started
         let hasMongooseSuccessfullyStarted = (mongooseRunId != undefined);
@@ -125,7 +138,7 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
         const modalMongooseLaunchAlertError: NgbModalRef = this.modalService.open(BasicModalComponent);
         modalMongooseLaunchAlertError.componentInstance.title = 'Error';
         modalMongooseLaunchAlertError.componentInstance.discription = errorReason;
-  
+
         console.error(`Unable to launch Mongoose. Reason: ${JSON.stringify(error)}`);
       });
   }
@@ -184,6 +197,4 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
     return Math.ceil(rawPercentage);
   }
 
-  private displayAlert(): void { 
-  }
 }

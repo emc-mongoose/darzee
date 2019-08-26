@@ -56,3 +56,9 @@
   /* NOTE: Setting minimal width in order to make the column wrap its content */
   width: calc(1%);
 }
+
+.popover-error { 
+  background: red;
+  color: blue;
+}
+

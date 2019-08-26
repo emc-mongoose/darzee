@@ -32,8 +32,8 @@ export class RunStatisticsComponent implements OnInit, OnDestroy {
   public statisticTabs: BasicTab[] = [];
 
   private routeParameters: any;
-  private monitoringApiSubscriptions: Subscription;
-  private controlApiSubscriptions: Subscription;
+  private monitoringApiSubscriptions: Subscription = new Subscription();
+  private controlApiSubscriptions: Subscription = new Subscription();
 
   // MARK: - Lifecycle 
 
