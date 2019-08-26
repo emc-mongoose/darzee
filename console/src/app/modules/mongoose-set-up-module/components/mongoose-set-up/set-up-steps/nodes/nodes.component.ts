@@ -61,6 +61,7 @@ export class NodesComponent implements OnInit, OnDestroy {
           }
         });
 
+        
         if (this.recentlyAddedNode != undefined) {
           // NOTE: Set recently added node as selected.
           this.setNodeAsSelected(this.recentlyAddedNode);
@@ -202,15 +203,25 @@ export class NodesComponent implements OnInit, OnDestroy {
     this.nodesTableRowsSubscription = this.nodesSetUpTableRowComponents.changes.subscribe(
       (updatedTestRows: NodesSetUpTableRowComponent[]) => {
         // NOTE: Searching for row that should be updated.
+        // updatedTestRows.forEach(
+        //   (row: NodesSetUpTableRowComponent) => { 
+        //     if (row.runNode.getResourceLocation() == node.getResourceLocation()) { 
+        //       row.onRunNodeSelect(node);
+        //       this.nodesSetUpTableRowComponents.notifyOnChanges();
+        //     }
+        //   }
+        // )
         const rowThatShouldBeUpdated: NodesSetUpTableRowComponent = updatedTestRows.filter(
-          (row: NodesSetUpTableRowComponent) => {
-           return (row.runNode.getResourceLocation() == node.getResourceLocation());
-          })[0];
+          (row: NodesSetUpTableRowComponent) => 
+          row.runNode.getResourceLocation() == node.getResourceLocation()
+          )[0];
 
+          // console.log(`rowThatShouldBeUpdated ${rowThatShouldBeUpdated.runNode.getResourceLocation()}`)
         if (rowThatShouldBeUpdated == undefined) {
           return; 
         }
         rowThatShouldBeUpdated.onRunNodeSelect(node);
+        this.nodesSetUpTableRowComponents.notifyOnChanges();  
       });
   }
 
@@ -220,7 +231,7 @@ export class NodesComponent implements OnInit, OnDestroy {
   private setupComponent(): void { 
     // NOTE: Observing nodes table changes in order to ...
     // ... be able to handle recently added nodes manually.
-    this.nodesSetUpTableRowComponents.notifyOnChanges();
+    // this.nodesSetUpTableRowComponents.notifyOnChanges();
   }
 
 }
