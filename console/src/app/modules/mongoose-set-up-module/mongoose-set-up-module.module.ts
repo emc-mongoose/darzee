@@ -21,6 +21,9 @@ import { BasicModalComponent } from "src/app/common/modals/basic-modal.template"
 
 
 @NgModule({
+  bootstrap: [
+    MongooseSetUpComponent
+  ],
   imports: [
     CommonModule,
     AppRoutingModule,
@@ -50,9 +53,6 @@ import { BasicModalComponent } from "src/app/common/modals/basic-modal.template"
     MonitoringApiService,
     DateFormatPipe,
     LocalStorageService
-  ],
-  bootstrap: [
-    MongooseSetUpComponent
   ],
 
 })

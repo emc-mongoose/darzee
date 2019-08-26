@@ -27,6 +27,27 @@ import { PrometheusErrorComponent } from "./components/common/prometheus-error/p
 import { BasicModalComponent } from "src/app/common/modals/basic-modal.template";
 
 @NgModule({
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    MongooseSetUpModuleModule,
+    BrowserAnimationsModule,
+    ChartsModule,
+    StorageServiceModule,
+    NgbModule
+  ],
+  // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
+  // ... since we use it for the set up. 
+  providers: [
+    ControlApiService,
+    MonitoringApiService,
+    DateFormatPipe,
+    PrometheusApiService,
+    LocalStorageService],
   declarations: [
     AppComponent,
     HeaderComponent,
@@ -49,28 +70,6 @@ import { BasicModalComponent } from "src/app/common/modals/basic-modal.template"
     EntryNodeSelectionComponent,
     PrometheusErrorComponent
   ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    AppRoutingModule,
-    MongooseSetUpModuleModule,
-    BrowserAnimationsModule,
-    ChartsModule,
-    StorageServiceModule,
-    NgbModule
-  ],
-
-  // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
-  // ... since we use it for the set up. 
-  providers: [
-    ControlApiService,
-    MonitoringApiService,
-    DateFormatPipe,
-    PrometheusApiService,
-    LocalStorageService],
-  bootstrap: [AppComponent],
   exports: [
     AppComponent,
     BasicModalComponent

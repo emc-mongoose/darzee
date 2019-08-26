@@ -44,8 +44,7 @@ export class NodesComponent implements OnInit, OnDestroy {
   constructor(
     private controlApiService: ControlApiService,
     private mongooseDataSharedService: MongooseDataSharedServiceService,
-    private localStorageService: LocalStorageService,
-    private modalService: NgbModal
+    private localStorageService: LocalStorageService
   ) {
     this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes().pipe(
       map((nodes: MongooseRunNode[]) => {
@@ -72,8 +71,6 @@ export class NodesComponent implements OnInit, OnDestroy {
    * Handling node addition from the UI.
    */
   public onAddIpButtonClicked(): void {
-    const modalRef = this.modalService.open(BasicModalComponent);
-    modalRef.componentInstance.name = 'World';
     // NOTE: trimming accident whitespaces
     const allWhitespacesRegex: RegExp = /\s/g;
     this.entredIpAddress = this.entredIpAddress.replace(allWhitespacesRegex, "");
