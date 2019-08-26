@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Subscription, Observable } from 'rxjs';
@@ -24,10 +24,10 @@ export class NodesComponent implements OnInit, OnDestroy {
   private readonly IP_DEFAULT_PORT: number = 9999;
 
   /**
-   * @param nodesSetUpTableRowComponent references Nodes table handler class. It's used to ...
-   * ... select and unselect nodes manually from the code.
+   * @param NndesSetUpTableRowComponents references to nodes table rows. It's used to ...
+   * ... manually control each row. 
    */
-  @ViewChild('nodesTableRow') nodesSetUpTableRowComponent: NodesSetUpTableRowComponent;
+  @ViewChildren(NodesSetUpTableRowComponent) nodesSetUpTableRowComponents: QueryList<NodesSetUpTableRowComponent>;
 
   public runNode: MongooseRunNode;
 
@@ -41,6 +41,9 @@ export class NodesComponent implements OnInit, OnDestroy {
   public shouldDisplayAddButtonPopover: boolean = false;
 
   private slaveNodesSubscription: Subscription = new Subscription();
+  private nodesTableRowsSubscription: Subscription = new Subscription();
+
+  private recentlyAddedNode: MongooseRunNode = undefined;
 
   // MARK: - Lifecycle 
   constructor(
@@ -51,20 +54,30 @@ export class NodesComponent implements OnInit, OnDestroy {
     this.savedMongooseNodes$ = this.mongooseDataSharedService.getAvailableRunNodes().pipe(
       map((nodes: MongooseRunNode[]) => {
         const hiddenNodes: string[] = this.localStorageService.getHiddenNodeAddresses();
+        console.log(`savedMongooseNodes subscription`)
         nodes.forEach((node: MongooseRunNode) => {
           if (hiddenNodes.includes(node.getResourceLocation())) {
             this.mongooseDataSharedService.deleteMongooseRunNode(node);
           }
-        })
+        });
+
+        if (this.recentlyAddedNode != undefined) {
+          // NOTE: Set recently added node as selected.
+          this.setNodeAsSelected(this.recentlyAddedNode);
+        }
+
         return nodes;
       })
     );
   }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    this.setupComponent();
+  }
 
   ngOnDestroy() {
     this.slaveNodesSubscription.unsubscribe();
+    this.nodesTableRowsSubscription.unsubscribe();
   }
 
   // MARK: - Public 
@@ -74,7 +87,7 @@ export class NodesComponent implements OnInit, OnDestroy {
    */
   public onAddIpButtonClicked(): void {
     // NOTE: Do not display invalid IP popover by default.
-    this.shouldDisplayAddButtonPopover = false; 
+    this.shouldDisplayAddButtonPopover = false;
 
     // NOTE: trimming accident whitespaces
     const allWhitespacesRegex: RegExp = /\s/g;
@@ -98,6 +111,8 @@ export class NodesComponent implements OnInit, OnDestroy {
     const processedMongooseNodeAddress: string = HttpUtils.pruneHttpPrefixFromAddress(this.entredIpAddress);
 
     let newMongooseNode = new MongooseRunNode(processedMongooseNodeAddress);
+    this.recentlyAddedNode = newMongooseNode;
+
     try {
       const savingNodeAddress: string = newMongooseNode.getResourceLocation();
 
@@ -120,8 +135,6 @@ export class NodesComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // NOTE: Selecting recently added Mongoose run node.
-    this.nodesSetUpTableRowComponent.onRunNodeSelect(newMongooseNode);
   }
 
   public onAlertClosed(closedAlert: NodeAlert) {
@@ -129,7 +142,7 @@ export class NodesComponent implements OnInit, OnDestroy {
     this.nodeAlerts.splice(closedAlertIndex, 1);
   }
 
-  public closePopover(): void { 
+  public closePopover(): void {
     this.shouldDisplayAddButtonPopover = false;
   }
 
@@ -177,6 +190,37 @@ export class NodesComponent implements OnInit, OnDestroy {
       (alert: NodeAlert) => {
         return (alert.message == nodeAlert.message);
       }));
+  }
+
+  /**
+   * Searches nodes table for a row that matches @param node instance.
+   * Set matching node as selected.
+   */
+  private setNodeAsSelected(node: MongooseRunNode): void {
+    // NOTE: Observing nodes table change. 
+    // Once new element has been appended, it should be a recently added node.
+    this.nodesTableRowsSubscription = this.nodesSetUpTableRowComponents.changes.subscribe(
+      (updatedTestRows: NodesSetUpTableRowComponent[]) => {
+        // NOTE: Searching for row that should be updated.
+        const rowThatShouldBeUpdated: NodesSetUpTableRowComponent = updatedTestRows.filter(
+          (row: NodesSetUpTableRowComponent) => {
+           return (row.runNode.getResourceLocation() == node.getResourceLocation());
+          })[0];
+
+        if (rowThatShouldBeUpdated == undefined) {
+          return; 
+        }
+        rowThatShouldBeUpdated.onRunNodeSelect(node);
+      });
+  }
+
+  /**
+   * Performs set up operations for the component.
+   */
+  private setupComponent(): void { 
+    // NOTE: Observing nodes table changes in order to ...
+    // ... be able to handle recently added nodes manually.
+    this.nodesSetUpTableRowComponents.notifyOnChanges();
   }
 
 }
