@@ -8,11 +8,14 @@
 </div>
 <div class="modal-body">
     {{ this.discription }}
-    <ul *ngFor="let node of this.nodes">
-        <li>
-            {{ node.getResourceLocation() }}
-        </li>
-    </ul>
+    <ng-container *ngIf="this.nodes">
+        <ul *ngFor="let node of this.nodes">
+            <li>
+                {{ node.getResourceLocation() }}
+            </li>
+        </ul>
+    </ng-container>
+
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
