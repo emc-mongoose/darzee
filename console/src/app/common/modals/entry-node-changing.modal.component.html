@@ -11,26 +11,26 @@
     <ng-container *ngIf="this.nodes">
         <table class="table">
             <thead>
-                <tr>
-                    <th scope="col" class="column-nodes-check"></th>
-                    <th scope="col" class="column-nodes-type">Type</th>
-                    <th scope="col" class="column-nodes-address"></th>
-                    <th scope="col" class="column-nodes-address">Address</th>
-                    <th scope="col" class="column-nodes-removal"></th>
+                <tr class="bg-success">
+                    <th scope="col" class="column-nodes-check">Address</th>
+                    <th scope="col" class="column-nodes-type">Entry</th>
                 </tr>
             </thead>
             <!-- NOTE: Nodes' table rows -->
-            <tr *ngFor="let node of this.nodes"> 
-                    {{ node.getResourceLocation() }}
-            </tr>
-        </table>
-        <!-- <ul *ngFor="let node of this.nodes">
-            <li>
-                {{ node.getResourceLocation() }}
-            </li>
-        </ul> -->
-    </ng-container>
+            <ng-container *ngFor="let node of this.nodes">
+                <tr>
+                    <td>
+                        {{ node.getResourceLocation() }}
+                    </td>
+                    <td>
+                        <!-- NOTE: Remain empty -->
+                    </td>
+                </tr>
+            </ng-container>
 
+
+        </table>
+    </ng-container>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
