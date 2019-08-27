@@ -9,7 +9,7 @@ import { MongooseSetUpService } from '../../../../core/services/mongoose-set-up-
 import { NodesComponent } from './set-up-steps/nodes/nodes.component';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 import { NodeAlert } from './set-up-steps/nodes/node-alert.interface';
-import { BasicModalComponent } from 'src/app/common/modals/basic-modal.template';
+import { EntryNodeChangingModalComponent } from 'src/app/common/modals/entry-node-changing.modal.component';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
@@ -136,7 +136,7 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
           }
         }
 
-        const modalMongooseLaunchAlertError: NgbModalRef = this.modalService.open(BasicModalComponent);
+        const modalMongooseLaunchAlertError: NgbModalRef = this.modalService.open(EntryNodeChangingModalComponent);
         modalMongooseLaunchAlertError.componentInstance.title = 'Error';
         modalMongooseLaunchAlertError.componentInstance.discription = errorReason;
         modalMongooseLaunchAlertError.componentInstance.nodes = this.mongooseSetUpService.getSelectedMongooseRunNodes();

@@ -24,7 +24,7 @@ import { LocalStorageService } from "src/app/core/services/local-storage-service
 import { EntryNodeSelectionComponent } from './components/run-statistics/common/entry-node-selection/entry-node-selection.component';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { PrometheusErrorComponent } from "./components/common/prometheus-error/prometheus-error.component";
-import { BasicModalComponent } from "src/app/common/modals/basic-modal.template";
+import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-node-changing.modal.component";
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -54,7 +54,7 @@ import { BasicModalComponent } from "src/app/common/modals/basic-modal.template"
     RunsTableComponent,
     MongooseRunStatusIconComponent,
     RunsTableRootComponent,
-    BasicModalComponent,
+    EntryNodeChangingModalComponent,
 
     RunStatisticsComponent,
     RunStatisticLogsComponent,
@@ -72,7 +72,7 @@ import { BasicModalComponent } from "src/app/common/modals/basic-modal.template"
   ],
   exports: [
     AppComponent,
-    BasicModalComponent
+    EntryNodeChangingModalComponent
   ],
 })
 export class AppModule { }

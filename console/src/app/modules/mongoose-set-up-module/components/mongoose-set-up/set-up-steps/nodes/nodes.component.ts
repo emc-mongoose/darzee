@@ -11,7 +11,7 @@ import { NodeAlert } from './node-alert.interface';
 import { NodeSetUpAlertType } from './node-setup-alert.type';
 import { NodesSetUpTableRowComponent } from './set-up-table-row/nodes-set-up-table-row.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { BasicModalComponent } from 'src/app/common/modals/basic-modal.template';
+import { EntryNodeChangingModalComponent } from 'src/app/common/modals/entry-node-changing.modal.component';
 
 @Component({
   selector: 'app-nodes',

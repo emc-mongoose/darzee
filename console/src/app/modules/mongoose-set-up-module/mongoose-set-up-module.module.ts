@@ -17,8 +17,8 @@ import { LocalStorageService } from "src/app/core/services/local-storage-service
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { NodesSetUpTableRowComponent } from "./components/mongoose-set-up/set-up-steps/nodes/set-up-table-row/nodes-set-up-table-row.component";
 import { CustomCheckboxModule } from 'angular-custom-checkbox';
-import { BasicModalComponent } from "src/app/common/modals/basic-modal.template";
 import { PopoverModule, ModalModule } from 'ngx-bootstrap';
+import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-node-changing.modal.component";
 
 
 @NgModule({
@@ -39,7 +39,7 @@ import { PopoverModule, ModalModule } from 'ngx-bootstrap';
     ModalModule.forRoot()
   ],
   entryComponents: [
-    BasicModalComponent
+    EntryNodeChangingModalComponent
   ],
   declarations: [
     MongooseSetUpComponent,
