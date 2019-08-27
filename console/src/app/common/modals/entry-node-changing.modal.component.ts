@@ -17,4 +17,11 @@ export class EntryNodeChangingModalComponent {
     public activeModal: NgbActiveModal,
     private mongooseSetUpService: MongooseSetUpService) {
   }
+
+  /**
+   * Handles event when mouse is over @param node's row. 
+   */
+  public onMouseOverTableRow(node: MongooseRunNode): void { 
+    console.log(`mouse has entered the row. Node: ${node.getResourceLocation()}`)
+  }
 }
