@@ -18,20 +18,25 @@
             </thead>
             <!-- NOTE: Nodes' table rows -->
             <ng-container *ngFor="let node of this.nodes">
-                <tr on-mouseover='onMouseOverTableRow(node)'>
+                <tr on-mouseover='onMouseOverTableRow(node)' (click)="onRowClicked(node)">
                     <td>
                         {{ node.getResourceLocation() }}
                     </td>
                     <td>
+                        <ng-container *ngIf="this.isEntryNode(node); else halfTransparentBadge">
+                            <span class="badge badge-success">Entry node</span>
+                        </ng-container>
                         <!-- NOTE: Remain empty -->
                     </td>
                 </tr>
             </ng-container>
-
-
         </table>
     </ng-container>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
 </div>
+<ng-template #halfTransparentBadge>
+        <span class="badge badge-success" style="opacity: 0.5;  filter: alpha(opacity=50); /* For IE8 and earlier */">Entry node</span>
+
+</ng-template>

@@ -24,4 +24,13 @@ export class EntryNodeChangingModalComponent {
   public onMouseOverTableRow(node: MongooseRunNode): void { 
     console.log(`mouse has entered the row. Node: ${node.getResourceLocation()}`)
   }
+
+  public onRowClicked(node: MongooseRunNode): void { 
+    console.log(`User has clicked ${node.getResourceLocation()} row.`);
+  }
+
+  public isEntryNode(node: MongooseRunNode): boolean { 
+    const entryNode: MongooseRunNode = this.nodes[0];
+    return (entryNode.getResourceLocation() == node.getResourceLocation());
+  }
 }
