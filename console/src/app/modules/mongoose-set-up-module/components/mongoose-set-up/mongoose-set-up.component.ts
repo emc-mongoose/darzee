@@ -12,6 +12,7 @@ import { NodeAlert } from './set-up-steps/nodes/node-alert.interface';
 import { BasicModalComponent } from 'src/app/common/modals/basic-modal.template';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 
 @Component({
   selector: 'app-mongoose-set-up',
@@ -131,14 +132,14 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
         let errorReason = "Unable to launch Mongoose on node due to an unknown reason.";
         if (error.status != undefined) {
           if (error.status == Constants.HttpStatus.CONFLICT) {
-            errorReason = "Another Mongoose run has already been launched on node " + this.mongooseSetUpService.getMongooseEntryNode() + ". Consider set another node as the entry one or use another port.";
+            errorReason = "Another Mongoose run has already been launched on node " + this.mongooseSetUpService.getMongooseEntryNode() + ". Consider set another node as the entry one or use another port."; 
           }
         }
 
         const modalMongooseLaunchAlertError: NgbModalRef = this.modalService.open(BasicModalComponent);
         modalMongooseLaunchAlertError.componentInstance.title = 'Error';
         modalMongooseLaunchAlertError.componentInstance.discription = errorReason;
-
+        modalMongooseLaunchAlertError.componentInstance.nodes = this.mongooseSetUpService.getSelectedMongooseRunNodes();
         console.error(`Unable to launch Mongoose. Reason: ${JSON.stringify(error)}`);
       });
   }
