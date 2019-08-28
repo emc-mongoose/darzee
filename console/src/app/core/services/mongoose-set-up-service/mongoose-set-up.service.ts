@@ -15,6 +15,7 @@ import { MongooseConfigurationParser } from '../../models/mongoose-configuration
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
 import { MonitoringApiService } from '../monitoring-api/monitoring-api.service';
 import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
+import { MongooseRunEntryNode } from '../local-storage-service/MongooseRunEntryNode';
 
 @Injectable({
   providedIn: 'root'
@@ -43,9 +44,13 @@ export class MongooseSetUpService {
 
   // MARK: - Getters & Setters 
 
+  /**
+   * @returns configuration of @param entryNode with slave nodes added.
+   * Slave nodes are retrieved from SetUpModel. They don't contain @param entryNode's address.
+   */
   public getMongooseConfigurationForSetUp(entryNode: MongooseRunNode): Observable<any> {
     if (entryNode == undefined) {
-      throw new Error(`Can't get configuration snce entry node ins an undefined.`);
+      throw new Error(`Can't get configuration snce entry node is undefined.`);
     }
     let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${entryNode.getResourceLocation()}`;
     return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
@@ -62,6 +67,20 @@ export class MongooseSetUpService {
         }
       )
     );
+  }
+
+  /**
+   * Changes existing configuration in order to run it on @param newEntryNode.
+   */
+  public changeEntryNode(newEntryNode: MongooseRunNode): void { 
+    const currentConfiguration = this.mongooseSetupInfoModel.getConfiguration();
+    const mongooseConfigurationParser: MongooseConfigurationParser = new MongooseConfigurationParser(currentConfiguration);
+  
+    let updatedSlaveNodesList: MongooseRunNode[] = this.mongooseSetupInfoModel.getSlaveNodesList(newEntryNode);
+    const updatedConfiguration: any = mongooseConfigurationParser.getConfigurationWithAdditionalNodes(updatedSlaveNodesList);
+
+    this.mongooseSetupInfoModel.setConfiguration(updatedConfiguration);
+    console.log(`Updated Mongoose configuration for entry node ${newEntryNode.getResourceLocation()} is: ${updatedConfiguration}`);
   }
 
   public getMongooseRunTargetPort(): String {
