@@ -107,7 +107,7 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
     // NOTE: Launching Mongoose on its entry node.
     let mongooseEntryNode = this.mongooseSetUpService.getMongooseEntryNode();
     this.mongooseRunSubscription = this.mongooseSetUpService.runMongoose(mongooseEntryNode).subscribe(
-      mongooseRunId => {
+      (mongooseRunId: String) => {
         // NOTE: Updated Metrics will include both run ID and load step ID. In case ...
         // ... it won't be implimented, map them here. If you want to get ...
         // ... load step id, you can do it via mongoose set up service. 

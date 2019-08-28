@@ -1,13 +1,14 @@
-import { Component, Input, TemplateRef, ViewChild, Output } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild, Output, OnDestroy } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'entry-node-changing-modal',
   templateUrl: './entry-node-changing.modal.component.html'
 })
-export class EntryNodeChangingModalComponent {
+export class EntryNodeChangingModalComponent implements OnDestroy {
 
   private readonly INACTIVE_NODE_TABLE_ROW_CSS_CLASS: string = "table-danger";
   private readonly DEFAULT_NODE_TABLE_ROW_CSS_CLASS: string = "";
@@ -23,6 +24,7 @@ export class EntryNodeChangingModalComponent {
 
 
   public shouldDisplayPopoverOnEntryNodeTag: boolean = false;
+  private mongooseSetupNodesSubscription: Subscription = new Subscription();
 
   /**
    * @param currentHoveringNodeLocation location of node which is currently being hovered. It's ...
@@ -34,6 +36,8 @@ export class EntryNodeChangingModalComponent {
   private updatedEntryNode: MongooseRunNode;
   private inactiveNodes: MongooseRunNode[] = [];
 
+  // MARK: - Private 
+
   constructor(
     private mongooseSetUpService: MongooseSetUpService) {
     const initialInactiveNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
@@ -41,6 +45,12 @@ export class EntryNodeChangingModalComponent {
       this.inactiveNodes.push(initialInactiveNode);
     }
   }
+
+  ngOnDestroy(): void {
+    this.mongooseSetupNodesSubscription.unsubscribe();
+   }
+
+   // MARK: - Public 
 
   /**
    * Handles event when mouse is over @param node's row. 
@@ -75,6 +85,15 @@ export class EntryNodeChangingModalComponent {
 
 
   public onRetryBtnClicked(): void {
+    const entryNode: MongooseRunNode = this.updatedEntryNode;
+    this.mongooseSetupNodesSubscription = this.mongooseSetUpService.runMongoose(entryNode).subscribe(
+      (mongooseRunId: String) => { 
+        console.log(`Mongoose has successfully launched with run ID: ${mongooseRunId}`);
+      },
+      error => { 
+        console.log(`Unable to launch Mongoose with entr y node ${entryNode.getResourceLocation()}`);
+      }
+    )
     console.log(`Passed nodes on retry btn: ${this.nodes}`)
   }
 
