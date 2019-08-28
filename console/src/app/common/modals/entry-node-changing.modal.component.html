@@ -9,7 +9,7 @@
 <div class="modal-body">
     {{ this.discription }}
     <ng-container *ngIf="this.nodes">
-        <table class="table table-hover">
+        <table class="table table-hover table-sm">
             <thead>
                 <tr class="bg-success">
                     <th scope="col" class="column-nodes-check">Address</th>
@@ -41,8 +41,9 @@
         node</span>
 </ng-template>
 <ng-template #entryNodeBadge>
-    <span class="badge badge-success" popover="Inactive entry node." [outsideClick]="true" triggers=""
-        (focus)="this.closeEntryNodePopover()">Entry node</span>
+    <span class="badge badge-danger">
+        Entry node <span class="badge badge-light">Inactive</span>
+    </span>
 </ng-template>
 <ng-template #selectedEntryNodeBadge>
     <span class="badge badge-success">New entry node</span>
