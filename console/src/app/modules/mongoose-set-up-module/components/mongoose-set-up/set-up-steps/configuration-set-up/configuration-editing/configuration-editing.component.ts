@@ -17,27 +17,23 @@ export class ConfigurationEditingComponent implements OnInit, OnDestroy {
   readonly CONFIGURATION_FILENAME = Constants.FileNames.CUSTOM_CONFIGURATION_FILENAME;
 
   // JSON Editor properties
-  @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
   @ViewChild("apply-button-content-wrppaer") applyNewValueBtn: ElementRef;
   public jsonEditorOptions: JsonEditorOptions;
 
-  // NOTE: Initial JSON editor configuration is being used to initialize the UI (JSON editor).
-  public initialJsonEditorConfiguration: any = "";
-
   // NOTE: JSON editor configuration is actual (modified) configuration retrieved from the UI.
-  private jsonEditorConfiguration: any = ""; 
+  private jsonEditorConfiguration: any = "";
   private monitoringApiSubscriptions: Subscription = new Subscription();
 
+  // MARK: - Lifecycle 
 
   constructor(private mongooseSetUpService: MongooseSetUpService) {
     this.configureJsonEditor();
   }
 
-  // MARK: - Lifecycle 
-
   ngOnInit() { }
 
   ngOnDestroy() {
+    console.log(`[ConfigurationEditingComponent] Aplying configuration: ${JSON.stringify(this.jsonEditorConfiguration)}`);
     this.mongooseSetUpService.setConfiguration(this.jsonEditorConfiguration);
     // NOTE: Saving up an ubcomfirmed configuration in order to let user edit it later if he'd like to. 
     this.monitoringApiSubscriptions.unsubscribe();
@@ -46,18 +42,18 @@ export class ConfigurationEditingComponent implements OnInit, OnDestroy {
 
   // MARK: - Public 
 
-  public updateJsonEditorConfiguration(updatedConfiguration) { 
+  public updateJsonEditorConfiguration(updatedConfiguration) {
     this.jsonEditorConfiguration = updatedConfiguration;
   }
 
   // MARK: - Private 
 
   private configureJsonEditor() {
-    let mongooseEntryNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode(); 
+    let mongooseEntryNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
     this.monitoringApiSubscriptions.add(
       this.mongooseSetUpService.getMongooseConfigurationForSetUp(mongooseEntryNode).subscribe(
         configuration => {
-          this.initialJsonEditorConfiguration = configuration;
+          this.jsonEditorConfiguration = configuration;
         },
         error => {
           alert(`Mongoose's configuration couldn't be loaded. Details: ${error}`);
