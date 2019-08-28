@@ -8,6 +8,10 @@ import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-serv
   templateUrl: './entry-node-changing.modal.component.html'
 })
 export class EntryNodeChangingModalComponent {
+
+  private readonly INACTIVE_NODE_TABLE_ROW_CSS_CLASS: string = "table-danger";
+  private readonly DEFAULT_NODE_TABLE_ROW_CSS_CLASS: string = "";
+
   @Input() title: string;
   @Input() discription: string;
 
@@ -18,68 +22,75 @@ export class EntryNodeChangingModalComponent {
   @ViewChild('selectedEntryNodeBadge') selectedEntryNodeBadge: TemplateRef<any>;
 
 
-  public shouldDisplayPopoverOnEntryNodeTag: boolean = false; 
+  public shouldDisplayPopoverOnEntryNodeTag: boolean = false;
 
+  /**
+   * @param currentHoveringNodeLocation location of node which is currently being hovered. It's ...
+   * ... used to display semi-transparent entry node tag.
+   * @param updatedEntryNode user-selected entry node. The node is selected after user has clicked its row.
+   * @param inactiveNodes collection of inactive nodes.
+   */
   private currentHoveringNodeLocation: string = "";
   private updatedEntryNode: MongooseRunNode;
+  private inactiveNodes: MongooseRunNode[] = [];
 
   constructor(
     private mongooseSetUpService: MongooseSetUpService) {
-      console.log(`mongooseSetUpService data: ${this.mongooseSetUpService.getSelectedMongooseRunNodes()}`)
+    const initialInactiveNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
+    if (initialInactiveNode != undefined) {
+      this.inactiveNodes.push(initialInactiveNode);
+    }
   }
 
   /**
    * Handles event when mouse is over @param node's row. 
    */
-  public onMouseEnterTableRow(node: MongooseRunNode): void { 
+  public onMouseEnterTableRow(node: MongooseRunNode): void {
     this.currentHoveringNodeLocation = node.getResourceLocation();
-    console.log(`mouse has entered the row. Node: ${node.getResourceLocation()}`)
   }
 
-  public onMouseLeaveTableRow(node: MongooseRunNode): void { 
+  public onMouseLeaveTableRow(node: MongooseRunNode): void {
     this.currentHoveringNodeLocation = "";
   }
 
-  public onRowClicked(node: MongooseRunNode): void { 
-    if (this.isEntryNode(node)) { 
-      this.shouldDisplayPopoverOnEntryNodeTag = true; 
-      return; 
+  public onRowClicked(node: MongooseRunNode): void {
+    if (this.isInactiveNode(node)) {
+      this.shouldDisplayPopoverOnEntryNodeTag = true;
+      return;
     }
-    this.updatedEntryNode = node; 
+    this.updatedEntryNode = node;
   }
 
-  public isEntryNode(node: MongooseRunNode): boolean { 
-    const entryNode: MongooseRunNode = this.nodes[0];
-    return (entryNode.getResourceLocation() == node.getResourceLocation());
+  public isInactiveNode(node: MongooseRunNode): boolean {
+    return (this.inactiveNodes.includes(node));
   }
 
 
-  public getClassForTableRowRepresentingNode(node: MongooseRunNode): string { 
-    if (this.isEntryNode(node)) { 
-      return "table-danger";
+  public getClassForTableRowRepresentingNode(node: MongooseRunNode): string {
+    if (this.isInactiveNode(node)) {
+      return this.INACTIVE_NODE_TABLE_ROW_CSS_CLASS;
     }
-    const defaultTableRowStyle: string = "";
-    return defaultTableRowStyle;
+    return this.DEFAULT_NODE_TABLE_ROW_CSS_CLASS;
   }
 
 
-  public onRetryBtnClicked(): void { 
+  public onRetryBtnClicked(): void {
     console.log(`Passed nodes on retry btn: ${this.nodes}`)
   }
 
-  public getTemplateForRow(node: MongooseRunNode): TemplateRef<any> { 
+  public getTemplateForRow(node: MongooseRunNode): TemplateRef<any> {
     if (this.updatedEntryNode != undefined) {
       const isUpdatedTableRow: boolean = (this.updatedEntryNode.getResourceLocation() == node.getResourceLocation());
-      if (isUpdatedTableRow) { 
+      if (isUpdatedTableRow) {
         return this.selectedEntryNodeBadge;
       }
     }
-    
+
     const isHovering: boolean = (this.currentHoveringNodeLocation == node.getResourceLocation());
-    if (this.isEntryNode(node)) { 
+    if (this.isInactiveNode(node)) {
       return this.entryNodeBadge;
     }
-    if (isHovering) { 
+    if (isHovering) {
       return this.halfTransparentBadge;
     }
   }
