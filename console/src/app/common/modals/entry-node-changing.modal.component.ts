@@ -20,7 +20,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   @Input() nodes: MongooseRunNode[];
 
   @ViewChild('halfTransparentBadge') halfTransparentBadge: TemplateRef<any>;
-  @ViewChild('entryNodeBadge') entryNodeBadge: TemplateRef<any>;
+  @ViewChild('inactiveNodeBadge') inactiveNodeBadge: TemplateRef<any>;
   @ViewChild('selectedEntryNodeBadge') selectedEntryNodeBadge: TemplateRef<any>;
 
 
@@ -40,6 +40,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   // MARK: - Private 
 
   constructor(
+    public currentModalView: NgbActiveModal,
     private mongooseSetUpService: MongooseSetUpService) {
     const initialInactiveNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
     if (initialInactiveNode != undefined) {
@@ -93,12 +94,21 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
         console.log(`Mongoose has successfully launched on updated entry node with run ID: ${mongooseRunId}`);
       },
       error => {
+        this.inactiveNodes.push(entryNode);
         console.log(`Unable to launch Mongoose with entry node ${entryNode.getResourceLocation()}`);
       }
     );
   }
 
+  /**
+   * @returns template for additional info within @param node's row.
+   */
   public getTemplateForRow(node: MongooseRunNode): TemplateRef<any> {
+    const isHovering: boolean = (this.currentHoveringNodeLocation == node.getResourceLocation());
+    if (this.isInactiveNode(node)) {
+      return this.inactiveNodeBadge;
+    }
+
     if (this.updatedEntryNode != undefined) {
       const isUpdatedTableRow: boolean = (this.updatedEntryNode.getResourceLocation() == node.getResourceLocation());
       if (isUpdatedTableRow) {
@@ -106,10 +116,6 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
       }
     }
 
-    const isHovering: boolean = (this.currentHoveringNodeLocation == node.getResourceLocation());
-    if (this.isInactiveNode(node)) {
-      return this.entryNodeBadge;
-    }
     if (isHovering) {
       return this.halfTransparentBadge;
     }
