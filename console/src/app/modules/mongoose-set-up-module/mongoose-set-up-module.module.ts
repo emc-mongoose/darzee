@@ -19,6 +19,7 @@ import { NodesSetUpTableRowComponent } from "./components/mongoose-set-up/set-up
 import { CustomCheckboxModule } from 'angular-custom-checkbox';
 import { PopoverModule, ModalModule } from 'ngx-bootstrap';
 import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-node-changing.modal.component";
+import { EntryNodeChangingTableRowComponent } from "src/app/common/modals/entry-node-changing-table-row/entry-node-changing-table-row.component";
 
 
 @NgModule({
@@ -48,7 +49,9 @@ import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-nod
     ConfigurationEditingRootComponent,
     ConfigurationEditingComponent,
     SetUpFooterComponent,
-    NodesSetUpTableRowComponent
+    NodesSetUpTableRowComponent,
+    EntryNodeChangingModalComponent,
+    EntryNodeChangingTableRowComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
