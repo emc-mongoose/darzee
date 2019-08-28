@@ -20,6 +20,7 @@ import { CustomCheckboxModule } from 'angular-custom-checkbox';
 import { PopoverModule, ModalModule } from 'ngx-bootstrap';
 import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-node-changing.modal.component";
 import { EntryNodeChangingTableRowComponent } from "src/app/common/modals/entry-node-changing-table-row/entry-node-changing-table-row.component";
+import { MongooseSetUpService } from "src/app/core/services/mongoose-set-up-service/mongoose-set-up.service";
 
 
 @NgModule({
@@ -58,7 +59,8 @@ import { EntryNodeChangingTableRowComponent } from "src/app/common/modals/entry-
     ControlApiService,
     MonitoringApiService,
     DateFormatPipe,
-    LocalStorageService
+    LocalStorageService,
+    MongooseSetUpService
   ],
 
 })

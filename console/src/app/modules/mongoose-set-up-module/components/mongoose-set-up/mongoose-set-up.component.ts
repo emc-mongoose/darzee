@@ -17,8 +17,7 @@ import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 @Component({
   selector: 'app-mongoose-set-up',
   templateUrl: './mongoose-set-up.component.html',
-  styleUrls: ['./mongoose-set-up.component.css'],
-  providers: [MongooseSetUpService]
+  styleUrls: ['./mongoose-set-up.component.css']
 })
 
 export class MongooseSetUpComponent implements OnInit, OnDestroy {

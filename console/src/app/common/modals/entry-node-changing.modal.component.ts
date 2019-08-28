@@ -1,4 +1,4 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild, Output } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
@@ -17,14 +17,15 @@ export class EntryNodeChangingModalComponent {
   @ViewChild('entryNodeBadge') entryNodeBadge: TemplateRef<any>;
   @ViewChild('selectedEntryNodeBadge') selectedEntryNodeBadge: TemplateRef<any>;
 
+
   public shouldDisplayPopoverOnEntryNodeTag: boolean = false; 
 
   private currentHoveringNodeLocation: string = "";
   private updatedEntryNode: MongooseRunNode;
 
   constructor(
-    public activeModal: NgbActiveModal,
     private mongooseSetUpService: MongooseSetUpService) {
+      console.log(`mongooseSetUpService data: ${this.mongooseSetUpService.getSelectedMongooseRunNodes()}`)
   }
 
   /**
@@ -63,7 +64,7 @@ export class EntryNodeChangingModalComponent {
 
 
   public onRetryBtnClicked(): void { 
-    console.log('Retry button has been clicked.');
+    console.log(`Passed nodes on retry btn: ${this.nodes}`)
   }
 
   public getTemplateForRow(node: MongooseRunNode): TemplateRef<any> { 
