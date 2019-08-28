@@ -17,6 +17,8 @@ export class EntryNodeChangingModalComponent {
   @ViewChild('entryNodeBadge') entryNodeBadge: TemplateRef<any>;
   @ViewChild('selectedEntryNodeBadge') selectedEntryNodeBadge: TemplateRef<any>;
 
+  public shouldDisplayPopoverOnEntryNodeTag: boolean = false; 
+
   private currentHoveringNodeLocation: string = "";
   private updatedEntryNode: MongooseRunNode;
 
@@ -38,8 +40,12 @@ export class EntryNodeChangingModalComponent {
   }
 
   public onRowClicked(node: MongooseRunNode): void { 
+    if (this.isEntryNode(node)) { 
+      this.shouldDisplayPopoverOnEntryNodeTag = true; 
+      alert(`Inactive entry node.`);
+      return; 
+    }
     this.updatedEntryNode = node; 
-    console.log(`User has clicked ${node.getResourceLocation()} row.`);
   }
 
   public isEntryNode(node: MongooseRunNode): boolean { 
@@ -51,9 +57,14 @@ export class EntryNodeChangingModalComponent {
     if (this.isEntryNode(node)) { 
       return "table-danger";
     }
-    return "";
+    const defaultTableRowStyle: string = "";
+    return defaultTableRowStyle;
   }
 
+
+  public onRetryBtnClicked(): void { 
+    console.log('Retry button has been clicked.');
+  }
 
   public getTemplateForRow(node: MongooseRunNode): TemplateRef<any> { 
     if (this.updatedEntryNode != undefined) {
@@ -72,5 +83,9 @@ export class EntryNodeChangingModalComponent {
     if (isHovering) { 
       return this.halfTransparentBadge;
     }
+  }
+
+  public closeEntryNodePopover(): void {
+    this.shouldDisplayPopoverOnEntryNodeTag = false;
   }
 }

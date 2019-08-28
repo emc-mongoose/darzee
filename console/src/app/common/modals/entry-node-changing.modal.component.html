@@ -32,14 +32,17 @@
     </ng-container>
 </div>
 <div class="modal-footer">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onRetryBtnClicked()">Retry</button>
     <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
 </div>
+<!-- NOTE: Templates -->
 <ng-template #halfTransparentBadge>
     <span class="badge badge-success" style="opacity: 0.5;  filter: alpha(opacity=50); /* For IE8 and earlier */">Entry
         node</span>
 </ng-template>
 <ng-template #entryNodeBadge>
-    <span class="badge badge-success">Entry node</span>
+    <span class="badge badge-success" popover="Inactive entry node." [outsideClick]="true" triggers=""
+        (focus)="this.closeEntryNodePopover()">Entry node</span>
 </ng-template>
 <ng-template #selectedEntryNodeBadge>
     <span class="badge badge-success">New entry node</span>

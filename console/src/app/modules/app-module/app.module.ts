@@ -54,8 +54,6 @@ import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-nod
     RunsTableComponent,
     MongooseRunStatusIconComponent,
     RunsTableRootComponent,
-    EntryNodeChangingModalComponent,
-
     RunStatisticsComponent,
     RunStatisticLogsComponent,
     RunStatisticsChartsComponent,
@@ -71,8 +69,7 @@ import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-nod
     PrometheusErrorComponent
   ],
   exports: [
-    AppComponent,
-    EntryNodeChangingModalComponent
+    AppComponent
   ],
 })
 export class AppModule { }
