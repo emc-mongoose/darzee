@@ -18,15 +18,13 @@
             </thead>
             <!-- NOTE: Nodes' table rows -->
             <ng-container *ngFor="let node of this.nodes">
-                <tr on-mouseover='onMouseOverTableRow(node)' (click)="onRowClicked(node)">
+                <tr on-mouseover='onMouseOverTableRow(node)' on-mouseout="onMouseOutTableRow(node)"
+                    (click)="onRowClicked(node)" [ngClass]="this.getClassForTableRowRepresentingNode(node)">
                     <td>
                         {{ node.getResourceLocation() }}
                     </td>
                     <td>
-                        <ng-container *ngIf="this.isEntryNode(node); else halfTransparentBadge">
-                            <span class="badge badge-success">Entry node</span>
-                        </ng-container>
-                        <!-- NOTE: Remain empty -->
+                        <ng-container *ngTemplateOutlet="this.getTemplateForRow(node)"></ng-container>
                     </td>
                 </tr>
             </ng-container>
@@ -37,6 +35,12 @@
     <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
 </div>
 <ng-template #halfTransparentBadge>
-        <span class="badge badge-success" style="opacity: 0.5;  filter: alpha(opacity=50); /* For IE8 and earlier */">Entry node</span>
-
+    <span class="badge badge-success" style="opacity: 0.5;  filter: alpha(opacity=50); /* For IE8 and earlier */">Entry
+        node</span>
+</ng-template>
+<ng-template #entryNodeBadge>
+    <span class="badge badge-success">Entry node</span>
+</ng-template>
+<ng-template #selectedEntryNodeBadge>
+    <span class="badge badge-success">New entry node</span>
 </ng-template>
