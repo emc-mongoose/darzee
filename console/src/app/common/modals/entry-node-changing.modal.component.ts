@@ -3,6 +3,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
 import { Subscription } from 'rxjs';
+import { MongooseConfigurationParser } from 'src/app/core/models/mongoose-configuration-parser';
 
 @Component({
   selector: 'entry-node-changing-modal',
@@ -86,9 +87,10 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   public onRetryBtnClicked(): void {
     const entryNode: MongooseRunNode = this.updatedEntryNode;
+    this.mongooseSetUpService.changeEntryNode(entryNode);
     this.mongooseSetupNodesSubscription = this.mongooseSetUpService.runMongoose(entryNode).subscribe(
       (mongooseRunId: String) => { 
-        console.log(`Mongoose has successfully launched with run ID: ${mongooseRunId}`);
+        console.log(`Mongoose has successfully launched on updated entry node with run ID: ${mongooseRunId}`);
       },
       error => { 
         console.log(`Unable to launch Mongoose with entr y node ${entryNode.getResourceLocation()}`);

@@ -13,8 +13,8 @@ export class MongooseSetupInfoModel {
     private readonly DEFAULT_CONFIGURATION = "";
     private readonly DEFAULT_SCENARIO = "Load.run();";
 
-     // MARK: - Constructor
-     constructor(runNodes: MongooseRunNode[] = [], configuration: any = undefined, runScenario: String = "") {
+    // MARK: - Constructor
+    constructor(runNodes: MongooseRunNode[] = [], configuration: any = undefined, runScenario: String = "") {
         this.runNodes = runNodes;
         this.configuration = configuration;
         this.runScenario = runScenario;
@@ -57,8 +57,11 @@ export class MongooseSetupInfoModel {
         return this.runNodes;
     }
 
-    public getSlaveNodesList(entryNode: MongooseRunNode): MongooseRunNode[] { 
-        return this.runNodes.filter(node => { return (entryNode.getResourceLocation() != node.getResourceLocation())});
+    /**
+     * @returns nodes' adrresses excluding @param entryNode's one.
+     */
+    public getSlaveNodesList(entryNode: MongooseRunNode): MongooseRunNode[] {
+        return this.runNodes.filter(node => { return (entryNode.getResourceLocation() != node.getResourceLocation()) });
     }
 
     public getConfiguration(): any {
@@ -72,7 +75,7 @@ export class MongooseSetupInfoModel {
     public getStringifiedNodesForDistributedMode(): string[] {
         let stringfiedRunNodes: string[] = [];
         this.runNodes.forEach(runNode => {
-            let nodeAddress: string = runNode.toString() as string; 
+            let nodeAddress: string = runNode.toString() as string;
             stringfiedRunNodes.push(nodeAddress);
         });
         return stringfiedRunNodes;

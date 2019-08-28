@@ -76,7 +76,7 @@ export class MongooseSetUpService {
     const currentConfiguration = this.mongooseSetupInfoModel.getConfiguration();
     const mongooseConfigurationParser: MongooseConfigurationParser = new MongooseConfigurationParser(currentConfiguration);
   
-    let updatedSlaveNodesList: MongooseRunNode[] = this.mongooseSetupInfoModel.getSlaveNodesList(newEntryNode);
+    const updatedSlaveNodesList: MongooseRunNode[] = this.mongooseSetupInfoModel.getSlaveNodesList(newEntryNode);
     const updatedConfiguration: any = mongooseConfigurationParser.getConfigurationWithAdditionalNodes(updatedSlaveNodesList);
 
     this.mongooseSetupInfoModel.setConfiguration(updatedConfiguration);

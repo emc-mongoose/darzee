@@ -9,6 +9,9 @@ export class MongooseConfigurationParser {
 
     // MARK: - Public 
 
+    /**
+     * @returns currently stored configuration in stringfied JSON with @param additionalNodes added inside it.
+     */
     public getConfigurationWithAdditionalNodes(additionalNodes: MongooseRunNode[]): any {
         if (additionalNodes.length == 0) {
             return this.configuration;
