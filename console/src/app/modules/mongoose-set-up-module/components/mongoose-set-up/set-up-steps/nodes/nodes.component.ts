@@ -63,6 +63,7 @@ export class NodesComponent implements OnInit, OnDestroy {
 
         if (this.recentlyAddedNode != undefined) {
           // NOTE: Set recently added node as selected.
+          console.log(`[${NodesComponent.name}] About to set node as selected..`)
           this.setNodeAsSelected(this.recentlyAddedNode);
         }
 
@@ -212,6 +213,17 @@ export class NodesComponent implements OnInit, OnDestroy {
           console.warn(`Node ${node.getResourceLocation()} hasn't been found. Nodes table content remains the same.`);
           return;
         }
+
+        const hasRowValidationBeenRequested: boolean = (rowThatShouldBeUpdated.isNodeSelected || rowThatShouldBeUpdated.shouldDisplayLoadingSpinner())
+        if (hasRowValidationBeenRequested) { 
+          // NOTE: No need to revalidate node.
+          // Multiple validation leads to performance loss and high ...
+          // ... amount of HTTP requests.
+          console.log(`No need to request node validation.`)
+          return; 
+        }
+
+        console.log(`[${NodesComponent.name}] Setting node as selected...`)
         rowThatShouldBeUpdated.onRunNodeSelect(node);
         // NOTE: Notifying rows Query List that the source has been updated.
         this.nodesSetUpTableRowComponents.notifyOnChanges();
