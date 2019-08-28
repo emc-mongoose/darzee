@@ -26,6 +26,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   public shouldDisplayPopoverOnEntryNodeTag: boolean = false;
   private mongooseSetupNodesSubscription: Subscription = new Subscription();
+  private isMongooseLaunchInProgress: boolean = false; 
 
   /**
    * @param currentHoveringNodeLocation location of node which is currently being hovered. It's ...
@@ -88,6 +89,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   public onRetryBtnClicked(): void {
     const entryNode: MongooseRunNode = this.updatedEntryNode;
+    this.isMongooseLaunchInProgress = true;
     this.mongooseSetUpService.changeEntryNode(entryNode);
     this.mongooseSetupNodesSubscription = this.mongooseSetUpService.runMongoose(entryNode).subscribe(
       (mongooseRunId: string) => {
@@ -96,6 +98,10 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
       error => {
         this.inactiveNodes.push(entryNode);
         console.log(`Unable to launch Mongoose with entry node ${entryNode.getResourceLocation()}`);
+      },
+      () => { 
+        // NOTE: Finish retrying Mongoose launch. Disable spinner.
+        this.isMongooseLaunchInProgress = false; 
       }
     );
   }
@@ -123,5 +129,9 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   public closeEntryNodePopover(): void {
     this.shouldDisplayPopoverOnEntryNodeTag = false;
+  }
+
+  public shouldDisplayLaunchingSpinner(): boolean { 
+    return this.isMongooseLaunchInProgress;
   }
 }

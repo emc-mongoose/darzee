@@ -32,7 +32,10 @@
     </ng-container>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onRetryBtnClicked()">Retry</button>
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onRetryBtnClicked()">
+        <span *ngIf="this.shouldDisplayLaunchingSpinner()" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Retry
+    </button>
     <button type="button" class="btn btn-outline-dark" (click)="currentModalView.close('Close click')">Close</button>
 </div>
 <!-- NOTE: Templates -->
