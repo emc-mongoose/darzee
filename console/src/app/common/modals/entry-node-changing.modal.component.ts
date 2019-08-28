@@ -49,9 +49,9 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.mongooseSetupNodesSubscription.unsubscribe();
-   }
+  }
 
-   // MARK: - Public 
+  // MARK: - Public 
 
   /**
    * Handles event when mouse is over @param node's row. 
@@ -89,14 +89,13 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     const entryNode: MongooseRunNode = this.updatedEntryNode;
     this.mongooseSetUpService.changeEntryNode(entryNode);
     this.mongooseSetupNodesSubscription = this.mongooseSetUpService.runMongoose(entryNode).subscribe(
-      (mongooseRunId: String) => { 
+      (mongooseRunId: string) => {
         console.log(`Mongoose has successfully launched on updated entry node with run ID: ${mongooseRunId}`);
       },
-      error => { 
-        console.log(`Unable to launch Mongoose with entr y node ${entryNode.getResourceLocation()}`);
+      error => {
+        console.log(`Unable to launch Mongoose with entry node ${entryNode.getResourceLocation()}`);
       }
-    )
-    console.log(`Passed nodes on retry btn: ${this.nodes}`)
+    );
   }
 
   public getTemplateForRow(node: MongooseRunNode): TemplateRef<any> {
