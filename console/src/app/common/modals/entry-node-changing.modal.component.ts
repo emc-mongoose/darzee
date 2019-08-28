@@ -31,19 +31,18 @@ export class EntryNodeChangingModalComponent {
   /**
    * Handles event when mouse is over @param node's row. 
    */
-  public onMouseOverTableRow(node: MongooseRunNode): void { 
+  public onMouseEnterTableRow(node: MongooseRunNode): void { 
     this.currentHoveringNodeLocation = node.getResourceLocation();
     console.log(`mouse has entered the row. Node: ${node.getResourceLocation()}`)
   }
 
-  public onMouseOutTableRow(node: MongooseRunNode): void { 
+  public onMouseLeaveTableRow(node: MongooseRunNode): void { 
     this.currentHoveringNodeLocation = "";
   }
 
   public onRowClicked(node: MongooseRunNode): void { 
     if (this.isEntryNode(node)) { 
       this.shouldDisplayPopoverOnEntryNodeTag = true; 
-      alert(`Inactive entry node.`);
       return; 
     }
     this.updatedEntryNode = node; 
@@ -53,6 +52,7 @@ export class EntryNodeChangingModalComponent {
     const entryNode: MongooseRunNode = this.nodes[0];
     return (entryNode.getResourceLocation() == node.getResourceLocation());
   }
+
 
   public getClassForTableRowRepresentingNode(node: MongooseRunNode): string { 
     if (this.isEntryNode(node)) { 
@@ -69,8 +69,6 @@ export class EntryNodeChangingModalComponent {
 
   public getTemplateForRow(node: MongooseRunNode): TemplateRef<any> { 
     if (this.updatedEntryNode != undefined) {
-      console.log(`this.updatedEntryNode.getResourceLocation(): ${this.updatedEntryNode.getResourceLocation()}`)
-      console.log(`Current resource location: ${node.getResourceLocation()}`)
       const isUpdatedTableRow: boolean = (this.updatedEntryNode.getResourceLocation() == node.getResourceLocation());
       if (isUpdatedTableRow) { 
         return this.selectedEntryNodeBadge;

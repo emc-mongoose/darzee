@@ -18,7 +18,7 @@
             </thead>
             <!-- NOTE: Nodes' table rows -->
             <ng-container *ngFor="let node of this.nodes">
-                <tr on-mouseover='onMouseOverTableRow(node)' on-mouseout="onMouseOutTableRow(node)"
+                <tr on-mouseenter='onMouseEnterTableRow(node)' on-mouseleave="onMouseLeaveTableRow(node)"
                     (click)="onRowClicked(node)" [ngClass]="this.getClassForTableRowRepresentingNode(node)">
                     <td>
                         {{ node.getResourceLocation() }}
