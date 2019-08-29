@@ -117,10 +117,15 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   public onKeyPressedWhileEnteringNodeAddress(address: string): void {
     if (!HttpUtils.isIpAddressValid(address)) { 
-      alert(`Entered node address is not valid.`);
       return;
     }
     let newNode: MongooseRunNode = new MongooseRunNode(address);
+    console.log(`this.nodes: ${this.nodes} while new node is: ${newNode}`)
+    if (this.nodes.includes(newNode)) { 
+      // NOTE: If not exist, set it as selected
+      // this.onRowClicked(newNode);
+      return;
+    }
     this.nodes.push(newNode);
     
     // NOTE: Reset entering address after it's validation.

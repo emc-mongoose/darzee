@@ -29,11 +29,17 @@
                 </tr>
             </ng-container>
         </table>
-        <input [(ngModel)]="typeaheadEnteredNodeAddress"
-       [typeahead]="this.typeaheadRecommendedNodesAddresses"
-       class="form-control"
-       [placeholder]="this.NODE_ADDRESS_ENTRANCE_AREA_PLACEHOLDER"
-       (keydown.enter)="onKeyPressedWhileEnteringNodeAddress(typeaheadEnteredNodeAddress)">
+
+        <div class="container-fluid">
+            <!-- NOTE: New entry node adding area -->
+            <div class="row">
+                <input [(ngModel)]="typeaheadEnteredNodeAddress" [typeahead]="this.typeaheadRecommendedNodesAddresses"
+                    class="form-control col-10" [placeholder]="this.NODE_ADDRESS_ENTRANCE_AREA_PLACEHOLDER"
+                    (typeaheadOnSelect)="onKeyPressedWhileEnteringNodeAddress(typeaheadEnteredNodeAddress)">
+                <button type="button" class="btn btn-outline-dark col"
+                    (click)="onKeyPressedWhileEnteringNodeAddress(typeaheadEnteredNodeAddress)">Set</button>
+            </div>
+        </div>
     </ng-container>
 </div>
 <div class="modal-footer">
