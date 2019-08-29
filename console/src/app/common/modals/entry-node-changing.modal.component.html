@@ -29,11 +29,17 @@
                 </tr>
             </ng-container>
         </table>
+        <input [(ngModel)]="typeaheadEnteredNodeAddress"
+       [typeahead]="this.typeaheadRecommendedNodesAddresses"
+       class="form-control"
+       [placeholder]="this.NODE_ADDRESS_ENTRANCE_AREA_PLACEHOLDER"
+       (keydown.enter)="onKeyPressedWhileEnteringNodeAddress($event)">
     </ng-container>
 </div>
 <div class="modal-footer">
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onRetryBtnClicked()">
-        <span *ngIf="this.shouldDisplayLaunchingSpinner()" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span *ngIf="this.shouldDisplayLaunchingSpinner()" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
         Retry
     </button>
     <button type="button" class="btn btn-outline-dark" (click)="currentModalView.close('Close click')">Close</button>
@@ -45,7 +51,7 @@
 </ng-template>
 <ng-template #inactiveNodeBadge>
     <span class="badge badge-danger">
-        Entry node <span class="badge badge-light">Inactive</span>
+        Entry node <span class="badge badge-light">Occupied</span>
     </span>
 </ng-template>
 <ng-template #selectedEntryNodeBadge>

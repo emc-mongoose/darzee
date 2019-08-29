@@ -4,12 +4,16 @@ import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
 import { Subscription } from 'rxjs';
 import { MongooseConfigurationParser } from 'src/app/core/models/mongoose-configuration-parser';
+import { map, catchError } from 'rxjs/operators';
+import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 
 @Component({
   selector: 'entry-node-changing-modal',
   templateUrl: './entry-node-changing.modal.component.html'
 })
 export class EntryNodeChangingModalComponent implements OnDestroy {
+
+  public readonly NODE_ADDRESS_ENTRANCE_AREA_PLACEHOLDER: string = "Enter new entry node address..";
 
   private readonly INACTIVE_NODE_TABLE_ROW_CSS_CLASS: string = "table-danger";
   private readonly DEFAULT_NODE_TABLE_ROW_CSS_CLASS: string = "";
@@ -24,9 +28,11 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   @ViewChild('selectedEntryNodeBadge') selectedEntryNodeBadge: TemplateRef<any>;
 
 
+  public typeaheadRecommendedNodesAddresses: string[] = [];
   public shouldDisplayPopoverOnEntryNodeTag: boolean = false;
+  public typeaheadEnteredNodeAddress: string = "";
   private mongooseSetupNodesSubscription: Subscription = new Subscription();
-  private isMongooseLaunchInProgress: boolean = false; 
+  private isMongooseLaunchInProgress: boolean = false;
 
   /**
    * @param currentHoveringNodeLocation location of node which is currently being hovered. It's ...
@@ -42,11 +48,10 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   constructor(
     public currentModalView: NgbActiveModal,
-    private mongooseSetUpService: MongooseSetUpService) {
-    const initialInactiveNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
-    if (initialInactiveNode != undefined) {
-      this.inactiveNodes.push(initialInactiveNode);
-    }
+    private mongooseSetUpService: MongooseSetUpService,
+    private mongooseDataSharedService: MongooseDataSharedServiceService) {
+    this.configureNodes();
+    this.configureNodeAddressTypeahead();
   }
 
   ngOnDestroy(): void {
@@ -54,6 +59,29 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   }
 
   // MARK: - Public 
+
+  public configureNodes(): void {
+    const initialInactiveNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
+    if (initialInactiveNode != undefined) {
+      this.inactiveNodes.push(initialInactiveNode);
+    }
+
+  }
+
+  public configureNodeAddressTypeahead(): void {
+    this.mongooseDataSharedService.getAvailableRunNodes().subscribe(
+      (runNodes: MongooseRunNode[]) => {
+        var udpatedListOfAddresses: string[] = [];
+        runNodes.forEach(
+          (node: MongooseRunNode) => {
+            const nodeAddress: string = node.getResourceLocation();
+            udpatedListOfAddresses.push(nodeAddress);
+          }
+        );
+        this.typeaheadRecommendedNodesAddresses = udpatedListOfAddresses;
+      }
+    );
+  }
 
   /**
    * Handles event when mouse is over @param node's row. 
@@ -87,21 +115,29 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   }
 
 
+  public onKeyPressedWhileEnteringNodeAddress(event: any): void {
+    console.log(`onKeyPressedWhileEnteringNodeAddress. Event: ${JSON.stringify(event)}`);
+  }
+
   public onRetryBtnClicked(): void {
     const entryNode: MongooseRunNode = this.updatedEntryNode;
     this.isMongooseLaunchInProgress = true;
     this.mongooseSetUpService.changeEntryNode(entryNode);
-    this.mongooseSetupNodesSubscription = this.mongooseSetUpService.runMongoose(entryNode).subscribe(
-      (mongooseRunId: string) => {
-        console.log(`Mongoose has successfully launched on updated entry node with run ID: ${mongooseRunId}`);
-      },
-      error => {
+    this.mongooseSetupNodesSubscription = this.mongooseSetUpService.runMongoose(entryNode).pipe(
+      map(
+        (mongooseRunId: string) => {
+          console.log(`Mongoose has successfully launched on updated entry node with run ID: ${mongooseRunId}`);
+        }
+      ),
+      catchError((error: any) => {
         this.inactiveNodes.push(entryNode);
-        console.log(`Unable to launch Mongoose with entry node ${entryNode.getResourceLocation()}`);
-      },
-      () => { 
+        console.log(`Unable to launch Mongoose with entry node ${entryNode.getResourceLocation()}. Reason: ${error}`);
+        return error;
+      })
+    ).subscribe(
+      () => {
         // NOTE: Finish retrying Mongoose launch. Disable spinner.
-        this.isMongooseLaunchInProgress = false; 
+        this.isMongooseLaunchInProgress = false;
       }
     );
   }
@@ -131,7 +167,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     this.shouldDisplayPopoverOnEntryNodeTag = false;
   }
 
-  public shouldDisplayLaunchingSpinner(): boolean { 
+  public shouldDisplayLaunchingSpinner(): boolean {
     return this.isMongooseLaunchInProgress;
   }
 }
