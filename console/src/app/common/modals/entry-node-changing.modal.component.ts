@@ -2,9 +2,9 @@ import { Component, Input, TemplateRef, ViewChild, Output, OnDestroy } from '@an
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseSetUpService } from 'src/app/core/services/mongoose-set-up-service/mongoose-set-up.service';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { MongooseConfigurationParser } from 'src/app/core/models/mongoose-configuration-parser';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 import { HttpUtils } from '../HttpUtils';
 
@@ -146,17 +146,21 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
       map(
         (mongooseRunId: string) => {
           console.log(`Mongoose has successfully launched on updated entry node with run ID: ${mongooseRunId}`);
+          return true; 
         }
       ),
       catchError((error: any) => {
         this.inactiveNodes.push(entryNode);
         console.log(`Unable to launch Mongoose with entry node ${entryNode.getResourceLocation()}. Reason: ${error}`);
-        return error;
+        return of(false);
+      }),
+      tap(() => { 
+        this.isMongooseLaunchInProgress = false;
       })
     ).subscribe(
-      () => {
+      (hasSuccessfullyLaunched: boolean) => {
         // NOTE: Finish retrying Mongoose launch. Disable spinner.
-        this.isMongooseLaunchInProgress = false;
+        // this.isMongooseLaunchInProgress = false;
       }
     );
   }
