@@ -122,6 +122,10 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     }
     let newNode: MongooseRunNode = new MongooseRunNode(address);
     this.nodes.push(newNode);
+    
+    // NOTE: Reset entering address after it's validation.
+    const emptyValue: string = "";
+    this.typeaheadEnteredNodeAddress = emptyValue;
     console.log(`onKeyPressedWhileEnteringNodeAddress. addresss: ${address}`);
   }
 
