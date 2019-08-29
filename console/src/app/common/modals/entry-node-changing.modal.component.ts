@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { MongooseConfigurationParser } from 'src/app/core/models/mongoose-configuration-parser';
 import { map, catchError } from 'rxjs/operators';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
+import { HttpUtils } from '../HttpUtils';
 
 @Component({
   selector: 'entry-node-changing-modal',
@@ -65,7 +66,6 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     if (initialInactiveNode != undefined) {
       this.inactiveNodes.push(initialInactiveNode);
     }
-
   }
 
   public configureNodeAddressTypeahead(): void {
@@ -115,8 +115,14 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   }
 
 
-  public onKeyPressedWhileEnteringNodeAddress(event: any): void {
-    console.log(`onKeyPressedWhileEnteringNodeAddress. Event: ${JSON.stringify(event)}`);
+  public onKeyPressedWhileEnteringNodeAddress(address: string): void {
+    if (!HttpUtils.isIpAddressValid(address)) { 
+      alert(`Entered node address is not valid.`);
+      return;
+    }
+    let newNode: MongooseRunNode = new MongooseRunNode(address);
+    this.nodes.push(newNode);
+    console.log(`onKeyPressedWhileEnteringNodeAddress. addresss: ${address}`);
   }
 
   public onRetryBtnClicked(): void {

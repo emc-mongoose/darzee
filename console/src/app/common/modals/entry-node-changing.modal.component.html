@@ -33,7 +33,7 @@
        [typeahead]="this.typeaheadRecommendedNodesAddresses"
        class="form-control"
        [placeholder]="this.NODE_ADDRESS_ENTRANCE_AREA_PLACEHOLDER"
-       (keydown.enter)="onKeyPressedWhileEnteringNodeAddress($event)">
+       (keydown.enter)="onKeyPressedWhileEnteringNodeAddress(typeaheadEnteredNodeAddress)">
     </ng-container>
 </div>
 <div class="modal-footer">
