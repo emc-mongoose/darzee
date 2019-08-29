@@ -116,22 +116,26 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
 
   public onKeyPressedWhileEnteringNodeAddress(address: string): void {
-    if (!HttpUtils.isIpAddressValid(address)) { 
+    if (!HttpUtils.isIpAddressValid(address)) {
       return;
     }
     let newNode: MongooseRunNode = new MongooseRunNode(address);
-    console.log(`this.nodes: ${this.nodes} while new node is: ${newNode}`)
-    if (this.nodes.includes(newNode)) { 
-      // NOTE: If not exist, set it as selected
-      // this.onRowClicked(newNode);
+    const matchingNode: MongooseRunNode = this.getMatchingNodeFromTable(newNode);
+    const isNodeAlreadyAdded: boolean = (matchingNode != undefined);
+    if (isNodeAlreadyAdded) {
+      // NOTE: If Node's address is already in a table, ...
+      // ... set it as selected.
+      this.onRowClicked(matchingNode);
       return;
     }
     this.nodes.push(newNode);
-    
+
     // NOTE: Reset entering address after it's validation.
     const emptyValue: string = "";
     this.typeaheadEnteredNodeAddress = emptyValue;
-    console.log(`onKeyPressedWhileEnteringNodeAddress. addresss: ${address}`);
+
+    // NOTE: Set node as selected right after addition. 
+    this.onRowClicked(newNode);
   }
 
   public onRetryBtnClicked(): void {
@@ -184,5 +188,22 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   public shouldDisplayLaunchingSpinner(): boolean {
     return this.isMongooseLaunchInProgress;
+  }
+
+  /**
+   * Purpose: find validated node within table. It was implimented since ...
+   * ... you can't really check if node has been added into the table via .includes method because ...
+   * ... additional badges are already applied.
+   * @returns instance of Node from table.
+   * @param node 
+   */
+  private getMatchingNodeFromTable(node: MongooseRunNode): MongooseRunNode | undefined {
+    const matchingNodeIndex: number = this.nodes.findIndex(
+      (currentNode: MongooseRunNode) => {
+        const hasNodeAddressBeenAdded: boolean = node.getResourceLocation() == currentNode.getResourceLocation();
+        return hasNodeAddressBeenAdded;
+      }
+    )
+    return this.nodes[matchingNodeIndex]
   }
 }
