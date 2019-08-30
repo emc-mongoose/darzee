@@ -120,7 +120,8 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   public shouldDisplayBadge(node: MongooseRunNode): boolean {
     const isHovering: boolean = (node.getResourceLocation() == this.currentHoveringNodeLocation);
-    return (isHovering || this.isNodeOccupied(node));
+    const isNodeChecked: boolean = (this.occupiedNodes.includes(node) || this.inactiveNodes.includes(node));
+    return (isHovering || isNodeChecked);
   }
 
   public getClassForTableRowRepresentingNode(node: MongooseRunNode): string {
@@ -209,6 +210,13 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     const isHovering: boolean = (this.currentHoveringNodeLocation == node.getResourceLocation());
     if (this.isNodeOccupied(node)) {
       const badgeReason = "Occupied";
+      const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(unavailableNodeTitle, badgeReason, unavailableNodeHtmlClass);
+      return { badgeInfo: badgeInfo };
+    }
+
+    const isNodeActive: boolean = !this.inactiveNodes.includes(node);
+    if (!isNodeActive) {
+      const badgeReason = "Inactive";
       const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(unavailableNodeTitle, badgeReason, unavailableNodeHtmlClass);
       return { badgeInfo: badgeInfo };
     }
