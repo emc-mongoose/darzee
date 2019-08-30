@@ -1,6 +1,6 @@
 div badge.only-show-on-hover {
-    visibility: hidden;
+  visibility: hidden;
 }
-div:hover badge.only-show-on-hover  {
-    visibility: visible;
+div:hover badge.only-show-on-hover {
+  visibility: visible;
 }

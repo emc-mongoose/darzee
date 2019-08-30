@@ -26,10 +26,6 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   @Input() nodes: MongooseRunNode[];
 
-  @ViewChild('halfTransparentBadge') halfTransparentBadge: TemplateRef<any>;
-  @ViewChild('inactiveNodeBadge') inactiveNodeBadge: TemplateRef<any>;
-  @ViewChild('selectedEntryNodeBadge') selectedEntryNodeBadge: TemplateRef<any>;
-
 
   public typeaheadRecommendedNodesAddresses: string[] = [];
   public shouldDisplayPopoverOnEntryNodeTag: boolean = false;
@@ -188,27 +184,6 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     this.router.navigate([RoutesList.RUNS]);
   }
 
-  /**
-   * @returns template for additional info within @param node's row.
-   */
-  public getTemplateForRow(node: MongooseRunNode): TemplateRef<any> {
-    const isHovering: boolean = (this.currentHoveringNodeLocation == node.getResourceLocation());
-    if (this.isInactiveNode(node)) {
-      return this.inactiveNodeBadge
-    }
-
-    if (this.updatedEntryNode != undefined) {
-      const isUpdatedTableRow: boolean = (this.updatedEntryNode.getResourceLocation() == node.getResourceLocation());
-      if (isUpdatedTableRow) {
-        return this.selectedEntryNodeBadge;
-      }
-    }
-
-    if (isHovering) {
-      return this.halfTransparentBadge;
-    }
-  }
-
   public closeEntryNodePopover(): void {
     this.shouldDisplayPopoverOnEntryNodeTag = false;
   }
@@ -218,7 +193,24 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   }
 
   public getContextForNodeBadgeTemplate(node: MongooseRunNode): any {
-    let badgeDetails: any = { reason: "Occupied", class: "badge-warning" };
+
+    var badgeDetails: any = { reason: "New Entry Node", class: "badge-success" };
+    const isHovering: boolean = (this.currentHoveringNodeLocation == node.getResourceLocation());
+    if (this.isInactiveNode(node)) {
+      badgeDetails = { reason: "Occupied", class: "badge-warning" };;
+    }
+
+    if (this.updatedEntryNode != undefined) {
+      const isUpdatedTableRow: boolean = (this.updatedEntryNode.getResourceLocation() == node.getResourceLocation());
+      if (isUpdatedTableRow) {
+        badgeDetails = { reason: "New Entry Node", class: "badge-success" };
+      }
+    }
+
+    if (isHovering) {
+      badgeDetails = { reason: "New Entry Node", class: "badge-success entry-node-hovering", style: {opacity: 0.5, filter: "alpha(opacity=50)" /* For IE8 and earlier */} };
+    }
+
     return {badgeDetails: badgeDetails};
   }
 
