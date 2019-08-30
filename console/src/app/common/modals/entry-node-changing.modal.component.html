@@ -57,6 +57,9 @@
 <!-- NOTE: Templates -->
 <ng-template #nodeBadge let-badgeInfo="badgeInfo">
     <span class="badge" [ngClass]="badgeInfo.class" [ngStyle]="badgeInfo.style">
-        {{ badgeInfo.title }} <span class="badge badge-light"> {{ badgeInfo.reason }}</span>
+        {{ badgeInfo.title }}
+        <span class="badge badge-light" *ngIf="badgeInfo.reason.length">
+            {{ badgeInfo.reason }}
+        </span>
     </span>
 </ng-template>
