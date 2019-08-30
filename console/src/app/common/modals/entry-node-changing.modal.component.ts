@@ -105,11 +105,11 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
     const nodeResourceLocation: string = node.getResourceLocation();
     this.mongooseSetUpService.isMongooseNodeActive(nodeResourceLocation).subscribe(
-      (isActive: boolean) => { 
-        if (!isActive) { 
+      (isActive: boolean) => {
+        if (!isActive) {
           // TOOD: Handle inactivity here.
           console.error(`New entry node ${nodeResourceLocation} is not active.`);
-          return; 
+          return;
         }
         this.updatedEntryNode = node;
       }
@@ -160,7 +160,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
       map(
         (mongooseRunId: string) => {
           console.log(`Mongoose has successfully launched on updated entry node with run ID: ${mongooseRunId}`);
-          return true; 
+          return true;
         }
       ),
       catchError((error: any) => {
@@ -168,7 +168,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
         console.log(`Unable to launch Mongoose with entry node ${entryNode.getResourceLocation()}. Reason: ${error}`);
         return of(false);
       }),
-      tap(() => { 
+      tap(() => {
         this.isMongooseLaunchInProgress = false;
       })
     ).subscribe(
@@ -182,7 +182,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   /**
    * Handles setup termination.
    */
-  public onExitSetupBtnClicked(): void { 
+  public onExitSetupBtnClicked(): void {
     const closeClickEvent: string = "Close click";
     this.currentModalView.close(closeClickEvent);
     this.router.navigate([RoutesList.RUNS]);
@@ -217,8 +217,9 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     return this.isMongooseLaunchInProgress;
   }
 
-  public getContextForNodeTemplate(node: MongooseRunNode): any { 
-    return {reason: "Occupied"};
+  public getContextForNodeBadgeTemplate(node: MongooseRunNode): any {
+    let badgeDetails: any = { reason: "Occupied", class: "badge-warning" };
+    return {badgeDetails: badgeDetails};
   }
 
   /**
@@ -237,5 +238,5 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     )
     return this.nodes[matchingNodeIndex]
   }
-  
+
 }
