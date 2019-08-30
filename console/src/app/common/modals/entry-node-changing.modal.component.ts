@@ -184,8 +184,13 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
       })
     ).subscribe(
       (hasSuccessfullyLaunched: boolean) => {
-        // NOTE: Finish retrying Mongoose launch. Disable spinner.
-        // this.isMongooseLaunchInProgress = false;
+        if (!hasSuccessfullyLaunched) {
+          return;
+        }
+        // NOTE: Loading spinning bar. It will disappear once Mongoose run will be loaded.
+        this.mongooseDataSharedService.shouldWaintForNewRun = true;
+
+        this.onExitSetupBtnClicked();
       }
     );
   }
