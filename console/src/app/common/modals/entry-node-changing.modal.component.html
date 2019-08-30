@@ -52,15 +52,8 @@
     <button type="button" class="btn btn-outline-dark" (click)="onExitSetupBtnClicked()">Exit setup</button>
 </div>
 <!-- NOTE: Templates -->
-<ng-template #halfTransparentBadge>
-    <span class="badge badge-success" style="opacity: 0.5;  filter: alpha(opacity=50); /* For IE8 and earlier */">Entry
-        node</span>
-</ng-template>
 <ng-template #nodeBadge let-badgeDetails="badgeDetails">
     <span class="badge" [ngClass]="badgeDetails.class" [ngStyle]="badgeDetails.style">
         Entry node <span class="badge badge-light"> {{ badgeDetails.reason }}</span>
     </span>
-</ng-template>
-<ng-template #selectedEntryNodeBadge>
-    <span class="badge badge-success">New entry node</span>
 </ng-template>
