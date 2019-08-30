@@ -106,8 +106,8 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     const nodeResourceLocation: string = node.getResourceLocation();
     this.mongooseSetUpService.isMongooseNodeActive(nodeResourceLocation).subscribe(
       (isActive: boolean) => { 
-        console.log(`isActive? ${isActive}`)
         if (!isActive) { 
+          // TOOD: Handle inactivity here.
           console.error(`New entry node ${nodeResourceLocation} is not active.`);
           return; 
         }
@@ -194,7 +194,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   public getTemplateForRow(node: MongooseRunNode): TemplateRef<any> {
     const isHovering: boolean = (this.currentHoveringNodeLocation == node.getResourceLocation());
     if (this.isInactiveNode(node)) {
-      return this.inactiveNodeBadge;
+      return this.inactiveNodeBadge
     }
 
     if (this.updatedEntryNode != undefined) {
@@ -215,6 +215,10 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   public shouldDisplayLaunchingSpinner(): boolean {
     return this.isMongooseLaunchInProgress;
+  }
+
+  public getContextForNodeTemplate(node: MongooseRunNode): any { 
+    return {reason: "Occupied"};
   }
 
   /**
