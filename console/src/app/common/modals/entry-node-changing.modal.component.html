@@ -53,7 +53,7 @@
 </div>
 <!-- NOTE: Templates -->
 <ng-template #nodeBadge let-badgeDetails="badgeDetails">
-    <span class="badge" [ngClass]="badgeDetails.class" [ngStyle]="badgeDetails.style">
-        Entry node <span class="badge badge-light"> {{ badgeDetails.reason }}</span>
+    <span class="badge" [ngClass]="class" [ngStyle]="style">
+        Entry node <span class="badge badge-light"> {{ reason }}</span>
     </span>
 </ng-template>

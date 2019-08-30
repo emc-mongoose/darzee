@@ -9,6 +9,7 @@ import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose
 import { HttpUtils } from '../HttpUtils';
 import { Router } from '@angular/router';
 import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
+import { EntryNodeBadgeModel } from './entry-node-badge.model';
 
 @Component({
   selector: 'entry-node-changing-modal',
@@ -194,21 +195,33 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   public getContextForNodeBadgeTemplate(node: MongooseRunNode): any {
 
-    var badgeDetails: any = { reason: "New Entry Node", class: "badge-success" };
+    const unavailableNodeHtmlClass: string = "badge-danger";
+    const unavailableNodeTitle: string = "Unavailable node";
+
+    const uncheckedNodeHtmlClass: string = "badge-success";
+    const uncheckedNodeCssStyle: Object = {opacity: 0.5, filter: "alpha(opacity=50)" /* For IE8 and earlier */};
+
+    var badgeDetails: EntryNodeBadgeModel = new EntryNodeBadgeModel();
+    var badgeTitle: string = "";
+    var badgeReason: string = "";
+    var badgeHtmlClass: string = "";
+    var badgeCssStyle: string = "";
     const isHovering: boolean = (this.currentHoveringNodeLocation == node.getResourceLocation());
     if (this.isInactiveNode(node)) {
-      badgeDetails = { reason: "Occupied", class: "badge-warning" };;
+      badgeReason = "Occupied";
+      return new EntryNodeBadgeModel(unavailableNodeTitle, badgeReason, unavailableNodeHtmlClass);
     }
 
     if (this.updatedEntryNode != undefined) {
       const isUpdatedTableRow: boolean = (this.updatedEntryNode.getResourceLocation() == node.getResourceLocation());
       if (isUpdatedTableRow) {
-        badgeDetails = { reason: "New Entry Node", class: "badge-success" };
+        badgeTitle = "New Entry Node";
+        return new EntryNodeBadgeModel(badgeTitle, "", uncheckedNodeHtmlClass, uncheckedNodeCssStyle);
       }
     }
 
     if (isHovering) {
-      badgeDetails = { reason: "New Entry Node", class: "badge-success entry-node-hovering", style: {opacity: 0.5, filter: "alpha(opacity=50)" /* For IE8 and earlier */} };
+      return new EntryNodeBadgeModel("New Entry Node", "", uncheckedNodeHtmlClass, uncheckedNodeCssStyle);
     }
 
     return {badgeDetails: badgeDetails};
