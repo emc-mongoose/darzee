@@ -19,7 +19,6 @@ import { NodesSetUpTableRowComponent } from "./components/mongoose-set-up/set-up
 import { CustomCheckboxModule } from 'angular-custom-checkbox';
 import { PopoverModule, ModalModule, TypeaheadModule } from 'ngx-bootstrap';
 import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-node-changing.modal.component";
-import { EntryNodeChangingTableRowComponent } from "src/app/common/modals/entry-node-changing-table-row/entry-node-changing-table-row.component";
 import { MongooseSetUpService } from "src/app/core/services/mongoose-set-up-service/mongoose-set-up.service";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
@@ -54,8 +53,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     ConfigurationEditingComponent,
     SetUpFooterComponent,
     NodesSetUpTableRowComponent,
-    EntryNodeChangingModalComponent,
-    EntryNodeChangingTableRowComponent
+    EntryNodeChangingModalComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
