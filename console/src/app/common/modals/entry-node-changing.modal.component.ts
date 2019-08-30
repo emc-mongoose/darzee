@@ -119,6 +119,14 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   }
 
   public shouldDisplayBadge(node: MongooseRunNode): boolean {
+    if (this.updatedEntryNode != undefined) {
+      const isNodeSelectedAsEntry: boolean = (this.updatedEntryNode.getResourceLocation() == node.getResourceLocation());
+      if (isNodeSelectedAsEntry) {
+        // NOTE: If node has been selected as entry, no need to further check.
+
+        return true;
+      }
+    }
     const isHovering: boolean = (node.getResourceLocation() == this.currentHoveringNodeLocation);
     const isNodeChecked: boolean = (this.occupiedNodes.includes(node) || this.inactiveNodes.includes(node));
     return (isHovering || isNodeChecked);
@@ -225,7 +233,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
       const isUpdatedTableRow: boolean = (this.updatedEntryNode.getResourceLocation() == node.getResourceLocation());
       if (isUpdatedTableRow) {
         const badgeTitle = "New Entry Node";
-        const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(badgeTitle, "", uncheckedNodeHtmlClass, uncheckedNodeCssStyle);
+        const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(badgeTitle, "", uncheckedNodeHtmlClass);
         return { badgeInfo: badgeInfo };
       }
     }
