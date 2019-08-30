@@ -42,6 +42,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
    */
   private currentHoveringNodeLocation: string = "";
   private updatedEntryNode: MongooseRunNode;
+  private occupiedNodes: MongooseRunNode[] = [];
   private inactiveNodes: MongooseRunNode[] = [];
 
   // MARK: - Private 
@@ -64,7 +65,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   public configureNodes(): void {
     const initialInactiveNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
     if (initialInactiveNode != undefined) {
-      this.inactiveNodes.push(initialInactiveNode);
+      this.occupiedNodes.push(initialInactiveNode);
     }
   }
 
@@ -95,7 +96,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   }
 
   public onRowClicked(node: MongooseRunNode): void {
-    if (this.isInactiveNode(node)) {
+    if (this.isNodeOccupied(node)) {
       this.shouldDisplayPopoverOnEntryNodeTag = true;
       return;
     }
@@ -104,7 +105,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     this.mongooseSetUpService.isMongooseNodeActive(nodeResourceLocation).subscribe(
       (isActive: boolean) => {
         if (!isActive) {
-          // TOOD: Handle inactivity here.
+          this.inactiveNodes.push(node);
           console.error(`New entry node ${nodeResourceLocation} is not active.`);
           return;
         }
@@ -113,13 +114,17 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     );
   }
 
-  public isInactiveNode(node: MongooseRunNode): boolean {
-    return (this.inactiveNodes.includes(node));
+  public isNodeOccupied(node: MongooseRunNode): boolean {
+    return (this.occupiedNodes.includes(node));
   }
 
+  public shouldDisplayBadge(node: MongooseRunNode): boolean {
+    const isHovering: boolean = (node.getResourceLocation() == this.currentHoveringNodeLocation);
+    return (isHovering || this.isNodeOccupied(node));
+  }
 
   public getClassForTableRowRepresentingNode(node: MongooseRunNode): string {
-    if (this.isInactiveNode(node)) {
+    if (this.isNodeOccupied(node)) {
       return this.INACTIVE_NODE_TABLE_ROW_CSS_CLASS;
     }
     return this.DEFAULT_NODE_TABLE_ROW_CSS_CLASS;
@@ -161,7 +166,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
         }
       ),
       catchError((error: any) => {
-        this.inactiveNodes.push(entryNode);
+        this.occupiedNodes.push(entryNode);
         console.log(`Unable to launch Mongoose with entry node ${entryNode.getResourceLocation()}. Reason: ${error}`);
         return of(false);
       }),
@@ -199,32 +204,28 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     const unavailableNodeTitle: string = "Unavailable node";
 
     const uncheckedNodeHtmlClass: string = "badge-success";
-    const uncheckedNodeCssStyle: Object = {opacity: 0.5, filter: "alpha(opacity=50)" /* For IE8 and earlier */};
+    const uncheckedNodeCssStyle: Object = { opacity: 0.5, filter: "alpha(opacity=50)" /* For IE8 and earlier */ };
 
-    var badgeDetails: EntryNodeBadgeModel = new EntryNodeBadgeModel();
-    var badgeTitle: string = "";
-    var badgeReason: string = "";
-    var badgeHtmlClass: string = "";
-    var badgeCssStyle: string = "";
     const isHovering: boolean = (this.currentHoveringNodeLocation == node.getResourceLocation());
-    if (this.isInactiveNode(node)) {
-      badgeReason = "Occupied";
-      return new EntryNodeBadgeModel(unavailableNodeTitle, badgeReason, unavailableNodeHtmlClass);
+    if (this.isNodeOccupied(node)) {
+      const badgeReason = "Occupied";
+      const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(unavailableNodeTitle, badgeReason, unavailableNodeHtmlClass);
+      return { badgeInfo: badgeInfo };
     }
 
     if (this.updatedEntryNode != undefined) {
       const isUpdatedTableRow: boolean = (this.updatedEntryNode.getResourceLocation() == node.getResourceLocation());
       if (isUpdatedTableRow) {
-        badgeTitle = "New Entry Node";
-        return new EntryNodeBadgeModel(badgeTitle, "", uncheckedNodeHtmlClass, uncheckedNodeCssStyle);
+        const badgeTitle = "New Entry Node";
+        const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(badgeTitle, "", uncheckedNodeHtmlClass, uncheckedNodeCssStyle);
+        return { badgeInfo: badgeInfo };
       }
     }
 
     if (isHovering) {
-      return new EntryNodeBadgeModel("New Entry Node", "", uncheckedNodeHtmlClass, uncheckedNodeCssStyle);
+      const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel("New Entry Node", "", uncheckedNodeHtmlClass, uncheckedNodeCssStyle);
+      return { badgeInfo: badgeInfo };
     }
-
-    return {badgeDetails: badgeDetails};
   }
 
   /**

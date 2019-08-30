@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h4 class="modal-title">
-        {{ this.title }}
+        {{ this.alertWindowTitle }}
     </h4>
     <button type="button" class="close" aria-label="Close" (click)="currentModalView.close('Close click')">
         <span aria-hidden="true">&times;</span>
@@ -24,9 +24,12 @@
                         {{ node.getResourceLocation() }}
                     </td>
                     <td>
-                        <ng-container
-                            *ngTemplateOutlet="nodeBadge; context: this.getContextForNodeBadgeTemplate(node)">
+                        <ng-container *ngIf="this.shouldDisplayBadge(node)">
+                            <ng-container
+                                *ngTemplateOutlet="nodeBadge; context: this.getContextForNodeBadgeTemplate(node)">
+                            </ng-container>
                         </ng-container>
+
                     </td>
                 </tr>
             </ng-container>
@@ -52,8 +55,8 @@
     <button type="button" class="btn btn-outline-dark" (click)="onExitSetupBtnClicked()">Exit setup</button>
 </div>
 <!-- NOTE: Templates -->
-<ng-template #nodeBadge let-badgeDetails="badgeDetails">
-    <span class="badge" [ngClass]="class" [ngStyle]="style">
-        Entry node <span class="badge badge-light"> {{ reason }}</span>
+<ng-template #nodeBadge let-badgeInfo="badgeInfo">
+    <span class="badge" [ngClass]="badgeInfo.class" [ngStyle]="badgeInfo.style">
+        {{ badgeInfo.title }} <span class="badge badge-light"> {{ badgeInfo.reason }}</span>
     </span>
 </ng-template>

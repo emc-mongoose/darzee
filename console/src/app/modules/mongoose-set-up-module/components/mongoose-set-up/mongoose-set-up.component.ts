@@ -136,7 +136,7 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
         }
 
         const modalMongooseLaunchAlertError: NgbModalRef = this.modalService.open(EntryNodeChangingModalComponent);
-        modalMongooseLaunchAlertError.componentInstance.title = 'Entry node is occupied';
+        modalMongooseLaunchAlertError.componentInstance.alertWindowTitle = 'Entry node is occupied';
         modalMongooseLaunchAlertError.componentInstance.discription = errorReason;
         modalMongooseLaunchAlertError.componentInstance.nodes = this.mongooseSetUpService.getSelectedMongooseRunNodes();
         console.error(`Unable to launch Mongoose. Reason: ${JSON.stringify(error)}`);
