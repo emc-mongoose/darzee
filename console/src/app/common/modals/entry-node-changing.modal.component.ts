@@ -102,7 +102,18 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
       this.shouldDisplayPopoverOnEntryNodeTag = true;
       return;
     }
-    this.updatedEntryNode = node;
+
+    const nodeResourceLocation: string = node.getResourceLocation();
+    this.mongooseSetUpService.isMongooseNodeActive(nodeResourceLocation).subscribe(
+      (isActive: boolean) => { 
+        console.log(`isActive? ${isActive}`)
+        if (!isActive) { 
+          console.error(`New entry node ${nodeResourceLocation} is not active.`);
+          return; 
+        }
+        this.updatedEntryNode = node;
+      }
+    );
   }
 
   public isInactiveNode(node: MongooseRunNode): boolean {

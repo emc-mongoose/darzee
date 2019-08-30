@@ -169,16 +169,13 @@ export class MonitoringApiService {
    * @param runNodeAddress IPv4 address of Mongoose.
    */
   public isMongooseRunNodeActive(runNodeAddress: string): Observable<boolean> {
-    const mongooseTargetAddress: string = `${Constants.Http.HTTP_PREFIX}${runNodeAddress}`;
-    return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
-      map((successResult: any) => {
-        return true;
-      }),
-      catchError((error, caughtError) => {
-        if (error instanceof TimeoutError) {
-          console.log(`Request on Mongoose node ${runNodeAddress} has timed out.`);
-        }
-        return of(false);
+    const timeoutMilliseconds: number = 2500; // NOTE: Timeout is set to 2.5 seconds 
+    return this.getBasicMongooseRunNodeInfo(runNodeAddress).pipe(
+      timeout(timeoutMilliseconds)
+    ).pipe(
+      catchError(error => {
+        console.log(`Mongoose's node ${runNodeAddress} status request has timed out.`);
+        return of(undefined);
       })
     );
   }
