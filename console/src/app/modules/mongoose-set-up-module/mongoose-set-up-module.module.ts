@@ -60,8 +60,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     ControlApiService,
     MonitoringApiService,
     DateFormatPipe,
-    LocalStorageService,
-    MongooseSetUpService
+    LocalStorageService
   ],
 
 })
