@@ -7,6 +7,8 @@ import { MongooseConfigurationParser } from 'src/app/core/models/mongoose-config
 import { map, catchError, tap } from 'rxjs/operators';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
 import { HttpUtils } from '../HttpUtils';
+import { Router } from '@angular/router';
+import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
 
 @Component({
   selector: 'entry-node-changing-modal',
@@ -48,6 +50,7 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   // MARK: - Private 
 
   constructor(
+    private router: Router,
     public currentModalView: NgbActiveModal,
     private mongooseSetUpService: MongooseSetUpService,
     private mongooseDataSharedService: MongooseDataSharedServiceService) {
@@ -166,6 +169,15 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
   }
 
   /**
+   * Handles setup termination.
+   */
+  public onExitSetupBtnClicked(): void { 
+    const closeClickEvent: string = "Close click";
+    this.currentModalView.close(closeClickEvent);
+    this.router.navigate([RoutesList.RUNS]);
+  }
+
+  /**
    * @returns template for additional info within @param node's row.
    */
   public getTemplateForRow(node: MongooseRunNode): TemplateRef<any> {
@@ -210,4 +222,5 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     )
     return this.nodes[matchingNodeIndex]
   }
+  
 }
