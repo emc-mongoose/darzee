@@ -133,6 +133,7 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
           this.prometheusResourceLocation = prometheusAddressWithoutPrefixes;
           if (!isPrometheusAvailable) {
             console.error(`Prometheus is not available on ${prometheusAddressWithoutPrefixes}`);
+            this.sharedLayourService.showNotification(new MongooseNotification('error', `Prometheus is not available at ${prometheusAddress}.`));
             return;
           }
           console.log(`Prometheus has successfully loaded on ${prometheusAddressWithoutPrefixes}.`);
