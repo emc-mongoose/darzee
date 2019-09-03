@@ -3,31 +3,37 @@ import { SharedLayoutService } from '../shared-layout.service';
 import { MongooseNotification } from './mongoose-notification.model';
 
 @Component({
-  selector: 'mongoose-notifications',
-  templateUrl: './notifications.component.html',
-  styleUrls: ['./notifications.component.scss']
+    selector: 'mongoose-notifications',
+    templateUrl: './notifications.component.html',
+    styleUrls: ['./notifications.component.scss']
 })
 export class NotificationComponent {
-  
-  private _notes: MongooseNotification[];
+
+    private readonly NOTIFICATION_LIFETIME_MS: number = 3000;
+
+    /**
+     * @param notifications currently active notifications.
+     */
+    private notifications: MongooseNotification[];
 
     constructor(private sharedLayoutService: SharedLayoutService) {
-        console.log(`NotificationComponent has been created.`);
-        this._notes = new Array<MongooseNotification>();
+        this.notifications = new Array<MongooseNotification>();
 
         this.sharedLayoutService.addedNotification$.subscribe(
             (notification: MongooseNotification) => {
-            console.log(`Notification has been shown up.`)
-            this._notes.push(notification);
-            setTimeout(() => { this.hide.bind(this)(notification) }, 3000);
-        });
+                this.notifications.push(notification);
+                setTimeout(() => { this.hide.bind(this)(notification) }, this.NOTIFICATION_LIFETIME_MS);
+            });
     }
 
-    private hide(note) {
-        let index = this._notes.indexOf(note);
+    /**
+     * Responsible for removing @param notification from the UI.
+     */
+    private hide(notification: MongooseNotification): void {
+        let index = this.notifications.indexOf(notification);
 
         if (index >= 0) {
-            this._notes.splice(index, 1);
+            this.notifications.splice(index, 1);
         }
     }
 
