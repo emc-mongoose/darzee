@@ -82,7 +82,7 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
     const isInputEmpty: boolean = (enteredPrometheusAddress.length == 0);
     if (isInputEmpty) { 
       // NOTE: Empty input should not be processed.
-      this.sharedLayourService.showNotification(new MongooseNotification('error', `Please, provide Prometheus' address.`));
+      this.sharedLayourService.showNotification(new MongooseNotification('error', `Please, provide Prometheus' address.` ));
       return;
     }
 

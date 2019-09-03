@@ -1,6 +1,10 @@
-<div class="notifications">
+<!-- <div class="notifications">
     <div (click)="hide(note)" class="{{ note.type }}"
             *ngFor="let note of this.notifications">
         {{ note.message }}
     </div>
+</div> -->
+
+<div class="alert alert-danger notifications" role="alert"  *ngFor="let note of this.notifications">
+        {{ note.message }}
 </div>

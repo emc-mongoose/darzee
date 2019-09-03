@@ -1,47 +1,20 @@
-$success: #dff2bf;
-$warn: #feefb3;
-$error: #ffbaba;
-$info: #bde5f8;
-
 .notifications {
-    left: calc(50% - 150px);
+    right: calc(1%);
     position: absolute;
-    top: 10%;
+    bottom: 5%;
 
+    max-width: calc(50%);
     div {
         border: 1px solid;
         border-radius: 4px;
-        box-shadow: 0 12px 15px 0 rgba(0, 0, 0, .22),
-                    0 17px 20px 0 rgba(0, 0, 0, .12);
+        box-shadow: 0 6px 7px 0 rgba(0, 0, 0, .22),
+                    0 8px 10px 0 rgba(0, 0, 0, .12);
         cursor: pointer;
         margin-bottom: .5em;
-        min-height: 3em;
-        padding: 1em;
+        min-height: calc(1%);
+        max-height: calc(2%);
+        padding: calc(1%);
         text-align: center;
         width: 300px;
-
-        &.success {
-            background-color: $success;
-            border-color: darken($success, 30%);
-            color: darken($success, 60%);
-        }
-
-        &.error {
-            background-color: $error;
-            border-color: darken($error, 10%);
-            color: darken($error, 60%);
-        }
-
-        &.warn {
-            background-color: $warn;
-            border-color: darken($warn, 30%);
-            color: darken($warn, 57%);
-        }
-
-        &.info {
-            background-color: $info;
-            border-color: darken($info, 30%);
-            color: darken($info, 50%);
-        }
     }
 }
