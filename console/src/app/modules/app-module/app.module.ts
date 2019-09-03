@@ -25,9 +25,11 @@ import { EntryNodeSelectionComponent } from './components/run-statistics/common/
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { PrometheusErrorComponent } from "./components/common/prometheus-error/prometheus-error.component";
 import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-node-changing.modal.component";
+import { NotificationComponent } from '../../core/services/shared-layout-service/notification/notifications.component';
+import { SharedLayoutService } from "src/app/core/services/shared-layout-service/shared-layout.service";
 
 @NgModule({
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent, NotificationComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -47,7 +49,9 @@ import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-nod
     MonitoringApiService,
     DateFormatPipe,
     PrometheusApiService,
-    LocalStorageService],
+    LocalStorageService,
+    SharedLayoutService
+  ],
   declarations: [
     AppComponent,
     HeaderComponent,
@@ -60,8 +64,8 @@ import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-nod
     DateFormatPipe,
     BasicChartComponent,
     EntryNodeSelectionComponent,
-    PrometheusErrorComponent
-
+    PrometheusErrorComponent,
+    NotificationComponent
   ],
   entryComponents: [
     BasicChartComponent,

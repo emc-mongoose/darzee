@@ -252,7 +252,7 @@ export class MonitoringApiService {
       ),
       catchError((error: any) => {
         let errorStatus = error.status || 500;
-        let errroMessage = "Prometheus doesn't response.";
+        const errroMessage: string = "Prometheus doesn't response.";
         throw new PrometheusError(errroMessage, errorStatus);
       })
     )
@@ -263,8 +263,8 @@ export class MonitoringApiService {
   private sortMongooseRecordsByStartTime(records: MongooseRunRecord[]): MongooseRunRecord[] {
     return records.sort((lhs, rhs) => {
       let hasLhsStartedEarlier = (Number(lhs.getStartTime()) < Number(rhs.getStartTime()));
-      let valueTrue = 1;
-      let valueFalse = -1;
+      const valueTrue: number = 1;
+      const valueFalse: number = -1;
       return hasLhsStartedEarlier ? valueTrue : valueFalse;
     });
   }

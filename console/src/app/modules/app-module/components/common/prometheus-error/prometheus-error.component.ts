@@ -8,6 +8,8 @@ import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prometheus-api.service';
 import { HttpUtils } from 'src/app/common/HttpUtils';
 import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
+import { SharedLayoutService } from 'src/app/core/services/shared-layout-service/shared-layout.service';
+import { MongooseNotification } from 'src/app/core/services/shared-layout-service/notification/mongoose-notification.model';
 
 @Component({
   selector: 'app-prometheus-error',
@@ -42,7 +44,8 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
 
   constructor(private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
     private prometheusApiService: PrometheusApiService,
-    private localStorageService: LocalStorageService) {
+    private localStorageService: LocalStorageService,
+    private sharedLayourService: SharedLayoutService) {
     this.setUpComponent();
   }
 
@@ -77,7 +80,8 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
   public onRetryBtnClicked() {
     let enteredPrometheusAddress: string = this.currentEnteredText;
     if (!HttpUtils.isIpAddressValid(enteredPrometheusAddress)) {
-      alert(`IP address ${enteredPrometheusAddress} is not valid.`);
+      this.sharedLayourService.showNotification(new MongooseNotification('success', 'This shows up green!'));
+      // alert(`IP address ${enteredPrometheusAddress} is not valid.`);
       return;
     }
     this.tryToLoadPrometheus(enteredPrometheusAddress);
