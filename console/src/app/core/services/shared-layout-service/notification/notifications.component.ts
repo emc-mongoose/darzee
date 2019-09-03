@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedLayoutService } from '../shared-layout.service';
 import { MongooseNotification } from './mongoose-notification.model';
+import { slideInAndOut } from 'src/app/core/animations';
 
 @Component({
     selector: 'mongoose-notifications',
     templateUrl: './notifications.component.html',
-    styleUrls: ['./notifications.component.scss']
+    styleUrls: ['./notifications.component.scss'],
+    animations: [ slideInAndOut ]
 })
 export class NotificationComponent {
 

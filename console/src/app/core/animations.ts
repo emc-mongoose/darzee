@@ -43,3 +43,13 @@ const basicBounce = animation(
 
 export let bounceAnimation = trigger('bounce', 
 [transition('void => *', useAnimation(basicBounce))]);
+
+export let slideInAndOut = trigger('slideInOut', [
+    transition(':enter', [
+      style({transform: 'translateY(100%)', opacity: 0}),
+      animate('200ms ease-in', style({transform: 'translateY(0%)', opacity: 1}))
+    ]),
+    transition(':leave', [
+      animate('200ms ease-in', style({transform: 'translateY(100%)', opacity: 0}))
+    ])
+  ])
