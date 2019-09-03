@@ -79,9 +79,15 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
 
   public onRetryBtnClicked() {
     let enteredPrometheusAddress: string = this.currentEnteredText;
+    const isInputEmpty: boolean = (enteredPrometheusAddress.length == 0);
+    if (isInputEmpty) { 
+      // NOTE: Empty input should not be processed.
+      this.sharedLayourService.showNotification(new MongooseNotification('error', `Please, provide Prometheus' address.`));
+      return;
+    }
+
     if (!HttpUtils.isIpAddressValid(enteredPrometheusAddress)) {
-      this.sharedLayourService.showNotification(new MongooseNotification('success', 'This shows up green!'));
-      // alert(`IP address ${enteredPrometheusAddress} is not valid.`);
+      this.sharedLayourService.showNotification(new MongooseNotification('error', `Please, provide a valid Prometheus' address.`));
       return;
     }
     this.tryToLoadPrometheus(enteredPrometheusAddress);
