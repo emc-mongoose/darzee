@@ -62,6 +62,8 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
   ngOnInit() { }
 
   ngOnDestroy() {
+    console.log('Resetting set up data...')
+    this.mongooseSetUpService.reset();
     this.mongooseRunSubscription.unsubscribe();
   }
 

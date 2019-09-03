@@ -45,6 +45,13 @@ export class MongooseSetUpService {
   // MARK: - Getters & Setters 
 
   /**
+   * Clears all the data stored withon the service.
+   */
+  public reset(): void { 
+    this.mongooseSetupInfoModel = new MongooseSetupInfoModel();
+  }
+
+  /**
    * @returns configuration of @param entryNode with slave nodes added.
    * Slave nodes are retrieved from SetUpModel. They don't contain @param entryNode's address.
    */
