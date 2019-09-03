@@ -14,7 +14,7 @@ export class NotificationComponent {
     /**
      * @param notifications currently active notifications.
      */
-    private notifications: MongooseNotification[];
+    public notifications: MongooseNotification[];
 
     constructor(private sharedLayoutService: SharedLayoutService) {
         this.notifications = new Array<MongooseNotification>();
