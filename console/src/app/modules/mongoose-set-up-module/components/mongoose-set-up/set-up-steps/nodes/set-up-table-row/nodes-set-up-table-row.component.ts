@@ -137,20 +137,15 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
     this.mongooseDataSharedService.deleteMongooseRunNode(savedNode);
   }
 
-  public getCustomClassForNode(node: MongooseRunNode): string {
-    let mongooseEntryNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
-    const noCustomClassTag: string = "";
-    if (mongooseEntryNode == undefined) {
-      return noCustomClassTag;
-    }
-    const entryNodeAddress: string = mongooseEntryNode.getResourceLocation();
-    if (entryNodeAddress == node.getResourceLocation()) {
-      const entryNodeClass: string = this.ENTRY_NODE_CUSTOM_CLASS;
-      return entryNodeClass;
-    }
-    return noCustomClassTag;
+  /**
+   * @returns true if @param node has been selected as an entry node.
+   */
+  public shouldHideEntryNodeTag(node: MongooseRunNode): boolean {
+    const customNodeClass: string = this.getCustomClassForNode(node);
+    const isNodeEntry: boolean = (customNodeClass == this.ENTRY_NODE_CUSTOM_CLASS);
+    // NOTE: If node is not entry, hide the tag. 
+    return !isNodeEntry;
   }
-
   /**
    * Determines if loading spinner should be displayed during node's validation.
    */
@@ -197,4 +192,21 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
     return isNodeSupported;
   }
 
+  /**
+  * @returns CSS class for @param node's table row.
+  */
+  private getCustomClassForNode(node: MongooseRunNode): string {
+    let mongooseEntryNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
+    const noCustomClassTag: string = "";
+    if (mongooseEntryNode == undefined) {
+      return noCustomClassTag;
+    }
+    const entryNodeAddress: string = mongooseEntryNode.getResourceLocation();
+    if (entryNodeAddress == node.getResourceLocation()) {
+      const entryNodeClass: string = this.ENTRY_NODE_CUSTOM_CLASS;
+      console.log(`node ${node.getResourceLocation()} is the entry one.`)
+      return entryNodeClass;
+    }
+    return noCustomClassTag;
+  }
 }

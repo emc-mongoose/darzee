@@ -124,7 +124,6 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
         } else {
           console.log(`Mongoose Run has started with run ID ${mongooseRunId}`);
         }
-
         this.router.navigate([RoutesList.RUNS]);
       },
       error => {

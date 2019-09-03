@@ -52,7 +52,6 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     public currentModalView: NgbActiveModal,
     private mongooseSetUpService: MongooseSetUpService,
     private mongooseDataSharedService: MongooseDataSharedServiceService) {
-      console.log(`pEntryNodeChanging cmponent nodes: ${this.mongooseSetUpService.getSelectedMongooseRunNodes()}`)
     this.configureNodes();
     this.configureNodeAddressTypeahead();
   }
