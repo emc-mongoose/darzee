@@ -7,6 +7,8 @@ import { timer, Observable, Subscription } from 'rxjs';
 
 import { MongooseRunStatus } from '../../../../core/models/mongoose-run-status';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
+import { SharedLayoutService } from 'src/app/core/services/shared-layout-service/shared-layout.service';
+import { MongooseNotification } from 'src/app/core/services/shared-layout-service/notification/mongoose-notification.model';
 
 @Component({
   selector: 'app-runs-table',
@@ -33,7 +35,8 @@ export class RunsTableComponent implements OnInit, OnDestroy {
   private statusUpdateSubscription: Subscription = new Subscription();
 
   constructor(private router: Router,
-    private mongooseDataSharedServiceService: MongooseDataSharedServiceService) { }
+    private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
+    private sharedLayoutService: SharedLayoutService) { }
 
   // MARK: - Lifecycle 
 
@@ -43,7 +46,8 @@ export class RunsTableComponent implements OnInit, OnDestroy {
         this.handleRecordsUpdate(updatedRecords);
       },
       error => {
-        alert(`Unable to update Mongoose run records table. Details: ${error}`);
+        this.sharedLayoutService.showNotification(new MongooseNotification('error', 'Unable to update Mongoose run records table.'));
+        console.error(`Unable to update Mongoose run records table. Details: ${error}`);
       });
   }
 
@@ -58,8 +62,8 @@ export class RunsTableComponent implements OnInit, OnDestroy {
     return this.mongooseDataSharedServiceService.shouldWaintForNewRun;
   }
 
-  public getDisplayingTimeForRecord(record: MongooseRunRecord): string { 
-    let unixEpochStartTime = record.getStartTime(); 
+  public getDisplayingTimeForRecord(record: MongooseRunRecord): string {
+    let unixEpochStartTime = record.getStartTime();
     let displayingDate = new Date(Number.parseInt(unixEpochStartTime as string));
     return displayingDate.toString();
   }
@@ -67,15 +71,15 @@ export class RunsTableComponent implements OnInit, OnDestroy {
   public onRunStatusIconClicked(mongooseRunRecord: MongooseRunRecord) {
     if (!this.isRunStatisticsReachable(mongooseRunRecord)) {
       let loadStepId = mongooseRunRecord.getLoadStepId();
-      let isLoadStepIdSaved = (loadStepId != ""); 
+      let isLoadStepIdSaved = (loadStepId != "");
       var misleadingMsg = "";
-      if (!isLoadStepIdSaved) { 
+      if (!isLoadStepIdSaved) {
         misleadingMsg = `Load step ID hasn't been found for scenario within Mongoose Run ${mongooseRunRecord.getRunId()}`;
-      } else { 
+      } else {
         misleadingMsg = `Details about selected Mongoose run haven't been found.`;
       }
-  
-      alert(misleadingMsg);
+      this.sharedLayoutService.showNotification(new MongooseNotification('error', misleadingMsg));
+      console.error(misleadingMsg);
       return;
     }
     this.router.navigate(['/' + RoutesList.RUN_STATISTICS, mongooseRunRecord.getLoadStepId()]);
