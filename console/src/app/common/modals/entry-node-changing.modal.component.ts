@@ -62,28 +62,6 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   // MARK: - Public 
 
-  public configureNodes(): void {
-    const initialInactiveNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
-    if (initialInactiveNode != undefined) {
-      this.occupiedNodes.push(initialInactiveNode);
-    }
-  }
-
-  public configureNodeAddressTypeahead(): void {
-    this.mongooseDataSharedService.getAvailableRunNodes().subscribe(
-      (runNodes: MongooseRunNode[]) => {
-        var udpatedListOfAddresses: string[] = [];
-        runNodes.forEach(
-          (node: MongooseRunNode) => {
-            const nodeAddress: string = node.getResourceLocation();
-            udpatedListOfAddresses.push(nodeAddress);
-          }
-        );
-        this.typeaheadRecommendedNodesAddresses = udpatedListOfAddresses;
-      }
-    );
-  }
-
   /**
    * Handles event when mouse is over @param node's row. 
    */
@@ -170,11 +148,13 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     this.mongooseSetupNodesSubscription = this.mongooseSetUpService.runMongoose(entryNode).pipe(
       map(
         (mongooseRunId: string) => {
+          // TODO: Spawn notification here.
           console.log(`Mongoose has successfully launched on updated entry node with run ID: ${mongooseRunId}`);
           return true;
         }
       ),
       catchError((error: any) => {
+        // TODO: Spawn notification here (optional).
         this.occupiedNodes.push(entryNode);
         console.log(`Unable to launch Mongoose with entry node ${entryNode.getResourceLocation()}. Reason: ${error}`);
         return of(false);
@@ -202,10 +182,6 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     const closeClickEvent: string = "Close click";
     this.currentModalView.close(closeClickEvent);
     this.router.navigate([RoutesList.RUNS]);
-  }
-
-  public closeEntryNodePopover(): void {
-    this.shouldDisplayPopoverOnEntryNodeTag = false;
   }
 
   public shouldDisplayLaunchingSpinner(): boolean {
@@ -264,6 +240,34 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
       }
     )
     return this.nodes[matchingNodeIndex]
+  }
+
+  /**
+   * Configures initial state of node's model.
+   */
+  private configureNodes(): void {
+    const initialInactiveNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
+    if (initialInactiveNode != undefined) {
+      this.occupiedNodes.push(initialInactiveNode);
+    }
+  }
+
+  /**
+   * Configures nodes typeahead's data.
+   */
+  private configureNodeAddressTypeahead(): void {
+    this.mongooseDataSharedService.getAvailableRunNodes().subscribe(
+      (runNodes: MongooseRunNode[]) => {
+        var udpatedListOfAddresses: string[] = [];
+        runNodes.forEach(
+          (node: MongooseRunNode) => {
+            const nodeAddress: string = node.getResourceLocation();
+            udpatedListOfAddresses.push(nodeAddress);
+          }
+        );
+        this.typeaheadRecommendedNodesAddresses = udpatedListOfAddresses;
+      }
+    );
   }
 
 }
