@@ -1,5 +1,5 @@
 export class MongooseNotification {
     constructor(public type: string = '',
-                public message: string = '') {
+        public message: string = '') {
     }
 }

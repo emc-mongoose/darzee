@@ -21,6 +21,9 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   private readonly INACTIVE_NODE_TABLE_ROW_CSS_CLASS: string = "table-danger";
   private readonly DEFAULT_NODE_TABLE_ROW_CSS_CLASS: string = "";
+  private readonly NODE_UNAVAILBLE_HTML_CLASS: string = "badge-danger";
+  private readonly BADGE_TITLE_NEW_ENTRY_NODE: string = "New entry node";
+  private readonly BADGE_TITLE_UNAVAILBLE_NODE: string = "Unavailable node";
 
   @Input() title: string;
   @Input() discription: string;
@@ -190,8 +193,6 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   public getContextForNodeBadgeTemplate(node: MongooseRunNode): any {
 
-    const unavailableNodeHtmlClass: string = "badge-danger";
-    const unavailableNodeTitle: string = "Unavailable node";
 
     const uncheckedNodeHtmlClass: string = "badge-success";
     const uncheckedNodeCssStyle: Object = { opacity: 0.5, filter: "alpha(opacity=50)" /* For IE8 and earlier */ };
@@ -199,28 +200,27 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     const isHovering: boolean = (this.currentHoveringNodeLocation == node.getResourceLocation());
     if (this.isNodeOccupied(node)) {
       const badgeReason = "Occupied";
-      const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(unavailableNodeTitle, badgeReason, unavailableNodeHtmlClass);
+      const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(this.BADGE_TITLE_UNAVAILBLE_NODE, badgeReason, this.NODE_UNAVAILBLE_HTML_CLASS);
       return { badgeInfo: badgeInfo };
     }
 
     const isNodeActive: boolean = !this.inactiveNodes.includes(node);
     if (!isNodeActive) {
       const badgeReason = "Inactive";
-      const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(unavailableNodeTitle, badgeReason, unavailableNodeHtmlClass);
+      const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(this.BADGE_TITLE_UNAVAILBLE_NODE, badgeReason, this.NODE_UNAVAILBLE_HTML_CLASS);
       return { badgeInfo: badgeInfo };
     }
 
     if (this.updatedEntryNode != undefined) {
       const isUpdatedTableRow: boolean = (this.updatedEntryNode.getResourceLocation() == node.getResourceLocation());
       if (isUpdatedTableRow) {
-        const badgeTitle = "New Entry Node";
-        const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(badgeTitle, "", uncheckedNodeHtmlClass);
+        const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(this.BADGE_TITLE_NEW_ENTRY_NODE, "", uncheckedNodeHtmlClass);
         return { badgeInfo: badgeInfo };
       }
     }
 
     if (isHovering) {
-      const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel("New Entry Node", "", uncheckedNodeHtmlClass, uncheckedNodeCssStyle);
+      const badgeInfo: EntryNodeBadgeModel = new EntryNodeBadgeModel(this.BADGE_TITLE_NEW_ENTRY_NODE, "", uncheckedNodeHtmlClass, uncheckedNodeCssStyle);
       return { badgeInfo: badgeInfo };
     }
   }
