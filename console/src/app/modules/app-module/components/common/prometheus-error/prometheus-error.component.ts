@@ -80,9 +80,9 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
   public onRetryBtnClicked() {
     let enteredPrometheusAddress: string = this.currentEnteredText;
     const isInputEmpty: boolean = (enteredPrometheusAddress.length == 0);
-    if (isInputEmpty) { 
+    if (isInputEmpty) {
       // NOTE: Empty input should not be processed.
-      this.sharedLayourService.showNotification(new MongooseNotification('error', `Please, provide Prometheus' address.` ));
+      this.sharedLayourService.showNotification(new MongooseNotification('error', `Please, provide Prometheus' address.`));
       return;
     }
 
@@ -125,7 +125,7 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
     // NOTE: Pruning prefixes in order to exclude invalid target URl and any errors ...
     // ... within services.
     const prometheusAddressWithoutPrefixes: string = HttpUtils.pruneHttpPrefixFromAddress(prometheusAddress);
-    
+
     this.activeSubscriptions.add(
       this.prometheusApiService.isAvailable(prometheusAddressWithoutPrefixes).subscribe(
         (isPrometheusAvailable: boolean) => {
