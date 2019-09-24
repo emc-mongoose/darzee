@@ -13,6 +13,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EntryNodeSelectionComponent } from '../common/entry-node-selection/entry-node-selection.component';
 import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
 import { MongooseLogModel } from 'src/app/core/models/mongoose.log.model';
+import { SharedLayoutService } from 'src/app/core/services/shared-layout-service/shared-layout.service';
+import { MongooseNotification } from 'src/app/core/services/shared-layout-service/notification/mongoose-notification.model';
 
 
 @Component({
@@ -40,7 +42,8 @@ export class RunStatisticLogsComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private modalService: NgbModal,
-    private localStorageService: LocalStorageService) { }
+    private localStorageService: LocalStorageService,
+    private sharedLayoutService: SharedLayoutService) { }
 
   ngOnInit() { }
 
@@ -67,7 +70,7 @@ export class RunStatisticLogsComponent implements OnInit, OnDestroy {
           ));
         } catch (recordNotFoundError) {
           // NOTE: Navigating back to 'Runs' page in case record hasn't been found. 
-          alert(`Unable to load requested record information. Reason: ${recordNotFoundError.message}`);
+          this.sharedLayoutService.showNotification(new MongooseNotification('error', `Unable to load requested record information. Reason: ${recordNotFoundError.message}`));
           console.error(recordNotFoundError);
           this.router.navigate([RoutesList.RUNS]);
         }
@@ -183,7 +186,7 @@ export class RunStatisticLogsComponent implements OnInit, OnDestroy {
           const createdTabs: BasicTab[] = this.logTabs$.getValue();
           if (createdTabs.length == 0) { 
             this.shouldDisplayErrorAlert = true; 
-            console.log(`Unable to find any Mongoose logs.`);
+            console.warn(`Unable to find any Mongoose logs.`);
             return;
           }
           const initialTab: BasicTab = createdTabs[0];
@@ -191,7 +194,7 @@ export class RunStatisticLogsComponent implements OnInit, OnDestroy {
         },
         (error: any) => { 
           this.shouldDisplayErrorAlert = true; 
-          console.log(`Unable to find any Mongoose logs.`);
+          console.warn(`Unable to find any Mongoose logs.`);
         }
       ),
     );

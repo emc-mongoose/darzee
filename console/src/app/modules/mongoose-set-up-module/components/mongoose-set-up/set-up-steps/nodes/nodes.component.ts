@@ -1,13 +1,17 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ControlApiService } from 'src/app/core/services/control-api/control-api.service';
 import { Subscription, Observable } from 'rxjs';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { MongooseDataSharedServiceService } from 'src/app/core/services/mongoose-data-shared-service/mongoose-data-shared-service.service';
-import { InactiveNodeAlert } from './incative-node-alert.interface';
 import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
 import { map } from 'rxjs/operators';
 import { HttpUtils } from 'src/app/common/HttpUtils';
+import { NodeAlert } from './node-alert.interface';
+import { NodeSetUpAlertType } from './node-setup-alert.type';
+import { NodesSetUpTableRowComponent } from './set-up-table-row/nodes-set-up-table-row.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EntryNodeChangingModalComponent } from 'src/app/common/modals/entry-node-changing.modal.component';
 
 @Component({
   selector: 'app-nodes',
@@ -19,16 +23,27 @@ export class NodesComponent implements OnInit, OnDestroy {
 
   private readonly IP_DEFAULT_PORT: number = 9999;
 
+  /**
+   * @param NodesSetUpTableRowComponents references to nodes table rows. It's used to ...
+   * ... manually control each row. 
+   */
+  @ViewChildren(NodesSetUpTableRowComponent) nodesSetUpTableRowComponents: QueryList<NodesSetUpTableRowComponent>;
+
   public runNode: MongooseRunNode;
 
   public savedMongooseNodes$: Observable<MongooseRunNode[]> = new Observable<MongooseRunNode[]>();
-  public inactiveNodeAlerts: InactiveNodeAlert[] = [];
+  public nodeAlerts: NodeAlert[] = [];
   public displayingIpAddresses: String[] = this.controlApiService.mongooseSlaveNodes;
   public entredIpAddress = '';
   public nodeConfig: any = null;
   public error: HttpErrorResponse = null;
 
+  public shouldDisplayAddButtonPopover: boolean = false;
+
   private slaveNodesSubscription: Subscription = new Subscription();
+  private nodesTableRowsSubscription: Subscription = new Subscription();
+
+  private recentlyAddedNode: MongooseRunNode = undefined;
 
   // MARK: - Lifecycle 
   constructor(
@@ -43,36 +58,52 @@ export class NodesComponent implements OnInit, OnDestroy {
           if (hiddenNodes.includes(node.getResourceLocation())) {
             this.mongooseDataSharedService.deleteMongooseRunNode(node);
           }
-        })
+        });
+
+
+        if (this.recentlyAddedNode != undefined) {
+          // NOTE: Set recently added node as selected.
+          console.log(`[${NodesComponent.name}] About to set node as selected..`)
+          this.setNodeAsSelected(this.recentlyAddedNode);
+        }
+
         return nodes;
       })
     );
+
   }
 
   ngOnInit() { }
 
   ngOnDestroy() {
     this.slaveNodesSubscription.unsubscribe();
+    this.nodesTableRowsSubscription.unsubscribe();
   }
 
   // MARK: - Public 
 
   /**
    * Handling node addition from the UI.
-   * @param entredIpAddress entered IP from the UI.
    */
   public onAddIpButtonClicked(): void {
+    // NOTE: Do not display invalid IP popover by default.
+    this.shouldDisplayAddButtonPopover = false;
+
     // NOTE: trimming accident whitespaces
     const allWhitespacesRegex: RegExp = /\s/g;
     this.entredIpAddress = this.entredIpAddress.replace(allWhitespacesRegex, "");
     console.log(`[${NodesComponent.name}] Processing entered IPv4 address: "${this.entredIpAddress}"`);
-    
+
     const savingNodeAddress: string = this.entredIpAddress;
+
     if (!HttpUtils.isIpAddressValid(savingNodeAddress)) {
       if (HttpUtils.matchesIpv4AddressWithoutPort(savingNodeAddress)) {
         this.entredIpAddress = HttpUtils.addPortToIp(this.entredIpAddress, this.IP_DEFAULT_PORT);
       } else {
-        alert(`IP address ${this.entredIpAddress} is not valid. Please, provide a valid one.`);
+        console.error(`[${NodesComponent.name}]: Address ${savingNodeAddress} is not valid.`)
+        this.shouldDisplayAddButtonPopover = true;
+        const emptyString: string = "";
+        this.entredIpAddress = emptyString;
         return;
       }
     }
@@ -80,6 +111,8 @@ export class NodesComponent implements OnInit, OnDestroy {
     const processedMongooseNodeAddress: string = HttpUtils.pruneHttpPrefixFromAddress(this.entredIpAddress);
 
     let newMongooseNode = new MongooseRunNode(processedMongooseNodeAddress);
+    this.recentlyAddedNode = newMongooseNode;
+
     try {
       const savingNodeAddress: string = newMongooseNode.getResourceLocation();
 
@@ -96,44 +129,105 @@ export class NodesComponent implements OnInit, OnDestroy {
       const emptyValue: string = "";
       this.entredIpAddress = emptyValue;
     } catch (error) {
-      console.log(`Requested Mongoose run node won't be saved. Details: ${error}`);
-      alert(`Requested Mongoose run node won't be saved. Details: ${error}`);
+      console.error(`${newMongooseNode.getResourceLocation()} won't be saved. Details: ${JSON.stringify(error)}`);
+      const misleadingMsg: string = `Unable to save run node ${newMongooseNode.getResourceLocation()}} due to an unknown reason.`;
+      this.displayNodeAlert(newMongooseNode, misleadingMsg, NodeSetUpAlertType.ERROR);
       return;
     }
+
   }
 
-  public onAlertClosed(closedAlert: InactiveNodeAlert) {
+  public onAlertClosed(closedAlert: NodeAlert) {
     let closedAlertIndex = this.getAlertIndex(closedAlert);
-    this.inactiveNodeAlerts.splice(closedAlertIndex, 1);
+    this.nodeAlerts.splice(closedAlertIndex, 1);
   }
 
+  public closePopover(): void {
+    this.shouldDisplayAddButtonPopover = false;
+  }
 
   /**
  * Displays alert on top of the screen notifying that inactive node is selected.
- * @param inactiveNode inactive node instance.
+ * @param selectedNodeInfo instance of node that causes alert to appear.
+ * @param message misleading message of the alert.
  */
-  public displayInactiveNodeAlert(selectedNodeInfo: MongooseRunNode) {
-    // NOTE: Display error if Mongoose node is not activy. Don't added it to ...
-    // ... the configuration thought. 
-    let inactiveNodeAlert = new InactiveNodeAlert(`selected node ${selectedNodeInfo.getResourceLocation()} is not active`, selectedNodeInfo);
+  public displayNodeAlert(selectedNodeInfo: MongooseRunNode, message: string, alertType: NodeSetUpAlertType): void {
 
+    let newAlert: NodeAlert = new NodeAlert(message, selectedNodeInfo, alertType);
     // NOTE: Finding alert by message in alerts array
-    let alertIndex = this.getAlertIndex(inactiveNodeAlert);
+    let alertIndex = this.getAlertIndex(newAlert);
     let isAlertExist: boolean = (alertIndex >= 0);
 
     if (!isAlertExist) {
-      this.inactiveNodeAlerts.push(inactiveNodeAlert);
+      this.nodeAlerts.push(newAlert);
     }
     return;
   }
 
+  /**
+   * Display inactive node alert. The function is designed to ...
+   * ... simlify its calling from the HTML.
+   * @param selectedNodeInfo inactive node.
+   */
+  public displayInactiveNodeAlert(selectedNodeInfo: MongooseRunNode) {
+    const errorAlertMisleadingMsg: string = `selected node ${selectedNodeInfo.getResourceLocation()} is not active`;
+    this.displayNodeAlert(selectedNodeInfo, errorAlertMisleadingMsg, NodeSetUpAlertType.ERROR);
+  }
+
+  /**
+   * Display alert for nodes that are not supported, thus its unable to ...
+   * ... work with them via the UI.
+   * @param unsupportedNodeDetails An object that contain node instance and a warning message.
+   */
+  public displayUnsupportedNodeAlert(unsupportedNodeDetails: any) {
+    this.displayNodeAlert(unsupportedNodeDetails.node, unsupportedNodeDetails.reason, NodeSetUpAlertType.WARNING);
+  }
+
   // MARK: - Private
 
-  private getAlertIndex(inactiveNodeAlert: InactiveNodeAlert): number {
-    return (this.inactiveNodeAlerts.findIndex(
-      (alert: InactiveNodeAlert) => {
-        return (alert.message == inactiveNodeAlert.message);
+  private getAlertIndex(nodeAlert: NodeAlert): number {
+    return (this.nodeAlerts.findIndex(
+      (alert: NodeAlert) => {
+        return (alert.message == nodeAlert.message);
       }));
+  }
+
+  /**
+   * Searches nodes table for a row that matches @param node instance.
+   * Set matching node as selected.
+   */
+  private setNodeAsSelected(node: MongooseRunNode): void {
+    // NOTE: Observing nodes table change. 
+    // Once new element has been appended, it should be a recently added node.
+    this.nodesTableRowsSubscription = this.nodesSetUpTableRowComponents.changes.subscribe(
+      (updatedTestRows: NodesSetUpTableRowComponent[]) => {
+        const firstFoundElementIndex: number = 0;
+        // NOTE: Searching for row that should be updated.
+        const rowThatShouldBeUpdated: NodesSetUpTableRowComponent = updatedTestRows.filter(
+          (row: NodesSetUpTableRowComponent) =>
+            row.runNode.getResourceLocation() == node.getResourceLocation()
+        )[firstFoundElementIndex];
+
+        if (rowThatShouldBeUpdated == undefined) {
+          // NOTE: Do nothing if recerntly added node hasn't been fond.
+          console.warn(`Node ${node.getResourceLocation()} hasn't been found. Nodes table content remains the same.`);
+          return;
+        }
+
+        const hasRowValidationBeenRequested: boolean = (rowThatShouldBeUpdated.isNodeSelected || rowThatShouldBeUpdated.shouldDisplayLoadingSpinner())
+        if (hasRowValidationBeenRequested) { 
+          // NOTE: No need to revalidate node.
+          // Multiple validation leads to performance loss and high ...
+          // ... amount of HTTP requests.
+          console.log(`No need to request node validation.`)
+          return; 
+        }
+
+        console.log(`[${NodesComponent.name}] Setting node as selected...`)
+        rowThatShouldBeUpdated.onRunNodeSelect(node);
+        // NOTE: Notifying rows Query List that the source has been updated.
+        this.nodesSetUpTableRowComponents.notifyOnChanges();
+      });
   }
 
 }

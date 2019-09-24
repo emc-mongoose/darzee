@@ -1,33 +1,38 @@
 <!-- NOTE: Main content is encapsulated to exclude any overlaying with the footer.  -->
 <div class="main-content">
-    <!-- NOTE: Class 'progress' is used to style custom Mongoose Set Up tabs. -->
+  <!-- NOTE: Class 'progress' is used to style custom Mongoose Set Up tabs. -->
   <div class="progress-wrapper">
-
-      <div class="progress"
-      *ngFor="let tab of setUpTabs"
+    <div class="progress" *ngFor="let tab of setUpTabs"
       [ngClass]="tab.isContentDisplaying ? 'processing-tab' : 'progress'">
-    
       <!-- NOTE: Element for tab state when the set up step hasn't been completed yet. -->
       <p class="incompleted-step-tab" *ngIf="!tab.isCompleted">
-          {{ tab.title }} 
+        {{ tab.title }}
       </p>
-
-    
-        <div class="progress-bar bg-success" role="progressbar"
-        [style.width.%]="tab.isCompleted ? 100 : 0"
+      <div class="progress-bar bg-success" role="progressbar" [style.width.%]="tab.isCompleted ? 100 : 0"
         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
         <!-- NOTE: Element for tab state when the set up step has been completed. -->
-          <div class="completed-step-tab" *ngIf="tab.isCompleted"> 
-            {{ tab.title }} 
-          </div>
-        
-    </div> <!--  NOTE: End of class 'progress-bar'. -->
-  </div><!--  NOTE: End of class 'progress'. -->
-  <!-- NOTE: Outlet for actual set up pages.  -->
-  <router-outlet (activate)="onRouterComponentActivated($event)" (deactivate)="onRouterComponentDeactivated($event)"></router-outlet>
+        <div class="completed-step-tab" *ngIf="tab.isCompleted">
+          {{ tab.title }}
+        </div>
+      </div> <!--  NOTE: End of class 'progress-bar'. -->
+    </div><!--  NOTE: End of class 'progress'. -->
+    <!-- NOTE: Outlet for actual set up pages.  -->
+    <router-outlet (activate)="onRouterComponentActivated($event)" (deactivate)="onRouterComponentDeactivated($event)">
+    </router-outlet>
+  </div>
 
-</div>
-
-
- <app-set-up-footer [isSetupCompleted]="isSetupCompleted()" [confirmButtonTitle]="getConfigrmationBtnTitle()"
- (confirmButtonClick)="onConfirmClicked()" (runButtonClick)="onRunBtnClicked()"></app-set-up-footer>
+  <app-set-up-footer [isSetupCompleted]="isSetupCompleted()" [confirmButtonTitle]="getConfigrmationBtnTitle()"
+    (confirmButtonClick)="onConfirmClicked()" (runButtonClick)="onRunBtnClicked()"></app-set-up-footer>
+  <template #notificationComponent></template>
+  <!-- MARK: Templates -->
+  <ng-template #modalAlertTemplate>
+    <div class="modal-header">
+      <h4 class="modal-title center">Notice</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalAlertReference.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      Select any <b>active</b> node in order to continue.
+    </div>
+  </ng-template>

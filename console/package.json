@@ -38,6 +38,7 @@
     "jsoneditor": "^5.26.3",
     "mdi": "^2.2.43",
     "ng2-charts": "2.2.5",
+    "ngx-bootstrap": "^5.1.2",
     "ngx-json-viewer": "^2.4.0",
     "ngx-webstorage-service": "^4.0.1",
     "popper.js": "^1.14.6",

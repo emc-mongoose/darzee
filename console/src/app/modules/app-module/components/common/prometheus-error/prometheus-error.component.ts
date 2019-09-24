@@ -8,6 +8,8 @@ import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 import { PrometheusApiService } from 'src/app/core/services/prometheus-api/prometheus-api.service';
 import { HttpUtils } from 'src/app/common/HttpUtils';
 import { LocalStorageService } from 'src/app/core/services/local-storage-service/local-storage.service';
+import { SharedLayoutService } from 'src/app/core/services/shared-layout-service/shared-layout.service';
+import { MongooseNotification } from 'src/app/core/services/shared-layout-service/notification/mongoose-notification.model';
 
 @Component({
   selector: 'app-prometheus-error',
@@ -42,7 +44,8 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
 
   constructor(private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
     private prometheusApiService: PrometheusApiService,
-    private localStorageService: LocalStorageService) {
+    private localStorageService: LocalStorageService,
+    private sharedLayoutService: SharedLayoutService) {
     this.setUpComponent();
   }
 
@@ -76,8 +79,15 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
 
   public onRetryBtnClicked() {
     let enteredPrometheusAddress: string = this.currentEnteredText;
+    const isInputEmpty: boolean = (enteredPrometheusAddress.length == 0);
+    if (isInputEmpty) {
+      // NOTE: Empty input should not be processed.
+      this.sharedLayoutService.showNotification(new MongooseNotification('error', `Please, provide Prometheus' address.`));
+      return;
+    }
+
     if (!HttpUtils.isIpAddressValid(enteredPrometheusAddress)) {
-      alert(`IP address ${enteredPrometheusAddress} is not valid.`);
+      this.sharedLayoutService.showNotification(new MongooseNotification('error', `Please, provide a valid Prometheus' address.`));
       return;
     }
     this.tryToLoadPrometheus(enteredPrometheusAddress);
@@ -115,7 +125,7 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
     // NOTE: Pruning prefixes in order to exclude invalid target URl and any errors ...
     // ... within services.
     const prometheusAddressWithoutPrefixes: string = HttpUtils.pruneHttpPrefixFromAddress(prometheusAddress);
-    
+
     this.activeSubscriptions.add(
       this.prometheusApiService.isAvailable(prometheusAddressWithoutPrefixes).subscribe(
         (isPrometheusAvailable: boolean) => {
@@ -123,6 +133,7 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
           this.prometheusResourceLocation = prometheusAddressWithoutPrefixes;
           if (!isPrometheusAvailable) {
             console.error(`Prometheus is not available on ${prometheusAddressWithoutPrefixes}`);
+            this.sharedLayoutService.showNotification(new MongooseNotification('error', `Prometheus is not available at ${prometheusAddress}.`));
             return;
           }
           console.log(`Prometheus has successfully loaded on ${prometheusAddressWithoutPrefixes}.`);

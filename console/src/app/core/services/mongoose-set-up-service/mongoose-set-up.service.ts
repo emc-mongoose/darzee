@@ -15,6 +15,7 @@ import { MongooseConfigurationParser } from '../../models/mongoose-configuration
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
 import { MonitoringApiService } from '../monitoring-api/monitoring-api.service';
 import { PrometheusApiService } from '../prometheus-api/prometheus-api.service';
+import { MongooseRunEntryNode } from '../local-storage-service/MongooseRunEntryNode';
 
 @Injectable({
   providedIn: 'root'
@@ -43,9 +44,20 @@ export class MongooseSetUpService {
 
   // MARK: - Getters & Setters 
 
+  /**
+   * Clears all the data stored withon the service.
+   */
+  public reset(): void { 
+    this.mongooseSetupInfoModel = new MongooseSetupInfoModel();
+  }
+
+  /**
+   * @returns configuration of @param entryNode with slave nodes added.
+   * Slave nodes are retrieved from SetUpModel. They don't contain @param entryNode's address.
+   */
   public getMongooseConfigurationForSetUp(entryNode: MongooseRunNode): Observable<any> {
     if (entryNode == undefined) {
-      throw new Error(`Can't get configuration snce entry node ins an undefined.`);
+      throw new Error(`Can't get configuration snce entry node is undefined.`);
     }
     let mongooseTargetAddress = `${Constants.Http.HTTP_PREFIX}${entryNode.getResourceLocation()}`;
     return this.controlApiService.getMongooseConfiguration(mongooseTargetAddress).pipe(
@@ -62,6 +74,21 @@ export class MongooseSetUpService {
         }
       )
     );
+  }
+
+  /**
+   * Changes existing configuration in order to run it on @param newEntryNode.
+   */
+  public changeEntryNode(newEntryNode: MongooseRunNode): void {
+    const currentConfiguration = this.mongooseSetupInfoModel.getConfiguration();
+    console.log(`[${MongooseSetUpService.name}] Current configuration: ${currentConfiguration}`);
+    const mongooseConfigurationParser: MongooseConfigurationParser = new MongooseConfigurationParser(currentConfiguration);
+
+    const updatedSlaveNodesList: MongooseRunNode[] = this.mongooseSetupInfoModel.getSlaveNodesList(newEntryNode);
+    const updatedConfiguration: any = mongooseConfigurationParser.getConfigurationWithAdditionalNodes(updatedSlaveNodesList);
+
+    this.mongooseSetupInfoModel.setConfiguration(updatedConfiguration);
+    console.log(`Updated Mongoose configuration for entry node ${newEntryNode.getResourceLocation()} is: ${updatedConfiguration}`);
   }
 
   public getMongooseRunTargetPort(): String {
@@ -94,15 +121,14 @@ export class MongooseSetUpService {
 
 
   public isMongooseNodeActive(mongooseNodeAddress: string): Observable<boolean> {
-    const timeoutMilliseconds: number = 2500; // NOTE: Timeout is set to 2.5 seconds 
-    return this.monitoringApiService.isMongooseRunNodeActive(mongooseNodeAddress).pipe(
-      timeout(timeoutMilliseconds)
-    ).pipe(
-      catchError(error => { 
-        console.log(`Mongoose's node ${mongooseNodeAddress} status request has timed out.`);
-        return of(false);
-      })
-    )
+    return this.getMongooseRunNodeInstance(mongooseNodeAddress).pipe(
+      map(
+        (node: MongooseRunNode) => { 
+          const hasFetchedActualMongooseNode: boolean = (node != undefined);
+          return hasFetchedActualMongooseNode;
+        }
+      )
+    );
   }
 
   /**
@@ -111,12 +137,12 @@ export class MongooseSetUpService {
    * @returns undefined if Mongoose hasn't been launched on specified address.
    * 
    */
-  public getMongooseRunNodeInstance(mongooseNodeAddress: string): Observable<MongooseRunNode | undefined> { 
+  public getMongooseRunNodeInstance(mongooseNodeAddress: string): Observable<MongooseRunNode | undefined> {
     const timeoutMilliseconds: number = 2500; // NOTE: Timeout is set to 2.5 seconds 
     return this.monitoringApiService.getBasicMongooseRunNodeInfo(mongooseNodeAddress).pipe(
       timeout(timeoutMilliseconds)
     ).pipe(
-      catchError(error => { 
+      catchError(error => {
         console.log(`Mongoose's node ${mongooseNodeAddress} status request has timed out.`);
         return of(undefined);
       })
@@ -147,6 +173,7 @@ export class MongooseSetUpService {
       }
     )
 
+    console.log(`[SetUpService] Trying to launch Mongoose with configuration: ${this.mongooseSetupInfoModel.getConfiguration()}`)
     // NOTE: you can get related load step ID from mongoose setup model here. 
     return this.controlApiService.runMongoose(entryNode.getResourceLocation(), this.mongooseSetupInfoModel.getConfiguration(), this.mongooseSetupInfoModel.getRunScenario()).pipe(
       map(runId => {

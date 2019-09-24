@@ -1,0 +1,20 @@
+.notifications {
+    right: calc(1%);
+    position: absolute;
+    bottom: 5%;
+
+    max-width: calc(50%);
+    div {
+        border: 1px solid;
+        border-radius: 4px;
+        box-shadow: 0 6px 7px 0 rgba(0, 0, 0, .22),
+                    0 8px 10px 0 rgba(0, 0, 0, .12);
+        cursor: pointer;
+        margin-bottom: .5em;
+        min-height: calc(1%);
+        max-height: calc(2%);
+        padding: calc(1%);
+        text-align: center;
+        width: 300px;
+    }
+}

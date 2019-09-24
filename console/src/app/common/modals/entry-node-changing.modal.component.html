@@ -1,0 +1,65 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+        {{ this.alertWindowTitle }}
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="currentModalView.close('Close click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    {{ this.discription }}
+    <ng-container *ngIf="this.nodes">
+        <table class="table table-hover table-sm">
+            <thead>
+                <tr class="bg-success">
+                    <th scope="col" class="column-nodes-check">Address</th>
+                    <th scope="col" class="column-nodes-type">Entry</th>
+                </tr>
+            </thead>
+            <!-- NOTE: Nodes' table rows -->
+            <ng-container *ngFor="let node of this.nodes">
+                <tr on-mouseenter='onMouseEnterTableRow(node)' on-mouseleave="onMouseLeaveTableRow(node)"
+                    (click)="onRowClicked(node)" [ngClass]="this.getClassForTableRowRepresentingNode(node)">
+                    <td>
+                        {{ node.getResourceLocation() }}
+                    </td>
+                    <td>
+                        <ng-container *ngIf="this.shouldDisplayBadge(node)">
+                            <ng-container
+                                *ngTemplateOutlet="nodeBadge; context: this.getContextForNodeBadgeTemplate(node)">
+                            </ng-container>
+                        </ng-container>
+
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+        <div class="container-fluid">
+            <!-- NOTE: New entry node adding area -->
+            <div class="row">
+                <input [(ngModel)]="typeaheadEnteredNodeAddress" [typeahead]="this.typeaheadRecommendedNodesAddresses"
+                    class="form-control col-10" [placeholder]="this.NODE_ADDRESS_ENTRANCE_AREA_PLACEHOLDER"
+                    (typeaheadOnSelect)="onKeyPressedWhileEnteringNodeAddress(typeaheadEnteredNodeAddress)">
+                <button type="button" class="btn btn-outline-dark col" style="margin-left: calc(1%);"
+                    (click)="onKeyPressedWhileEnteringNodeAddress(typeaheadEnteredNodeAddress)">Set</button>
+            </div>
+        </div>
+    </ng-container>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onRetryBtnClicked()">
+        <span *ngIf="this.shouldDisplayLaunchingSpinner()" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+        Retry
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="onExitSetupBtnClicked()">Exit setup</button>
+</div>
+<!-- NOTE: Templates -->
+<ng-template #nodeBadge let-badgeInfo="badgeInfo">
+    <span class="badge" [ngClass]="badgeInfo.class" [ngStyle]="badgeInfo.style">
+        {{ badgeInfo.title }}
+        <span class="badge badge-light" *ngIf="badgeInfo.reason.length">
+            {{ badgeInfo.reason }}
+        </span>
+    </span>
+</ng-template>

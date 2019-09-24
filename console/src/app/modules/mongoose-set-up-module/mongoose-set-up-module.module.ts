@@ -17,9 +17,18 @@ import { LocalStorageService } from "src/app/core/services/local-storage-service
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { NodesSetUpTableRowComponent } from "./components/mongoose-set-up/set-up-steps/nodes/set-up-table-row/nodes-set-up-table-row.component";
 import { CustomCheckboxModule } from 'angular-custom-checkbox';
+import { PopoverModule, ModalModule, TypeaheadModule } from 'ngx-bootstrap';
+import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-node-changing.modal.component";
+import { MongooseSetUpService } from "src/app/core/services/mongoose-set-up-service/mongoose-set-up.service";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MongooseNotification } from "src/app/core/services/shared-layout-service/notification/mongoose-notification.model";
+import { NotificationComponent } from "src/app/core/services/shared-layout-service/notification/notifications.component";
 
 
 @NgModule({
+  bootstrap: [
+    MongooseSetUpComponent
+  ],
   imports: [
     CommonModule,
     AppRoutingModule,
@@ -29,7 +38,15 @@ import { CustomCheckboxModule } from 'angular-custom-checkbox';
     CodemirrorModule,
     NgbModule,
     CustomCheckboxModule,
-    FormsModule
+    FormsModule,
+    PopoverModule.forRoot(),
+    ModalModule.forRoot(),
+    BrowserAnimationsModule,
+    TypeaheadModule.forRoot(),
+  ],
+  entryComponents: [
+    EntryNodeChangingModalComponent,
+    NotificationComponent
   ],
   declarations: [
     MongooseSetUpComponent,
@@ -38,7 +55,8 @@ import { CustomCheckboxModule } from 'angular-custom-checkbox';
     ConfigurationEditingRootComponent,
     ConfigurationEditingComponent,
     SetUpFooterComponent,
-    NodesSetUpTableRowComponent
+    NodesSetUpTableRowComponent,
+    EntryNodeChangingModalComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
@@ -46,9 +64,6 @@ import { CustomCheckboxModule } from 'angular-custom-checkbox';
     MonitoringApiService,
     DateFormatPipe,
     LocalStorageService
-  ],
-  bootstrap: [
-    MongooseSetUpComponent
   ],
 
 })

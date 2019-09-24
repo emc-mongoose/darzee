@@ -47,7 +47,7 @@ export class ScenariosComponent implements OnInit, OnDestroy {
     this.setCurrentEditorValueAsScenario()
   }
 
-  ngOnDestroy(): void {  }
+  ngOnDestroy(): void { }
 
   // MARK: - Public 
 

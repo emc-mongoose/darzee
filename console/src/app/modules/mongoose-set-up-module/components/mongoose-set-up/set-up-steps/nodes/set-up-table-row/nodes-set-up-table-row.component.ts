@@ -8,6 +8,7 @@ import { Subscription, of } from 'rxjs';
 import { ResourceLocatorType } from 'src/app/core/models/address-type';
 import { map, catchError } from 'rxjs/operators';
 import { CustomCheckBoxModel } from 'angular-custom-checkbox';
+import { HttpUtils } from 'src/app/common/HttpUtils';
 
 
 @Component({
@@ -25,12 +26,15 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
 
   /**
    * @param hasSelectedInactiveNode emits an event on inactive run node selection.
+   * @param hasSelectedUnsupportedNode emits an event on unsupported run node selection.
    */
 
   @Output() hasSelectedInactiveNode: EventEmitter<MongooseRunNode> = new EventEmitter<MongooseRunNode>();
+  @Output() hasSelectedUnsupportedNode: EventEmitter<{ node: MongooseRunNode, reason: string }> = new EventEmitter<{ node: MongooseRunNode, reason: string }>();
+
 
   private readonly ENTRY_NODE_CUSTOM_CLASS: string = "entry-node";
-  
+
   private readonly CHECKBOX_SUCCESS_COLOR: string = "p-success";
   private readonly CHECKBOX_SUCCESS_ICON: string = "fa fa-check";
 
@@ -58,7 +62,7 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
     this.checkboxConfiguration.rounded = true;
   }
 
-  ngOnDestroy() { 
+  ngOnDestroy() {
     this.slaveNodesSubscription.unsubscribe();
   }
 
@@ -69,10 +73,18 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
    * @param selectedNode instance of selected Mongoose node.
    */
   public onRunNodeSelect(selectedNode: MongooseRunNode) {
+    // NOTE: Checking wheather UI supports working with the selected node.
+    // Some cases when it's not supported: working in production mode with localhost nodes.
+    const isNodeSupported: boolean = this.isNodeSupported(selectedNode);
+    if (!isNodeSupported) {
+      // NOTE: Displaying warning alert if node is not supported.
+      const misleadingMsg: string = "Communication with localhost is supported only in development mode.";
+      this.hasSelectedUnsupportedNode.emit({ node: selectedNode, reason: misleadingMsg });
+    }
+
     let isNodeLocatedByIp: boolean = (selectedNode.getResourceType() == ResourceLocatorType.IP);
     // NOTE: Add noode if check mark has been set, remove if unset    
     let hasNodeBeenSelected: boolean = this.mongooseSetUpService.isNodeExist(selectedNode);
-
     if (hasNodeBeenSelected) {
       // NOTE: Remove node it checkmark has been unset.
       this.mongooseSetUpService.removeNode(selectedNode);
@@ -125,20 +137,15 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
     this.mongooseDataSharedService.deleteMongooseRunNode(savedNode);
   }
 
-  public getCustomClassForNode(node: MongooseRunNode): string {
-    let mongooseEntryNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
-    const noCustomClassTag: string = "";
-    if (mongooseEntryNode == undefined) {
-      return noCustomClassTag;
-    }
-    const entryNodeAddress: string = mongooseEntryNode.getResourceLocation();
-    if (entryNodeAddress == node.getResourceLocation()) {
-      const entryNodeClass: string = this.ENTRY_NODE_CUSTOM_CLASS;
-      return entryNodeClass;
-    }
-    return noCustomClassTag;
+  /**
+   * @returns true if @param node has been selected as an entry node.
+   */
+  public shouldHideEntryNodeTag(node: MongooseRunNode): boolean {
+    const customNodeClass: string = this.getCustomClassForNode(node);
+    const isNodeEntry: boolean = (customNodeClass == this.ENTRY_NODE_CUSTOM_CLASS);
+    // NOTE: If node is not entry, hide the tag. 
+    return !isNodeEntry;
   }
-
   /**
    * Determines if loading spinner should be displayed during node's validation.
    */
@@ -152,6 +159,7 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
    * @param nodeActivityState describes node's state (currently: active / non-active)
    */
   private changeNodeSelectionCheckboxAppearence(node: MongooseRunNode, nodeActivityState: boolean): void {
+    console.log(`[${NodesSetUpTableRowComponent.name}]: Changing appearence for node ${node.getResourceLocation()}.`);
     // NOTE: Set checkbox to 'selected' state since we're changng the selected checkbox appearence.
     this.isNodeSelected = true;
 
@@ -161,7 +169,7 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
 
       const driverType: string = node.getDriverType();
       this.additionalNodeInfoBadges.add(driverType);
-
+      console.log(`[${NodesSetUpTableRowComponent.name}] Adding badges to ${node.getResourceLocation()}.`);
       const imageVersion: string = node.getImageVersion();
       this.additionalNodeInfoBadges.add(imageVersion);
 
@@ -173,4 +181,32 @@ export class NodesSetUpTableRowComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+ * Determines if communication with @param node is supported from the UI.
+ * @param node processing Mongoose node. 
+ */
+  private isNodeSupported(node: MongooseRunNode): boolean {
+    const processingNodeAddress: string = node.getResourceLocation();
+    const hasLocalhostKeyword: boolean = processingNodeAddress.includes(HttpUtils.LOCALHOST_KEYWORD);
+    const isNodeSupported: boolean = (!hasLocalhostKeyword);
+    return isNodeSupported;
+  }
+
+  /**
+  * @returns CSS class for @param node's table row.
+  */
+  private getCustomClassForNode(node: MongooseRunNode): string {
+    let mongooseEntryNode: MongooseRunNode = this.mongooseSetUpService.getMongooseEntryNode();
+    const noCustomClassTag: string = "";
+    if (mongooseEntryNode == undefined) {
+      return noCustomClassTag;
+    }
+    const entryNodeAddress: string = mongooseEntryNode.getResourceLocation();
+    if (entryNodeAddress == node.getResourceLocation()) {
+      const entryNodeClass: string = this.ENTRY_NODE_CUSTOM_CLASS;
+      console.log(`node ${node.getResourceLocation()} is the entry one.`)
+      return entryNodeClass;
+    }
+    return noCustomClassTag;
+  }
 }

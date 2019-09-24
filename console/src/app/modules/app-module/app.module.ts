@@ -24,29 +24,12 @@ import { LocalStorageService } from "src/app/core/services/local-storage-service
 import { EntryNodeSelectionComponent } from './components/run-statistics/common/entry-node-selection/entry-node-selection.component';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { PrometheusErrorComponent } from "./components/common/prometheus-error/prometheus-error.component";
+import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-node-changing.modal.component";
+import { NotificationComponent } from '../../core/services/shared-layout-service/notification/notifications.component';
+import { SharedLayoutService } from "src/app/core/services/shared-layout-service/shared-layout.service";
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    RunsTableComponent,
-    MongooseRunStatusIconComponent,
-    RunsTableRootComponent,
-
-    RunStatisticsComponent,
-    RunStatisticLogsComponent,
-    RunStatisticsChartsComponent,
-    DateFormatPipe,
-    BasicChartComponent,
-    EntryNodeSelectionComponent,
-    PrometheusErrorComponent
-
-  ],
-  entryComponents: [
-    BasicChartComponent,
-    EntryNodeSelectionComponent,
-    PrometheusErrorComponent
-  ],
+  bootstrap: [AppComponent, NotificationComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -59,11 +42,38 @@ import { PrometheusErrorComponent } from "./components/common/prometheus-error/p
     StorageServiceModule,
     NgbModule
   ],
-
   // NOTE: Both Control and Monitoring APIs should be instantiated in module level ...
   // ... since we use it for the set up. 
-  providers: [ControlApiService, MonitoringApiService, DateFormatPipe, PrometheusApiService, LocalStorageService],
-  bootstrap: [AppComponent],
-  exports: [AppComponent],
+  providers: [
+    ControlApiService,
+    MonitoringApiService,
+    DateFormatPipe,
+    PrometheusApiService,
+    LocalStorageService,
+    SharedLayoutService
+  ],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    RunsTableComponent,
+    MongooseRunStatusIconComponent,
+    RunsTableRootComponent,
+    RunStatisticsComponent,
+    RunStatisticLogsComponent,
+    RunStatisticsChartsComponent,
+    DateFormatPipe,
+    BasicChartComponent,
+    EntryNodeSelectionComponent,
+    PrometheusErrorComponent,
+    NotificationComponent
+  ],
+  entryComponents: [
+    BasicChartComponent,
+    EntryNodeSelectionComponent,
+    PrometheusErrorComponent
+  ],
+  exports: [
+    AppComponent
+  ],
 })
 export class AppModule { }

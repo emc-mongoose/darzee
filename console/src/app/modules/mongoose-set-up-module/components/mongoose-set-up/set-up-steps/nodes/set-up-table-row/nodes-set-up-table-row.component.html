@@ -16,9 +16,9 @@
   <table class='table borderless' style="display: table-cell; width: calc(15%); vertical-align: center;">
     <!-- NOTE: Display additional node's info here -->
     <ng-container *ngFor="let badge of this.additionalNodeInfoBadges">
-        <tr class="col-sm">
-          <span class="badge badge-success">{{ badge }} </span>
-        </tr>
+      <tr class="col-sm">
+        <span class="badge badge-success">{{ badge }} </span>
+      </tr>
     </ng-container>
   </table>
 </td>
@@ -33,7 +33,7 @@
     </p>
     <!-- NOTE: Entry node tag. -->
     <div class="entry-node-tag-wrapper" style="display: table-cell; width: calc(20%);">
-      <span [hidden]="!this.getCustomClassForNode(runNode)" class="badge btn-outline-success my-2 my-sm-0"
+      <span [hidden]="this.shouldHideEntryNodeTag(runNode)" class="badge btn-outline-success my-2 my-sm-0"
         id="entry-node-tag">
         Entry node
       </span>

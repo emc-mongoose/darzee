@@ -1,5 +1,6 @@
-<p *ngFor="let inactiveAlert of inactiveNodeAlerts">
-  <ngb-alert [type]="inactiveAlert.alertType" (close)="onAlertClosed(inactiveAlert)">{{ inactiveAlert.message }}
+<!-- NOTE: Alerts that are caused because of a particular node selection. -->
+<p *ngFor="let nodeAlert of nodeAlerts">
+  <ngb-alert [type]="nodeAlert.cssType" (close)="onAlertClosed(nodeAlert)">{{ nodeAlert.message }}
   </ngb-alert>
 </p>
 <!-- NOTE: Nodes table  -->
@@ -16,8 +17,9 @@
     </thead>
     <!-- NOTE: Nodes' table rows -->
     <tr class="component-style table-row-component" *ngFor="let savedNode of savedMongooseNodes$ | async"
-      app-nodes-set-up-table-row [runNode]="savedNode"
-      (hasSelectedInactiveNode)="this.displayInactiveNodeAlert($event)">
+      app-nodes-set-up-table-row #nodesTableRow [runNode]="savedNode"
+      (hasSelectedInactiveNode)="this.displayInactiveNodeAlert($event)"
+      (hasSelectedUnsupportedNode)="this.displayUnsupportedNodeAlert($event)">
   </table>
 </div>
 <!-- NOTE: IP entering area -->
@@ -33,8 +35,10 @@
     </div>
     <!-- NOTE: Add IP button -->
     <div class="node-input add-ip-btn">
+      <!-- NOTE: "Add" button with dismissible popover -->
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
-        (click)="onAddIpButtonClicked(ipAd.textContent)">Add</button>
+        (click)="onAddIpButtonClicked(ipAd.textContent)" popover="Please provide a valid IPv4 address."
+        [isOpen]="this.shouldDisplayAddButtonPopover" triggers="" (focus)="this.closePopover()">Add</button>
     </div>
   </div>
 </div>
