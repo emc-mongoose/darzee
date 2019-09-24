@@ -23,6 +23,7 @@
 
   <app-set-up-footer [isSetupCompleted]="isSetupCompleted()" [confirmButtonTitle]="getConfigrmationBtnTitle()"
     (confirmButtonClick)="onConfirmClicked()" (runButtonClick)="onRunBtnClicked()"></app-set-up-footer>
+  <template #notificationComponent></template>
   <!-- MARK: Templates -->
   <ng-template #modalAlertTemplate>
     <div class="modal-header">

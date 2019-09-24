@@ -45,7 +45,7 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
   constructor(private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
     private prometheusApiService: PrometheusApiService,
     private localStorageService: LocalStorageService,
-    private sharedLayourService: SharedLayoutService) {
+    private sharedLayoutService: SharedLayoutService) {
     this.setUpComponent();
   }
 
@@ -82,12 +82,12 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
     const isInputEmpty: boolean = (enteredPrometheusAddress.length == 0);
     if (isInputEmpty) {
       // NOTE: Empty input should not be processed.
-      this.sharedLayourService.showNotification(new MongooseNotification('error', `Please, provide Prometheus' address.`));
+      this.sharedLayoutService.showNotification(new MongooseNotification('error', `Please, provide Prometheus' address.`));
       return;
     }
 
     if (!HttpUtils.isIpAddressValid(enteredPrometheusAddress)) {
-      this.sharedLayourService.showNotification(new MongooseNotification('error', `Please, provide a valid Prometheus' address.`));
+      this.sharedLayoutService.showNotification(new MongooseNotification('error', `Please, provide a valid Prometheus' address.`));
       return;
     }
     this.tryToLoadPrometheus(enteredPrometheusAddress);
@@ -133,7 +133,7 @@ export class PrometheusErrorComponent implements OnInit, OnDestroy {
           this.prometheusResourceLocation = prometheusAddressWithoutPrefixes;
           if (!isPrometheusAvailable) {
             console.error(`Prometheus is not available on ${prometheusAddressWithoutPrefixes}`);
-            this.sharedLayourService.showNotification(new MongooseNotification('error', `Prometheus is not available at ${prometheusAddress}.`));
+            this.sharedLayoutService.showNotification(new MongooseNotification('error', `Prometheus is not available at ${prometheusAddress}.`));
             return;
           }
           console.log(`Prometheus has successfully loaded on ${prometheusAddressWithoutPrefixes}.`);

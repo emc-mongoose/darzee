@@ -10,6 +10,8 @@ import { HttpUtils } from '../HttpUtils';
 import { Router } from '@angular/router';
 import { RoutesList } from 'src/app/modules/app-module/Routing/routes-list';
 import { EntryNodeBadgeModel } from './entry-node-badge.model';
+import { SharedLayoutService } from 'src/app/core/services/shared-layout-service/shared-layout.service';
+import { MongooseNotification } from 'src/app/core/services/shared-layout-service/notification/mongoose-notification.model';
 
 @Component({
   selector: 'entry-node-changing-modal',
@@ -54,7 +56,8 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     private router: Router,
     public currentModalView: NgbActiveModal,
     private mongooseSetUpService: MongooseSetUpService,
-    private mongooseDataSharedService: MongooseDataSharedServiceService) {
+    private mongooseDataSharedService: MongooseDataSharedServiceService,
+    private sharedLayoutService: SharedLayoutService) {
     this.configureNodes();
     this.configureNodeAddressTypeahead();
   }
@@ -146,18 +149,26 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
 
   public onRetryBtnClicked(): void {
     const entryNode: MongooseRunNode = this.updatedEntryNode;
+    if (entryNode == undefined) {
+      this.sharedLayoutService.showNotification(new MongooseNotification('info', "Please, select entry node."))
+      return;
+    }
     this.isMongooseLaunchInProgress = true;
     this.mongooseSetUpService.changeEntryNode(entryNode);
     this.mongooseSetupNodesSubscription = this.mongooseSetUpService.runMongoose(entryNode).pipe(
       map(
         (mongooseRunId: string) => {
           // TODO: Spawn notification here.
+          this.sharedLayoutService.showNotification(new MongooseNotification('error', "Test error, Mongoose has successfully launched"))
           console.log(`Mongoose has successfully launched on updated entry node with run ID: ${mongooseRunId}`);
           return true;
         }
       ),
       catchError((error: any) => {
         // TODO: Spawn notification here (optional).
+        console.log(`Notification should be spawned.`)
+        this.sharedLayoutService.showNotification(new MongooseNotification('error', "Test error, Mongoose launch has failed."))
+
         this.occupiedNodes.push(entryNode);
         console.log(`Unable to launch Mongoose with entry node ${entryNode.getResourceLocation()}. Reason: ${error}`);
         return of(false);

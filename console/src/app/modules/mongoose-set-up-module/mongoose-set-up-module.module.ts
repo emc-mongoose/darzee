@@ -21,6 +21,8 @@ import { PopoverModule, ModalModule, TypeaheadModule } from 'ngx-bootstrap';
 import { EntryNodeChangingModalComponent } from "src/app/common/modals/entry-node-changing.modal.component";
 import { MongooseSetUpService } from "src/app/core/services/mongoose-set-up-service/mongoose-set-up.service";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MongooseNotification } from "src/app/core/services/shared-layout-service/notification/mongoose-notification.model";
+import { NotificationComponent } from "src/app/core/services/shared-layout-service/notification/notifications.component";
 
 
 @NgModule({
@@ -43,7 +45,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     TypeaheadModule.forRoot(),
   ],
   entryComponents: [
-    EntryNodeChangingModalComponent
+    EntryNodeChangingModalComponent,
+    NotificationComponent
   ],
   declarations: [
     MongooseSetUpComponent,
