@@ -72,7 +72,7 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
       mongooseNotification => { 
         this.notificationComponent.clear();
         const factory = this.resolver.resolveComponentFactory(NotificationComponent);
-        const notificationComponentRef = this.notificationComponent.createComponent(factory)
+        const notificationComponentRef = this.notificationComponent.createComponent(factory);
         this.notificationComponentReferences.push(notificationComponentRef);
         notificationComponentRef.instance.notifications.push(mongooseNotification)
       }
@@ -139,8 +139,9 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
         // NOTE: If run ID has been returned from the server, Mongoose run has started
         let hasMongooseSuccessfullyStarted = (mongooseRunId != undefined);
         if (!hasMongooseSuccessfullyStarted) {
-          let misleadingMessage = `Unable to launch Mongoose - run ID hasn't been generated. Details: ${JSON.stringify(mongooseRunId)}`;
-          alert(misleadingMessage);
+          let misleadingMessage = `Unable to launch Mongoose - run ID hasn't been generated.`;
+          this.sharedLayoutService.showNotification(new MongooseNotification('error', misleadingMessage));
+          console.error(misleadingMessage + `Details: ${JSON.stringify(mongooseRunId)}`)
         } else {
           console.log(`Mongoose Run has started with run ID ${mongooseRunId}`);
         }

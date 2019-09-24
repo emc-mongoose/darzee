@@ -10,6 +10,9 @@ import { PrometheusErrorComponent } from "../../common/prometheus-error/promethe
 import { MongooseRunRecordCounter } from "src/app/core/models/run-record-counter";
 import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
 import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
+import { SharedLayoutService } from "src/app/core/services/shared-layout-service/shared-layout.service";
+import { MongooseNotification } from "src/app/core/services/shared-layout-service/notification/mongoose-notification.model";
+import { NotificationComponent } from "src/app/core/services/shared-layout-service/notification/notifications.component";
 
 @Component({
   selector: 'app-runs-table-root',
@@ -23,7 +26,7 @@ import { PrometheusApiService } from "src/app/core/services/prometheus-api/prome
 export class RunsTableRootComponent implements OnInit, OnDestroy {
 
   @ViewChild('errorMessageComponent', { read: ViewContainerRef }) errorMessageComponent: ViewContainerRef;
-
+  
   public readonly RUN_TABLE_LOADING_MSG = "Loading runs table...";
   // NOTE: Each tab displays the specific Mongoose Run Records based on record's status. 
   public runTabs: MongooseRunTab[] = [];
@@ -50,7 +53,8 @@ export class RunsTableRootComponent implements OnInit, OnDestroy {
   constructor(private monitoringApiService: MonitoringApiService,
     private resolver: ComponentFactoryResolver,
     private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
-    private prometheusApiService: PrometheusApiService) { }
+    private prometheusApiService: PrometheusApiService,
+    private sharedLayoutService: SharedLayoutService) { }
 
   ngOnInit() {
     if (this.mongooseDataSharedServiceService.shouldWaintForNewRun) {

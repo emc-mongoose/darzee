@@ -9,6 +9,8 @@ import { RouteParams } from "../../Routing/params.routes";
 import { MongooseRunStatus } from "src/app/core/models/mongoose-run-status";
 import { ControlApiService } from "src/app/core/services/control-api/control-api.service";
 import { PrometheusApiService } from "src/app/core/services/prometheus-api/prometheus-api.service";
+import { SharedLayoutService } from "src/app/core/services/shared-layout-service/shared-layout.service";
+import { MongooseNotification } from "src/app/core/services/shared-layout-service/notification/mongoose-notification.model";
 
 
 @Component({
@@ -40,7 +42,8 @@ export class RunStatisticsComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute,
     private router: Router,
     private monitoringApiService: MonitoringApiService,
-    private controlApiService: ControlApiService) {
+    private controlApiService: ControlApiService,
+    private sharedLayoutService: SharedLayoutService) {
   }
 
   ngOnInit() {
@@ -106,8 +109,7 @@ export class RunStatisticsComponent implements OnInit, OnDestroy {
       this.controlApiService.terminateMongooseRun(terminatingRunEntryNodeAddress, terminatingRunId as string).subscribe(
         (terminationStatusMessage: string) => {
           console.log(`${RunStatisticsComponent.TAG} termination subscription.`)
-
-          alert(terminationStatusMessage);
+          this.sharedLayoutService.showNotification(new MongooseNotification('error', `Mongoose run ${terminatingRunId} has been successfully terminated.`))
           window.location.reload();
         }
       )
