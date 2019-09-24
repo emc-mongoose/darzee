@@ -24,7 +24,7 @@ export class NodesComponent implements OnInit, OnDestroy {
   private readonly IP_DEFAULT_PORT: number = 9999;
 
   /**
-   * @param NndesSetUpTableRowComponents references to nodes table rows. It's used to ...
+   * @param NodesSetUpTableRowComponents references to nodes table rows. It's used to ...
    * ... manually control each row. 
    */
   @ViewChildren(NodesSetUpTableRowComponent) nodesSetUpTableRowComponents: QueryList<NodesSetUpTableRowComponent>;

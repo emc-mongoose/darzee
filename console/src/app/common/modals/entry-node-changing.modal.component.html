@@ -1,8 +1,8 @@
 <div class="modal-header">
     <h4 class="modal-title">
-        {{ this.title }}
+        {{ this.alertWindowTitle }}
     </h4>
-    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <button type="button" class="close" aria-label="Close" (click)="currentModalView.close('Close click')">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
@@ -24,27 +24,42 @@
                         {{ node.getResourceLocation() }}
                     </td>
                     <td>
-                        <ng-container *ngTemplateOutlet="this.getTemplateForRow(node)"></ng-container>
+                        <ng-container *ngIf="this.shouldDisplayBadge(node)">
+                            <ng-container
+                                *ngTemplateOutlet="nodeBadge; context: this.getContextForNodeBadgeTemplate(node)">
+                            </ng-container>
+                        </ng-container>
+
                     </td>
                 </tr>
             </ng-container>
         </table>
+        <div class="container-fluid">
+            <!-- NOTE: New entry node adding area -->
+            <div class="row">
+                <input [(ngModel)]="typeaheadEnteredNodeAddress" [typeahead]="this.typeaheadRecommendedNodesAddresses"
+                    class="form-control col-10" [placeholder]="this.NODE_ADDRESS_ENTRANCE_AREA_PLACEHOLDER"
+                    (typeaheadOnSelect)="onKeyPressedWhileEnteringNodeAddress(typeaheadEnteredNodeAddress)">
+                <button type="button" class="btn btn-outline-dark col" style="margin-left: calc(1%);"
+                    (click)="onKeyPressedWhileEnteringNodeAddress(typeaheadEnteredNodeAddress)">Set</button>
+            </div>
+        </div>
     </ng-container>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onRetryBtnClicked()">Retry</button>
-    <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="onRetryBtnClicked()">
+        <span *ngIf="this.shouldDisplayLaunchingSpinner()" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+        Retry
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="onExitSetupBtnClicked()">Exit setup</button>
 </div>
 <!-- NOTE: Templates -->
-<ng-template #halfTransparentBadge>
-    <span class="badge badge-success" style="opacity: 0.5;  filter: alpha(opacity=50); /* For IE8 and earlier */">Entry
-        node</span>
-</ng-template>
-<ng-template #entryNodeBadge>
-    <span class="badge badge-danger">
-        Entry node <span class="badge badge-light">Inactive</span>
+<ng-template #nodeBadge let-badgeInfo="badgeInfo">
+    <span class="badge" [ngClass]="badgeInfo.class" [ngStyle]="badgeInfo.style">
+        {{ badgeInfo.title }}
+        <span class="badge badge-light" *ngIf="badgeInfo.reason.length">
+            {{ badgeInfo.reason }}
+        </span>
     </span>
-</ng-template>
-<ng-template #selectedEntryNodeBadge>
-    <span class="badge badge-success">New entry node</span>
 </ng-template>

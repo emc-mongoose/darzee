@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, TemplateRef, ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { MongooseSetupTab } from '../../models/mongoose-setup-tab.model';
 // import { slideAnimation } from '../../../core/animations';
@@ -13,6 +13,9 @@ import { EntryNodeChangingModalComponent } from 'src/app/common/modals/entry-nod
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
+import { SharedLayoutService } from 'src/app/core/services/shared-layout-service/shared-layout.service';
+import { NotificationComponent } from 'src/app/core/services/shared-layout-service/notification/notifications.component';
+import { MongooseNotification } from 'src/app/core/services/shared-layout-service/notification/mongoose-notification.model';
 
 @Component({
   selector: 'app-mongoose-set-up',
@@ -21,6 +24,8 @@ import { MongooseRunNode } from 'src/app/core/models/mongoose-run-node.model';
 })
 
 export class MongooseSetUpComponent implements OnInit, OnDestroy {
+
+  @ViewChild('notificationComponent', {read: ViewContainerRef}) notificationComponent: ViewContainerRef;
 
   readonly BASE_URL = "/" + RoutesList.MONGOOSE_SETUP;
   readonly SETUP_TABS_DATA = [
@@ -40,6 +45,7 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
   public processingTabID: number = 0;
   public alerts: NodeAlert[] = [];
 
+  private notificationComponentReferences: ComponentRef<any>[] = [];
   private mongooseRunSubscription: Subscription = new Subscription();
 
   private getCurrentSetupTab(): MongooseSetupTab {
@@ -53,15 +59,29 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
     private mongooseSetUpService: MongooseSetUpService,
     private mongooseDataSharedServiceService: MongooseDataSharedServiceService,
     private modalService: NgbModal,
-    private bsModalService: BsModalService) {
+    private bsModalService: BsModalService,
+    private sharedLayoutService: SharedLayoutService,
+    private resolver: ComponentFactoryResolver) {
     this.initSetUpTabs();
     let defaultTabNumber = 0;
     this.openUpTab(defaultTabNumber);
   }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    this.sharedLayoutService.getRecentlyAddedNotification().subscribe(
+      mongooseNotification => { 
+        this.notificationComponent.clear();
+        const factory = this.resolver.resolveComponentFactory(NotificationComponent);
+        const notificationComponentRef = this.notificationComponent.createComponent(factory);
+        this.notificationComponentReferences.push(notificationComponentRef);
+        notificationComponentRef.instance.notifications.push(mongooseNotification)
+      }
+    )
+  }
 
   ngOnDestroy() {
+    console.log('Resetting set up data...')
+    this.mongooseSetUpService.reset();
     this.mongooseRunSubscription.unsubscribe();
   }
 
@@ -119,12 +139,12 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
         // NOTE: If run ID has been returned from the server, Mongoose run has started
         let hasMongooseSuccessfullyStarted = (mongooseRunId != undefined);
         if (!hasMongooseSuccessfullyStarted) {
-          let misleadingMessage = `Unable to launch Mongoose - run ID hasn't been generated. Details: ${JSON.stringify(mongooseRunId)}`;
-          alert(misleadingMessage);
+          let misleadingMessage = `Unable to launch Mongoose - run ID hasn't been generated.`;
+          this.sharedLayoutService.showNotification(new MongooseNotification('error', misleadingMessage));
+          console.error(misleadingMessage + `Details: ${JSON.stringify(mongooseRunId)}`)
         } else {
           console.log(`Mongoose Run has started with run ID ${mongooseRunId}`);
         }
-
         this.router.navigate([RoutesList.RUNS]);
       },
       error => {
@@ -136,7 +156,7 @@ export class MongooseSetUpComponent implements OnInit, OnDestroy {
         }
 
         const modalMongooseLaunchAlertError: NgbModalRef = this.modalService.open(EntryNodeChangingModalComponent);
-        modalMongooseLaunchAlertError.componentInstance.title = 'Error';
+        modalMongooseLaunchAlertError.componentInstance.alertWindowTitle = 'Entry node is occupied';
         modalMongooseLaunchAlertError.componentInstance.discription = errorReason;
         modalMongooseLaunchAlertError.componentInstance.nodes = this.mongooseSetUpService.getSelectedMongooseRunNodes();
         console.error(`Unable to launch Mongoose. Reason: ${JSON.stringify(error)}`);

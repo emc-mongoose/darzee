@@ -1,0 +1,5 @@
+<div class="alert alert-danger notifications" role="alert" 
+*ngFor="let notification of this.notifications"
+    (click)="hide(notification)" [@slideInOut]="this.notifications">
+    {{ notification.message }}
+</div>

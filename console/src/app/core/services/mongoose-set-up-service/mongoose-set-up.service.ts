@@ -45,6 +45,13 @@ export class MongooseSetUpService {
   // MARK: - Getters & Setters 
 
   /**
+   * Clears all the data stored withon the service.
+   */
+  public reset(): void { 
+    this.mongooseSetupInfoModel = new MongooseSetupInfoModel();
+  }
+
+  /**
    * @returns configuration of @param entryNode with slave nodes added.
    * Slave nodes are retrieved from SetUpModel. They don't contain @param entryNode's address.
    */
@@ -114,15 +121,14 @@ export class MongooseSetUpService {
 
 
   public isMongooseNodeActive(mongooseNodeAddress: string): Observable<boolean> {
-    const timeoutMilliseconds: number = 2500; // NOTE: Timeout is set to 2.5 seconds 
-    return this.monitoringApiService.isMongooseRunNodeActive(mongooseNodeAddress).pipe(
-      timeout(timeoutMilliseconds)
-    ).pipe(
-      catchError(error => {
-        console.log(`Mongoose's node ${mongooseNodeAddress} status request has timed out.`);
-        return of(false);
-      })
-    )
+    return this.getMongooseRunNodeInstance(mongooseNodeAddress).pipe(
+      map(
+        (node: MongooseRunNode) => { 
+          const hasFetchedActualMongooseNode: boolean = (node != undefined);
+          return hasFetchedActualMongooseNode;
+        }
+      )
+    );
   }
 
   /**

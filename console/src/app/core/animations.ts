@@ -9,7 +9,7 @@ const slide = animation(
         keyframes([
             style({ transform: 'translateX(-100%)' }),
             style({ transform: 'translateX(0%)' }),
-            
+
         ])
     ),
     { params: { timing: SLIDE_ANIMATION_TIMING_MS } }
@@ -21,7 +21,7 @@ export let slideAnimation = trigger('slide',
 )
 
 // NOTE: Bounce animations 
-const BOUNCE_IN_ANIM_TIMING_MS= 500;
+const BOUNCE_IN_ANIM_TIMING_MS = 500;
 const basicBounce = animation(
     animate(
         '{{ timing }}ms ease-out',
@@ -41,5 +41,15 @@ const basicBounce = animation(
     { params: { timing: BOUNCE_IN_ANIM_TIMING_MS } }
 );
 
-export let bounceAnimation = trigger('bounce', 
-[transition('void => *', useAnimation(basicBounce))]);
+export let bounceAnimation = trigger('bounce',
+    [transition('void => *', useAnimation(basicBounce))]);
+
+export let slideInAndOut = trigger('slideInOut', [
+    transition(':enter', [
+        style({ transform: 'translateY(100%)', opacity: 0 }),
+        animate('200ms ease-in', style({ transform: 'translateY(0%)', opacity: 1 }))
+    ]),
+    transition(':leave', [
+        animate('200ms ease-in', style({ transform: 'translateY(100%)', opacity: 0 }))
+    ])
+])
