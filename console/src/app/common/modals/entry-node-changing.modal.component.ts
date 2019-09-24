@@ -158,16 +158,13 @@ export class EntryNodeChangingModalComponent implements OnDestroy {
     this.mongooseSetupNodesSubscription = this.mongooseSetUpService.runMongoose(entryNode).pipe(
       map(
         (mongooseRunId: string) => {
-          // TODO: Spawn notification here.
-          this.sharedLayoutService.showNotification(new MongooseNotification('error', "Test error, Mongoose has successfully launched"))
+          this.sharedLayoutService.showNotification(new MongooseNotification('error', `Mongoose has successfully launched with run ID ${mongooseRunId}.`))
           console.log(`Mongoose has successfully launched on updated entry node with run ID: ${mongooseRunId}`);
           return true;
         }
       ),
       catchError((error: any) => {
-        // TODO: Spawn notification here (optional).
-        console.log(`Notification should be spawned.`)
-        this.sharedLayoutService.showNotification(new MongooseNotification('error', "Test error, Mongoose launch has failed."))
+        this.sharedLayoutService.showNotification(new MongooseNotification('error', `Unable to launch Mongoose on node ${entryNode.getResourceLocation()}.`))
 
         this.occupiedNodes.push(entryNode);
         console.log(`Unable to launch Mongoose with entry node ${entryNode.getResourceLocation()}. Reason: ${error}`);
