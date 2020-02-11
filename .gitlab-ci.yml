@@ -23,6 +23,9 @@ create_dockerfile:
 
 build_docker_image:
   stage: build_docker_image
+  # WARNING: Make sure docker:dind and docker image matches, otherwise ...
+  # ... errors could occur. If you run docker-in-docker in your own GitLab  CI ...
+  # ... runner, make sure it's launched in privileged mode unless dind won't work.
   image: docker:stable
 
   # NOTE: Setting up dind service inside a stage since it conflicts with a JDK image used ...
